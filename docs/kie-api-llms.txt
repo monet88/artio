@@ -1,0 +1,171 @@
+# KIE API
+
+## Docs
+
+- [Generate 4o Image（GPT IMAG 1）](https://docs.kie.ai/4o-image-api/generate-4-o-image.md): Create a new 4o Image(gpt image 1) generation task. Generated images are stored for 14 days, after which they expire.
+- [4o Image Generation Callbacks](https://docs.kie.ai/4o-image-api/generate-4-o-image-callbacks.md): When the 4o Image task is completed, the system will send the result to your provided callback URL via POST request
+- [Get 4o Image Details](https://docs.kie.ai/4o-image-api/get-4-o-image-details.md): Query 4o Image generation task details using taskId, including generation status, parameters and results.
+- [Get Direct Download URL](https://docs.kie.ai/4o-image-api/get-4-o-image-download-url.md): Convert an image URL to a direct download URL. This helps solve cross-domain issues when downloading images directly. The returned URL is valid for 20 minutes.
+- [4o Image API Quickstart](https://docs.kie.ai/4o-image-api/quickstart.md): Get started with the 4o Image API to generate high-quality AI images in minutes
+- [Get Download URL for Generated Files](https://docs.kie.ai/common-api/download-url.md)
+- [Get Remaining Credits](https://docs.kie.ai/common-api/get-account-credits.md)
+- [Common API Quickstart](https://docs.kie.ai/common-api/quickstart.md): Essential utility APIs for account management and file operations
+- [File Upload API Quickstart](https://docs.kie.ai/file-upload-api/quickstart.md): Get started with the File Upload API in minutes, supporting multiple upload methods
+- [Base64 File Upload](https://docs.kie.ai/file-upload-api/upload-file-base-64.md): Upload temporary files via Base64 encoded data. Note: Uploaded files are temporary and automatically deleted after 3 days.
+- [File Stream Upload](https://docs.kie.ai/file-upload-api/upload-file-stream.md)
+- [URL File Upload](https://docs.kie.ai/file-upload-api/upload-file-url.md)
+- [Generate or Edit Image](https://docs.kie.ai/flux-kontext-api/generate-or-edit-image.md): Create a new image generation or editing task using the Flux Kontext AI model.
+- [Image Generation or Editing Callbacks](https://docs.kie.ai/flux-kontext-api/generate-or-edit-image-callbacks.md): When the image generation task is completed, the system will send the result to your provided callback URL via POST request
+- [Get Image Details](https://docs.kie.ai/flux-kontext-api/get-image-details.md): Query the status and results of an image generation or editing task.
+- [Flux Kontext API Quickstart](https://docs.kie.ai/flux-kontext-api/quickstart.md): Get started with the Flux Kontext API in minutes. Learn how to generate images from text and edit existing images using AI.
+- [Getting Started with KIE API (Important)](https://docs.kie.ai/index.md): Welcome to **KIE**. This guide walks you through the essential information you need to start integrating KIE APIs into your product, including models, pricing, authentication, request flow, limits, and support.
+
+We aim to be transparent, practical, and developer-friendly. Please read this carefully before going to production.
+- [Generate Luma Modify Video](https://docs.kie.ai/luma-api/generate-luma-modify-video.md): Create a new Luma modify video generation task.
+- [Luma Modify Video Callbacks](https://docs.kie.ai/luma-api/generate-luma-modify-video-callbacks.md): When the video generation task is completed, the system will send the result to your provided callback URL via POST request
+- [Get Luma Modify Details](https://docs.kie.ai/luma-api/get-luma-modify-details.md): Query the status and results of a Luma modify video generation task.
+- [Luma API Quickstart](https://docs.kie.ai/luma-api/quickstart.md): Get started with the Luma API in minutes. Learn how to modify and transform videos using advanced AI models.
+- [Bytedance - Seedance 1.5 Pro](https://docs.kie.ai/market/bytedance/seedance-1.5-pro.md): Generate high-quality videos from text or images with Seedance 1.5 Pro's advanced AI capabilities
+- [Bytedance - V1 Lite Image to Video](https://docs.kie.ai/market/bytedance/v1-lite-image-to-video.md): Transform images into dynamic videos powered by Bytedance's advanced AI model
+- [Bytedance - V1 Lite Text to Video](https://docs.kie.ai/market/bytedance/v1-lite-text-to-video.md): High-quality video generation from text descriptions powered by Bytedance's advanced AI model
+- [Bytedance - V1 Pro Fast Image to Video](https://docs.kie.ai/market/bytedance/v1-pro-fast-image-to-video.md): Transform images into dynamic videos powered by Bytedance's advanced AI model
+- [Bytedance - V1 Pro Image to Video](https://docs.kie.ai/market/bytedance/v1-pro-image-to-video.md): Transform images into dynamic videos powered by Bytedance's advanced AI model
+- [Bytedance - V1 Pro Text to Video](https://docs.kie.ai/market/bytedance/v1-pro-text-to-video.md): High-quality video generation from text descriptions powered by Bytedance's advanced AI model
+- [Claude Opus 4.5](https://docs.kie.ai/market/claude/claude-opus-4-5.md): Claude Opus 4.5 is Anthropic’s flagship chat model for demanding reasoning and writing tasks. Use this endpoint to create chat completions with Claude Opus 4.5, with support for streaming, multimodal inputs, tools, and structured output.
+- [Claude Sonnet 4.5](https://docs.kie.ai/market/claude/claude-sonnet-4-5.md): Claude Sonnet 4.5 is Anthropic’s high-performance chat model. Use this endpoint to create chat completions with Claude Sonnet 4.5, with support for streaming, multimodal inputs, tools, and structured output.
+- [Get Task Details](https://docs.kie.ai/market/common/get-task-detail.md): Query the status and results of any task created in the Market models
+- [elevenlabs/audio-isolation](https://docs.kie.ai/market/elevenlabs/audio-isolation.md): Content generation using elevenlabs/audio-isolation
+- [elevenlabs/sound-effect-v2](https://docs.kie.ai/market/elevenlabs/sound-effect-v2.md): Content generation using elevenlabs/sound-effect-v2
+- [elevenlabs/speech-to-text](https://docs.kie.ai/market/elevenlabs/speech-to-text.md): Content generation using elevenlabs/speech-to-text
+- [elevenlabs/text-to-dialogue-v3](https://docs.kie.ai/market/elevenlabs/text-to-dialogue-v3.md): Dialogue text-to-speech generation using elevenlabs/text-to-dialogue-v3
+- [elevenlabs/text-to-speech-multilingual-v2](https://docs.kie.ai/market/elevenlabs/text-to-speech-multilingual-v2.md): Content generation using elevenlabs/text-to-speech-multilingual-v2
+- [elevenlabs/text-to-speech-turbo-2-5](https://docs.kie.ai/market/elevenlabs/text-to-speech-turbo-2-5.md): Content generation using elevenlabs/text-to-speech-turbo-2-5
+- [Flux-2 - Image to Image](https://docs.kie.ai/market/flux2/flex-image-to-image.md): Image generation by flux-2/flex-image-to-image
+- [Flux-2 - Text to Image](https://docs.kie.ai/market/flux2/flex-text-to-image.md): High-quality photorealistic image generation powered by Flux-2's advanced AI model
+- [Flux-2 - Pro Image to Image](https://docs.kie.ai/market/flux2/pro-image-to-image.md): Image generation by flux-2/pro-image-to-image
+- [Flux-2 - Pro Text to Image](https://docs.kie.ai/market/flux2/pro-text-to-image.md): High-quality photorealistic image generation powered by Flux-2's advanced AI model
+- [Gemini 2.5 Flash](https://docs.kie.ai/market/gemini/gemini-2.5-flash.md): Gemini 2.5 Flash API is first hybrid reasoning LLM developed by Google DeepMind, built for developers to combine fast generation with optional reasoning for both simple and complex tasks.
+- [Gemini 2.5 Pro](https://docs.kie.ai/market/gemini/gemini-2.5-pro.md): Gemini 2.5 Pro is Google’s advanced thinking model designed for complex reasoning, code generation and long-context understanding. It supports native multimodal inputs and a context window of up to 1 million tokens for demanding analysis and development workflows.
+- [Gemini 3 Pro](https://docs.kie.ai/market/gemini/gemini-3-pro.md): Gemini 3 Pro API is Google DeepMind's next-generation multimodal model with exceptional reasoning capabilities, seamlessly understanding text, images, video, and audio, with support for large-scale long-context processing.
+- [Google - imagen4](https://docs.kie.ai/market/google/imagen4.md): Image generation by Google imagen4
+- [Google - imagen4-fast](https://docs.kie.ai/market/google/imagen4-fast.md): Image generation by Google imagen4-fast
+- [Google - imagen4-ultra](https://docs.kie.ai/market/google/imagen4-ultra.md): Image generation by Google imagen4-ultra
+- [Google - Nano Banana](https://docs.kie.ai/market/google/nano-banana.md): Content generation using google/nano-banana
+- [Google - Nano Banana Edit](https://docs.kie.ai/market/google/nano-banana-edit.md): Image editing using Google's Nano Banana Edit model
+- [Google - Nano Banana Pro](https://docs.kie.ai/market/google/pro-image-to-image.md): Image generation using Google's Pro Image to Image model
+- [GPT Image 1.5 Image To Image](https://docs.kie.ai/market/gpt-image/1.5-image-to-image.md): Generate images from input images using the GPT Image 1.5 Image To Image model
+- [GPT Image 1.5 Text To Image](https://docs.kie.ai/market/gpt-image/1.5-text-to-image.md): Generate images using the GPT Image 1.5 Text To Image model
+- [grok-imagine/image-to-image](https://docs.kie.ai/market/grok-imagine/image-to-image.md): Content generation using grok-imagine/image-to-image
+- [Grok Imagine - Image to Video](https://docs.kie.ai/market/grok-imagine/image-to-video.md): Transform images into dynamic videos powered by Grok's advanced AI model
+- [Grok Imagine - Text to Image](https://docs.kie.ai/market/grok-imagine/text-to-image.md): High-quality photorealistic image generation powered by Grok's advanced AI model
+- [Grok Imagine - Text to Video](https://docs.kie.ai/market/grok-imagine/text-to-video.md): High-quality video generation from text descriptions powered by Grok's advanced AI model
+- [Grok Imagine - Image Upscale](https://docs.kie.ai/market/grok-imagine/upscale.md): Enhance image resolution and quality using advanced AI upscaling powered by Grok
+- [Hailuo Pro - Image to Video](https://docs.kie.ai/market/hailuo/02-image-to-video-pro.md): Transform images into dynamic videos powered by Hailuo's advanced AI model
+- [Hailuo Standard - Image to Video](https://docs.kie.ai/market/hailuo/02-image-to-video-standard.md): Transform images into dynamic videos powered by Hailuo's advanced AI model
+- [Hailuo Pro - Text to Video](https://docs.kie.ai/market/hailuo/02-text-to-video-pro.md): High-quality video generation from text descriptions powered by Hailuo's advanced AI model
+- [Hailuo Standard - Text to Video](https://docs.kie.ai/market/hailuo/02-text-to-video-standard.md): High-quality video generation from text descriptions powered by Hailuo's advanced AI model
+- [Hailuo - Image to Video](https://docs.kie.ai/market/hailuo/2-3-image-to-video-pro.md): Transform images into dynamic videos powered by Hailuo's advanced AI model
+- [Hailuo - Image to Video](https://docs.kie.ai/market/hailuo/2-3-image-to-video-standard.md): Transform images into dynamic videos powered by Hailuo's advanced AI model
+- [Ideogram - character](https://docs.kie.ai/market/ideogram/character.md): Image generation by ideogram/character
+- [Ideogram - character-edit](https://docs.kie.ai/market/ideogram/character-edit.md): Image generation by ideogram/character-edit
+- [Ideogram - character-remix](https://docs.kie.ai/market/ideogram/character-remix.md): Image generation by ideogram/character-remix
+- [Ideogram - v3-reframe](https://docs.kie.ai/market/ideogram/v3-reframe.md): Image generation by ideogram/v3-reframe
+- [Infinitalk - From Audio](https://docs.kie.ai/market/infinitalk/from-audio.md): Content generation using infinitalk/from-audio
+- [Kling - AI Avatar Pro](https://docs.kie.ai/market/kling/ai-avatar-pro.md): Generate lifelike talking avatars from photos and audio with advanced features and enhanced quality using Kling AI Avatar Pro
+- [Kling - AI Avatar Standard](https://docs.kie.ai/market/kling/ai-avatar-standard.md): Generate lifelike talking avatars from photos and audio with accurate lip sync using Kling AI Avatar Standard
+- [Kling-2.6 - Image to Video](https://docs.kie.ai/market/kling/image-to-video.md): Convert static images into dynamic videos with the advanced Kling-2.6 AI model
+- [kling-2.6/motion-control](https://docs.kie.ai/market/kling/motion-control.md): Content generation using kling-2.6/motion-control
+- [Kling-2.6 - Text to Video](https://docs.kie.ai/market/kling/text-to-video.md): Generate high-quality videos from text descriptions with the advanced Kling-2.6 AI model
+- [Kling - V2.1 Master Image to Video](https://docs.kie.ai/market/kling/v2-1-master-image-to-video.md): Generate videos using Kling's advanced AI model
+- [Kling - V2.1 Master Text to Video](https://docs.kie.ai/market/kling/v2-1-master-text-to-video.md): High-quality video generation from text descriptions powered by Kling's advanced AI model
+- [Kling - V2.1 Pro](https://docs.kie.ai/market/kling/v2-1-pro.md): Generate videos using Kling's advanced AI model
+- [Kling - V2.1 Standard](https://docs.kie.ai/market/kling/v2-1-standard.md): Generate videos using Kling's advanced AI model
+- [Market](https://docs.kie.ai/market/quickstart.md): Explore and integrate cutting-edge AI models for image generation, video creation, and audio processing through unified APIs.
+- [Qwen - image-edit](https://docs.kie.ai/market/qwen/image-edit.md): Image generation by qwen/image-edit
+- [Qwen - Image to Image](https://docs.kie.ai/market/qwen/image-to-image.md): Image generation by Qwen's advanced AI model
+- [Qwen - Text to Image](https://docs.kie.ai/market/qwen/text-to-image.md): High-quality photorealistic image generation powered by Qwen's advanced AI model
+- [Recraft - Image Upscale](https://docs.kie.ai/market/recraft/crisp-upscale.md): Enhance image resolution and quality using advanced AI upscaling powered by Recraft
+- [recraft/remove-background](https://docs.kie.ai/market/recraft/remove-background.md): remove background by recraft/remove-background
+- [Seedream4.5 - Edit](https://docs.kie.ai/market/seedream/4.5-edit.md): Image editing by Seedream4.5
+- [Seedream4.5 - Text to Image](https://docs.kie.ai/market/seedream/4.5-text-to-image.md): High-quality photorealistic image generation powered by Seedream's advanced AI model
+- [Seedream3.0 - Text to Image](https://docs.kie.ai/market/seedream/seedream.md): Image generation by Seedream3.0
+- [Seedream4.0 - Edit](https://docs.kie.ai/market/seedream/seedream-v4-edit.md): Image editing by Seedream4.0
+- [Seedream4.0 - Text to Image](https://docs.kie.ai/market/seedream/seedream-v4-text-to-image.md): High-quality photorealistic image generation powered by Seedream4.0's advanced AI model
+- [sora-2-pro-storyboard](https://docs.kie.ai/market/sora-2-pro-storyboard/index.md): Video generation using sora-2-pro-storyboard
+- [Sora2 - Characters](https://docs.kie.ai/market/sora2/sora-2-characters.md): Create dynamic character animations powered by Sora-2-characters' advanced AI model
+- [Sora2 - Image to Video](https://docs.kie.ai/market/sora2/sora-2-image-to-video.md): Transform images into dynamic videos powered by Sora-2-image-to-video's advanced AI model
+- [Sora2 - Pro Image to Video](https://docs.kie.ai/market/sora2/sora-2-pro-image-to-video.md): Transform images into dynamic videos powered by Sora-2-pro-image-to-video's advanced AI model
+- [Sora2 - Pro Text to Video](https://docs.kie.ai/market/sora2/sora-2-pro-text-to-video.md): High-quality video generation from text descriptions powered by Sora-2-pro-text-to-video's advanced AI model
+- [Sora2 - Text to Video](https://docs.kie.ai/market/sora2/sora-2-text-to-video.md): High-quality video generation from text descriptions powered by Sora-2-text-to-video's advanced AI model
+- [Sora2 - Watermark Remover](https://docs.kie.ai/market/sora2/sora-watermark-remover.md): Content generation using sora-watermark-remover
+- [Topaz - Image Upscale](https://docs.kie.ai/market/topaz/image-upscale.md): Enhance image resolution and quality using advanced AI upscaling powered by Topaz
+- [Topaz - Video Upscale](https://docs.kie.ai/market/topaz/video-upscale.md): Enhance video resolution and quality using advanced AI upscaling powered by Topaz
+- [Wan - Image to Video](https://docs.kie.ai/market/wan/2-2-a14b-image-to-video-turbo.md): Transform images into dynamic videos powered by Wan's advanced AI model
+- [Wan - 2.2 A14B Speech to Video Turbo](https://docs.kie.ai/market/wan/2-2-a14b-speech-to-video-turbo.md): Generate videos using Wan's advanced AI model
+- [Wan - Text to Video](https://docs.kie.ai/market/wan/2-2-a14b-text-to-video-turbo.md): High-quality video generation from text descriptions powered by Wan's advanced AI model
+- [Wan - Animate Move](https://docs.kie.ai/market/wan/2-2-animate-move.md): Content generation using Wan's advanced AI model
+- [Wan - Animate Replace](https://docs.kie.ai/market/wan/2-2-animate-replace.md): Content generation using Wan's advanced AI model
+- [Wan 2.6 - Image to Video](https://docs.kie.ai/market/wan/2-6-image-to-video.md): Transform static images into dynamic videos powered by Wan's advanced AI model
+- [Wan 2.6 - Text to Video](https://docs.kie.ai/market/wan/2-6-text-to-video.md): High-quality video generation from text descriptions powered by Wan's advanced AI model
+- [Wan 2.6 - Video to Video](https://docs.kie.ai/market/wan/2-6-video-to-video.md): Transform existing videos with new prompts using Wan's advanced AI model
+- [z-image](https://docs.kie.ai/market/z-image/z-image.md): Image generation by z-image
+- [Extend AI Video](https://docs.kie.ai/runway-api/extend-ai-video.md): Extend existing AI-generated videos to create longer sequences.
+- [AI Video Extension Callbacks](https://docs.kie.ai/runway-api/extend-ai-video-callbacks.md): The system calls this callback to notify results when video extension is completed
+- [Generate AI Video](https://docs.kie.ai/runway-api/generate-ai-video.md): Create dynamic AI-generated videos from text prompts or image references.
+- [AI Video Generation Callbacks](https://docs.kie.ai/runway-api/generate-ai-video-callbacks.md): When video generation is complete, the system will send a POST request to the provided callback URL to notify the result
+- [Generate Aleph Video](https://docs.kie.ai/runway-api/generate-aleph-video.md): Edit and transform existing footage with text-guided video-to-video using Runway Aleph. 
+- [Aleph Video Generation Callbacks](https://docs.kie.ai/runway-api/generate-aleph-video-callbacks.md): Handle webhook notifications for Runway Alpeh video generation completion
+- [Get AI Video Details](https://docs.kie.ai/runway-api/get-ai-video-details.md): Retrieve comprehensive information about an AI-generated video task.
+- [Get Aleph Video Details](https://docs.kie.ai/runway-api/get-aleph-video-details.md): Retrieve comprehensive information about Runway Alpeh video generation tasks
+- [Runway API Quickstart](https://docs.kie.ai/runway-api/quickstart.md): Get started with the Runway API to generate stunning AI videos in minutes
+- [Add Instrumental](https://docs.kie.ai/suno-api/add-instrumental.md): This endpoint generates a musical accompaniment tailored to an uploaded audio file — typically a vocal stem or melody track. It helps users instantly flesh out their vocal ideas with high-quality backing music, all without needing a producer.
+- [Add Instrumental Callbacks](https://docs.kie.ai/suno-api/add-instrumental-callbacks.md): System will call this callback when instrumental generation is complete.
+- [Add Vocals](https://docs.kie.ai/suno-api/add-vocals.md): This endpoint layers AI-generated vocals on top of an existing instrumental. Given a prompt (e.g., lyrical concept or musical mood) and optional audio, it produces vocal output harmonized with the provided track.
+- [Add Vocals Callbacks](https://docs.kie.ai/suno-api/add-vocals-callbacks.md): System will call this callback when vocal generation is complete.
+- [Boost Music Style](https://docs.kie.ai/suno-api/boost-music-style.md)
+- [Convert to WAV Format](https://docs.kie.ai/suno-api/convert-to-wav.md): Convert an existing music track to high-quality WAV format.
+- [Convert to WAV Callbacks](https://docs.kie.ai/suno-api/convert-to-wav-callbacks.md): System will call this callback when WAV format audio generation is complete.
+- [Generate Music Cover](https://docs.kie.ai/suno-api/cover-suno.md): Create personalized cover images for generated music.
+- [Music Cover Generation Callbacks](https://docs.kie.ai/suno-api/cover-suno-callbacks.md): When music cover generation is complete, the system will call this callback to notify results.
+- [Create Music Video](https://docs.kie.ai/suno-api/create-music-video.md): Create a video with visualizations based on your generated music track.
+- [Music Video Generation Callbacks](https://docs.kie.ai/suno-api/create-music-video-callbacks.md): When MP4 generation is complete, the system will send a POST request to the provided callback URL to notify the result
+- [Extend Music](https://docs.kie.ai/suno-api/extend-music.md): Extend or modify existing music by creating a continuation based on a source audio track.
+- [Music Extension Callbacks](https://docs.kie.ai/suno-api/extend-music-callbacks.md): System will call this callback when audio generation is complete
+- [Generate Lyrics](https://docs.kie.ai/suno-api/generate-lyrics.md): Generate creative lyrics content based on a text prompt.
+- [Lyrics Generation Callbacks](https://docs.kie.ai/suno-api/generate-lyrics-callbacks.md): System will call this callback when lyrics generation is complete.
+- [Generate MIDI from Audio](https://docs.kie.ai/suno-api/generate-midi.md): Convert separated audio tracks into MIDI format with detailed note information for each instrument.
+- [MIDI Generation Callbacks](https://docs.kie.ai/suno-api/generate-midi-callbacks.md): System will call this callback when MIDI generation from separated audio is complete.
+- [Generate Music](https://docs.kie.ai/suno-api/generate-music.md): Generate music with or without lyrics using AI models.
+- [Music Generation Callbacks](https://docs.kie.ai/suno-api/generate-music-callbacks.md): System will call this callback when audio generation is complete.
+- [Generate Persona](https://docs.kie.ai/suno-api/generate-persona.md): Create a personalized music Persona based on generated music, giving the music a unique identity and characteristics.
+- [Get Music Cover Details](https://docs.kie.ai/suno-api/get-cover-suno-details.md): Get detailed information about music cover generation tasks.
+- [Get Lyrics Task Details](https://docs.kie.ai/suno-api/get-lyrics-details.md): Retrieve detailed information about a lyrics generation task.
+- [Get MIDI Generation Details](https://docs.kie.ai/suno-api/get-midi-details.md): Retrieve detailed information about a MIDI generation task including complete note data for all detected instruments.
+- [Get Music Task Details](https://docs.kie.ai/suno-api/get-music-details.md): Retrieve detailed information about a music generation task.
+- [Get Music Video Details](https://docs.kie.ai/suno-api/get-music-video-details.md): Retrieve detailed information about a music video generation task.
+- [Get Timestamped Lyrics](https://docs.kie.ai/suno-api/get-timestamped-lyrics.md): Retrieve synchronized lyrics with precise timestamps for music tracks.
+- [Get Vocal Separation Details](https://docs.kie.ai/suno-api/get-vocal-separation-details.md): Retrieve detailed information about a vocal separation task.
+- [Get WAV Conversion Details](https://docs.kie.ai/suno-api/get-wav-details.md): Retrieve detailed information about a WAV format conversion task.
+- [Suno API Quickstart](https://docs.kie.ai/suno-api/quickstart.md): Get started with the Suno API to generate AI music, lyrics, and audio content in minutes
+- [Replace Music Section](https://docs.kie.ai/suno-api/replace-section.md): Replace a specific time segment within existing music.
+- [Replace Music Section Callbacks](https://docs.kie.ai/suno-api/replace-section-callbacks.md): Understand the callback mechanism for replace music section tasks
+- [Vocal & Instrument Stem Separation](https://docs.kie.ai/suno-api/separate-vocals.md): Use Suno’s official get‑stem API to split tracks created on our platform into clean vocal, accompaniment, or per‑instrument stems with state‑of‑the‑art source‑separation AI.
+- [Audio Separation Callbacks](https://docs.kie.ai/suno-api/separate-vocals-callbacks.md): System will call this callback when vocal and instrument separation is complete.
+- [Upload And Cover Audio](https://docs.kie.ai/suno-api/upload-and-cover-audio.md): This API covers an audio track by transforming it into a new style while retaining its core melody. It incorporates Suno's upload capability, enabling users to upload an audio file for processing. The expected result is a refreshed audio track with a new style, keeping the original melody intact.
+- [Audio Upload and Cover Callbacks](https://docs.kie.ai/suno-api/upload-and-cover-audio-callbacks.md): System will call this callback when audio generation is complete
+- [Upload And Extend Audio](https://docs.kie.ai/suno-api/upload-and-extend-audio.md): This API extends audio tracks while preserving the original style of the audio track. It includes Suno's upload functionality, allowing users to upload audio files for processing. The expected result is a longer track that seamlessly continues the input style.
+- [Audio Upload and Extension Callbacks](https://docs.kie.ai/suno-api/upload-and-extend-audio-callbacks.md): System will call this callback when audio generation is complete
+- [Extend Veo 3.1 AI Video](https://docs.kie.ai/veo3-api/extend-video.md): Extend an existing Veo3.1 video by generating new content based on the original video and a text prompt.
+- [Generate Veo 3.1 AI Video(Fast&Quality)](https://docs.kie.ai/veo3-api/generate-veo-3-video.md): Create a new video generation task using the Veo3.1 AI model.
+- [Veo3.1 Video Generation Callbacks](https://docs.kie.ai/veo3-api/generate-veo-3-video-callbacks.md): The system will call this callback to notify results when video generation is completed
+- [Get 1080P Video](https://docs.kie.ai/veo3-api/get-veo-3-1080-p-video.md): Get the high-definition 1080P version of a Veo3.1 video generation task.
+- [Get 4K Video](https://docs.kie.ai/veo3-api/get-veo-3-4k-video.md): Get the ultra-high-definition 4K version of a Veo3.1 video generation task.
+- [Get 4K Video Callbacks](https://docs.kie.ai/veo3-api/get-veo-3-4k-video-callbacks.md): When video generation completes, the system calls this callback to notify results
+- [Get Veo3.1 Video Details](https://docs.kie.ai/veo3-api/get-veo-3-video-details.md): Query the execution status and results of Veo3.1 video generation tasks.
+- [Veo3.1 API Quickstart](https://docs.kie.ai/veo3-api/quickstart.md): Get started with Veo3.1 API in 5 minutes
+
+
+## Optional
+
+- [Home](https://kie.ai/)
+- [Old Docs](https://old-docs.kie.ai/)
