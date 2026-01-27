@@ -13,6 +13,10 @@ effort: 5h
 
 ## Overview
 
+**Priority**: P0 (Critical)
+**Status**: completed
+**Effort**: 5h
+
 Implement authentication with Supabase including email/password, social logins (Google, Apple), and auth state management with go_router integration.
 
 ## Key Insights
@@ -85,7 +89,7 @@ lib/features/auth/
 
 ## Related Code Files
 
-### Create
+### Files to Create
 - `lib/features/auth/data/models/user_model.dart`
 - `lib/features/auth/data/repositories/auth_repository.dart`
 - `lib/features/auth/domain/auth_state.dart`
@@ -94,6 +98,13 @@ lib/features/auth/
 - `lib/features/auth/presentation/pages/register_page.dart`
 - `lib/features/auth/presentation/pages/forgot_password_page.dart`
 - `lib/features/auth/presentation/widgets/social_login_buttons.dart`
+
+### Files to Modify
+- `lib/core/router/app_router.dart` - Add auth redirect logic
+- Database: Supabase `profiles` table with RLS policies
+
+### Files to Delete
+- None
 
 ## Implementation Steps
 
@@ -634,19 +645,21 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
 ## Success Criteria
 
-- Email sign up/in works
-- Google/Apple OAuth works
-- Router redirects correctly on auth changes
-- Session persists across app restarts
-- Sign out clears session and redirects to login
+- [ ] `flutter analyze` reports 0 errors
+- [ ] Email sign up/in works
+- [ ] Google/Apple OAuth works
+- [ ] Router redirects correctly on auth changes
+- [ ] Session persists across app restarts
+- [ ] Sign out clears session and redirects to login
 
 ## Risk Assessment
 
-| Risk | Mitigation |
-|------|------------|
-| OAuth redirect not working | Test deep links on each platform |
-| Session not persisting | Verify supabase_flutter storage |
-| Race conditions in auth state | Use proper async/await |
+| Risk | Likelihood | Impact | Mitigation |
+|------|------------|--------|------------|
+| OAuth redirect not working | Medium | High | Test deep links on each platform (iOS, Android, Web) |
+| Session not persisting | Low | High | Verify supabase_flutter automatic storage handling |
+| Race conditions in auth state | Medium | Medium | Use proper async/await and state transitions |
+| Profile creation fails silently | Medium | High | Add error handling and retry logic for profile creation |
 
 ## Security Considerations
 

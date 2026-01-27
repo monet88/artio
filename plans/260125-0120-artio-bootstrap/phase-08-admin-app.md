@@ -6,9 +6,27 @@ effort: 3h
 
 # Phase 8: Admin App
 
+## Context Links
+
+- [Flutter Web Deployment](https://docs.flutter.dev/deployment/web)
+- [Supabase RLS Policies](https://supabase.com/docs/guides/auth/row-level-security)
+- [ReorderableListView](https://api.flutter.dev/flutter/material/ReorderableListView-class.html)
+
 ## Overview
 
+**Priority**: P2 (Medium)
+**Status**: pending
+**Effort**: 3h
+
 Separate Flutter web app for non-technical team members to manage templates without code changes.
+
+## Key Insights
+
+1. Separate Flutter project required - admin app should not bundle with main user app
+2. Admin role enforcement via Supabase RLS - database-level security, not just UI
+3. Card-based UI better than tables for template management (more visual)
+4. ReorderableListView for drag-and-drop template ordering
+5. JSON editor for input fields requires validation before save
 
 ## Requirements
 
@@ -65,6 +83,30 @@ USING (
   )
 );
 ```
+
+## Related Code Files
+
+### Files to Create
+- `admin/lib/main.dart`
+- `admin/lib/core/router/app_router.dart`
+- `admin/lib/core/theme/theme.dart`
+- `admin/lib/features/auth/domain/admin_auth_notifier.dart`
+- `admin/lib/features/auth/presentation/pages/login_page.dart`
+- `admin/lib/features/templates/presentation/pages/templates_page.dart`
+- `admin/lib/features/templates/presentation/pages/template_editor_page.dart`
+- `admin/lib/features/analytics/presentation/pages/analytics_page.dart`
+- `admin/pubspec.yaml`
+- `admin/web/index.html`
+
+### Files to Modify
+- `supabase/migrations/` - Add admin role to profiles table
+- `supabase/migrations/` - Add admin RLS policies for templates table
+
+### Files to Delete
+- None
+
+### Database Schema
+See "Supabase RLS" section in Architecture above.
 
 ## Implementation Steps
 
@@ -534,19 +576,36 @@ class AdminAuthNotifier extends _$AdminAuthNotifier implements Listenable {
 
 ## Success Criteria
 
-- Only admin users can access
-- Templates CRUD works
-- Reordering updates order column
-- Input fields JSON validates
-- Changes reflect in main app
+- [ ] Only admin users can access
+- [ ] Templates CRUD works
+- [ ] Reordering updates order column
+- [ ] Input fields JSON validates
+- [ ] Changes reflect in main app
+- [ ] Admin app deploys separately from main app
 
-## Deployment
+## Risk Assessment
 
-Admin app should be deployed to a separate URL (e.g., admin.artio.app) with its own Firebase hosting or similar.
+| Risk | Likelihood | Impact | Mitigation |
+|------|------------|--------|------------|
+| Non-admin users bypass RLS | Low | High | Database-level RLS policies, server-side validation |
+| Invalid JSON breaks templates | Medium | Medium | Client-side JSON validation before save |
+| Accidental template deletion | Medium | High | Confirmation dialog before delete |
+| Admin credentials compromised | Low | High | Strong password requirements, MFA for admin accounts |
+| Template order conflicts | Low | Low | Sequential update, optimistic UI with rollback |
+
+## Security Considerations
+
+- Admin role enforced at database level via Supabase RLS
+- Admin login requires email/password (no social auth for admin accounts)
+- All template mutations go through RLS policies
+- No direct database access from admin UI
+- Audit log for template changes (future enhancement)
 
 ## Next Steps
 
-After completing all phases:
+**Deployment**: Admin app should be deployed to a separate URL (e.g., admin.artio.app) with Cloudflare Pages, Vercel, or Netlify.
+
+After completing Phase 8:
 1. End-to-end testing
 2. Performance optimization
 3. Error monitoring setup

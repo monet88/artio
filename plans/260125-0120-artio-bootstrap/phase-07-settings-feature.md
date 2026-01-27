@@ -13,7 +13,18 @@ effort: 3h
 
 ## Overview
 
+**Priority**: P2 (Medium)
+**Status**: pending
+**Effort**: 3h
+
 User settings including theme mode, language, notification preferences, account management, and app info.
+
+## Key Insights
+
+1. Settings persisted locally with `shared_preferences` - no backend storage needed
+2. Theme mode changes require app-wide rebuild via `ThemeMode` state management
+3. Account deletion requires email confirmation to prevent accidental data loss
+4. Language switching requires MaterialApp rebuild with new `locale` parameter
 
 ## Requirements
 
@@ -58,12 +69,23 @@ lib/features/settings/
 
 ## Related Code Files
 
-### Create
+### Files to Create
 - `lib/features/settings/data/repositories/settings_repository.dart`
 - `lib/features/settings/domain/settings_notifier.dart`
 - `lib/features/settings/presentation/pages/settings_page.dart`
 - `lib/features/settings/presentation/pages/account_settings_page.dart`
 - `lib/features/settings/presentation/widgets/settings_tile.dart`
+
+### Files to Modify
+- `lib/main.dart` - Apply theme mode from settings
+- `lib/core/router/app_router.dart` - Add settings routes
+- `pubspec.yaml` - Add dependencies (shared_preferences, package_info_plus, url_launcher)
+
+### Files to Delete
+- None
+
+### Database Schema
+N/A - Settings stored locally with SharedPreferences
 
 ## Implementation Steps
 
@@ -586,10 +608,28 @@ class SettingsTile extends StatelessWidget {
 
 ## Success Criteria
 
-- Theme mode changes immediately and persists
-- Sign out clears session and redirects
-- Account settings dialogs work
-- About dialog shows correct version
+- [ ] Theme mode changes immediately and persists
+- [ ] Sign out clears session and redirects
+- [ ] Account settings dialogs work
+- [ ] About dialog shows correct version
+- [ ] URL launcher opens external links (Terms, Privacy)
+
+## Risk Assessment
+
+| Risk | Likelihood | Impact | Mitigation |
+|------|------------|--------|------------|
+| SharedPreferences data loss | Low | Low | Settings have sensible defaults |
+| Theme mode sync delay | Medium | Low | Immediate UI update via state management |
+| Account deletion without confirmation | Low | High | Require email confirmation dialog |
+| Password change without verification | Medium | Medium | Supabase auth handles verification |
+
+## Security Considerations
+
+- Password changes require Supabase auth validation
+- Email updates send verification link to new address
+- Account deletion should cascade delete all user data (handled by Supabase RLS ON DELETE CASCADE)
+- No sensitive data stored in SharedPreferences (only theme/locale preferences)
+- Sign out clears all local session data
 
 ## Next Steps
 

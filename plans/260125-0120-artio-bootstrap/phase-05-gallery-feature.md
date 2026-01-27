@@ -13,7 +13,19 @@ effort: 4h
 
 ## Overview
 
+**Priority**: P1 (High)
+**Status**: pending
+**Effort**: 4h
+
 Display user's generated images in a gallery with options to view, download, share, and delete.
+
+## Key Insights
+
+- **Pagination is critical** for performance with large galleries (20 items per page)
+- **cached_network_image** reduces bandwidth and improves scroll performance
+- **Pull-to-refresh** provides intuitive update mechanism for new generations
+- **Storage retention** differs by tier: Free (30 days), Paid (1 year)
+- **Multi-select mode** enables batch operations for better UX
 
 ## Requirements
 
@@ -72,7 +84,7 @@ lib/features/gallery/
 
 ## Related Code Files
 
-### Create
+### Files to Create
 - `lib/features/gallery/data/models/gallery_item_model.dart`
 - `lib/features/gallery/data/repositories/gallery_repository.dart`
 - `lib/features/gallery/domain/gallery_notifier.dart`
@@ -80,6 +92,12 @@ lib/features/gallery/
 - `lib/features/gallery/presentation/pages/image_viewer_page.dart`
 - `lib/features/gallery/presentation/widgets/gallery_grid.dart`
 - `lib/features/gallery/presentation/widgets/gallery_item.dart`
+
+### Files to Modify
+- `lib/core/router/app_router.dart` - Add gallery routes
+
+### Files to Delete
+- None
 
 ## Implementation Steps
 
@@ -600,20 +618,30 @@ class GalleryGrid extends StatelessWidget {
 
 ## Success Criteria
 
-- Gallery loads user's images
-- Infinite scroll works
-- Pull-to-refresh works
-- Download saves to device
-- Share opens system share sheet
-- Delete removes from Storage and DB
+- [ ] `flutter analyze` reports 0 errors
+- [ ] Gallery loads user's images
+- [ ] Infinite scroll works
+- [ ] Pull-to-refresh works
+- [ ] Download saves to device
+- [ ] Share opens system share sheet
+- [ ] Delete removes from Storage and DB
 
 ## Risk Assessment
 
-| Risk | Mitigation |
-|------|------------|
-| Large gallery slow | Pagination + image caching |
-| Download fails silently | Show progress and error messages |
+| Risk | Likelihood | Impact | Mitigation |
+|------|------------|--------|------------|
+| Large gallery slow to load | High | High | Implement pagination (20 items) + image caching with cached_network_image |
+| Download fails silently | Medium | Medium | Show progress indicator and detailed error messages |
+| Storage deletion fails but DB succeeds | Low | High | Implement transaction-like cleanup with error recovery |
+| Image cache grows too large | Medium | Medium | Configure cache size limits and eviction policies |
 
 ## Next Steps
 
 → Phase 6: Subscription & Credits
+
+## Security Considerations
+
+- **RLS policies** ensure users can only access their own gallery items
+- **Download permissions** must be requested on Android 10+ (scoped storage)
+- **Storage URLs** are signed by Supabase with time-limited access
+- **Deletion cascade** ensures orphaned files don't remain in storage

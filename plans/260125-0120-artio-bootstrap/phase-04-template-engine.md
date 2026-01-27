@@ -14,19 +14,13 @@ effort: 8h
 
 ## Overview
 
+**Priority**: P1 (High)
+**Status**: completed
+**Effort**: 8h
+
 Build generation features using **KIE API** as the unified gateway.
 1. **Template Engine** (Home tab) - Image-to-image with preset templates (Gemini/Nano)
 2. **Text-to-Image** (Create tab) - Custom prompt generation (Imagen 4)
-
-## AI Models (via KIE)
-
-| Tier | Display Name | KIE Model ID | Use Case |
-|------|--------------|--------------|----------|
-| **Free** | Nano Edit | `google/nano-banana-edit` | Fast image editing/templates |
-| **Paid** | Nano Pro | `google/pro-image-to-image` | High quality image-to-image |
-| **Free** | Imagen Fast | `google/imagen4-fast` | Fast text-to-image generation |
-| **Paid** | Imagen 4 | `google/imagen4` | Standard text-to-image quality |
-| **Pro** | Imagen Ultra | `google/imagen4-ultra` | Highest quality generation |
 
 ## Key Insights
 
@@ -68,6 +62,16 @@ Build generation features using **KIE API** as the unified gateway.
 - Handle offline gracefully
 
 ## Architecture
+
+### AI Models (via KIE)
+
+| Tier | Display Name | KIE Model ID | Use Case |
+|------|--------------|--------------|----------|
+| **Free** | Nano Edit | `google/nano-banana-edit` | Fast image editing/templates |
+| **Paid** | Nano Pro | `google/pro-image-to-image` | High quality image-to-image |
+| **Free** | Imagen Fast | `google/imagen4-fast` | Fast text-to-image generation |
+| **Paid** | Imagen 4 | `google/imagen4` | Standard text-to-image quality |
+| **Pro** | Imagen Ultra | `google/imagen4-ultra` | Highest quality generation |
 
 ### Template Structure
 ```
@@ -162,7 +166,7 @@ lib/features/create/                    # Text-to-image (Create tab)
 
 ## Related Code Files
 
-### Create
+### Files to Create
 - `lib/features/template_engine/data/models/template_model.dart`
 - `lib/features/template_engine/data/models/generation_job_model.dart`
 - `lib/features/template_engine/data/models/input_field_model.dart`
@@ -178,9 +182,72 @@ lib/features/create/                    # Text-to-image (Create tab)
 - `lib/features/template_engine/presentation/widgets/generation_progress.dart`
 - `supabase/functions/generate-image/index.ts` (Edge Function)
 
-### Supabase Tables
-- `templates` - Template definitions
-- `generation_jobs` - Job tracking
+### Files to Modify
+- Database: Create `templates` and `generation_jobs` tables with RLS
+
+### Files to Delete
+- None
+
+### Database Schema
+
+**Templates table:**
+```sql
+CREATE TABLE templates (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT NOT NULL,
+  description TEXT,
+  thumbnail_url TEXT,
+  category TEXT NOT NULL,
+  prompt_template TEXT NOT NULL,
+  input_fields JSONB NOT NULL DEFAULT '[]',
+  default_aspect_ratio TEXT DEFAULT '1:1',
+  is_premium BOOLEAN DEFAULT false,
+  is_active BOOLEAN DEFAULT true,
+  "order" INTEGER DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+```
+
+**Generation jobs table:**
+```sql
+CREATE TABLE generation_jobs (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  template_id UUID REFERENCES templates(id),
+  prompt TEXT NOT NULL,
+  aspect_ratio TEXT DEFAULT '1:1',
+  image_count INTEGER DEFAULT 1,
+  status TEXT NOT NULL DEFAULT 'pending',
+  result_urls TEXT[],
+  error_message TEXT,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  completed_at TIMESTAMPTZ
+);
+```
+
+**RLS policies:**
+```sql
+ALTER TABLE templates ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Templates readable by all" ON templates FOR SELECT USING (true);
+
+ALTER TABLE generation_jobs ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users can view own jobs" ON generation_jobs FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "Users can insert own jobs" ON generation_jobs FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+-- Realtime for jobs
+ALTER PUBLICATION supabase_realtime ADD TABLE generation_jobs;
+```
+
+**Credit deduction function:**
+```sql
+CREATE OR REPLACE FUNCTION deduct_credits(user_id UUID, amount INTEGER)
+RETURNS void AS $$
+BEGIN
+  UPDATE profiles SET credits = credits - amount WHERE id = user_id;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+```
 
 ## Implementation Steps
 
@@ -751,61 +818,6 @@ class _TemplateDetailPageState extends ConsumerState<TemplateDetailPage> {
 }
 ```
 
-## Supabase Schema
-
-```sql
--- Templates table
-CREATE TABLE templates (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  name TEXT NOT NULL,
-  description TEXT,
-  thumbnail_url TEXT,
-  category TEXT NOT NULL,
-  prompt_template TEXT NOT NULL,
-  input_fields JSONB NOT NULL DEFAULT '[]',
-  default_aspect_ratio TEXT DEFAULT '1:1',
-  is_premium BOOLEAN DEFAULT false,
-  is_active BOOLEAN DEFAULT true,
-  "order" INTEGER DEFAULT 0,
-  created_at TIMESTAMPTZ DEFAULT now(),
-  updated_at TIMESTAMPTZ DEFAULT now()
-);
-
--- Generation jobs table
-CREATE TABLE generation_jobs (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
-  template_id UUID REFERENCES templates(id),
-  prompt TEXT NOT NULL,
-  aspect_ratio TEXT DEFAULT '1:1',
-  image_count INTEGER DEFAULT 1,
-  status TEXT NOT NULL DEFAULT 'pending',
-  result_urls TEXT[],
-  error_message TEXT,
-  created_at TIMESTAMPTZ DEFAULT now(),
-  completed_at TIMESTAMPTZ
-);
-
--- RLS policies
-ALTER TABLE templates ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Templates readable by all" ON templates FOR SELECT USING (true);
-
-ALTER TABLE generation_jobs ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Users can view own jobs" ON generation_jobs FOR SELECT USING (auth.uid() = user_id);
-CREATE POLICY "Users can insert own jobs" ON generation_jobs FOR INSERT WITH CHECK (auth.uid() = user_id);
-
--- Realtime for jobs
-ALTER PUBLICATION supabase_realtime ADD TABLE generation_jobs;
-
--- Credit deduction function
-CREATE OR REPLACE FUNCTION deduct_credits(user_id UUID, amount INTEGER)
-RETURNS void AS $$
-BEGIN
-  UPDATE profiles SET credits = credits - amount WHERE id = user_id;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
-```
-
 ## Todo List
 
 - [x] Create Supabase tables (templates, generation_jobs)
@@ -833,20 +845,21 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 ## Success Criteria
 
-- Templates load from Supabase
-- Generation job starts and updates in real-time
-- Images saved to Storage and URLs returned
-- Credits deducted (non-premium users)
-- Error states handled gracefully
+- [ ] `flutter analyze` reports 0 errors
+- [ ] Templates load from Supabase
+- [ ] Generation job starts and updates in real-time
+- [ ] Images saved to Storage and URLs returned
+- [ ] Credits deducted (non-premium users)
+- [ ] Error states handled gracefully
 
 ## Risk Assessment
 
-| Risk | Mitigation |
-|------|------------|
-| Imagen API rate limits | Queue jobs, implement backoff |
-| Large images timeout | Use background tasks |
-| Storage quota exceeded | Implement cleanup policy |
-| Job stuck in generating | Add timeout + cleanup cron |
+| Risk | Likelihood | Impact | Mitigation |
+|------|------------|--------|------------|
+| KIE API rate limits hit | High | High | Implement queue system with exponential backoff |
+| Large images timeout | Medium | High | Use Supabase background tasks with waitUntil() |
+| Storage quota exceeded | Medium | High | Implement cleanup policy (30 days for free, 1 year paid) |
+| Job stuck in generating status | Medium | Medium | Add timeout cron job + cleanup mechanism |
 
 ## Security Considerations
 

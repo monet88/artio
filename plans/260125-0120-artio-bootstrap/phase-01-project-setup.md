@@ -14,6 +14,10 @@ effort: 3h
 
 ## Overview
 
+**Priority**: P1 (High)
+**Status**: pending
+**Effort**: 3h
+
 Initialize Flutter project with all required dependencies, code generation setup, and folder structure.
 
 ## Key Insights
@@ -89,12 +93,18 @@ lib/
 
 ## Related Code Files
 
-### Create
+### Files to Create
 - `lib/main.dart` - Entry point with ProviderScope
 - `lib/core/constants/app_constants.dart` - App-wide constants
 - `lib/core/constants/env_constants.dart` - Environment variables
 - `analysis_options.yaml` - Lint rules
 - `build.yaml` - Build runner config
+
+### Files to Modify
+N/A - New project setup.
+
+### Files to Delete
+N/A - New project setup.
 
 ## Implementation Steps
 
@@ -250,18 +260,18 @@ lib/
 
 ## Success Criteria
 
-- `flutter pub get` succeeds
-- `dart run build_runner build` succeeds
-- App launches on all 3 platforms
-- Folder structure matches architecture
+- [ ] `flutter pub get` succeeds
+- [ ] `dart run build_runner build` succeeds
+- [ ] App launches on all 3 platforms
+- [ ] Folder structure matches architecture
 
 ## Risk Assessment
 
-| Risk | Mitigation |
-|------|------------|
-| Dependency conflicts | Pin exact versions |
-| Code gen failures | Check Dart/Flutter SDK compatibility |
-| Platform-specific issues | Test early on each platform |
+| Risk | Likelihood | Impact | Mitigation |
+|------|------------|--------|------------|
+| Dependency conflicts | Medium | Medium | Pin exact versions |
+| Code gen failures | Low | High | Check Dart/Flutter SDK compatibility |
+| Platform-specific issues | Medium | Medium | Test early on each platform |
 
 ## Security Considerations
 

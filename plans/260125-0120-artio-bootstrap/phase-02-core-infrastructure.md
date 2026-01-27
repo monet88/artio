@@ -14,6 +14,10 @@ effort: 6h
 
 ## Overview
 
+**Priority**: P0 (Critical)
+**Status**: completed
+**Effort**: 6h
+
 Set up routing with auth guards, theming with dark mode, exception handling, and Dio HTTP client.
 
 ## Key Insights
@@ -60,7 +64,7 @@ MaterialApp.theme / darkTheme
 
 ## Related Code Files
 
-### Create
+### Files to Create
 - `lib/core/router/app_router.dart` - GoRouter provider
 - `lib/core/router/app_routes.dart` - Route definitions
 - `lib/core/router/route_names.dart` - Route name constants
@@ -71,6 +75,12 @@ MaterialApp.theme / darkTheme
 - `lib/core/exceptions/exception_handler.dart` - Global handler
 - `lib/core/utils/dio_client.dart` - Configured Dio instance
 - `lib/core/utils/logger_service.dart` - Logging wrapper
+
+### Files to Modify
+- `lib/main.dart` - Update with router and theme
+
+### Files to Delete
+- None
 
 ## Implementation Steps
 
@@ -396,17 +406,20 @@ class ArtioApp extends ConsumerWidget {
 
 ## Success Criteria
 
-- Navigation works with redirect based on auth state
-- Theme switches between light/dark/system
-- Theme persists across app restarts
-- Dio client includes auth headers
+- [ ] `flutter analyze` reports 0 errors
+- [ ] Navigation works with redirect based on auth state
+- [ ] Theme switches between light/dark/system
+- [ ] Theme persists across app restarts
+- [ ] Dio client includes auth headers
 
 ## Risk Assessment
 
-| Risk | Mitigation |
-|------|------------|
-| Router not refreshing on auth change | Verify Listenable implementation |
-| Theme flickering on load | Load theme preference before MaterialApp |
+| Risk | Likelihood | Impact | Mitigation |
+|------|------------|--------|------------|
+| Router not refreshing on auth change | Medium | High | Verify Listenable implementation in AuthNotifier |
+| Theme flickering on load | Low | Medium | Load theme preference before MaterialApp renders |
+| Deep link handling conflicts | Low | Medium | Test OAuth redirects on all platforms |
+| Session token expiration race | Medium | High | Add token refresh logic in Dio interceptor |
 
 ## Security Considerations
 

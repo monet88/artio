@@ -15,6 +15,10 @@ effort: 8h
 
 ## Overview
 
+**Priority**: P1 (High)
+**Status**: pending
+**Effort**: 8h
+
 Implement hybrid monetization with subscription plans, credits system, rewarded ads (mobile), and a payment abstraction layer for platform-specific implementations.
 
 ## Key Insights
@@ -126,7 +130,7 @@ lib/features/subscription/
 
 ## Related Code Files
 
-### Create
+### Files to Create
 - `lib/features/subscription/data/models/subscription_model.dart`
 - `lib/features/subscription/data/models/product_model.dart`
 - `lib/features/subscription/data/services/payment_service.dart`
@@ -137,6 +141,57 @@ lib/features/subscription/
 - `lib/features/subscription/domain/credits_notifier.dart`
 - `lib/features/subscription/presentation/pages/subscription_page.dart`
 - `lib/features/subscription/presentation/widgets/rewarded_ad_button.dart`
+
+### Files to Modify
+- `lib/main.dart` - Initialize RevenueCat/AdMob SDK
+- `lib/core/router/app_router.dart` - Add subscription routes
+- `pubspec.yaml` - Add dependencies (purchases_flutter, google_mobile_ads, stripe_flutter)
+
+### Files to Delete
+- None
+
+### Database Schema
+```sql
+-- Subscriptions table (for web/Stripe)
+CREATE TABLE subscriptions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE UNIQUE,
+  tier TEXT NOT NULL DEFAULT 'free',
+  status TEXT NOT NULL DEFAULT 'none',
+  stripe_customer_id TEXT,
+  stripe_subscription_id TEXT,
+  stripe_price_id TEXT,
+  expires_at TIMESTAMPTZ,
+  cancel_at_period_end BOOLEAN DEFAULT false,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- RLS
+ALTER TABLE subscriptions ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users can view own subscription" ON subscriptions FOR SELECT USING (auth.uid() = user_id);
+
+-- Profiles table update (add credits column)
+ALTER TABLE profiles ADD COLUMN credits INTEGER DEFAULT 0;
+
+-- Credit functions
+CREATE OR REPLACE FUNCTION add_credits(user_id UUID, amount INTEGER)
+RETURNS void AS $$
+BEGIN
+  UPDATE profiles SET credits = credits + amount WHERE id = user_id;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+CREATE OR REPLACE FUNCTION deduct_credits(user_id UUID, amount INTEGER)
+RETURNS void AS $$
+BEGIN
+  UPDATE profiles SET credits = GREATEST(0, credits - amount) WHERE id = user_id;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Realtime
+ALTER PUBLICATION supabase_realtime ADD TABLE subscriptions;
+```
 
 ## Implementation Steps
 
@@ -724,47 +779,6 @@ class SubscriptionPage extends ConsumerWidget {
 }
 ```
 
-## Supabase Schema
-
-```sql
--- Subscriptions table (for web/Stripe)
-CREATE TABLE subscriptions (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE UNIQUE,
-  tier TEXT NOT NULL DEFAULT 'free',
-  status TEXT NOT NULL DEFAULT 'none',
-  stripe_customer_id TEXT,
-  stripe_subscription_id TEXT,
-  stripe_price_id TEXT,
-  expires_at TIMESTAMPTZ,
-  cancel_at_period_end BOOLEAN DEFAULT false,
-  created_at TIMESTAMPTZ DEFAULT now(),
-  updated_at TIMESTAMPTZ DEFAULT now()
-);
-
--- RLS
-ALTER TABLE subscriptions ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Users can view own subscription" ON subscriptions FOR SELECT USING (auth.uid() = user_id);
-
--- Credit functions
-CREATE OR REPLACE FUNCTION add_credits(user_id UUID, amount INTEGER)
-RETURNS void AS $$
-BEGIN
-  UPDATE profiles SET credits = credits + amount WHERE id = user_id;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
-
-CREATE OR REPLACE FUNCTION deduct_credits(user_id UUID, amount INTEGER)
-RETURNS void AS $$
-BEGIN
-  UPDATE profiles SET credits = GREATEST(0, credits - amount) WHERE id = user_id;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
-
--- Realtime
-ALTER PUBLICATION supabase_realtime ADD TABLE subscriptions;
-```
-
 ## Todo List
 
 - [ ] Create subscription_model.dart
@@ -791,20 +805,21 @@ ALTER PUBLICATION supabase_realtime ADD TABLE subscriptions;
 
 ## Success Criteria
 
-- Free users see credits balance
-- Rewarded ads work on mobile
-- Subscription purchase completes
-- Pro users have unlimited access
-- Credits deducted on generation (free users)
-- Subscription status syncs in real-time
+- [ ] Free users see credits balance
+- [ ] Rewarded ads work on mobile
+- [ ] Subscription purchase completes
+- [ ] Pro users have unlimited access
+- [ ] Credits deducted on generation (free users)
+- [ ] Subscription status syncs in real-time
 
 ## Risk Assessment
 
-| Risk | Mitigation |
-|------|------------|
-| RevenueCat web beta limitations | Use Stripe directly for web |
-| Ad revenue low | Focus on subscription conversion |
-| Payment failures | Graceful error handling + retry |
+| Risk | Likelihood | Impact | Mitigation |
+|------|------------|--------|------------|
+| RevenueCat web beta limitations | High | Medium | Use Stripe directly for web |
+| Ad revenue low | Medium | Low | Focus on subscription conversion |
+| Payment failures | Medium | High | Graceful error handling + retry |
+| Receipt validation bypass | Low | High | Server-side validation via RevenueCat/Stripe webhooks |
 
 ## Security Considerations
 
