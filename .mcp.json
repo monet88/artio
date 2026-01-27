@@ -3,11 +3,10 @@
     "dart": {
       "command": "dart",
       "args": [
-        "mcp-server"
+        "mcp-server",
+        "--force-roots-fallback"
       ],
-      "allowedDirectories": [
-        "F:\\CodeBase\\flutter-app\\aiart"
-      ]
+      "env": {}
     }
   }
 }

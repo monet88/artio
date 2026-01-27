@@ -4,11 +4,12 @@ status: completed
 effort: 8h
 ---
 
-# Phase 4: Generation Features (KIE Integration)
+# Phase 4: Generation Features (Multi-Provider Integration)
 
 ## Context Links
 
-- [KIE API Docs](https://docs.kie.ai/index.md)
+- [Kie API Docs](https://docs.kie.ai/index.md)
+- [Gemini API Docs](https://ai.google.dev/gemini-api/docs)
 - [Supabase Edge Functions](https://supabase.com/docs/guides/functions)
 - [Supabase Background Tasks](https://supabase.com/docs/guides/functions/background-tasks)
 
@@ -18,15 +19,31 @@ effort: 8h
 **Status**: completed
 **Effort**: 8h
 
-Build generation features using **KIE API** as the unified gateway.
-1. **Template Engine** (Home tab) - Image-to-image with preset templates (Gemini/Nano)
-2. **Text-to-Image** (Create tab) - Custom prompt generation (Imagen 4)
+Build generation features using **dual-provider strategy**:
+- **Kie** (main): Google Imagen 4, Nano Banana via unified API
+- **Gemini** (fallback): Direct Gemini API when Kie unavailable
+
+1. **Template Engine** (Home tab) - Image-to-image with preset templates
+2. **Text-to-Image** (Create tab) - Custom prompt generation
 
 ## Key Insights
 
-- **Single API Key**: Use `KIE_API_KEY` for all models.
-- **Unified Payload**: All requests go to `https://api.kie.ai/api/v1/jobs/createTask`.
-- **Async Workflow**: KIE returns a `taskId`. We must poll `Get Task Details` or use `callBackUrl`.
+### Provider Strategy
+- **Primary**: Kie API (`https://api.kie.ai/api/v1/jobs/createTask`)
+  - Single `KIE_API_KEY` for all models
+  - Unified payload format
+  - Async workflow with taskId polling
+- **Fallback**: Gemini API (`https://generativelanguage.googleapis.com/v1beta/models/`)
+  - `GEMINI_API_KEY` for direct access
+  - Used when Kie returns 503/rate limit/timeout
+  - Synchronous response
+
+### Edge Function Flow
+1. Check credits/subscription
+2. Try Kie API first
+3. On failure → retry with Gemini API
+4. Store `provider_used` in `generation_jobs`
+5. Return taskId/result
 - **Edge Function**:
   - Handles credit check.
   - Calls KIE API.
@@ -63,15 +80,22 @@ Build generation features using **KIE API** as the unified gateway.
 
 ## Architecture
 
-### AI Models (via KIE)
+### AI Models (Dual Provider)
 
-| Tier | Display Name | KIE Model ID | Use Case |
-|------|--------------|--------------|----------|
+**Via Kie (Primary)**:
+| Tier | Display Name | Model ID | Use Case |
+|------|--------------|----------|----------|
 | **Free** | Nano Edit | `google/nano-banana-edit` | Fast image editing/templates |
 | **Paid** | Nano Pro | `google/pro-image-to-image` | High quality image-to-image |
 | **Free** | Imagen Fast | `google/imagen4-fast` | Fast text-to-image generation |
 | **Paid** | Imagen 4 | `google/imagen4` | Standard text-to-image quality |
 | **Pro** | Imagen Ultra | `google/imagen4-ultra` | Highest quality generation |
+
+**Via Gemini (Fallback)**:
+| Tier | Display Name | Model ID | Use Case |
+|------|--------------|----------|----------|
+| **Free** | Imagen 2 | `imagen-3.0-generate-001` | Fast text-to-image fallback |
+| **Paid** | Imagen 3 | `imagen-3.0-fast-generate-001` | Standard quality fallback |
 
 ### Template Structure
 ```
@@ -219,6 +243,8 @@ CREATE TABLE generation_jobs (
   aspect_ratio TEXT DEFAULT '1:1',
   image_count INTEGER DEFAULT 1,
   status TEXT NOT NULL DEFAULT 'pending',
+  provider_used TEXT, -- 'kie' or 'gemini'
+  provider_task_id TEXT, -- taskId from Kie or request ID from Gemini
   result_urls TEXT[],
   error_message TEXT,
   created_at TIMESTAMPTZ DEFAULT now(),
@@ -572,6 +598,7 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 const KIE_API_KEY = Deno.env.get('KIE_API_KEY')!
+const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY')!
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!
 const SUPABASE_SERVICE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
 
@@ -579,7 +606,7 @@ interface GenerateRequest {
   template_id?: string
   prompt: string
   mode: 'text-to-image' | 'image-to-image'
-  model_id?: string // e.g., 'google/imagen4-fast'
+  model_id?: string
   image_urls?: string[]
   aspect_ratio?: string
 }
@@ -599,14 +626,11 @@ serve(async (req) => {
   const body: GenerateRequest = await req.json()
   const { prompt, mode, image_urls = [], aspect_ratio = '1:1' } = body
 
-  // Determine model based on input or default
+  // Determine model
   let model = body.model_id
   if (!model) {
     model = mode === 'text-to-image' ? 'google/imagen4-fast' : 'google/nano-banana-edit'
   }
-
-  // Check credits (Simplified logic)
-  // ... (Credit check code here)
 
   // Create job record
   const { data: job, error: jobError } = await supabase
@@ -615,20 +639,19 @@ serve(async (req) => {
       user_id: user.id,
       prompt,
       status: 'pending',
-      model_used: model
     })
     .select()
     .single()
 
   if (jobError) return new Response(JSON.stringify({ error: jobError.message }), { status: 500 })
 
-  // Start background generation
-  EdgeRuntime.waitUntil(callKieApi(supabase, job.id, model!, prompt, image_urls, aspect_ratio))
+  // Start background generation with fallback
+  EdgeRuntime.waitUntil(generateWithFallback(supabase, job.id, model!, prompt, image_urls, aspect_ratio))
 
   return new Response(JSON.stringify({ job_id: job.id }), { status: 200 })
 })
 
-async function callKieApi(
+async function generateWithFallback(
   supabase: any,
   jobId: string,
   model: string,
@@ -639,53 +662,103 @@ async function callKieApi(
   try {
     await supabase.from('generation_jobs').update({ status: 'generating' }).eq('id', jobId)
 
-    const payload = {
-      model: model,
-      input: {
-        prompt: prompt,
-        image_urls: imageUrls.length > 0 ? imageUrls : undefined,
-        aspect_ratio: aspectRatio,
-        output_format: "png"
-      }
+    // Try Kie first
+    try {
+      await callKieApi(supabase, jobId, model, prompt, imageUrls, aspectRatio)
+    } catch (kieError) {
+      console.warn('Kie failed, trying Gemini fallback:', kieError)
+      // Fallback to Gemini
+      await callGeminiApi(supabase, jobId, prompt, aspectRatio)
     }
-
-    const response = await fetch('https://api.kie.ai/api/v1/jobs/createTask', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${KIE_API_KEY}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(payload)
-    })
-
-    const data = await response.json()
-    
-    if (data.code !== 200) {
-      throw new Error(`KIE API Error: ${data.msg}`)
-    }
-
-    const taskId = data.data.taskId
-
-    // Update job with provider task_id
-    await supabase
-      .from('generation_jobs')
-      .update({ 
-        provider_task_id: taskId,
-        status: 'processing' // Separate status for provider processing
-      })
-      .eq('id', jobId)
-
-    // Note: In a real implementation, you would trigger a separate polling function 
-    // or rely on a webhook callback to update the final status.
-    // For this example, we'll assume a separate process handles completion.
-
   } catch (error) {
-    console.error('Generation error:', error)
+    console.error('Both providers failed:', error)
     await supabase
       .from('generation_jobs')
       .update({ status: 'failed', error_message: error.message })
       .eq('id', jobId)
   }
+}
+
+async function callKieApi(
+  supabase: any,
+  jobId: string,
+  model: string,
+  prompt: string,
+  imageUrls: string[],
+  aspectRatio: string
+) {
+  const payload = {
+    model: model,
+    input: {
+      prompt: prompt,
+      image_urls: imageUrls.length > 0 ? imageUrls : undefined,
+      aspect_ratio: aspectRatio,
+      output_format: "png"
+    }
+  }
+
+  const response = await fetch('https://api.kie.ai/api/v1/jobs/createTask', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${KIE_API_KEY}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(payload)
+  })
+
+  const data = await response.json()
+
+  if (data.code !== 200) {
+    throw new Error(`Kie API Error: ${data.msg}`)
+  }
+
+  const taskId = data.data.taskId
+
+  await supabase
+    .from('generation_jobs')
+    .update({
+      provider_used: 'kie',
+      provider_task_id: taskId,
+      status: 'processing'
+    })
+    .eq('id', jobId)
+}
+
+async function callGeminiApi(
+  supabase: any,
+  jobId: string,
+  prompt: string,
+  aspectRatio: string
+) {
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict?key=${GEMINI_API_KEY}`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        instances: [{ prompt }],
+        parameters: { aspectRatio, sampleCount: 1 }
+      })
+    }
+  )
+
+  const data = await response.json()
+
+  if (!response.ok) {
+    throw new Error(`Gemini API Error: ${data.error?.message || 'Unknown error'}`)
+  }
+
+  const imageUrl = data.predictions?.[0]?.bytesBase64Encoded
+
+  await supabase
+    .from('generation_jobs')
+    .update({
+      provider_used: 'gemini',
+      status: 'completed',
+      result_urls: [imageUrl],
+      completed_at: new Date().toISOString()
+    })
+    .eq('id', jobId)
 }
 ```
 
@@ -831,8 +904,9 @@ class _TemplateDetailPageState extends ConsumerState<TemplateDetailPage> {
 - [x] Implement generation_repository.dart
 - [x] Implement template_provider.dart
 - [x] Implement generation_notifier.dart
-- [ ] Create Edge Function for image generation (KIE integration)
+- [ ] Create Edge Function for image generation (Dual-provider logic)
 - [ ] Set KIE_API_KEY in Edge Function secrets
+- [ ] Set GEMINI_API_KEY in Edge Function secrets
 - [x] Create template_card.dart widget
 - [x] Create template_grid.dart widget
 - [x] Update home_page.dart with template grid
@@ -856,18 +930,20 @@ class _TemplateDetailPageState extends ConsumerState<TemplateDetailPage> {
 
 | Risk | Likelihood | Impact | Mitigation |
 |------|------------|--------|------------|
-| KIE API rate limits hit | High | High | Implement queue system with exponential backoff |
+| Kie API rate limits hit | High | High | Gemini fallback + queue with exponential backoff |
+| Gemini fallback also fails | Low | High | Show user-friendly error, retry queue |
 | Large images timeout | Medium | High | Use Supabase background tasks with waitUntil() |
-| Storage quota exceeded | Medium | High | Implement cleanup policy (30 days for free, 1 year paid) |
-| Job stuck in generating status | Medium | Medium | Add timeout cron job + cleanup mechanism |
+| Storage quota exceeded | Medium | High | Implement cleanup policy (30 days free, 1 year paid) |
+| Job stuck in generating | Medium | Medium | Timeout cron job + cleanup mechanism |
+| Provider costs spike | Medium | High | Monitor usage, set daily limits per user tier |
 
 ## Security Considerations
 
-- KIE_API_KEY only in Edge Function secrets
- (not client)
+- KIE_API_KEY + GEMINI_API_KEY only in Edge Function secrets (not client)
 - RLS ensures users only see their jobs
 - Service role key for Edge Function only
 - Validate prompt content (optional moderation)
+- Rate limiting per user tier to prevent abuse
 
 ## Next Steps
 

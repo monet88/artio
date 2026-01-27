@@ -15,6 +15,8 @@ class GenerationJobModel with _$GenerationJobModel {
     required JobStatus status,
     String? aspectRatio,
     int? imageCount,
+    String? providerUsed, // 'kie' or 'gemini'
+    String? providerTaskId, // taskId from provider
     List<String>? resultUrls,
     String? errorMessage,
     DateTime? createdAt,

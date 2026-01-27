@@ -18,7 +18,7 @@
 - Supabase (auth, db, storage, edge functions, realtime)
 - go_router with auth guards
 - RevenueCat (mobile) + Stripe (web)
-- KIE API (Google Imagen 4, Nano Banana)
+- AI Providers: Kie (main), Gemini (fallback)
 
 ---
 
