@@ -1,8 +1,8 @@
 # Development Roadmap
 
 **Project**: Artio - AI Image Generation SaaS
-**Updated**: 2026-01-27
-**Status**: Phase 4.6 Complete (Architecture Hardening), Documentation Standardized
+**Updated**: 2026-01-27 21:24
+**Status**: Plan 1 Complete (Architecture Hardening) → Plan 2 Next
 
 ---
 
@@ -26,6 +26,13 @@
 
 ### ✓ Completed
 
+**Phase 1-3: Foundation** (14h)
+- Project setup with Flutter + dependencies
+- go_router with auth guards
+- Theme system (light/dark/system)
+- Supabase auth (email/password + OAuth)
+- Session persistence
+
 **Phase 4: Template Engine** (8h)
 - Template model with Freezed/JSON serialization
 - Generation job tracking with realtime updates
@@ -35,7 +42,7 @@
 - Generation progress tracking
 - Edge Function skeleton (KIE integration pending)
 
-**Phase 4.6: Architecture Hardening** (8.5h) - *2026-01-27*
+**Phase 4.6 (Plan 1): Architecture Hardening** (8.5h) - *2026-01-27*
 - 3-layer clean architecture (auth, template_engine features)
 - Repository DI with Supabase constructor injection
 - Error mapper for user-friendly messages (AppExceptionMapper)
@@ -44,42 +51,27 @@
 - Dead code removal (Dio, subscription placeholders)
 - Tech debt addressed: H1, M2, M3, M5, M6, M8, L3, L4
 - Grade: B+ → A- architecture
+- **Results**: 80 files changed, 5117+ insertions, 267 deletions
 
 **Documentation Standardization** (2h) - *2026-01-27*
 - Standardized 8 phase files to 12-section template format
 - Added Priority/Status/Effort blocks
 - Converted Success Criteria to checkbox format
 - Expanded Risk Assessment to 4-column tables
-- Merged domain-specific sections into standard structure
-- 100% content preservation with structural consistency
 
 ### 🔄 In Progress
 
-None - awaiting phase selection.
+None - awaiting Plan 2 execution.
 
 ### ⏸ Pending
 
-**Phase 1: Project Setup** (3h)
-- Flutter project initialization
-- Dependencies installation (riverpod, freezed, supabase, go_router)
-- Code generation setup
-- Feature-first folder structure
-- Git initialization
-
-**Phase 2: Core Infrastructure** (6h)
-- go_router setup with auth guards
-- Theme system (light/dark/system) with flex_color_scheme
-- Dio HTTP client with interceptors
-- SharedPreferences persistence
-- Error handling framework
-
-**Phase 3: Auth Feature** (5h)
-- Supabase auth integration
-- Email/password authentication
-- Google/Apple OAuth
-- User profile management
-- Session persistence
-- Auth state management with Riverpod
+**Plan 2: Credit, Premium & Rate Limit** (6h) - *NEXT*
+- Database schema for credits/limits
+- Edge Function enforcement
+- Client-side credit UI with realtime sync
+- Rate limiting & cooldown (5 daily for free)
+- Premium hybrid sync (RevenueCat + Supabase)
+- Input validation
 
 **Phase 5: Gallery Feature** (4h)
 - User gallery with pagination

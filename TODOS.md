@@ -1,7 +1,7 @@
 # TODOs - Execution Order
 
-**Last Updated**: 2026-01-27
-**Current**: Plan 0.5 Complete → Plan 1 Next
+**Last Updated**: 2026-01-27 21:24
+**Current**: Plan 1 Complete → Plan 2 Next
 
 ---
 
@@ -36,32 +36,37 @@
 
 ---
 
-### 3. 🔲 Plan 1: Architecture Hardening
+### 3. ✅ Plan 1: Architecture Hardening
 **Path**: `plans/260125-1516-phase46-architecture-hardening/`
-**Status**: Pending
-**Effort**: 10h
-**Priority**: P1 - Execute NEXT
+**Status**: Complete (2026-01-27)
+**Effort**: 8.5h (actual) / 10h (planned)
+**Priority**: P1
 
 **Phases**:
-- [ ] Phase 1: 3-Layer Architecture Restructure (4h)
+- [x] Phase 1: 3-Layer Architecture Restructure (4h)
   - Restructure `template_engine` + `auth` to `domain/data/presentation`
   - Create abstract repository interfaces
-- [ ] Phase 2: Repository Dependency Injection (1h)
+- [x] Phase 2: Repository Dependency Injection (1h)
   - Inject SupabaseClient via constructor
-- [ ] Phase 3: Error Message Mapper (1.5h)
+- [x] Phase 3: Error Message Mapper (1.5h)
   - Centralize error message mapping
-- [ ] Phase 4: Code Quality & Linting (1.5h)
+- [x] Phase 4: Code Quality & Linting (1.5h)
   - Enable `prefer_const_constructors`
-- [ ] Phase 5: Constants Extraction (1h)
+- [x] Phase 5: Constants Extraction (1h)
   - Extract hardcoded values
-- [ ] Phase 6: Dead Code & Cleanup (1h)
+- [x] Phase 6: Dead Code & Cleanup (1h)
   - Remove Dio, unused subscription code
 
 **Success Criteria**:
-- [ ] All features follow 3-layer structure
-- [ ] Repositories injectable via constructor
-- [ ] `flutter analyze` clean
-- [ ] All tests pass
+- [x] All features follow 3-layer structure
+- [x] Repositories injectable via constructor
+- [x] `flutter analyze` clean
+- [x] All tests pass
+
+**Results**:
+- 80 files changed, 5117 insertions(+), 267 deletions(-)
+- Grade: B+ → A- architecture
+- Tech debt resolved: H1, M2, M3, M5, M6, M8, L3, L4
 
 ---
 
@@ -69,8 +74,8 @@
 **Path**: `plans/260125-1517-credit-premium-rate-limit/`
 **Status**: Pending
 **Effort**: 6h
-**Priority**: P1
-**Depends on**: Plan 1 complete
+**Priority**: P1 - Execute NEXT
+**Depends on**: Plan 1 complete ✓
 
 **Phases**:
 - [ ] Phase 1: Database & Edge Function (1.5h)
@@ -136,9 +141,6 @@
 ## Quick Commands
 
 ```bash
-# Execute Plan 1
-/cook plans/260125-1516-phase46-architecture-hardening/
-
 # Execute Plan 2
 /cook plans/260125-1517-credit-premium-rate-limit/
 
@@ -154,12 +156,12 @@
 |------|--------|----------|------|
 | Plan 0 | Partial | 50% (Phase 1-4) | 22h / 40h |
 | Plan 0.5 | ✅ Complete | 100% | 2h / 2h |
-| Plan 1 | Pending | 0% | 0h / 10h |
+| Plan 1 | ✅ Complete | 100% | 8.5h / 10h |
 | Plan 2 | Pending | 0% | 0h / 6h |
 | Plan 0 (cont.) | Pending | 0% | 0h / 18h |
 | Plan 3 | Deferred | 0% | 0h / 4h |
 
-**Total Progress**: 24h / 80h (30%)
+**Total Progress**: 32.5h / 80h (41%)
 
 ---
 
