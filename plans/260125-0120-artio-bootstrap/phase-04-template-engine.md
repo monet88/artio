@@ -32,18 +32,26 @@ Build generation features using **dual-provider strategy**:
 - **Primary**: Kie API (`https://api.kie.ai/api/v1/jobs/createTask`)
   - Single `KIE_API_KEY` for all models
   - Unified payload format
-  - Async workflow with taskId polling
+  - **Async workflow**: Returns `taskId` → poll or webhook for result
+  - **Output**: Image URLs (hosted by Kie)
+
 - **Fallback**: Gemini API (`https://generativelanguage.googleapis.com/v1beta/models/`)
   - `GEMINI_API_KEY` for direct access
   - Used when Kie returns 503/rate limit/timeout
-  - Synchronous response
+  - **Sync workflow**: Immediate response with image data
+  - **Output**: Base64 encoded image → upload to Supabase Storage
 
 ### Edge Function Flow
 1. Check credits/subscription
 2. Try Kie API first
-3. On failure → retry with Gemini API
+   - If success → save `taskId`, set status `processing`
+   - Polling/webhook will update when complete
+3. On Kie failure → retry with Gemini API
+   - Decode base64 image
+   - Upload to Supabase Storage
+   - Save public URL, set status `completed`
 4. Store `provider_used` in `generation_jobs`
-5. Return taskId/result
+5. Return jobId to client
 - **Edge Function**:
   - Handles credit check.
   - Calls KIE API.
@@ -712,6 +720,7 @@ async function callKieApi(
     throw new Error(`Kie API Error: ${data.msg}`)
   }
 
+  // Kie returns taskId for async processing
   const taskId = data.data.taskId
 
   await supabase
@@ -719,9 +728,15 @@ async function callKieApi(
     .update({
       provider_used: 'kie',
       provider_task_id: taskId,
-      status: 'processing'
+      status: 'processing'  // Will be updated by polling/webhook
     })
     .eq('id', jobId)
+
+  // Note: Kie uses async workflow:
+  // 1. Poll: GET /api/v1/jobs/getTaskDetails?taskId={taskId}
+  // 2. Or: Set callBackUrl in payload for webhook
+  // 3. Result will have image URLs when status = 'succeeded'
+  // Implement separate polling Edge Function or webhook handler
 }
 
 async function callGeminiApi(
@@ -748,14 +763,39 @@ async function callGeminiApi(
     throw new Error(`Gemini API Error: ${data.error?.message || 'Unknown error'}`)
   }
 
-  const imageUrl = data.predictions?.[0]?.bytesBase64Encoded
+  // Gemini returns base64 encoded image
+  const base64Image = data.predictions?.[0]?.bytesBase64Encoded
+  if (!base64Image) {
+    throw new Error('No image data in Gemini response')
+  }
+
+  // Decode base64 to binary
+  const imageBuffer = Uint8Array.from(atob(base64Image), c => c.charCodeAt(0))
+
+  // Upload to Supabase Storage
+  const fileName = `${jobId}-${Date.now()}.png`
+  const { data: uploadData, error: uploadError } = await supabase.storage
+    .from('generated-images')
+    .upload(fileName, imageBuffer, {
+      contentType: 'image/png',
+      upsert: false
+    })
+
+  if (uploadError) {
+    throw new Error(`Storage upload failed: ${uploadError.message}`)
+  }
+
+  // Get public URL
+  const { data: { publicUrl } } = supabase.storage
+    .from('generated-images')
+    .getPublicUrl(fileName)
 
   await supabase
     .from('generation_jobs')
     .update({
       provider_used: 'gemini',
       status: 'completed',
-      result_urls: [imageUrl],
+      result_urls: [publicUrl],
       completed_at: new Date().toISOString()
     })
     .eq('id', jobId)
@@ -905,8 +945,10 @@ class _TemplateDetailPageState extends ConsumerState<TemplateDetailPage> {
 - [x] Implement template_provider.dart
 - [x] Implement generation_notifier.dart
 - [ ] Create Edge Function for image generation (Dual-provider logic)
+- [ ] Implement Kie polling/webhook handler (separate function)
 - [ ] Set KIE_API_KEY in Edge Function secrets
 - [ ] Set GEMINI_API_KEY in Edge Function secrets
+- [ ] Create Supabase Storage bucket: `generated-images` (public)
 - [x] Create template_card.dart widget
 - [x] Create template_grid.dart widget
 - [x] Update home_page.dart with template grid
