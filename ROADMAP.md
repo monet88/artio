@@ -1,8 +1,8 @@
 # Development Roadmap
 
 **Project**: Artio - AI Art Generation App
-**Last Updated**: 2026-01-25
-**Current Phase**: Plan 1 - Architecture Hardening
+**Last Updated**: 2026-01-27
+**Current Phase**: Plan 0.5 Complete → Plan 1 Next
 
 ---
 
@@ -11,6 +11,7 @@
 | # | Plan | Status | Effort | Priority |
 |---|------|--------|--------|----------|
 | 0 | [Artio Bootstrap](#plan-0-artio-bootstrap-foundation) | ✅ Phase 1-4 Done | 40h | P0 |
+| 0.5 | [Documentation Standardization](#plan-05-documentation-standardization) | ✅ Complete | 2h | P1 |
 | 1 | [Architecture Hardening](#plan-1-architecture-hardening) | 🔲 Pending | 10h | P1 |
 | 2 | [Credit, Premium & Rate Limit](#plan-2-credit-premium--rate-limit) | 🔲 Pending | 6h | P1 |
 | 3 | [TypedGoRoute Migration](#plan-3-typedgoroute-migration) | ⏸️ Deferred | 4h | P2 |
@@ -46,6 +47,53 @@ Bootstrap Flutter AI art generation app with core infrastructure.
 - Subscription depends on credit system (Plan 2)
 
 ---
+
+## Plan 0.5: Documentation Standardization
+
+**Path**: `plans/260127-1336-standardize-artio-bootstrap-phases/`
+**Status**: ✅ Complete
+**Effort**: 2h
+**Branch**: `master`
+**Completed**: 2026-01-27
+
+### Objective
+Standardize 8 phase files in Plan 0 to production-ready template format.
+
+### What Was Done
+- ✅ Added Priority/Status/Effort blocks to all Overview sections
+- ✅ Converted Success Criteria to checkbox format (8/8 files)
+- ✅ Expanded Risk Assessment to 4-column tables (Risk/Likelihood/Impact/Mitigation)
+- ✅ Standardized Related Code Files structure (Create/Modify/Delete subsections)
+- ✅ Merged domain-specific sections (AI Models → Architecture, Supabase Schema → Database subsection)
+- ✅ Achieved strict 12-section compliance (all 8 files)
+
+### Sections Template
+All phase files now follow this structure:
+1. Context Links
+2. Overview (with Priority/Status/Effort)
+3. Key Insights
+4. Requirements
+5. Architecture
+6. Related Code Files
+7. Implementation Steps
+8. Todo List
+9. Success Criteria (checkboxes)
+10. Risk Assessment (4 columns)
+11. Security Considerations
+12. Next Steps
+
+### Success Criteria
+- [x] All 8 phase files have 12 standard sections
+- [x] Section order matches reference template
+- [x] Success Criteria uses `[ ]` checkbox format
+- [x] Risk Assessment uses 4-column table format
+- [x] No existing content removed (100% preservation)
+- [x] Format consistent across all phases
+
+### Reports
+- `plans/reports/cook-260127-1406-standardize-artio-phases-final.md`
+
+
 
 ## Plan 1: Architecture Hardening
 
@@ -165,9 +213,12 @@ git status
 | Resource | Path |
 |----------|------|
 | Plan 0 | `plans/260125-0120-artio-bootstrap/` |
+| Plan 0.5 | `plans/260127-1336-standardize-artio-bootstrap-phases/` |
 | Plan 1 | `plans/260125-1516-phase46-architecture-hardening/` |
 | Plan 2 | `plans/260125-1517-credit-premium-rate-limit/` |
 | Tech Debt Audit | `plans/reports/flutter-expert-260125-1548-tech-debt-audit.md` |
+| Standardization Report | `plans/reports/cook-260127-1406-standardize-artio-phases-final.md` |
+| Development Roadmap (Detailed) | `docs/development-roadmap.md` |
 | This Roadmap | `ROADMAP.md` |
 
 ---
