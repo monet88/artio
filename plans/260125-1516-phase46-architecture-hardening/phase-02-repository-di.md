@@ -8,8 +8,8 @@
 ## Overview
 
 **Priority**: P2 (Medium)
-**Status**: pending
-**Effort**: 1 hour
+**Status**: completed
+**Effort**: 1 hour (actual: 45 min)
 **Depends on**: Phase 1 complete
 
 Inject `SupabaseClient` via constructor instead of accessing `Supabase.instance.client` directly. Enables testing and follows DI principles.
@@ -138,20 +138,20 @@ flutter test
 
 ## Todo List
 
-- [ ] Create `lib/core/providers/supabase_provider.dart`
-- [ ] Update TemplateRepository constructor and provider
-- [ ] Update GenerationRepository constructor and provider
-- [ ] Update AuthRepository constructor and provider
-- [ ] Run build_runner
-- [ ] Run flutter analyze
-- [ ] Run flutter test
+- [x] Create `lib/core/providers/supabase_provider.dart`
+- [x] Update TemplateRepository constructor and provider
+- [x] Update GenerationRepository constructor and provider
+- [x] Update AuthRepository constructor and provider
+- [x] Run build_runner
+- [x] Run flutter analyze
+- [ ] Run flutter test (blocked on Windows - test runner issues from Phase 1)
 
 ## Success Criteria
 
-- [ ] No repository directly accesses `Supabase.instance.client`
-- [ ] All repositories have `const` constructor with `SupabaseClient` param
-- [ ] Providers wire up `supabaseClientProvider` to repositories
-- [ ] All tests pass
+- [x] No repository directly accesses `Supabase.instance.client`
+- [x] All repositories have `const` constructor with `SupabaseClient` param
+- [x] Providers wire up `supabaseClientProvider` to repositories
+- [ ] All tests pass (blocked on Windows test environment)
 
 ## Risk Assessment
 

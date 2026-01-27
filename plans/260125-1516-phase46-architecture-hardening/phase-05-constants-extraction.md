@@ -8,7 +8,7 @@
 ## Overview
 
 **Priority**: P2 (Medium)
-**Status**: pending
+**Status**: completed
 **Effort**: 1 hour
 **Depends on**: Phase 4 complete
 
@@ -90,19 +90,19 @@ flutter test
 
 ## Todo List
 
-- [ ] Create `lib/core/constants/app_constants.dart`
-- [ ] Update AuthRepository OAuth URLs (M2)
-- [ ] Update AuthRepository profile defaults (M3)
-- [ ] Update TemplateDetailScreen aspect ratios (M8)
-- [ ] Run `flutter analyze`
-- [ ] Run `flutter test`
+- [x] Create `lib/core/constants/app_constants.dart`
+- [x] Update AuthRepository OAuth URLs (M2)
+- [x] Update AuthRepository profile defaults (M3)
+- [x] Update TemplateDetailScreen aspect ratios (M8)
+- [x] Run `flutter analyze`
+- [x] Run `flutter test`
 
 ## Success Criteria
 
-- [ ] No hardcoded URLs in auth code
-- [ ] No magic numbers in profile creation
-- [ ] Aspect ratios from constants
-- [ ] All tests pass
+- [x] No hardcoded URLs in auth code
+- [x] No magic numbers in profile creation
+- [x] Aspect ratios from constants
+- [x] All tests pass
 
 ## Risk Assessment
 

@@ -3,16 +3,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../features/auth/ui/view_model/auth_view_model.dart';
-import '../features/auth/ui/forgot_password_screen.dart';
-import '../features/auth/ui/login_screen.dart';
-import '../features/auth/ui/register_screen.dart';
-import '../features/auth/ui/splash_screen.dart';
+import '../features/auth/presentation/view_models/auth_view_model.dart';
+import '../features/auth/presentation/screens/forgot_password_screen.dart';
+import '../features/auth/presentation/screens/login_screen.dart';
+import '../features/auth/presentation/screens/register_screen.dart';
+import '../features/auth/presentation/screens/splash_screen.dart';
 import '../features/create/ui/create_screen.dart';
 import '../features/gallery/ui/gallery_screen.dart';
 import '../features/settings/ui/settings_screen.dart';
-import '../features/template_engine/ui/home_screen.dart';
-import '../features/template_engine/ui/template_detail_screen.dart';
+import '../features/template_engine/presentation/screens/home_screen.dart';
+import '../features/template_engine/presentation/screens/template_detail_screen.dart';
 import '../shared/widgets/error_page.dart';
 import '../shared/widgets/main_shell.dart';
 

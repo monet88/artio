@@ -27,9 +27,6 @@ dependencies:
   # Routing
   go_router: ^14.8.1
 
-  # HTTP
-  dio: ^5.7.0
-
   # Theme
   flex_color_scheme: ^8.2.0
 

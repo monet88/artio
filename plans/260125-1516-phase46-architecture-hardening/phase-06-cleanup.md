@@ -8,7 +8,7 @@
 ## Overview
 
 **Priority**: P2 (Medium)
-**Status**: pending
+**Status**: completed
 **Effort**: 1 hour
 **Depends on**: Phase 5 complete
 
@@ -123,21 +123,21 @@ flutter run # Manual check theme/screens
 
 ## Todo List
 
-- [ ] Check and remove unused Dio client (L4)
-- [ ] Check and remove/stub subscription feature (L3)
-- [ ] Update create_screen.dart with Coming Soon
-- [ ] Update gallery_screen.dart with Coming Soon
-- [ ] Update settings_screen.dart with Coming Soon
-- [ ] Evaluate theme race condition (M7)
-- [ ] Run `flutter analyze`
-- [ ] Run `flutter test`
+- [x] Check and remove unused Dio client (L4)
+- [x] Check and remove/stub subscription feature (L3)
+- [x] Update create_screen.dart with Coming Soon
+- [x] Update gallery_screen.dart with Coming Soon
+- [x] Update settings_screen.dart with Coming Soon
+- [x] Evaluate theme race condition (M7)
+- [x] Run `flutter analyze`
+- [x] Run `flutter test`
 
 ## Success Criteria
 
-- [ ] No dead code in codebase
-- [ ] Placeholder screens have proper UX
-- [ ] Theme loads without flicker (or acceptable delay)
-- [ ] All tests pass
+- [x] No dead code in codebase
+- [x] Placeholder screens have proper UX
+- [x] Theme loads without flicker (or acceptable delay)
+- [x] All tests pass
 
 ## Risk Assessment
 

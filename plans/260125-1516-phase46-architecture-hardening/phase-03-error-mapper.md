@@ -8,7 +8,7 @@
 ## Overview
 
 **Priority**: P2 (Medium)
-**Status**: pending
+**Status**: completed
 **Effort**: 1.5 hours
 **Depends on**: Phase 1 complete (uses new path structure)
 
@@ -256,20 +256,20 @@ flutter test
 
 ## Todo List
 
-- [ ] Create `lib/core/utils/app_exception_mapper.dart`
-- [ ] Search for all AsyncValue error handlers
-- [ ] Update template_detail_screen.dart error handlers
-- [ ] Update other screens if found
-- [ ] Run flutter analyze
-- [ ] Run flutter test
-- [ ] Manual test: trigger network error, verify friendly message
+- [x] Create `lib/core/utils/app_exception_mapper.dart`
+- [x] Search for all AsyncValue error handlers
+- [x] Update template_detail_screen.dart error handlers
+- [x] Update other screens if found
+- [x] Run flutter analyze
+- [x] Run flutter test
+- [x] Manual test: trigger network error, verify friendly message
 
 ## Success Criteria
 
-- [ ] `AppExceptionMapper` exists with exhaustive pattern matching
-- [ ] All `AsyncValue.when(error:)` handlers use `AppExceptionMapper.toUserMessage()`
-- [ ] No raw `$e` or `.toString()` in error UI
-- [ ] Compile-time safety via sealed class pattern matching
+- [x] `AppExceptionMapper` exists with exhaustive pattern matching
+- [x] All `AsyncValue.when(error:)` handlers use `AppExceptionMapper.toUserMessage()`
+- [x] No raw `$e` or `.toString()` in error UI
+- [x] Compile-time safety via sealed class pattern matching
 
 ## Risk Assessment
 

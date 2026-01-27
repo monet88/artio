@@ -2,7 +2,7 @@
 
 **Project**: Artio - AI Image Generation SaaS
 **Updated**: 2026-01-27
-**Status**: Phase 4 Complete, Documentation Standardized
+**Status**: Phase 4.6 Complete (Architecture Hardening), Documentation Standardized
 
 ---
 
@@ -34,6 +34,16 @@
 - Input field builder for dynamic template forms
 - Generation progress tracking
 - Edge Function skeleton (KIE integration pending)
+
+**Phase 4.6: Architecture Hardening** (8.5h) - *2026-01-27*
+- 3-layer clean architecture (auth, template_engine features)
+- Repository DI with Supabase constructor injection
+- Error mapper for user-friendly messages (AppExceptionMapper)
+- Code quality improvements (const linting enabled)
+- Constants extraction (OAuth URLs, defaults, aspect ratios)
+- Dead code removal (Dio, subscription placeholders)
+- Tech debt addressed: H1, M2, M3, M5, M6, M8, L3, L4
+- Grade: B+ → A- architecture
 
 **Documentation Standardization** (2h) - *2026-01-27*
 - Standardized 8 phase files to 12-section template format
@@ -103,11 +113,14 @@ None - awaiting phase selection.
 - Drag-to-reorder templates
 - Deployment to admin.artio.app
 
-**Phase 4.5: Architecture Hardening** (TBD)
-- 3-layer clean architecture refactor
+**Phase 4.5: Architecture Hardening** (8.5h) - *Completed 2026-01-27*
+- 3-layer clean architecture refactor (auth, template_engine)
 - Repository DI with abstract interfaces
 - Presentation/Domain/Data separation
 - Dependency rule enforcement
+- Error mapper implementation
+- Constants extraction
+- Dead code cleanup
 
 ---
 
@@ -162,15 +175,18 @@ None - awaiting phase selection.
 
 ---
 
-### M5: Hardening (Phase 4.5) - TBD
+### M5: Hardening (Phase 4.5/4.6) - 8.5h
 **Goal**: Clean architecture compliance
 **Deliverables**:
-- [ ] All features follow 3-layer structure
-- [ ] Abstract repository interfaces in domain layer
-- [ ] Zero direct data layer imports in presentation
-- [ ] flutter analyze reports 0 errors
+- [x] Auth and template_engine features follow 3-layer structure
+- [x] Abstract repository interfaces in domain layer
+- [x] Zero direct data layer imports in presentation
+- [x] flutter analyze reports 0 errors
+- [x] Error mapper for user-friendly messages
+- [x] Constants extracted to core/constants
 
-**Target**: Post-MVP (optional)
+**Target**: Post-Phase 4
+**Status**: ✓ Complete (2026-01-27)
 
 ---
 
@@ -183,12 +199,13 @@ None - awaiting phase selection.
 | **Core Setup** | 0% | Pending (Phase 1-2) |
 | **Authentication** | 0% | Pending (Phase 3) |
 | **Generation Engine** | 100% | ✓ Complete (Phase 4) |
+| **Architecture Quality** | 100% | ✓ Complete (Phase 4.6) |
 | **User Features** | 0% | Pending (Phase 5, 7) |
 | **Monetization** | 0% | Pending (Phase 6) |
 | **Admin Tools** | 0% | Pending (Phase 8) |
 | **Documentation** | 100% | ✓ Standardized (8 phase files) |
 
-**Total Project**: 12.5% (5h / 40h)
+**Total Project**: 20% (13.5h / 48.5h total estimated)
 
 ---
 
@@ -266,6 +283,7 @@ None - awaiting phase selection.
 |------|---------|---------|
 | 2026-01-25 | 0.1 | Bootstrap plan created (8 phases) |
 | 2026-01-27 | 0.2 | Phase 4 completed, docs standardized |
+| 2026-01-27 | 0.3 | Phase 4.6 completed (architecture hardening) |
 
 ---
 
