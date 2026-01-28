@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../auth/presentation/view_models/auth_view_model.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/utils/app_exception_mapper.dart';
 import '../../domain/entities/generation_job_model.dart';
@@ -31,10 +32,18 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
   }
 
   void _handleGenerate(TemplateModel template) {
+    final userId = ref.read(authViewModelProvider).maybeMap(
+          authenticated: (s) => s.user.id,
+          orElse: () => null,
+        );
+
+    if (userId == null) return;
+
     final prompt = _buildPrompt(template);
     ref.read(generationViewModelProvider.notifier).generate(
           templateId: template.id,
           prompt: prompt,
+          userId: userId,
           aspectRatio: _selectedAspectRatio,
         );
   }

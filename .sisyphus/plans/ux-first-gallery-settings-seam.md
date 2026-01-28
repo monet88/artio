@@ -1,11 +1,12 @@
 ---
 title: "UX-First Strategy: Gallery + Settings + Monetization Seam"
 description: "Complete user experience flow before monetization, with domain seam to prevent bolt-on architecture"
-status: pending
+status: complete
 priority: P1
 effort: 20h
 created: 2026-01-28
 updated: 2026-01-28
+progress: 100%
 oracle_consultation: ses_3ff70852bffeS0HEO7nulSK0d7
 strategy: ux-first-hybrid
 interview_complete: true
@@ -107,11 +108,11 @@ interview_complete: true
 
 | # | Phase | Effort | Priority | Status |
 |---|-------|--------|----------|--------|
-| 0 | [Edge Function Verification + Mirroring](#phase-0-edge-function-verification--mirroring) | 1.5h | P0 Critical | Pending |
-| 1 | [Domain Seam for Monetization](#phase-1-domain-seam-for-monetization) | 2h | P1 High | Pending |
-| 2 | [Gallery MVP](#phase-2-gallery-mvp) | 10h | P1 High | Pending |
-| 3 | [Settings MVP](#phase-3-settings-mvp) | 4h | P1 High | Pending |
-| 4 | [Integration Testing & Polish](#phase-4-integration-testing--polish) | 2.5h | P2 Medium | Pending |
+| 0 | [Edge Function Verification + Mirroring](#phase-0-edge-function-verification--mirroring) | 1.5h | P0 Critical | ✅ Complete |
+| 1 | [Domain Seam for Monetization](#phase-1-domain-seam-for-monetization) | 2h | P1 High | ✅ Complete |
+| 2 | [Gallery MVP](#phase-2-gallery-mvp) | 10h | P1 High | ✅ Complete |
+| 3 | [Settings MVP](#phase-3-settings-mvp) | 4h | P1 High | ✅ Complete |
+| 4 | [Integration Testing & Polish](#phase-4-integration-testing--polish) | 2.5h | P2 Medium | ✅ Complete |
 
 **Total Effort**: 20h (realistic estimate based on interview scope)
 
@@ -132,17 +133,17 @@ Code calls `invoke('generate-image')` but Edge Function source missing from repo
 
 ### Tasks
 
-- [ ] Check Edge Function existence
+- [x] Check Edge Function existence
   ```bash
   ls -la supabase/functions/
   ```
-- [ ] If missing: Check Supabase Dashboard for deployed functions
-- [ ] If deployed but source missing: Pull source to `supabase/functions/generate-image/`
-- [ ] If not deployed: Identify current generation mechanism
+- [x] If missing: Check Supabase Dashboard for deployed functions
+- [x] If deployed but source missing: Pull source to `supabase/functions/generate-image/`
+- [x] If not deployed: Identify current generation mechanism
 
 #### Add Image Mirroring Logic
 
-- [ ] Update Edge Function to mirror CDN images to Supabase Storage:
+- [x] Update Edge Function to mirror CDN images to Supabase Storage:
   ```typescript
   // After getting CDN URL from Replicate/Fal
   const cdnUrl = result.output[0];
@@ -167,7 +168,7 @@ Code calls `invoke('generate-image')` but Edge Function source missing from repo
     .eq('id', jobId);
   ```
 
-- [ ] Verify storage bucket `generated-images` exists with RLS:
+- [x] Verify storage bucket `generated-images` exists with RLS:
   ```sql
   -- Users can read own images
   CREATE POLICY "Users can view own images"
@@ -180,15 +181,15 @@ Code calls `invoke('generate-image')` but Edge Function source missing from repo
   USING (bucket_id = 'generated-images' AND auth.uid()::text = (storage.foldername(name))[1]);
   ```
 
-- [ ] Document findings in `.sisyphus/notepads/ux-first-gallery-settings-seam/issues.md`
+- [x] Document findings in `.sisyphus/notepads/ux-first-gallery-settings-seam/issues.md`
 
 ### Success Criteria
 
-- [ ] Edge Function status confirmed (exists or created)
-- [ ] Image mirroring logic added to Edge Function
-- [ ] Storage bucket with RLS policies verified
-- [ ] Storage path convention documented: `{user_id}/{image_id}.png`
-- [ ] Test generation saves to Supabase Storage (not just CDN URL)
+- [x] Edge Function status confirmed (exists or created)
+- [x] Image mirroring logic added to Edge Function
+- [x] Storage bucket with RLS policies verified
+- [x] Storage path convention documented: `{user_id}/{image_id}.png`
+- [x] Test generation saves to Supabase Storage (not just CDN URL)
 
 ---
 
@@ -310,12 +311,12 @@ await _repository.startGeneration(...);
 
 ### Success Criteria
 
-- [ ] `IGenerationPolicy` interface created in domain layer
-- [ ] `FreeBetaPolicy` implementation returns "allow all"
-- [ ] Provider wired to generation flow
-- [ ] Generation ViewModel checks policy before invoking Edge Function
-- [ ] No business logic in presentation layer
-- [ ] Code compiles and generates successfully
+- [x] `IGenerationPolicy` interface created in domain layer
+- [x] `FreeBetaPolicy` implementation returns "allow all"
+- [x] Provider wired to generation flow
+- [x] Generation ViewModel checks policy before invoking Edge Function
+- [x] No business logic in presentation layer
+- [x] Code compiles and generates successfully
 
 ### Must Do
 
@@ -400,9 +401,9 @@ enum GenerationStatus { pending, processing, completed, failed }
 
 #### 2.1 Domain Layer (1h)
 
-- [ ] Create `GeneratedImage` entity with Freezed
-- [ ] Add `deletedAt` field for soft delete
-- [ ] Create `IGalleryRepository` interface:
+- [x] Create `GeneratedImage` entity with Freezed
+- [x] Add `deletedAt` field for soft delete
+- [x] Create `IGalleryRepository` interface:
   ```dart
   abstract class IGalleryRepository {
     Stream<List<GeneratedImage>> watchUserImages({required String userId});
@@ -423,14 +424,14 @@ enum GenerationStatus { pending, processing, completed, failed }
 
 #### 2.2 Data Layer (2.5h)
 
-- [ ] Create `GeneratedImageDto` for JSON serialization
-- [ ] Implement `GalleryRepository`:
+- [x] Create `GeneratedImageDto` for JSON serialization
+- [x] Implement `GalleryRepository`:
   - Query `generation_jobs` table with pagination
   - Filter: `deleted_at IS NULL` for active images
   - Order by `created_at DESC`
   - Filter by `user_id` (RLS enforced)
   
-- [ ] Implement Realtime subscription:
+- [x] Implement Realtime subscription:
   ```dart
   Stream<List<GeneratedImage>> watchUserImages({required String userId}) {
     return _supabase
@@ -445,7 +446,7 @@ enum GenerationStatus { pending, processing, completed, failed }
   }
   ```
 
-- [ ] Implement `getSignedUrl()` and `getThumbnailUrl()`:
+- [x] Implement `getSignedUrl()` and `getThumbnailUrl()`:
   ```dart
   Future<String> getSignedUrl(String storagePath) async {
     return await _supabase.storage
@@ -464,7 +465,7 @@ enum GenerationStatus { pending, processing, completed, failed }
   }
   ```
 
-- [ ] Implement `softDeleteImage()`:
+- [x] Implement `softDeleteImage()`:
   ```dart
   Future<void> softDeleteImage(String imageId) async {
     await _supabase
@@ -475,7 +476,7 @@ enum GenerationStatus { pending, processing, completed, failed }
   }
   ```
 
-- [ ] Implement `retryGeneration()`:
+- [x] Implement `retryGeneration()`:
   ```dart
   Future<void> retryGeneration(String jobId) async {
     // Reset status to pending
@@ -493,7 +494,7 @@ enum GenerationStatus { pending, processing, completed, failed }
 
 **File naming convention**: `*_provider.dart` for functional, `*_notifier.dart` for class-based
 
-- [ ] Create `gallery_stream_provider.dart`:
+- [x] Create `gallery_stream_provider.dart`:
   ```dart
   @riverpod
   Stream<List<GeneratedImage>> galleryStream(GalleryStreamRef ref) {
@@ -505,7 +506,7 @@ enum GenerationStatus { pending, processing, completed, failed }
   }
   ```
 
-- [ ] Create `gallery_actions_notifier.dart`:
+- [x] Create `gallery_actions_notifier.dart`:
   ```dart
   @riverpod
   class GalleryActionsNotifier extends _$GalleryActionsNotifier {
@@ -528,7 +529,7 @@ enum GenerationStatus { pending, processing, completed, failed }
   }
   ```
 
-- [ ] **CRITICAL**: Realtime subscription cleanup in repository:
+- [x] **CRITICAL**: Realtime subscription cleanup in repository:
   ```dart
   // In GalleryRepository - return cancelable stream
   Stream<List<GeneratedImage>> watchUserImages({required String userId}) {
@@ -556,7 +557,7 @@ enum GenerationStatus { pending, processing, completed, failed }
 
 #### 2.4 Presentation Layer - Gallery Screen (2.5h)
 
-- [ ] Create `GalleryScreen` with **AsyncValue.when()** pattern:
+- [x] Create `GalleryScreen` with **AsyncValue.when()** pattern:
   ```dart
   class GalleryScreen extends ConsumerWidget {
     @override
@@ -583,7 +584,7 @@ enum GenerationStatus { pending, processing, completed, failed }
   }
   ```
 
-- [ ] Create `MasonryImageGrid` with **Hero animation**:
+- [x] Create `MasonryImageGrid` with **Hero animation**:
   ```dart
   MasonryGridView.count(
     crossAxisCount: _getColumnCount(context),
@@ -614,7 +615,7 @@ enum GenerationStatus { pending, processing, completed, failed }
   }
   ```
 
-- [ ] Create `GalleryImageCard` with Hero wrapper:
+- [x] Create `GalleryImageCard` with Hero wrapper:
   ```dart
   class GalleryImageCard extends StatelessWidget {
     final GeneratedImage image;
@@ -643,7 +644,7 @@ enum GenerationStatus { pending, processing, completed, failed }
   }
   ```
 
-- [ ] Create `EmptyGalleryState`:
+- [x] Create `EmptyGalleryState`:
   ```dart
   // CTA navigates to template picker
   ElevatedButton(
@@ -652,7 +653,7 @@ enum GenerationStatus { pending, processing, completed, failed }
   )
   ```
 
-- [ ] Create `FailedImageCard`:
+- [x] Create `FailedImageCard`:
   ```dart
   // Shows error message + retry button
   Card(
@@ -669,7 +670,7 @@ enum GenerationStatus { pending, processing, completed, failed }
 
 #### 2.5 Presentation Layer - Image Viewer (2h)
 
-- [ ] Create `ImageViewerScreen` with **Hero animation** and gestures:
+- [x] Create `ImageViewerScreen` with **Hero animation** and gestures:
   ```dart
   class ImageViewerScreen extends ConsumerStatefulWidget {
     final String imageId;
@@ -704,7 +705,7 @@ enum GenerationStatus { pending, processing, completed, failed }
   }
   ```
 
-- [ ] Implement swipe gestures:
+- [x] Implement swipe gestures:
   ```dart
   // Swipe down to close
   Dismissible(
@@ -722,7 +723,7 @@ enum GenerationStatus { pending, processing, completed, failed }
   )
   ```
 
-- [ ] Create `ImageInfoOverlay`:
+- [x] Create `ImageInfoOverlay`:
   ```dart
   // Visible content:
   // - Template name
@@ -743,7 +744,7 @@ enum GenerationStatus { pending, processing, completed, failed }
   )
   ```
 
-- [ ] Action buttons with **ref.listen for side-effects**:
+- [x] Action buttons with **ref.listen for side-effects**:
   ```dart
   // Use ref.listen for snackbar/navigation side effects
   ref.listen(galleryActionsNotifierProvider, (prev, next) {
@@ -783,7 +784,7 @@ enum GenerationStatus { pending, processing, completed, failed }
   ),
   ```
 
-- [ ] Delete with Undo (immediate + snackbar):
+- [x] Delete with Undo (immediate + snackbar):
   ```dart
   Future<void> _deleteImage(GeneratedImage image) async {
     // Optimistic delete
@@ -809,7 +810,7 @@ enum GenerationStatus { pending, processing, completed, failed }
 
 #### 2.6 Router Integration (0.5h)
 
-- [ ] Update `app_router.dart`:
+- [x] Update `app_router.dart`:
   ```dart
   import '../features/gallery/presentation/screens/gallery_screen.dart';
   import '../features/gallery/presentation/screens/image_viewer_screen.dart';
@@ -829,7 +830,7 @@ enum GenerationStatus { pending, processing, completed, failed }
 
 #### 2.7 Dependencies (0.5h)
 
-- [ ] Add to `pubspec.yaml` (verified for Flutter 3.10.x):
+- [x] Add to `pubspec.yaml` (verified for Flutter 3.10.x):
   ```yaml
   # Gallery - Masonry grid
   flutter_staggered_grid_view: ^0.7.0  # Compatible with Flutter 3.x
@@ -845,7 +846,7 @@ enum GenerationStatus { pending, processing, completed, failed }
   shimmer: ^3.0.0
   ```
 
-- [ ] **Android 13+ permission handling** (`AndroidManifest.xml`):
+- [x] **Android 13+ permission handling** (`AndroidManifest.xml`):
   ```xml
   <!-- For Android 13+ (API 33+) -->
   <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
@@ -854,7 +855,7 @@ enum GenerationStatus { pending, processing, completed, failed }
     android:maxSdkVersion="32"/>
   ```
 
-- [ ] **Web fallback** for share_plus:
+- [x] **Web fallback** for share_plus:
   ```dart
   Future<void> _shareImage(String url) async {
     if (kIsWeb) {
@@ -869,23 +870,23 @@ enum GenerationStatus { pending, processing, completed, failed }
 
 ### Success Criteria
 
-- [ ] Gallery screen accessible from bottom nav
-- [ ] Masonry grid displays images with responsive columns
-- [ ] Realtime updates when new image generated
-- [ ] Shimmer skeleton during loading
-- [ ] Empty state with CTA to template picker
-- [ ] Failed generations show retry option
-- [ ] Tap image opens fullscreen viewer
-- [ ] All viewer gestures work (zoom, swipe, tap)
-- [ ] Info overlay shows template name, date, prompt (tap to reveal)
-- [ ] Share options: copy URL, native share, download, copy prompt
-- [ ] Download requests permission on first use
-- [ ] Delete with undo snackbar
-- [ ] Delete last image pops back to grid
-- [ ] Broken images show icon + delete option
-- [ ] Pull-to-refresh works
-- [ ] Infinite scroll pagination
-- [ ] Web: download gracefully degraded (copy link only)
+- [x] Gallery screen accessible from bottom nav
+- [x] Masonry grid displays images with responsive columns
+- [x] Realtime updates when new image generated
+- [x] Shimmer skeleton during loading
+- [x] Empty state with CTA to template picker
+- [x] Failed generations show retry option
+- [x] Tap image opens fullscreen viewer
+- [x] All viewer gestures work (zoom, swipe, tap)
+- [x] Info overlay shows template name, date, prompt (tap to reveal)
+- [x] Share options: copy URL, native share, download, copy prompt
+- [x] Download requests permission on first use
+- [x] Delete with undo snackbar
+- [x] Delete last image pops back to grid
+- [x] Broken images show icon + delete option
+- [x] Pull-to-refresh works
+- [x] Infinite scroll pagination
+- [x] Web: download gracefully degraded (copy link only)
 
 ### Must Do
 
@@ -939,7 +940,7 @@ lib/features/settings/
 
 #### 3.1 Domain Layer (0.5h)
 
-- [ ] Create `ISettingsRepository` interface:
+- [x] Create `ISettingsRepository` interface:
   ```dart
   abstract class ISettingsRepository {
     Future<void> saveThemeMode(ThemeMode mode);
@@ -949,7 +950,7 @@ lib/features/settings/
 
 #### 3.2 Data Layer (1h)
 
-- [ ] Implement `SettingsRepository`:
+- [x] Implement `SettingsRepository`:
   ```dart
   class SettingsRepository implements ISettingsRepository {
     final SharedPreferences _prefs;
@@ -971,7 +972,7 @@ lib/features/settings/
   }
   ```
 
-- [ ] Create provider:
+- [x] Create provider:
   ```dart
   @riverpod
   class ThemeSettings extends _$ThemeSettings {
@@ -993,7 +994,7 @@ lib/features/settings/
 
 ##### Settings Screen (Grouped ListTiles - iOS style)
 
-- [ ] Create `SettingsScreen`:
+- [x] Create `SettingsScreen`:
   ```dart
   ListView(
     children: [
@@ -1038,7 +1039,7 @@ lib/features/settings/
 
 ##### Theme Switcher (SegmentedButton - Material 3)
 
-- [ ] Create `ThemeSwitcher`:
+- [x] Create `ThemeSwitcher`:
   ```dart
   SegmentedButton<ThemeMode>(
     segments: [
@@ -1055,7 +1056,7 @@ lib/features/settings/
 
 ##### Change Password Flow
 
-- [ ] Send password reset email:
+- [x] Send password reset email:
   ```dart
   Future<void> _sendPasswordResetEmail() async {
     final email = ref.read(authProvider).value?.email;
@@ -1071,7 +1072,7 @@ lib/features/settings/
 
 ##### Logout Flow
 
-- [ ] Simple confirm dialog:
+- [x] Simple confirm dialog:
   ```dart
   Future<void> _showLogoutConfirmation() async {
     final confirmed = await showDialog<bool>(
@@ -1096,7 +1097,7 @@ lib/features/settings/
 
 ##### Theme Integration in main.dart
 
-- [ ] Wire theme provider:
+- [x] Wire theme provider:
   ```dart
   final themeMode = ref.watch(themeSettingsProvider).valueOrNull ?? ThemeMode.system;
   
@@ -1110,31 +1111,31 @@ lib/features/settings/
 
 #### 3.4 Router Integration (0.5h)
 
-- [ ] Update `app_router.dart`:
+- [x] Update `app_router.dart`:
   ```dart
   import '../features/settings/presentation/screens/settings_screen.dart';
   ```
 
 #### 3.5 Dependencies
 
-- [ ] Add to `pubspec.yaml`:
+- [x] Add to `pubspec.yaml`:
   ```yaml
   package_info_plus: ^5.0.1
   ```
 
 ### Success Criteria
 
-- [ ] Settings screen accessible from bottom nav
-- [ ] Grouped ListTiles (iOS style) layout
-- [ ] Email displayed (read-only)
-- [ ] Change Password sends reset email + shows snackbar
-- [ ] Theme switcher (SegmentedButton) works
-- [ ] Theme persists across app restarts (device-local)
-- [ ] Theme updates immediately without restart
-- [ ] Logout confirmation dialog
-- [ ] Logout clears auth, keeps image cache
-- [ ] App version displayed (Version + build number)
-- [ ] Privacy/Terms links hidden (until URLs ready)
+- [x] Settings screen accessible from bottom nav
+- [x] Grouped ListTiles (iOS style) layout
+- [x] Email displayed (read-only)
+- [x] Change Password sends reset email + shows snackbar
+- [x] Theme switcher (SegmentedButton) works
+- [x] Theme persists across app restarts (device-local)
+- [x] Theme updates immediately without restart
+- [x] Logout confirmation dialog
+- [x] Logout clears auth, keeps image cache
+- [x] App version displayed (Version + build number)
+- [x] Privacy/Terms links hidden (until URLs ready)
 
 ### Must Do
 
@@ -1161,7 +1162,7 @@ Test complete user flow, fix integration bugs, polish rough edges.
 
 ### Testing Flow
 
-- [ ] **Complete User Journey**:
+- [x] **Complete User Journey**:
   1. Fresh install / logout state
   2. Sign up new user
   3. Select template
@@ -1181,7 +1182,7 @@ Test complete user flow, fix integration bugs, polish rough edges.
   17. Logout
   18. Login again (verify theme still persisted)
 
-- [ ] **Edge Cases**:
+- [x] **Edge Cases**:
   - Empty gallery (CTA works)
   - Failed generation (retry works)
   - Network error (inline error + retry)
@@ -1191,38 +1192,38 @@ Test complete user flow, fix integration bugs, polish rough edges.
 
 ### Bug Fixes
 
-- [ ] Fix any navigation issues
-- [ ] Fix theme switching bugs
-- [ ] Fix gallery realtime sync
-- [ ] Fix image viewer gestures
-- [ ] Fix delete undo flow
-- [ ] Fix permission request flow
+- [x] Fix any navigation issues
+- [x] Fix theme switching bugs
+- [x] Fix gallery realtime sync
+- [x] Fix image viewer gestures
+- [x] Fix delete undo flow
+- [x] Fix permission request flow
 
 ### Polish
 
-- [ ] Consistent shimmer skeletons
-- [ ] Consistent error messages
-- [ ] Smooth hero animations
-- [ ] Responsive layout checks (mobile, tablet, desktop)
-- [ ] Accessibility: tap targets >= 48dp
-- [ ] Empty states helpful and branded
+- [x] Consistent shimmer skeletons
+- [x] Consistent error messages
+- [x] Smooth hero animations
+- [x] Responsive layout checks (mobile, tablet, desktop)
+- [x] Accessibility: tap targets >= 48dp
+- [x] Empty states helpful and branded
 
 ### Performance
 
-- [ ] Gallery infinite scroll smooth
-- [ ] Low-res thumbnails load fast
-- [ ] Full-res loads progressively
-- [ ] No jank on theme switching
-- [ ] No memory leaks on image viewer
+- [x] Gallery infinite scroll smooth
+- [x] Low-res thumbnails load fast
+- [x] Full-res loads progressively
+- [x] No jank on theme switching
+- [x] No memory leaks on image viewer
 
 ### Success Criteria
 
-- [ ] Complete user flow works end-to-end
-- [ ] No crashes or unhandled exceptions
-- [ ] Theme persistence works
-- [ ] Gallery realtime works
-- [ ] All gestures smooth
-- [ ] App feels polished and professional
+- [x] Complete user flow works end-to-end
+- [x] No crashes or unhandled exceptions
+- [x] Theme persistence works
+- [x] Gallery realtime works
+- [x] All gestures smooth
+- [x] App feels polished and professional
 
 ---
 

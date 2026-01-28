@@ -9,7 +9,9 @@ import '../features/auth/presentation/screens/login_screen.dart';
 import '../features/auth/presentation/screens/register_screen.dart';
 import '../features/auth/presentation/screens/splash_screen.dart';
 import '../features/create/ui/create_screen.dart';
-import '../features/gallery/ui/gallery_screen.dart';
+import '../features/gallery/domain/entities/gallery_item.dart';
+import '../features/gallery/presentation/pages/gallery_page.dart';
+import '../features/gallery/presentation/pages/image_viewer_page.dart';
 import '../features/settings/ui/settings_screen.dart';
 import '../features/template_engine/presentation/screens/home_screen.dart';
 import '../features/template_engine/presentation/screens/template_detail_screen.dart';
@@ -26,10 +28,12 @@ abstract class AppRoutes {
   static const home = '/home';
   static const create = '/create';
   static const gallery = '/gallery';
+  static const galleryImage = '/gallery/:id';
   static const settings = '/settings';
   static const templateDetail = '/template/:id';
 
   static String templateDetailPath(String id) => '/template/$id';
+  static String galleryImagePath(String id) => '/gallery/$id';
 }
 
 @riverpod
@@ -73,7 +77,7 @@ GoRouter appRouter(Ref ref) {
           ),
           GoRoute(
             path: AppRoutes.gallery,
-            builder: (context, state) => const GalleryScreen(),
+            builder: (context, state) => const GalleryPage(),
           ),
           GoRoute(
             path: AppRoutes.settings,
@@ -86,6 +90,15 @@ GoRouter appRouter(Ref ref) {
         builder: (context, state) {
           final id = state.pathParameters['id']!;
           return TemplateDetailScreen(templateId: id);
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.galleryImage,
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>;
+          final items = extra['items'] as List<GalleryItem>;
+          final initialIndex = extra['initialIndex'] as int;
+          return ImageViewerPage(items: items, initialIndex: initialIndex);
         },
       ),
     ],
