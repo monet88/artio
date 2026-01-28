@@ -6,7 +6,7 @@ part of 'generation_policy_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$generationPolicyHash() => r'60c3662cc71244dfb7ac64a23016a8b3af2c0e6b';
+String _$generationPolicyHash() => r'01efb77ff9ddd450940879e40558391f630921b3';
 
 /// See also [generationPolicy].
 @ProviderFor(generationPolicy)
