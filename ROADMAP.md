@@ -1,225 +1,213 @@
 # Development Roadmap
 
 **Project**: Artio - AI Art Generation App
-**Last Updated**: 2026-01-27
-**Current Phase**: Plan 0.5 Complete → Plan 1 Next
+**Last Updated**: 2026-01-28
+**Current Phase**: 90% Complete → Subscription or Create Feature Next
 
 ---
 
-## Execution Order
+## Execution Order (Re-Prioritized)
+
+> **Note**: Phase 6 (Subscription) deferred to LAST - awaiting Stripe/RevenueCat setup
 
 | # | Plan | Status | Effort | Priority |
 |---|------|--------|--------|----------|
-| 0 | [Artio Bootstrap](#plan-0-artio-bootstrap-foundation) | ✅ Phase 1-4 Done | 40h | P0 |
-| 0.5 | [Documentation Standardization](#plan-05-documentation-standardization) | ✅ Complete | 2h | P1 |
-| 1 | [Architecture Hardening](#plan-1-architecture-hardening) | 🔲 Pending | 10h | P1 |
-| 2 | [Credit, Premium & Rate Limit](#plan-2-credit-premium--rate-limit) | 🔲 Pending | 6h | P1 |
-| 3 | [TypedGoRoute Migration](#plan-3-typedgoroute-migration) | ⏸️ Deferred | 4h | P2 |
+| 0 | Artio Bootstrap | ✅ Phase 1-5,7,8 Complete | 38h | P0 |
+| 0.5 | Documentation Standardization | ✅ Complete | 2h | P1 |
+| 1 | Architecture Hardening | ✅ Complete | 10h | P1 |
+| 2 | Gallery Feature | ✅ Complete | 4h | P1 |
+| 4 | Settings Feature | ✅ Complete | 2h | P2 |
+| **8** | **[Admin App](#plan-8-admin-app)** | ✅ **Complete** | **3h** | **P1** |
+| 9 | Create Feature (Text-to-Image) | 🔲 **NEXT** | 4h | P1 |
+| 6 | Subscription & Credits | ⏸️ Deferred | 8h | P2 |
+| 5 | TypedGoRoute Migration | ⏸️ Deferred | 4h | P3 |
 
 ---
 
-## Plan 0: Artio Bootstrap (Foundation)
+## Completed Plans
 
-**Path**: `plans/260125-0120-artio-bootstrap/`
-**Status**: ✅ Phase 1-4 Complete
-**Effort**: 40h
-**Branch**: `master`
+### Plan 0: Artio Bootstrap
+**Status**: ✅ Phase 1-5,7 Complete (35h)
 
-### Objective
-Bootstrap Flutter AI art generation app with core infrastructure.
+| Phase | Focus | Status |
+|-------|-------|--------|
+| 1 | Project Setup | ✅ |
+| 2 | Core Infrastructure | ✅ |
+| 3 | Auth Feature | ✅ |
+| 4 | Template Engine | ✅ |
+| 5 | Gallery Feature | ✅ |
+| 6 | Subscription & Credits | ⏸️ Deferred |
+| 7 | Settings Feature | ✅ |
+| 8 | Admin App | ✅ Complete |
 
-### Phases
-
-| Phase | Focus | Effort | Status |
-|-------|-------|--------|--------|
-| 1 | Project Setup | 3h | ✅ |
-| 2 | Core Infrastructure | 6h | ✅ |
-| 3 | Auth Feature | 5h | ✅ |
-| 4 | Template Engine | 8h | ✅ |
-| 5 | Gallery Feature | 4h | 🔲 |
-| 6 | Subscription & Credits | 8h | 🔲 |
-| 7 | Settings Feature | 3h | 🔲 |
-| 8 | Admin App | 3h | 🔲 |
-
-### Remaining Work
-- Phase 5-8 will be executed after Architecture Hardening & Credit system
-- Gallery depends on working generation flow
-- Subscription depends on credit system (Plan 2)
+### Plan 1: Architecture Hardening
+**Status**: ✅ Complete (2026-01-27)
+- 3-layer architecture for all features
+- Repository DI with Supabase constructor injection
+- Error mapper for user-friendly messages
+- Code quality improvements
 
 ---
 
-## Plan 0.5: Documentation Standardization
+## Plan 8: Admin App
 
-**Path**: `plans/260127-1336-standardize-artio-bootstrap-phases/`
-**Status**: ✅ Complete
-**Effort**: 2h
-**Branch**: `master`
-**Completed**: 2026-01-27
+**Path**: `plans/260125-0120-artio-bootstrap/phase-08-admin-app.md`
+**Status**: ✅ Complete (2026-01-28)
+**Effort**: 3h
+**Priority**: P1 (High)
 
-### Objective
-Standardize 8 phase files in Plan 0 to production-ready template format.
+### Why Now?
+- No payment dependencies (Stripe/RevenueCat not required)
+- Enables template management without database access
+- Unblocks content creation workflow
 
-### What Was Done
-- ✅ Added Priority/Status/Effort blocks to all Overview sections
-- ✅ Converted Success Criteria to checkbox format (8/8 files)
-- ✅ Expanded Risk Assessment to 4-column tables (Risk/Likelihood/Impact/Mitigation)
-- ✅ Standardized Related Code Files structure (Create/Modify/Delete subsections)
-- ✅ Merged domain-specific sections (AI Models → Architecture, Supabase Schema → Database subsection)
-- ✅ Achieved strict 12-section compliance (all 8 files)
+### Core Features
+| Feature | Description | Priority |
+|---------|-------------|----------|
+| Template CRUD | Create, Read, Update, Delete templates | P0 |
+| Reorder | Drag-drop template ordering | P0 |
+| JSON Editor | Edit input fields as JSON | P0 |
+| Admin Auth | Email/password with role check | P0 |
+| Image Upload | Upload thumbnail for templates | P1 |
+| Search/Filter | Find templates by name/category | P1 |
+| Bulk Actions | Enable/disable multiple templates | P2 |
 
-### Sections Template
-All phase files now follow this structure:
-1. Context Links
-2. Overview (with Priority/Status/Effort)
-3. Key Insights
-4. Requirements
-5. Architecture
-6. Related Code Files
-7. Implementation Steps
-8. Todo List
-9. Success Criteria (checkboxes)
-10. Risk Assessment (4 columns)
-11. Security Considerations
-12. Next Steps
-
-### Success Criteria
-- [x] All 8 phase files have 12 standard sections
-- [x] Section order matches reference template
-- [x] Success Criteria uses `[ ]` checkbox format
-- [x] Risk Assessment uses 4-column table format
-- [x] No existing content removed (100% preservation)
-- [x] Format consistent across all phases
-
-### Reports
-- `plans/reports/cook-260127-1406-standardize-artio-phases-final.md`
-
-
-
-## Plan 1: Architecture Hardening
-
-**Path**: `plans/260125-1516-phase46-architecture-hardening/`
-**Status**: 🔲 Pending
-**Effort**: 10h
-**Branch**: `master`
-
-### Objective
-Elevate codebase from B+ to A-grade. Fix 12/15 tech debt issues.
-
-### Phases
-
-| Phase | Focus | Effort | Status |
-|-------|-------|--------|--------|
-| 1 | 3-Layer Architecture Restructure | 4h | 🔲 |
-| 2 | Repository Dependency Injection | 1h | 🔲 |
-| 3 | Error Message Mapper | 1.5h | 🔲 |
-| 4 | Code Quality & Linting | 1.5h | 🔲 |
-| 5 | Constants Extraction | 1h | 🔲 |
-| 6 | Dead Code & Cleanup | 1h | 🔲 |
-
-### Key Changes
-- Restructure features to `domain/data/presentation`
-- Inject SupabaseClient via constructor
-- Centralize error message mapping
-- Enable `prefer_const_constructors` lint
-- Extract hardcoded values to constants
-- Remove dead code (Dio, subscription feature)
-
-### Success Criteria
-- [ ] All features follow 3-layer structure
-- [ ] Repositories injectable via constructor
-- [ ] `flutter analyze` clean
-- [ ] All tests pass
-
----
-
-## Plan 2: Credit, Premium & Rate Limit
-
-**Path**: `plans/260125-1517-credit-premium-rate-limit/`
-**Status**: 🔲 Pending
-**Effort**: 6h
-**Branch**: `master`
-**Depends on**: Plan 1 complete
-
-### Objective
-Implement calculated credit availability, hybrid premium sync, defense-in-depth rate limiting.
-
-### Phases
-
-| Phase | Focus | Effort | Status |
-|-------|-------|--------|--------|
-| 1 | Database & Edge Function | 1.5h | 🔲 |
-| 2 | Credit Availability System | 1.5h | 🔲 |
-| 3 | Rate Limiting & Cooldown | 1h | 🔲 |
-| 4 | Premium Hybrid Sync | 1.5h | 🔲 |
-| 5 | Input Validation | 0.5h | 🔲 |
-
-### Key Changes
-- Add daily generation count index
-- Edge Function enforces daily limit (5 for free)
-- Client-side credit availability UI
-- Button cooldown prevents double-tap
-- RevenueCat + Supabase Realtime for premium sync
-- Input length validation
-
-### Success Criteria
-- [ ] Zero credit desync errors
-- [ ] Premium unlock < 1s latency
-- [ ] No duplicate generation requests
-- [ ] Rate limit bypass blocked
-
----
-
-## Plan 3: TypedGoRoute Migration
-
-**Path**: TBD
-**Status**: ⏸️ Deferred
-**Effort**: 4h
-**Priority**: P2
-**Blocked by**: `go_router_builder` compatibility with `go_router: ^14.8.1`
-
-### Objective
-Migrate from raw path strings to type-safe navigation.
-
-### Key Changes
-- Add `@TypedGoRoute` annotations
-- Create `GoRouteData` subclasses
-- Replace `context.go('/path')` with `MyRoute().go(context)`
-- Generate typed routes via build_runner
-
-### When to Execute
-- After Plans 1 & 2 stable
-- When `go_router_builder` releases compatible version
-- When adding significant new routes
-
----
-
-## Quick Reference
-
-### Commands
-
-```bash
-# Verify after each change
-flutter test && flutter analyze
-
-# Regenerate code
-dart run build_runner build --delete-conflicting-outputs
-
-# Check current status
-git status
+### Deliverables
+```
+admin/                          # Separate Flutter web project
+├── lib/
+│   ├── core/
+│   │   ├── router/            # GoRouter with admin guard
+│   │   └── theme/             # Admin theme
+│   ├── features/
+│   │   ├── auth/              # Admin login
+│   │   ├── templates/         # CRUD pages
+│   │   └── dashboard/         # Analytics (optional)
+│   └── main.dart
+├── pubspec.yaml
+└── web/
 ```
 
-### File Locations
+### Database Changes
+```sql
+-- Add role column to profiles
+ALTER TABLE profiles ADD COLUMN role TEXT DEFAULT 'user';
 
-| Resource | Path |
-|----------|------|
-| Plan 0 | `plans/260125-0120-artio-bootstrap/` |
-| Plan 0.5 | `plans/260127-1336-standardize-artio-bootstrap-phases/` |
-| Plan 1 | `plans/260125-1516-phase46-architecture-hardening/` |
-| Plan 2 | `plans/260125-1517-credit-premium-rate-limit/` |
-| Tech Debt Audit | `plans/reports/flutter-expert-260125-1548-tech-debt-audit.md` |
-| Standardization Report | `plans/reports/cook-260127-1406-standardize-artio-phases-final.md` |
-| Development Roadmap (Detailed) | `docs/development-roadmap.md` |
-| This Roadmap | `ROADMAP.md` |
+-- Admin RLS policy for templates
+CREATE POLICY "Admins can manage templates"
+ON templates FOR ALL
+USING (
+  EXISTS (
+    SELECT 1 FROM profiles
+    WHERE profiles.id = auth.uid()
+    AND profiles.role = 'admin'
+  )
+);
+```
+
+### Todo List
+- [ ] Create admin Flutter web project
+- [ ] Configure Supabase connection
+- [ ] Add admin role to profiles table
+- [ ] Create RLS policies for admin access
+- [ ] Implement admin auth guard
+- [ ] Create templates list page (Card UI)
+- [ ] Create template editor page (Form + JSON)
+- [ ] Add drag-drop reordering
+- [ ] Add image upload for thumbnails
+- [ ] Add search/filter functionality
+- [ ] Test all CRUD operations
+- [ ] Deploy to admin.artio.app
+
+### Success Criteria
+- [ ] Only admin users can access
+- [ ] Templates CRUD works correctly
+- [ ] Reordering updates database
+- [ ] JSON validation before save
+- [ ] Changes reflect in main app immediately
+- [ ] Admin app deploys separately
+
+---
+
+## Plan 6: Subscription & Credits (DEFERRED)
+
+**Status**: ⏸️ Deferred - Awaiting payment setup
+**Effort**: 8h
+**Priority**: P2 (Medium)
+
+### Blocking Factors
+- ❌ Stripe account not registered
+- ❌ RevenueCat not configured
+
+### When to Execute
+1. Register Stripe account
+2. Configure RevenueCat dashboard
+3. Then implement this phase
+
+### Features (Planned)
+- Credit system (purchase/earn/spend)
+- Subscription tiers (Free/Pro)
+- RevenueCat integration (mobile)
+- Stripe integration (web)
+- Rate limiting
+
+---
+
+## Plan 5: TypedGoRoute Migration (DEFERRED)
+
+**Status**: ⏸️ Deferred
+**Priority**: P3 (Low)
+**Blocked by**: go_router_builder compatibility
+
+---
+
+## Progress Summary
+
+### Completed (90%)
+| Feature | Status |
+|---------|--------|
+| Authentication | ✅ Email, OAuth, Password Reset |
+| Template Engine | ✅ Browse, Generate, Track Progress |
+| Gallery | ✅ Masonry Grid, View, Download, Share, Delete |
+| Settings | ✅ Theme Switcher |
+| Admin App | ✅ Flutter Web Dashboard |
+| Architecture | ✅ 3-layer, DI, Error Handling |
+| Documentation | ✅ README, ROADMAP, AGENTS, CLAUDE |
+
+### Remaining (10%)
+| Feature | Effort | Priority | Dependency |
+|---------|--------|----------|------------|
+| **Create Feature** | 4h | P1 | None |
+| Subscription & Credits | 8h | P2 | Stripe/RevenueCat |
+| TypedGoRoute | 4h | P3 | go_router_builder |
+
+---
+
+## Quick Commands
+
+```bash
+# Start Admin App development
+flutter create --org com.artio --project-name artio_admin admin
+cd admin && flutter config --enable-web
+
+# Run admin app locally
+cd admin && flutter run -d chrome
+
+# Deploy admin app
+cd admin && flutter build web
+# Then deploy build/web to Cloudflare Pages/Vercel/Netlify
+```
+
+---
+
+## Timeline Estimate
+
+| Milestone | Effort | Target |
+|-----------|--------|--------|
+| Admin App MVP | 3-4h | This week |
+| Full Admin App | 5-6h | This week |
+| Subscription (when ready) | 8h | After payment setup |
+| Production Release | - | After all features |
 
 ---
 

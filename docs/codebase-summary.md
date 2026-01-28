@@ -1,10 +1,9 @@
 # Codebase Summary
 
 **Project**: Artio - AI Image Generation SaaS
-**Generated**: 2026-01-27
-**Source**: repomix-output.xml analysis
-**Lines of Code**: ~2,500 (non-generated)
-**Total Files**: 80 files (50 significant)
+**Generated**: 2026-01-28
+**Lines of Code**: ~3,000 (non-generated)
+**Total Files**: 85 files (55 significant)
 
 ---
 
@@ -20,19 +19,19 @@ Artio is a Flutter-based cross-platform application implementing clean architect
 
 | Type | Count | Purpose |
 |------|-------|---------|
-| Dart source files | 40 | Application logic |
+| Dart source files | 45 | Application logic |
 | Generated files (.freezed/.g.dart) | 25 | Code generation artifacts |
 | Config files | 5 | pubspec, analysis_options, etc. |
 | Documentation | 10 | Plans, reports, docs |
 
 ### Code Metrics
 
-- **Total Tokens**: 249,729 (per repomix)
-- **Total Characters**: 741,171
+- **Total Files**: 85 files
 - **Largest Files**:
-  - `release-manifest.json`: 176,654 tokens (70.7%)
-  - `pubspec.lock`: 16,036 tokens (6.4%)
+  - `pubspec.lock`: Dependencies lock file
   - Generated Freezed files: ~20,000 tokens combined
+  - `lib/features/gallery/presentation/pages/gallery_page.dart`: Gallery main page
+  - `lib/features/template_engine/presentation/widgets/input_field_builder.dart`: Dynamic form builder
 
 ---
 
@@ -42,18 +41,18 @@ Artio is a Flutter-based cross-platform application implementing clean architect
 
 ```
 lib/
-├── core/                           # 4 files, ~120 LOC
+├── core/                           # Cross-cutting concerns
 │   ├── constants/
-│   │   └── app_constants.dart      # Centralized constants (OAuth URLs, defaults)
+│   │   └── app_constants.dart      # Centralized constants
 │   ├── exceptions/
 │   │   └── app_exception.dart      # Sealed exception hierarchy
 │   ├── providers/
 │   │   └── supabase_provider.dart  # Global Supabase client DI
 │   └── utils/
-│       ├── app_exception_mapper.dart # User-friendly error messages (84 LOC)
+│       ├── app_exception_mapper.dart # User-friendly error messages
 │       └── logger_service.dart     # Logging abstraction
 │
-├── features/                       # 28 files, ~1,800 LOC
+├── features/                       # Feature modules (3-layer each)
 │   ├── auth/                       # ✓ 3-layer architecture
 │   │   ├── domain/
 │   │   │   ├── entities/
@@ -62,59 +61,96 @@ lib/
 │   │   │       └── i_auth_repository.dart # Abstract interface
 │   │   ├── data/
 │   │   │   └── repositories/
-│   │   │       └── auth_repository.dart # Supabase impl (~150 LOC)
+│   │   │       └── auth_repository.dart # Supabase impl
 │   │   └── presentation/
-│   │       ├── providers/
-│   │       │   └── auth_notifier_provider.dart # Riverpod state
 │   │       ├── screens/
 │   │       │   ├── login_screen.dart
-│   │       │   └── signup_screen.dart
+│   │       │   ├── register_screen.dart
+│   │       │   ├── forgot_password_screen.dart
+│   │       │   └── splash_screen.dart
+│   │       ├── view_models/
+│   │       │   └── auth_view_model.dart
+│   │       ├── state/
+│   │       │   └── auth_state.dart
 │   │       └── widgets/
-│   │           └── (auth-specific widgets)
+│   │           └── social_login_buttons.dart
 │   │
 │   ├── template_engine/            # ✓ 3-layer architecture
 │   │   ├── domain/
 │   │   │   ├── entities/
-│   │   │   │   ├── template_model.dart # Freezed model
-│   │   │   │   ├── generation_job_model.dart # Freezed model
-│   │   │   │   └── input_field.dart # Freezed model
-│   │   │   └── repositories/
-│   │   │       ├── i_template_repository.dart # Abstract interface
-│   │   │       └── i_generation_repository.dart # Abstract interface
+│   │   │   │   ├── template_model.dart
+│   │   │   │   ├── generation_job_model.dart
+│   │   │   │   └── input_field_model.dart
+│   │   │   ├── repositories/
+│   │   │   │   ├── i_template_repository.dart
+│   │   │   │   └── i_generation_repository.dart
+│   │   │   └── policies/
+│   │   │       └── generation_policy.dart
 │   │   ├── data/
-│   │   │   └── repositories/
-│   │   │       ├── template_repository.dart # Supabase impl (78 LOC)
-│   │   │       └── generation_repository.dart # Supabase impl (~100 LOC)
+│   │   │   ├── repositories/
+│   │   │   │   ├── template_repository.dart
+│   │   │   │   └── generation_repository.dart
+│   │   │   └── policies/
+│   │   │       └── free_beta_policy.dart
 │   │   └── presentation/
 │   │       ├── providers/
-│   │       │   ├── template_list_provider.dart # Riverpod provider
-│   │       │   └── generation_job_provider.dart # Riverpod provider
+│   │       │   ├── template_provider.dart
+│   │       │   ├── generation_policy_provider.dart
+│   │       │   └── generation_view_model.dart
 │   │       ├── screens/
-│   │       │   ├── template_list_screen.dart # Grid view
-│   │       │   └── template_detail_screen.dart # Detail + input form
+│   │       │   ├── home_screen.dart
+│   │       │   └── template_detail_screen.dart
 │   │       └── widgets/
-│   │           ├── template_card.dart # Grid item
-│   │           └── input_field_builder.dart # Dynamic form builder
+│   │           ├── template_card.dart
+│   │           ├── template_grid.dart
+│   │           ├── input_field_builder.dart
+│   │           └── generation_progress.dart
 │   │
-│   ├── create/                     # Placeholder (pending restructure)
-│   │   └── presentation/screens/
-│   │       └── create_screen.dart  # "Coming Soon" screen
+│   ├── gallery/                    # ✓ 3-layer architecture
+│   │   ├── domain/
+│   │   │   ├── entities/
+│   │   │   │   └── gallery_item.dart
+│   │   │   └── repositories/
+│   │   │       └── i_gallery_repository.dart
+│   │   ├── data/
+│   │   │   └── repositories/
+│   │   │       └── gallery_repository.dart
+│   │   └── presentation/
+│   │       ├── providers/
+│   │       │   └── gallery_provider.dart
+│   │       ├── pages/
+│   │       │   ├── gallery_page.dart
+│   │       │   └── image_viewer_page.dart
+│   │       └── widgets/
+│   │           ├── masonry_image_grid.dart
+│   │           ├── shimmer_grid.dart
+│   │           ├── empty_gallery_state.dart
+│   │           └── failed_image_card.dart
 │   │
-│   ├── gallery/                    # Placeholder (pending restructure)
-│   │   └── presentation/screens/
-│   │       └── gallery_screen.dart # "Coming Soon" screen
+│   ├── settings/                   # Basic implementation
+│   │   └── ui/
+│   │       ├── settings_screen.dart
+│   │       └── widgets/
+│   │           └── theme_switcher.dart
 │   │
-│   └── settings/                   # Placeholder (pending restructure)
-│       └── presentation/screens/
-│           └── settings_screen.dart # "Coming Soon" screen
+│   └── create/                     # Basic screen
+│       └── ui/
+│           └── create_screen.dart
 │
-├── router/
-│   └── app_router.dart             # GoRouter config (~80 LOC)
+├── routing/
+│   └── app_router.dart             # GoRouter config with auth guards
+│
+├── shared/
+│   └── widgets/
+│       ├── main_shell.dart         # Main app shell with bottom nav
+│       └── error_page.dart         # Global error display
 │
 ├── theme/
-│   └── app_theme.dart              # Material theme definitions (~60 LOC)
+│   ├── app_colors.dart
+│   ├── app_theme.dart
+│   └── theme_provider.dart
 │
-└── main.dart                       # App entry point (~40 LOC)
+└── main.dart                       # App entry point
 ```
 
 ---
@@ -126,66 +162,59 @@ lib/
 #### 1. Authentication (auth feature)
 - **Domain Layer**: `UserModel`, `IAuthRepository`
 - **Data Layer**: `AuthRepository` (Supabase integration)
-- **Presentation Layer**: Login/Signup screens, `authNotifierProvider`
+- **Presentation Layer**: Login/Register/ForgotPassword screens, `AuthViewModel`
 - **Capabilities**:
   - Email/password authentication
   - Google OAuth
-  - Apple Sign-In
-  - Profile management
-  - Session persistence
   - Password reset
+  - Session persistence
 
 **Key Files**:
-- `lib/features/auth/domain/entities/user_model.dart` (~30 LOC)
-- `lib/features/auth/data/repositories/auth_repository.dart` (~150 LOC)
-- `lib/features/auth/presentation/providers/auth_notifier_provider.dart` (~80 LOC)
+- `lib/features/auth/domain/entities/user_model.dart`
+- `lib/features/auth/data/repositories/auth_repository.dart`
+- `lib/features/auth/presentation/view_models/auth_view_model.dart`
 
 #### 2. Template Engine (template_engine feature)
-- **Domain Layer**: `TemplateModel`, `GenerationJobModel`, `InputField`, repository interfaces
+- **Domain Layer**: `TemplateModel`, `GenerationJobModel`, `InputFieldModel`, repository interfaces
 - **Data Layer**: `TemplateRepository`, `GenerationRepository` (Supabase + Edge Functions)
 - **Presentation Layer**: Template list/detail screens, providers
 - **Capabilities**:
   - Template browsing with category filters
   - Dynamic input field rendering (text, image upload, dropdown)
   - Generation job creation and tracking
-  - Real-time job status updates (via Supabase Realtime)
+  - Real-time job status updates
 
 **Key Files**:
-- `lib/features/template_engine/domain/entities/template_model.dart` (~40 LOC)
-- `lib/features/template_engine/domain/entities/generation_job_model.dart` (~35 LOC)
-- `lib/features/template_engine/data/repositories/template_repository.dart` (78 LOC)
-- `lib/features/template_engine/presentation/widgets/input_field_builder.dart` (~120 LOC)
+- `lib/features/template_engine/domain/entities/template_model.dart`
+- `lib/features/template_engine/data/repositories/template_repository.dart`
+- `lib/features/template_engine/presentation/widgets/input_field_builder.dart`
 
-#### 3. Core Infrastructure
+#### 3. Gallery (gallery feature)
+- **Domain Layer**: `GalleryItem`, `IGalleryRepository`
+- **Data Layer**: `GalleryRepository` (Supabase integration)
+- **Presentation Layer**: Gallery page, image viewer, masonry grid
+- **Capabilities**:
+  - Masonry grid layout
+  - Image viewer with fullscreen support
+  - Download, share, delete functionality
+  - Pull-to-refresh
+  - Realtime updates
+
+**Key Files**:
+- `lib/features/gallery/domain/entities/gallery_item.dart`
+- `lib/features/gallery/data/repositories/gallery_repository.dart`
+- `lib/features/gallery/presentation/widgets/masonry_image_grid.dart`
+
+#### 4. Settings (settings feature)
+- **Capabilities**:
+  - Theme switcher (light/dark/system)
+  - Theme persistence
+
+#### 5. Core Infrastructure
 - **Exception Handling**: Sealed `AppException` class hierarchy
 - **Error Mapping**: `AppExceptionMapper` for user-friendly messages
 - **Constants Management**: Centralized in `AppConstants`
 - **Dependency Injection**: Riverpod providers for global dependencies
-
-**Key Files**:
-- `lib/core/exceptions/app_exception.dart` (~60 LOC)
-- `lib/core/utils/app_exception_mapper.dart` (84 LOC)
-- `lib/core/constants/app_constants.dart` (18 LOC)
-
----
-
-### ⏸ Pending Features
-
-#### 1. Gallery (gallery feature)
-- Status: Placeholder screen only
-- Required: User image gallery with pagination, download/share/delete
-
-#### 2. Text-to-Image (create feature)
-- Status: Placeholder screen only
-- Required: Custom prompt input, parameter controls, generation flow
-
-#### 3. Settings (settings feature)
-- Status: Placeholder screen only
-- Required: Theme switcher, account management, sign out
-
-#### 4. Subscription & Credits
-- Status: Feature removed in Phase 4.6 cleanup
-- Required: Free/Pro tiers, RevenueCat integration, credits system
 
 ---
 
@@ -199,24 +228,20 @@ lib/
 |---------|-------------------|---------------|----------------|---------------|
 | `auth` | ✓ Yes | ✓ Yes | ✓ Yes | ❌ Pending |
 | `template_engine` | ✓ Yes | ✓ Yes | ✓ Yes | ❌ Pending |
-| `create` | ⚠️ Placeholder | N/A | N/A | ❌ N/A |
-| `gallery` | ⚠️ Placeholder | N/A | N/A | ❌ N/A |
-| `settings` | ⚠️ Placeholder | N/A | N/A | ❌ N/A |
+| `gallery` | ✓ Yes | ✓ Yes | ✓ Yes | ❌ Pending |
+| `settings` | ⚠️ Basic | N/A | N/A | ❌ N/A |
+| `create` | ⚠️ Basic | N/A | N/A | ❌ N/A |
 
 ### Code Quality Metrics
 
-**Linting Status**: ✓ Clean (0 errors, 0 warnings from `flutter analyze`)
+**Linting Status**: ⚠️ 1 error detected
+- `lib/features/gallery/presentation/widgets/gallery_grid.dart:50` - Null safety issue
 
 **Enabled Lints**:
 - `prefer_const_constructors`: ✓ Enabled
 - `prefer_const_literals_to_create_immutables`: ✓ Enabled
 - `avoid_redundant_argument_values`: ✓ Enabled
 - `prefer_final_fields`: ✓ Enabled
-
-**Code Complexity**:
-- All files under 200 lines (excellent)
-- Clear separation of concerns
-- Minimal cyclomatic complexity
 
 **Type Safety**:
 - 100% type coverage (strict mode)
@@ -232,38 +257,27 @@ lib/
 ```dart
 // Global Dependencies (core/providers/)
 supabaseProvider: Riverpod<SupabaseClient>
+themeProvider: Riverpod<ThemeMode>
 
 // Auth Feature (features/auth/)
 authRepositoryProvider: Riverpod<IAuthRepository>
-authNotifierProvider: Riverpod<AuthNotifier>
+authViewModelProvider: Riverpod<AuthViewModel>
 
 // Template Engine Feature (features/template_engine/)
 templateRepositoryProvider: Riverpod<ITemplateRepository>
 generationRepositoryProvider: Riverpod<IGenerationRepository>
-templateListProvider: Riverpod<AsyncValue<List<TemplateModel>>>
-generationJobProvider(String id): Riverpod<Stream<GenerationJobModel>>
+templateProvider: Riverpod<AsyncValue<List<TemplateModel>>>
+generationPolicyProvider: Riverpod<GenerationPolicy>
+generationViewModelProvider: Riverpod<GenerationViewModel>
+
+// Gallery Feature (features/gallery/)
+galleryRepositoryProvider: Riverpod<IGalleryRepository>
+galleryProvider: Riverpod<AsyncValue<List<GalleryItem>>>
 ```
 
 ### Code Generation Pattern
 
-**All providers use `@riverpod` annotations (never manual providers):**
-
-```dart
-// Example: Repository provider
-@riverpod
-IAuthRepository authRepository(AuthRepositoryRef ref) {
-  return AuthRepository(ref.watch(supabaseProvider));
-}
-
-// Example: Notifier provider
-@riverpod
-class AuthNotifier extends _$AuthNotifier {
-  @override
-  FutureOr<AuthState> build() async {
-    // initialization
-  }
-}
-```
+**All providers use `@riverpod` annotations (never manual providers)**
 
 ---
 
@@ -277,24 +291,6 @@ All domain entities use Freezed for:
 - JSON serialization
 - Copy-with methods
 
-**Example**:
-```dart
-@freezed
-class TemplateModel with _$TemplateModel {
-  const factory TemplateModel({
-    required String id,
-    required String name,
-    required String category,
-    required String thumbnailUrl,
-    required List<InputField> inputFields,
-    String? description,
-  }) = _TemplateModel;
-
-  factory TemplateModel.fromJson(Map<String, dynamic> json) =>
-      _$TemplateModelFromJson(json);
-}
-```
-
 ### Key Models
 
 | Model | LOC | Purpose | Location |
@@ -302,7 +298,8 @@ class TemplateModel with _$TemplateModel {
 | `UserModel` | ~30 | Auth user + profile | `auth/domain/entities/` |
 | `TemplateModel` | ~40 | Template metadata | `template_engine/domain/entities/` |
 | `GenerationJobModel` | ~35 | Job status tracking | `template_engine/domain/entities/` |
-| `InputField` | ~25 | Dynamic form config | `template_engine/domain/entities/` |
+| `InputFieldModel` | ~25 | Dynamic form config | `template_engine/domain/entities/` |
+| `GalleryItem` | ~20 | Gallery image item | `gallery/domain/entities/` |
 | `AppException` | ~60 | Error hierarchy | `core/exceptions/` |
 
 ---
@@ -311,19 +308,19 @@ class TemplateModel with _$TemplateModel {
 
 ### Route Configuration
 
-**File**: `lib/router/app_router.dart` (~80 LOC)
+**File**: `lib/routing/app_router.dart`
 
 **Routes**:
-- `/` → `TemplateListScreen` (auth required)
+- `/` → `HomeScreen` (auth required)
 - `/template/:id` → `TemplateDetailScreen` (auth required)
-- `/generation/:id` → `GenerationProgressScreen` (auth required)
 - `/login` → `LoginScreen` (redirect if authenticated)
-- `/signup` → `SignupScreen` (redirect if authenticated)
-- `/gallery` → `GalleryScreen` (placeholder)
-- `/create` → `CreateScreen` (placeholder)
-- `/settings` → `SettingsScreen` (placeholder)
+- `/register` → `RegisterScreen` (redirect if authenticated)
+- `/forgot-password` → `ForgotPasswordScreen`
+- `/gallery` → `GalleryPage` (auth required)
+- `/create` → `CreateScreen`
+- `/settings` → `SettingsScreen`
 
-**Auth Guards**: Implemented via `redirect` callback
+**Auth Guards**: Implemented via `AuthViewModel.redirect` callback
 
 **Known Tech Debt**: Uses raw string paths (not `TypedGoRoute`)
 
@@ -333,7 +330,7 @@ class TemplateModel with _$TemplateModel {
 
 ### Exception Hierarchy
 
-**File**: `lib/core/exceptions/app_exception.dart` (~60 LOC)
+**File**: `lib/exceptions/app_exception.dart`
 
 ```dart
 sealed class AppException implements Exception {
@@ -344,33 +341,17 @@ sealed class AppException implements Exception {
 }
 
 // Subclasses
-class AuthException extends AppException { ... }
 class NetworkException extends AppException { ... }
-class ValidationException extends AppException { ... }
+class AuthException extends AppException { ... }
 class StorageException extends AppException { ... }
+class PaymentException extends AppException { ... }
+class GenerationException extends AppException { ... }
 class UnknownException extends AppException { ... }
 ```
 
 ### Error Mapping
 
-**File**: `lib/core/utils/app_exception_mapper.dart` (84 LOC)
-
-**Pattern**: Switch expression on sealed class for user-friendly messages
-
-```dart
-static String toUserMessage(AppException exception) {
-  return switch (exception) {
-    AuthException(code: 'invalid_credentials') =>
-      'Invalid email or password.',
-    NetworkException(statusCode: int status) when status >= 500 =>
-      'Server error. Please try again later.',
-    ValidationException() =>
-      exception.message,
-    _ =>
-      'Something went wrong. Please try again.',
-  };
-}
-```
+**File**: `lib/core/utils/app_exception_mapper.dart`
 
 ---
 
@@ -380,24 +361,16 @@ static String toUserMessage(AppException exception) {
 
 | Package | Version | Purpose |
 |---------|---------|---------|
-| `flutter` | sdk: flutter | Framework |
-| `riverpod` | ^2.x | State management |
-| `riverpod_annotation` | ^2.x | Code generation annotations |
-| `freezed` | ^2.x | Immutable models |
-| `freezed_annotation` | ^2.x | Code generation annotations |
-| `json_serializable` | ^6.x | JSON serialization |
-| `json_annotation` | ^4.x | JSON annotations |
-| `supabase_flutter` | ^2.x | Backend integration |
-| `go_router` | ^14.x | Navigation |
-
-### Dev Dependencies
-
-| Package | Version | Purpose |
-|---------|---------|---------|
-| `build_runner` | ^2.x | Code generation runner |
-| `riverpod_generator` | ^2.x | Riverpod code generation |
-| `custom_lint` | ^0.6.x | Riverpod lints |
-| `riverpod_lint` | ^2.x | Riverpod-specific lints |
+| `flutter_riverpod` | ^2.6.1 | State management |
+| `riverpod_annotation` | ^2.6.1 | Code generation annotations |
+| `freezed` | ^2.5.8 | Immutable models |
+| `freezed_annotation` | ^2.4.4 | Code generation annotations |
+| `json_serializable` | ^6.9.0 | JSON serialization |
+| `supabase_flutter` | ^2.11.0 | Backend integration |
+| `go_router` | ^14.8.1 | Navigation |
+| `flex_color_scheme` | ^8.2.0 | Theme |
+| `purchases_flutter` | ^9.0.0 | Payments |
+| `google_mobile_ads` | ^6.0.0 | Ads |
 
 ---
 
@@ -405,21 +378,12 @@ static String toUserMessage(AppException exception) {
 
 ### Current Coverage
 
-**Overall**: ~5-10% (1 widget test only)
-
-**Existing Test**:
-```dart
-// test/widget_test.dart
-testWidgets('App renders Artio text', (WidgetTester tester) async {
-  await tester.pumpWidget(const ProviderScope(child: ArtioApp()));
-  expect(find.text('Artio'), findsOneWidget);
-});
-```
+**Overall**: ~5-10% (minimal)
 
 ### Required Tests (Target: 80%)
 
 **Pending**:
-- Repository unit tests (auth, template, generation)
+- Repository unit tests (auth, template, generation, gallery)
 - Provider/Notifier tests
 - Widget tests (screens, complex widgets)
 - Integration tests (auth flow, generation flow)
@@ -432,17 +396,16 @@ testWidgets('App renders Artio text', (WidgetTester tester) async {
 
 | Issue | Impact | Severity | Status |
 |-------|--------|----------|--------|
+| Null safety error in gallery_grid.dart | Compilation | High | Identified |
 | Test coverage gap (5% vs 80%) | Production readiness | High | Pending |
-| Missing @override annotations (22 instances) | Maintainability | High | Identified |
-| GoRouter raw strings (H2, H3) | Type safety | High | Deferred |
+| GoRouter raw strings | Type safety | Medium | Deferred |
 
 ### Medium Priority
 
 | Issue | Impact | Severity | Status |
 |-------|--------|----------|--------|
-| Placeholder features not 3-layer | Architectural consistency | Medium | Pending |
+| Settings/Create not 3-layer | Architectural consistency | Medium | Pending |
 | Repository methods lack dartdocs | API clarity | Medium | Pending |
-| Boolean precedence ambiguity | Code clarity | Low | Pending |
 
 ### Accepted Trade-offs
 
@@ -467,11 +430,6 @@ testWidgets('App renders Artio text', (WidgetTester tester) async {
 - `profiles`: Users can read all, update own
 - `templates`: Read-only for users
 - `generation_jobs`: Users can CRUD own jobs
-
-### Input Validation
-
-- Client-side: Flutter form validators
-- Server-side: Edge Function validates input_data (pending)
 
 ---
 
@@ -508,46 +466,8 @@ dart run build_runner watch
 
 ### Pending Optimizations
 
-- Lazy loading in gallery (pagination)
 - Image compression before upload
 - CDN for Storage (Cloudflare)
-
----
-
-## Known Issues from Code Review
-
-### From Phase 4.6 Review (2026-01-27)
-
-**Critical (0)**: All compilation errors resolved
-
-**High (2)**:
-1. Missing `@override` annotations (22 instances)
-2. Test coverage below 80% target
-
-**Medium (3)**:
-1. Placeholder features not following 3-layer structure
-2. Repository methods lack dartdocs
-3. Boolean logic precedence ambiguity in error mapper
-
-**Low (2)**:
-1. Redundant argument values (4 instances)
-2. Placeholder screens use duplicate code (extract to widget)
-
----
-
-## File Size Distribution
-
-### Top Files by Lines of Code
-
-| File | LOC | Purpose |
-|------|-----|---------|
-| `auth_repository.dart` | ~150 | Auth implementation |
-| `input_field_builder.dart` | ~120 | Dynamic form widget |
-| `template_repository.dart` | ~78 | Template data access |
-| `app_exception_mapper.dart` | 84 | Error message mapping |
-| `app_router.dart` | ~80 | Navigation config |
-
-**Note**: All files under 200 LOC (excellent modularity)
 
 ---
 
@@ -555,20 +475,17 @@ dart run build_runner watch
 
 ### Existing Documentation
 
-| Document | Status | Lines | Purpose |
-|----------|--------|-------|---------|
-| `development-roadmap.md` | ✓ Current | 290 | Project progress tracking |
-| `code-standards.md` | ✓ Created | ~550 | Coding conventions |
-| `system-architecture.md` | ✓ Created | ~600 | Architecture documentation |
-| `project-overview-pdr.md` | ✓ Created | ~650 | Product requirements |
-| `codebase-summary.md` | ✓ Created | ~450 | This document |
-
-### Plan Documentation
-
-- 8 phase files (12-section template format)
-- 3 implementation reports
-- 1 tech debt audit
-- 1 code review report
+| Document | Status | Purpose |
+|----------|--------|---------|
+| `README.md` | ✓ Current | Project overview, getting started |
+| `ROADMAP.md` | ✓ Current | Project progress tracking |
+| `AGENTS.md` | ✓ Current | AI agent guidelines |
+| `CLAUDE.md` | ✓ Current | AI assistant instructions |
+| `development-roadmap.md` | ✓ Current | Detailed development phases |
+| `code-standards.md` | ✓ Current | Coding conventions |
+| `system-architecture.md` | ✓ Current | Architecture documentation |
+| `project-overview-pdr.md` | ✓ Current | Product requirements |
+| `codebase-summary.md` | ✓ Current | This document |
 
 ---
 
@@ -576,36 +493,33 @@ dart run build_runner watch
 
 ### Immediate Actions
 
-1. Add `@override` annotations (5 min)
-2. Run `flutter analyze` to verify (2 min)
+1. Fix null safety error in `gallery_grid.dart`
+2. Run `flutter analyze` to verify
 3. Write comprehensive test suite (6-8h)
 
 ### Short-term (1-2 weeks)
 
-1. Implement Gallery feature (Phase 5)
-2. Restructure placeholder features to 3-layer
-3. Add repository method dartdocs
+1. Implement Subscription & Credits (Plan 3)
+2. Add repository method dartdocs
+3. Restructure settings/create to 3-layer
 
 ### Long-term (1-2 months)
 
 1. Migrate to TypedGoRoute (when stable)
-2. Implement Subscription & Credits (Phase 6)
-3. Add Settings feature (Phase 7)
-4. Build Admin app (Phase 8)
+2. Implement Text-to-Image feature
+3. Build Admin app
 
 ---
 
 ## References
 
-- **Repomix Output**: `repomix-output.xml` (724KB, 249,729 tokens)
 - **Development Roadmap**: `docs/development-roadmap.md`
 - **Code Standards**: `docs/code-standards.md`
 - **System Architecture**: `docs/system-architecture.md`
-- **Phase 4.6 Plan**: `plans/260125-1516-phase46-architecture-hardening/plan.md`
-- **Code Review**: `plans/reports/code-reviewer-260127-1959-phase46-architecture-hardening.md`
+- **Project Overview**: `docs/project-overview-pdr.md`
 
 ---
 
-**Generated**: 2026-01-27
-**Analysis Depth**: Comprehensive (80 files, 2,500+ LOC)
+**Generated**: 2026-01-28
+**Analysis Depth**: Comprehensive (85 files, 3,000+ LOC)
 **Codebase Grade**: A- (Excellent architecture, needs test coverage)

@@ -1,4 +1,4 @@
-# CLAUDE.md
+# AGENTS.md
 
 This file provides guidance to Opencode when working with code in this repository.
 
@@ -31,6 +31,109 @@ When working with Flutter/Dart code, **ALWAYS read** `~/.config/opencode/rules/f
 - `~/.config/opencode/skills/flutter/go-router-navigation/skill.md`
 - `~/.config/opencode/skills/dart/best-practices/skill.md`
 
+## Supabase Skills (AUTO-ACTIVATE)
+
+**CRITICAL:** When working with Supabase (migrations, SQL queries, RLS policies, database operations), **ALWAYS activate** `supabase-postgres-best-practices` skill.
+
+**Activation:**
+```bash
+# Use slash command before any Supabase-related work
+/supabase-postgres-best-practices
+```
+
+**When to activate:**
+- Writing or applying SQL migrations
+- Creating/modifying RLS policies
+- Database schema changes
+- Query optimization
+- Index management
+
+## Project-Specific Guidelines
+
+### Architecture Pattern
+
+**Artio follows Feature-First Clean Architecture:**
+
+```
+lib/features/{feature}/
+├── domain/              # Business logic + Interfaces
+│   ├── entities/        # Freezed models
+│   └── repositories/    # Abstract interfaces
+├── data/                # Implementation
+│   └── repositories/    # Concrete implementations
+└── presentation/        # UI + State
+    ├── providers/       # @riverpod providers
+    ├── screens/         # Full-screen pages
+    └── widgets/         # Reusable components
+```
+
+### Dependency Rule
+
+**Presentation → Domain ← Data**
+
+- Presentation depends on Domain (interfaces only)
+- Data depends on Domain (implements interfaces)
+- Domain depends on nothing (pure business logic)
+- Never import Data directly in Presentation
+
+### State Management (Riverpod)
+
+- **Always use `@riverpod` annotations** (code generation)
+- Never use manual providers
+- Use `AsyncValue.guard` for error handling
+- Inject repositories via constructor
+
+### Data Models (Freezed)
+
+- All domain entities use Freezed
+- Include `part 'model.freezed.dart'` and `part 'model.g.dart'`
+- Use factory constructors for JSON serialization
+
+### Navigation (GoRouter)
+
+- Use `ShellRoute` for main shell (bottom nav)
+- Implement auth guards via redirect callback
+- Route paths defined in `lib/routing/app_router.dart`
+
+### Error Handling
+
+- Throw `AppException` from data layer
+- Use `AppExceptionMapper` for user-friendly messages
+- Never expose stack traces to users
+
+## Implemented Features
+
+| Feature | Status | Notes |
+|---------|--------|-------|
+| Authentication | ✅ Complete | Email, OAuth, password reset |
+| Template Engine | ✅ Complete | Browse, generate, track progress |
+| Gallery | ✅ Complete | Masonry grid, view, download, share, delete |
+| Settings | ✅ Complete | Theme switcher |
+| Subscription & Credits | 🔲 Pending | Plan 3 |
+
+## Code Generation
+
+```bash
+# Run after modifying Freezed/Riverpod annotations
+dart run build_runner build --delete-conflicting-outputs
+
+# Watch mode for development
+dart run build_runner watch
+```
+
+## Code Quality
+
+```bash
+# Analyze code
+flutter analyze
+
+# Run tests
+flutter test
+
+# Format code
+dart format .
+```
+
 ## Python Scripts (Skills)
 
 When running Python scripts from `~/.config/opencode/skills/`, use the venv Python interpreter:
@@ -42,6 +145,7 @@ This ensures packages installed by `install.sh` (google-genai, pypdf, etc.) are 
 **IMPORTANT:** When scripts of skills failed, don't stop, try to fix them directly.
 
 ## [IMPORTANT] Consider Modularization
+
 - If a code file exceeds 200 lines of code, consider modularizing it
 - Check existing modules before creating new
 - Analyze logical separation boundaries (functions, classes, concerns)
@@ -59,10 +163,31 @@ We keep all important docs in `./docs` folder and keep updating them, structure 
 ├── project-overview-pdr.md
 ├── code-standards.md
 ├── codebase-summary.md
-├── design-guidelines.md
-├── deployment-guide.md
 ├── system-architecture.md
-└── project-roadmap.md
+└── development-roadmap.md
 ```
 
 **IMPORTANT:** *MUST READ* and *MUST COMPLY* all *INSTRUCTIONS* in project `./AGENTS.md`, especially *WORKFLOWS* section is *CRITICALLY IMPORTANT*, this rule is *MANDATORY. NON-NEGOTIABLE. NO EXCEPTIONS. MUST REMEMBER AT ALL TIMES!!!*
+
+## Quick File Reference
+
+| Resource | Path |
+|----------|------|
+| Main entry | `lib/main.dart` |
+| Router config | `lib/routing/app_router.dart` |
+| Supabase provider | `lib/core/providers/supabase_provider.dart` |
+| Error mapper | `lib/core/utils/app_exception_mapper.dart` |
+| Constants | `lib/core/constants/app_constants.dart` |
+| Auth feature | `lib/features/auth/` |
+| Template engine | `lib/features/template_engine/` |
+| Gallery feature | `lib/features/gallery/` |
+| Settings feature | `lib/features/settings/` |
+| Create feature | `lib/features/create/` |
+
+## Known Technical Debt
+
+| Issue | Priority | Status |
+|-------|----------|--------|
+| Test coverage (5-10% vs 80% target) | High | Pending |
+| GoRouter raw strings (not TypedGoRoute) | Medium | Deferred |
+| DTO leakage in domain entities | Low | Acceptable for MVP |
