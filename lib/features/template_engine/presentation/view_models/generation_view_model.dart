@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../domain/entities/generation_job_model.dart';
 import '../../data/repositories/generation_repository.dart';
+import '../providers/generation_policy_provider.dart';
 
 part 'generation_view_model.g.dart';
 
@@ -18,12 +19,27 @@ class GenerationViewModel extends _$GenerationViewModel {
   Future<void> generate({
     required String templateId,
     required String prompt,
+    required String userId,
     String aspectRatio = '1:1',
     int imageCount = 1,
   }) async {
     state = const AsyncLoading();
 
     try {
+      final policy = ref.read(generationPolicyProvider);
+      final eligibility = await policy.canGenerate(
+        userId: userId,
+        templateId: templateId,
+      );
+
+      if (eligibility.isDenied) {
+        state = AsyncError(
+          Exception(eligibility.denialReason ?? 'Generation not allowed'),
+          StackTrace.current,
+        );
+        return;
+      }
+
       final repo = ref.read(generationRepositoryProvider);
       final jobId = await repo.startGeneration(
         templateId: templateId,
