@@ -1,8 +1,8 @@
 # Code Standards
 
 **Project**: Artio - AI Image Generation SaaS
-**Updated**: 2026-01-27
-**Version**: 1.0
+**Updated**: 2026-01-28
+**Version**: 1.1
 
 ---
 
@@ -92,15 +92,21 @@ lib/
 │   │       │   ├── template_list_screen.dart
 │   │       │   └── template_detail_screen.dart
 │   │       └── widgets/
-│   │           ├── template_card.dart
-│   │           └── input_field_builder.dart
-│   ├── create/                        # Placeholder (pending restructure)
-│   │   └── presentation/screens/
-│   ├── gallery/                       # Placeholder (pending restructure)
-│   │   └── presentation/screens/
-│   └── settings/                      # Placeholder (pending restructure)
-│       └── presentation/screens/
-├── router/
+    │   │           ├── template_card.dart
+    │   │           └── input_field_builder.dart
+    │   ├── create/                        # ✓ 3-layer structure
+    │   │   ├── domain/
+    │   │   ├── data/
+    │   │   └── presentation/
+    │   ├── gallery/                       # ✓ 3-layer structure
+    │   │   ├── domain/
+    │   │   ├── data/
+    │   │   └── presentation/
+    │   └── settings/                      # ✓ 3-layer structure
+    │       ├── domain/
+    │       ├── data/
+    │       └── presentation/
+    ├── router/
 │   └── app_router.dart                # go_router configuration
 ├── theme/
 │   └── app_theme.dart                 # Material theme definitions

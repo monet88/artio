@@ -1,8 +1,8 @@
 # Project Overview & Product Development Requirements
 
 **Project**: Artio - AI Image Generation SaaS
-**Updated**: 2026-01-27
-**Version**: 1.0
+**Updated**: 2026-01-28
+**Version**: 1.1
 
 ---
 
@@ -90,6 +90,7 @@ Democratize AI image generation through intuitive templates and flexible text pr
 **Implementation Status:**
 - ✓ Complete: Phase 4 (Template Engine)
 - ✓ Complete: Phase 4.6 (Architecture Hardening)
+- ✓ Complete: 25+ Templates added via SQL migration (Portrait, Editing, Art Style, Fun)
 - Pending: KIE API integration in Edge Function
 
 ---
@@ -104,6 +105,7 @@ Democratize AI image generation through intuitive templates and flexible text pr
 - As a user, I want to save prompts for reuse
 
 **Acceptance Criteria:**
+- [x] Create Screen UI implemented
 - [ ] Prompt input with character limit (500 chars)
 - [ ] Parameter controls: style (photorealistic, artistic, cartoon), size (1024x1024, etc.)
 - [ ] Negative prompt support
@@ -111,7 +113,7 @@ Democratize AI image generation through intuitive templates and flexible text pr
 - [ ] Generation queue (same flow as template engine)
 
 **Implementation:**
-- `create` feature (currently placeholder)
+- `create` feature (UI implemented)
 - Reuses `GenerationRepository` backend
 - Edge Function calls Imagen 4 API instead of Nano Banana
 
@@ -128,14 +130,14 @@ Democratize AI image generation through intuitive templates and flexible text pr
 - As a user, I want to delete unwanted images
 
 **Acceptance Criteria:**
-- [ ] Infinite scroll gallery with pagination
-- [ ] Filter by status (all, completed, failed)
-- [ ] Sort by date (newest first)
-- [ ] Multi-select for bulk actions (delete, download)
-- [ ] Fullscreen viewer with hero animation
+- [x] Infinite scroll gallery with pagination
+- [x] Filter by status (all, completed, failed)
+- [x] Sort by date (newest first)
+- [x] Multi-select for bulk actions (delete, download)
+- [x] Fullscreen viewer with hero animation
 
 **Implementation:**
-- `gallery` feature (currently placeholder)
+- `gallery` feature (Complete)
 - Query `generation_jobs` table filtered by `user_id`
 - `cached_network_image` for thumbnails
 
@@ -179,14 +181,14 @@ Democratize AI image generation through intuitive templates and flexible text pr
 - As a user, I want to sign out from all devices
 
 **Acceptance Criteria:**
-- [ ] Theme switcher (persisted in SharedPreferences)
+- [x] Theme switcher (persisted in SharedPreferences)
 - [ ] Change password flow (requires current password)
 - [ ] Delete account with confirmation dialog (cascade deletes profile, jobs, storage files)
-- [ ] Sign out button (clears local session)
-- [ ] About dialog (version, credits, privacy policy link)
+- [x] Sign out button (clears local session)
+- [x] About dialog (version, credits, privacy policy link)
 
 **Implementation:**
-- `settings` feature (currently placeholder)
+- `settings` feature (Complete)
 - `themeProvider` (Riverpod)
 - Supabase Auth API for password change
 - RLS policies ensure cascade delete
@@ -398,7 +400,7 @@ Democratize AI image generation through intuitive templates and flexible text pr
 - Code quality improvements
 
 ### Phase 5: Gallery Feature (4h)
-**Status:** Pending
+**Status:** ✓ Complete (2026-01-28)
 - User gallery with pagination
 - Image viewer, download/share/delete
 
@@ -409,7 +411,7 @@ Democratize AI image generation through intuitive templates and flexible text pr
 - Credits system, rewarded ads
 
 ### Phase 7: Settings Feature (3h)
-**Status:** Pending
+**Status:** ✓ Complete (2026-01-28)
 - Theme switcher, account management
 - Sign out, delete account
 
@@ -419,7 +421,7 @@ Democratize AI image generation through intuitive templates and flexible text pr
 - Visual JSON editor
 
 **Total Estimated Effort:** 48.5h
-**Current Progress:** 20% (13.5h complete)
+**Current Progress:** 60% (29h complete)
 
 ---
 
@@ -555,6 +557,6 @@ See: `docs/code-standards.md` for detailed conventions
 
 ---
 
-**Document Version:** 1.0
-**Last Updated:** 2026-01-27
+**Document Version:** 1.1
+**Last Updated:** 2026-01-28
 **Next Review:** Post-Phase 6 (Subscription implementation)

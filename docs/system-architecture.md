@@ -2,14 +2,14 @@
 
 **Project**: Artio - AI Image Generation SaaS
 **Updated**: 2026-01-27
-**Version**: 1.0
+**Version**: 1.1
 
 ---
 
 ## High-Level Overview
 
-Artio is a cross-platform AI image generation SaaS with dual generation modes:
-- **Template Engine** (Home tab): Image-to-image with preset templates
+Artio is a cross-platform (Android, iOS, Web, Windows) AI image generation SaaS with dual generation modes:
+- **Template Engine** (Home tab): Image-to-image with 25+ preset templates (Portrait, Art Style, Editing, etc.)
 - **Text-to-Image** (Create tab): Custom prompt generation
 
 ### Technology Stack
@@ -381,9 +381,9 @@ Similar flow, but:
 /generation/:id               → GenerationProgressScreen (auth required)
 /login                        → LoginScreen (redirect to / if authenticated)
 /signup                       → SignupScreen (redirect to / if authenticated)
-/gallery                      → GalleryScreen (auth required, pending impl)
-/create                       → CreateScreen (auth required, pending impl)
-/settings                     → SettingsScreen (auth required, pending impl)
+/gallery                      → GalleryScreen (auth required)
+/create                       → CreateScreen (auth required)
+/settings                     → SettingsScreen (auth required)
 ```
 
 ### Auth Guards

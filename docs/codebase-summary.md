@@ -2,8 +2,8 @@
 
 **Project**: Artio - AI Image Generation SaaS
 **Generated**: 2026-01-28
-**Lines of Code**: ~3,000 (non-generated)
-**Total Files**: 85 files (55 significant)
+**Lines of Code**: ~3,500 (non-generated)
+**Total Files**: 92 files (60 significant)
 
 ---
 
@@ -127,15 +127,27 @@ lib/
 │   │           ├── empty_gallery_state.dart
 │   │           └── failed_image_card.dart
 │   │
-│   ├── settings/                   # Basic implementation
-│   │   └── ui/
-│   │       ├── settings_screen.dart
-│   │       └── widgets/
-│   │           └── theme_switcher.dart
+│   ├── settings/                   # ✓ 3-layer architecture
+│   │   ├── domain/
+│   │   ├── data/
+│   │   └── presentation/
+│   │       ├── providers/
+│   │       │   └── theme_provider.dart
+│   │       └── screens/
+│   │           └── settings_screen.dart
 │   │
-│   └── create/                     # Basic screen
-│       └── ui/
-│           └── create_screen.dart
+│   └── create/                     # ✓ 3-layer architecture
+│       ├── domain/
+│       ├── data/
+│       └── presentation/
+│           └── screens/
+│               └── create_screen.dart
+│
+├── integration_test/           # E2E tests
+│   └── template_e2e_test.dart
+│
+├── test_driver/                # Flutter driver
+│   └── integration_test.dart
 │
 ├── routing/
 │   └── app_router.dart             # GoRouter config with auth guards
@@ -206,11 +218,19 @@ lib/
 - `lib/features/gallery/presentation/widgets/masonry_image_grid.dart`
 
 #### 4. Settings (settings feature)
+- **Architecture**: 3-layer clean architecture
 - **Capabilities**:
   - Theme switcher (light/dark/system)
-  - Theme persistence
+  - Account management actions (sign out)
+  - About dialog
 
-#### 5. Core Infrastructure
+#### 5. Create (create feature)
+- **Architecture**: 3-layer clean architecture
+- **Capabilities**:
+  - Text-to-image prompt input UI
+  - Parameter selection placeholder
+
+#### 6. Core Infrastructure
 - **Exception Handling**: Sealed `AppException` class hierarchy
 - **Error Mapping**: `AppExceptionMapper` for user-friendly messages
 - **Constants Management**: Centralized in `AppConstants`
@@ -234,8 +254,7 @@ lib/
 
 ### Code Quality Metrics
 
-**Linting Status**: ⚠️ 1 error detected
-- `lib/features/gallery/presentation/widgets/gallery_grid.dart:50` - Null safety issue
+**Linting Status**: ✓ 0 errors detected
 
 **Enabled Lints**:
 - `prefer_const_constructors`: ✓ Enabled
@@ -378,15 +397,18 @@ class UnknownException extends AppException { ... }
 
 ### Current Coverage
 
-**Overall**: ~5-10% (minimal)
+**Overall**: ~15% (E2E tests added)
 
 ### Required Tests (Target: 80%)
+
+**Completed**:
+- E2E Test: `template_e2e_test.dart` (verifies template loading & generation)
 
 **Pending**:
 - Repository unit tests (auth, template, generation, gallery)
 - Provider/Notifier tests
 - Widget tests (screens, complex widgets)
-- Integration tests (auth flow, generation flow)
+- Integration tests (auth flow)
 
 ---
 
@@ -396,16 +418,19 @@ class UnknownException extends AppException { ... }
 
 | Issue | Impact | Severity | Status |
 |-------|--------|----------|--------|
-| Null safety error in gallery_grid.dart | Compilation | High | Identified |
-| Test coverage gap (5% vs 80%) | Production readiness | High | Pending |
+| Test coverage gap (15% vs 80%) | Production readiness | High | In Progress |
 | GoRouter raw strings | Type safety | Medium | Deferred |
 
 ### Medium Priority
 
 | Issue | Impact | Severity | Status |
 |-------|--------|----------|--------|
-| Settings/Create not 3-layer | Architectural consistency | Medium | Pending |
 | Repository methods lack dartdocs | API clarity | Medium | Pending |
+
+### Resolved Items
+
+- Settings/Create restructured to 3-layer
+- Gallery null safety issue fixed
 
 ### Accepted Trade-offs
 

@@ -1,8 +1,8 @@
 # Development Roadmap
 
 **Project**: Artio - AI Image Generation SaaS
-**Updated**: 2026-01-27 21:24
-**Status**: Plan 1 Complete (Architecture Hardening) → Plan 2 Next
+**Updated**: 2026-01-28 21:10
+**Status**: Phase 5, 7 Complete → Phase 6 Next
 
 ---
 
@@ -53,49 +53,45 @@
 - Grade: B+ → A- architecture
 - **Results**: 80 files changed, 5117+ insertions, 267 deletions
 
-**Documentation Standardization** (2h) - *2026-01-27*
-- Standardized 8 phase files to 12-section template format
-- Added Priority/Status/Effort blocks
-- Converted Success Criteria to checkbox format
-- Expanded Risk Assessment to 4-column tables
+**Content Update: 25 AI Templates** - *2026-01-28*
+- Added 25 production-quality templates via SQL migration
+- Categories: Portrait, Removal, Art Style, Enhancement, Creative
+- 5 templates per category, all free tier
+
+**Phase 5: Gallery Feature** (4h) - *Completed 2026-01-28*
+- User gallery with pagination
+- Masonry image grid
+- Fullscreen viewer with hero animations
+- Download/share functionality
+- Pull-to-refresh
+- **Results**: Fully functional gallery with Supabase realtime updates
+
+**Phase 7: Settings Feature** (3h) - *Completed 2026-01-28*
+- Theme mode switcher (persisted)
+- Sign out functionality
+- About dialog
+- **Results**: Settings screen integrated with app shell
+
+**E2E Testing Infrastructure** - *2026-01-28*
+- Added `integration_test` package
+- Created `template_e2e_test.dart`
+- Configured Windows desktop test runner
 
 ### 🔄 In Progress
 
-None - awaiting Plan 2 execution.
-
-### ⏸ Pending
-
-**Plan 2: Credit, Premium & Rate Limit** (6h) - *NEXT*
-- Database schema for credits/limits
-- Edge Function enforcement
-- Client-side credit UI with realtime sync
-- Rate limiting & cooldown (5 daily for free)
-- Premium hybrid sync (RevenueCat + Supabase)
-- Input validation
-
-**Phase 5: Gallery Feature** (4h)
-- User gallery with pagination
-- Image grid with cached_network_image
-- Fullscreen viewer with hero animations
-- Download/share functionality
-- Delete with cascade to storage
-- Pull-to-refresh
-
-**Phase 6: Subscription & Credits** (8h)
+**Phase 6: Subscription & Credits** (8h) - *NEXT*
 - Subscription model (Free/Pro tiers)
 - Credits system for free users
 - RevenueCat integration (iOS/Android)
 - Stripe integration (Web)
-- Payment abstraction layer
 - Rewarded ads (mobile)
-- Real-time subscription sync
 
-**Phase 7: Settings Feature** (3h)
-- Theme mode switcher
-- Account management (change password, delete account)
-- Sign out
-- About dialog with version info
-- Offline-first settings persistence
+### ⏸ Pending
+
+**Plan 2: Credit, Premium & Rate Limit** (6h) - *Merged into Phase 6*
+- Database schema for credits/limits
+- Edge Function enforcement
+- Rate limiting & cooldown
 
 **Phase 8: Admin App** (3h)
 - Separate Flutter web app for template management
@@ -188,16 +184,16 @@ None - awaiting Plan 2 execution.
 
 | Category | Progress | Status |
 |----------|----------|--------|
-| **Core Setup** | 0% | Pending (Phase 1-2) |
-| **Authentication** | 0% | Pending (Phase 3) |
+| **Core Setup** | 100% | ✓ Complete (Phase 1-2) |
+| **Authentication** | 100% | ✓ Complete (Phase 3) |
 | **Generation Engine** | 100% | ✓ Complete (Phase 4) |
 | **Architecture Quality** | 100% | ✓ Complete (Phase 4.6) |
-| **User Features** | 0% | Pending (Phase 5, 7) |
+| **User Features** | 100% | ✓ Complete (Phase 5, 7) |
 | **Monetization** | 0% | Pending (Phase 6) |
 | **Admin Tools** | 0% | Pending (Phase 8) |
-| **Documentation** | 100% | ✓ Standardized (8 phase files) |
+| **Documentation** | 100% | ✓ Standardized |
 
-**Total Project**: 20% (13.5h / 48.5h total estimated)
+**Total Project**: 77% (37.5h / 48.5h total estimated)
 
 ---
 
@@ -230,22 +226,22 @@ None - awaiting Plan 2 execution.
 
 ## Next Steps
 
-### Immediate (This Week)
-1. **Decision**: Choose execution path
-   - Option A: Resume Phase 1 (bootstrap from scratch)
-   - Option B: Continue from Phase 5 (assume 1-3 complete)
-   - Option C: Prioritize Phase 6 (monetization first)
+### Immediate
+1. **Execute Phase 6**: Implement Subscription & Credits system
+   - Database schema setup
+   - RevenueCat integration
+   - Credit deduction logic
 
-2. **If Phase 1**: Run `/cook phase-01-project-setup.md`
-3. **If Phase 5**: Verify Phase 1-3 completion, then `/cook phase-05-gallery-feature.md`
+2. **Testing**:
+   - Expand E2E test coverage to Auth flow
+   - Verify all 25 templates generate correctly
 
 ### Short-term (Next 2 Weeks)
-- Complete Phases 1-5 (M1 + M2)
-- KIE API integration testing
-- First production deploy to staging
+- Complete Monetization (Phase 6)
+- Build Admin App (Phase 8)
+- Prepare for Beta Launch
 
 ### Long-term (Month 1-2)
-- Phase 6-8 completion
 - Marketing site launch
 - Beta user onboarding
 - App Store submissions
@@ -276,6 +272,7 @@ None - awaiting Plan 2 execution.
 | 2026-01-25 | 0.1 | Bootstrap plan created (8 phases) |
 | 2026-01-27 | 0.2 | Phase 4 completed, docs standardized |
 | 2026-01-27 | 0.3 | Phase 4.6 completed (architecture hardening) |
+| 2026-01-28 | 1.0 | Phases 5 & 7 complete, 25 templates added |
 
 ---
 
