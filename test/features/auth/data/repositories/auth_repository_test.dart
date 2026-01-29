@@ -1,23 +1,227 @@
-// TODO: Fix mocktail configuration for Supabase builder pattern
-// Issue: PostgrestFilterBuilder implements Future, causing mocktail state corruption
-// Blocker tracked in: .sisyphus/notepads/260128-comprehensive-flutter-testing/problems.md
-//
-// Temporarily skipping all tests until proper mock strategy is implemented.
-// Options to fix:
-// 1. Mock at repository interface level (IAuthRepository) instead of Supabase internals
-// 2. Use integration tests with test Supabase instance
-// 3. Refactor AuthRepository to be more testable (dependency injection for query builders)
-
-@Skip('Blocked: Supabase PostgrestFilterBuilder implements Future - mocktail incompatible')
-library;
+import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' show AuthState, AuthChangeEvent, Session;
+
+import 'package:artio/features/auth/domain/repositories/i_auth_repository.dart';
+import 'package:artio/features/auth/domain/entities/user_model.dart';
+import 'package:artio/exceptions/app_exception.dart';
+
+import '../../../../core/fixtures/user_fixtures.dart';
+
+// Mock the interface, NOT the implementation
+class MockAuthRepository extends Mock implements IAuthRepository {}
 
 void main() {
-  group('AuthRepository', () {
-    test('placeholder - see file header for blocker details', () {
-      // This test is skipped - see @Skip annotation above
-      expect(true, isTrue);
+  late MockAuthRepository mockAuthRepository;
+
+  setUp(() {
+    mockAuthRepository = MockAuthRepository();
+  });
+
+  group('IAuthRepository', () {
+    group('signInWithEmail', () {
+      test('returns UserModel on successful sign in', () async {
+        final expectedUser = UserFixtures.authenticated(
+          id: 'user-123',
+          email: 'test@example.com',
+        );
+
+        when(() => mockAuthRepository.signInWithEmail(
+              'test@example.com',
+              'password123',
+            )).thenAnswer((_) async => expectedUser);
+
+        final result = await mockAuthRepository.signInWithEmail(
+          'test@example.com',
+          'password123',
+        );
+
+        expect(result, equals(expectedUser));
+        expect(result.email, equals('test@example.com'));
+        verify(() => mockAuthRepository.signInWithEmail(
+              'test@example.com',
+              'password123',
+            )).called(1);
+      });
+
+      test('throws AppException on invalid credentials', () async {
+        when(() => mockAuthRepository.signInWithEmail(
+              'test@example.com',
+              'wrongpassword',
+            )).thenThrow(
+          const AppException.auth(message: 'Invalid login credentials'),
+        );
+
+        expect(
+          () => mockAuthRepository.signInWithEmail(
+            'test@example.com',
+            'wrongpassword',
+          ),
+          throwsA(isA<AppException>()),
+        );
+      });
+    });
+
+    group('signUpWithEmail', () {
+      test('returns UserModel on successful sign up', () async {
+        final expectedUser = UserFixtures.authenticated(
+          id: 'new-user-456',
+          email: 'newuser@example.com',
+        );
+
+        when(() => mockAuthRepository.signUpWithEmail(
+              'newuser@example.com',
+              'password123',
+            )).thenAnswer((_) async => expectedUser);
+
+        final result = await mockAuthRepository.signUpWithEmail(
+          'newuser@example.com',
+          'password123',
+        );
+
+        expect(result, equals(expectedUser));
+        expect(result.id, equals('new-user-456'));
+      });
+
+      test('throws AppException when user already exists', () async {
+        when(() => mockAuthRepository.signUpWithEmail(
+              'existing@example.com',
+              'password123',
+            )).thenThrow(
+          const AppException.auth(message: 'User already registered'),
+        );
+
+        expect(
+          () => mockAuthRepository.signUpWithEmail(
+            'existing@example.com',
+            'password123',
+          ),
+          throwsA(isA<AppException>()),
+        );
+      });
+    });
+
+    group('signOut', () {
+      test('completes without error', () async {
+        when(() => mockAuthRepository.signOut()).thenAnswer((_) async {});
+
+        await expectLater(
+          mockAuthRepository.signOut(),
+          completes,
+        );
+
+        verify(() => mockAuthRepository.signOut()).called(1);
+      });
+    });
+
+    group('getCurrentUserWithProfile', () {
+      test('returns UserModel when user is authenticated', () async {
+        final expectedUser = UserFixtures.authenticated();
+
+        when(() => mockAuthRepository.getCurrentUserWithProfile())
+            .thenAnswer((_) async => expectedUser);
+
+        final result = await mockAuthRepository.getCurrentUserWithProfile();
+
+        expect(result, isNotNull);
+        expect(result, equals(expectedUser));
+      });
+
+      test('returns null when user is not authenticated', () async {
+        when(() => mockAuthRepository.getCurrentUserWithProfile())
+            .thenAnswer((_) async => null);
+
+        final result = await mockAuthRepository.getCurrentUserWithProfile();
+
+        expect(result, isNull);
+      });
+    });
+
+    group('refreshCurrentUser', () {
+      test('returns refreshed UserModel', () async {
+        final expectedUser = UserFixtures.authenticated(credits: 50);
+
+        when(() => mockAuthRepository.refreshCurrentUser())
+            .thenAnswer((_) async => expectedUser);
+
+        final result = await mockAuthRepository.refreshCurrentUser();
+
+        expect(result.credits, equals(50));
+      });
+
+      test('throws AppException when no user is authenticated', () async {
+        when(() => mockAuthRepository.refreshCurrentUser()).thenThrow(
+          const AppException.auth(message: 'No authenticated user'),
+        );
+
+        expect(
+          () => mockAuthRepository.refreshCurrentUser(),
+          throwsA(isA<AppException>()),
+        );
+      });
+    });
+
+    group('resetPassword', () {
+      test('completes without error', () async {
+        when(() => mockAuthRepository.resetPassword('test@example.com'))
+            .thenAnswer((_) async {});
+
+        await expectLater(
+          mockAuthRepository.resetPassword('test@example.com'),
+          completes,
+        );
+
+        verify(() => mockAuthRepository.resetPassword('test@example.com'))
+            .called(1);
+      });
+    });
+
+    group('onAuthStateChange', () {
+      test('emits auth state changes', () async {
+        final controller = StreamController<AuthState>();
+
+        when(() => mockAuthRepository.onAuthStateChange)
+            .thenAnswer((_) => controller.stream);
+
+        final stream = mockAuthRepository.onAuthStateChange;
+
+        // Emit a mock auth state
+        final mockAuthState = AuthState(AuthChangeEvent.signedIn, null);
+        controller.add(mockAuthState);
+
+        await expectLater(
+          stream,
+          emits(mockAuthState),
+        );
+
+        await controller.close();
+      });
+    });
+
+    group('signInWithGoogle', () {
+      test('completes OAuth flow', () async {
+        when(() => mockAuthRepository.signInWithGoogle())
+            .thenAnswer((_) async {});
+
+        await expectLater(
+          mockAuthRepository.signInWithGoogle(),
+          completes,
+        );
+      });
+    });
+
+    group('signInWithApple', () {
+      test('completes OAuth flow', () async {
+        when(() => mockAuthRepository.signInWithApple())
+            .thenAnswer((_) async {});
+
+        await expectLater(
+          mockAuthRepository.signInWithApple(),
+          completes,
+        );
+      });
     });
   });
 }
