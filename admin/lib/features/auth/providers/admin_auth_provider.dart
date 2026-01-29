@@ -1,14 +1,28 @@
+import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 part 'admin_auth_provider.g.dart';
 
 @riverpod
-class AdminAuth extends _$AdminAuth {
+class AdminAuth extends _$AdminAuth implements Listenable {
+  VoidCallback? _routerListener;
+
   @override
   Stream<User?> build() {
-    return Supabase.instance.client.auth.onAuthStateChange.map((event) => event.session?.user);
+    return Supabase.instance.client.auth.onAuthStateChange.map((event) {
+      _notifyRouter();
+      return event.session?.user;
+    });
   }
+
+  void _notifyRouter() => _routerListener?.call();
+
+  @override
+  void addListener(VoidCallback listener) => _routerListener = listener;
+
+  @override
+  void removeListener(VoidCallback listener) => _routerListener = null;
 
   Future<void> login(String email, String password) async {
     final response = await Supabase.instance.client.auth.signInWithPassword(
@@ -30,8 +44,12 @@ class AdminAuth extends _$AdminAuth {
         await Supabase.instance.client.auth.signOut();
         throw Exception('Access Denied: You do not have admin privileges.');
       }
-    } catch (e) {
-      // If profile fetch fails or check fails, ensure we sign out
+    } on PostgrestException catch (_) {
+      // Database error during profile fetch - sign out and rethrow
+      await Supabase.instance.client.auth.signOut();
+      rethrow;
+    } catch (_) {
+      // Network/unexpected error - ensure clean state before rethrow
       await Supabase.instance.client.auth.signOut();
       rethrow;
     }

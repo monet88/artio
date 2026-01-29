@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:artio/core/constants/app_constants.dart';
 
 class TemplateEditorPage extends ConsumerStatefulWidget {
   final String? templateId;
@@ -33,20 +34,6 @@ class _TemplateEditorPageState extends ConsumerState<TemplateEditorPage> {
   // State
   bool _isPremium = false;
   bool _isActive = true;
-
-  // Constants
-  static const _categories = [
-    'Portrait',
-    'Landscape',
-    'Abstract',
-    'Fantasy',
-    'Cyberpunk',
-    'Anime',
-    '3D Render',
-    'Photography',
-    'Vintage',
-    'Oil Painting',
-  ];
 
   static const _aspectRatios = [
     '1:1',
@@ -96,7 +83,7 @@ class _TemplateEditorPageState extends ConsumerState<TemplateEditorPage> {
       
       // Set dropdowns
       final category = data['category'] as String?;
-      if (category != null && _categories.contains(category)) {
+      if (category != null && AppConstants.templateCategories.contains(category)) {
         _selectedCategory = category;
       } else {
         _selectedCategory = category; // Allow custom values if they exist in DB
@@ -255,7 +242,7 @@ class _TemplateEditorPageState extends ConsumerState<TemplateEditorPage> {
                               child: DropdownButtonFormField<String>(
                                 initialValue: _selectedCategory,
                                 decoration: const InputDecoration(labelText: 'Category'),
-                                items: _categories.map((c) {
+                                items: AppConstants.templateCategories.map((c) {
                                   return DropdownMenuItem(value: c, child: Text(c));
                                 }).toList(),
                                 onChanged: (v) => setState(() => _selectedCategory = v),
@@ -354,6 +341,7 @@ class _TemplateEditorPageState extends ConsumerState<TemplateEditorPage> {
                         TextFormField(
                           controller: _thumbnailUrlController,
                           decoration: const InputDecoration(labelText: 'Thumbnail URL'),
+                          onChanged: (_) => setState(() {}),
                         ),
                         if (_thumbnailUrlController.text.isNotEmpty) ...[
                           const Gap(16),

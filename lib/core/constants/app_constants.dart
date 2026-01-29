@@ -15,4 +15,13 @@ class AppConstants {
   static const List<String> aspectRatios = ['1:1', '4:3', '3:4', '16:9', '9:16'];
   static const String defaultAspectRatio = '1:1';
   static const int maxPromptLength = 1000;
+
+  // Template categories - must match database migration
+  static const List<String> templateCategories = [
+    'Portrait & Face Effects',
+    'Removal & Editing',
+    'Art Style Transfer',
+    'Photo Enhancement',
+    'Creative & Fun',
+  ];
 }
