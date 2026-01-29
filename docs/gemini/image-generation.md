@@ -2,7 +2,7 @@
 
 <br />
 
-Gemini can generate and process images conversationally. You can prompt either the[fast Gemini 2.5 Flash (aka Nano Banana) or the advanced Gemini 3 Pro Preview (aka Nano Banana Pro)](https://ai.google.dev/gemini-api/docs/image-generation#model-selection)image models with text, images, or a combination of both, allowing you to create, edit, and iterate on visuals with unprecedented control:
+Gemini can generate and process images conversationally. You can prompt either the [fast Gemini 2.5 Flash or the advanced Gemini 3 Pro Preview](https://ai.google.dev/gemini-api/docs/image-generation#model-selection) image models with text, images, or a combination of both, allowing you to create, edit, and iterate on visuals with unprecedented control:
 
 - **Text, Image, and Multi-Image to Image:**Generate high-quality images from text descriptions, use text prompts to edit and adjust a given image, or use multiple input images to compose new scenes and transfer styles.
 - **Iterative refinement:**Conversationally refine your image over multiple turns, making small adjustments until it's perfect.
@@ -21,7 +21,7 @@ All generated images include a[SynthID watermark](https://ai.google.dev/responsi
     client = genai.Client()
 
     prompt = (
-        "Create a picture of a nano banana dish in a fancy restaurant with a Gemini theme"
+        "Create a picture of a gourmet dish in a fancy restaurant with a Gemini theme"
     )
 
     response = client.models.generate_content(
@@ -46,7 +46,7 @@ All generated images include a[SynthID watermark](https://ai.google.dev/responsi
       const ai = new GoogleGenAI({});
 
       const prompt =
-        "Create a picture of a nano banana dish in a fancy restaurant with a Gemini theme";
+        "Create a picture of a gourmet dish in a fancy restaurant with a Gemini theme";
 
       const response = await ai.models.generateContent({
         model: "gemini-2.5-flash-image",
@@ -89,7 +89,7 @@ All generated images include a[SynthID watermark](https://ai.google.dev/responsi
       result, _ := client.Models.GenerateContent(
           ctx,
           "gemini-2.5-flash-image",
-          genai.Text("Create a picture of a nano banana dish in a " +
+          genai.Text("Create a picture of a gourmet dish in a " +
                      " fancy restaurant with a Gemini theme"),
       )
 
@@ -125,7 +125,7 @@ All generated images include a[SynthID watermark](https://ai.google.dev/responsi
 
           GenerateContentResponse response = client.models.generateContent(
               "gemini-2.5-flash-image",
-              "Create a picture of a nano banana dish in a fancy restaurant with a Gemini theme",
+              "Create a picture of a gourmet dish in a fancy restaurant with a Gemini theme",
               config);
 
           for (Part part : response.parts()) {
@@ -151,7 +151,7 @@ All generated images include a[SynthID watermark](https://ai.google.dev/responsi
       -d '{
         "contents": [{
           "parts": [
-            {"text": "Create a picture of a nano banana dish in a fancy restaurant with a Gemini theme"}
+            {"text": "Create a picture of a gourmet dish in a fancy restaurant with a Gemini theme"}
           ]
         }]
       }' \
@@ -159,7 +159,7 @@ All generated images include a[SynthID watermark](https://ai.google.dev/responsi
       | cut -d'"' -f4 \
       | base64 --decode > gemini-native-image.png
 
-![AI-generated image of a nano banana dish](https://ai.google.dev/static/gemini-api/docs/images/nano-banana.png)AI-generated image of a nano banana dish in a Gemini-themed restaurant
+![AI-generated image of a gourmet dish](https://ai.google.dev/static/gemini-api/docs/images/banana.png)AI-generated image of a gourmet dish in a Gemini-themed restaurant
 
 ## Image editing (text-and-image-to-image)
 
@@ -178,7 +178,7 @@ The following example demonstrates uploading base64 encoded images. For multiple
     client = genai.Client()
 
     prompt = (
-        "Create a picture of my cat eating a nano-banana in a "
+        "Create a picture of my cat eating a banana in a "
         "fancy restaurant under the Gemini constellation",
     )
 
@@ -210,7 +210,7 @@ The following example demonstrates uploading base64 encoded images. For multiple
       const base64Image = imageData.toString("base64");
 
       const prompt = [
-        { text: "Create a picture of my cat eating a nano-banana in a" +
+        { text: "Create a picture of my cat eating a banana in a" +
                 "fancy restaurant under the Gemini constellation" },
         {
           inlineData: {
@@ -262,7 +262,7 @@ The following example demonstrates uploading base64 encoded images. For multiple
      imgData, _ := os.ReadFile(imagePath)
 
      parts := []*genai.Part{
-       genai.NewPartFromText("Create a picture of my cat eating a nano-banana in a fancy restaurant under the Gemini constellation"),
+       genai.NewPartFromText("Create a picture of my cat eating a banana in a fancy restaurant under the Gemini constellation"),
        &genai.Part{
          InlineData: &genai.Blob{
            MIMEType: "image/png",
@@ -317,7 +317,7 @@ The following example demonstrates uploading base64 encoded images. For multiple
               "gemini-2.5-flash-image",
               Content.fromParts(
                   Part.fromText("""
-                      Create a picture of my cat eating a nano-banana in
+                      Create a picture of my cat eating a banana in
                       a fancy restaurant under the Gemini constellation
                       """),
                   Part.fromBytes(
@@ -359,7 +359,7 @@ The following example demonstrates uploading base64 encoded images. For multiple
         -d "{
           \"contents\": [{
             \"parts\":[
-                {\"text\": \"'Create a picture of my cat eating a nano-banana in a fancy restaurant under the Gemini constellation\"},
+                {\"text\": \"'Create a picture of my cat eating a banana in a fancy restaurant under the Gemini constellation\"},
                 {
                   \"inline_data\": {
                     \"mime_type\":\"image/jpeg\",
@@ -373,7 +373,7 @@ The following example demonstrates uploading base64 encoded images. For multiple
       | cut -d'"' -f4 \
       | base64 --decode > gemini-edited-image.png
 
-![AI-generated image of a cat eating anano banana](https://ai.google.dev/static/gemini-api/docs/images/cat-banana.png)AI-generated image of a cat eating a nano banana
+![AI-generated image of a cat eating a banana](https://ai.google.dev/static/gemini-api/docs/images/cat-banana.png)AI-generated image of a cat eating a nano banana
 
 ### Multi-turn image editing
 
@@ -4383,7 +4383,7 @@ The model defaults to returning text and image responses (i.e.`response_modaliti
     result, _ := client.Models.GenerateContent(
         ctx,
         "gemini-2.5-flash-image",
-        genai.Text("Create a picture of a nano banana dish in a " +
+        genai.Text("Create a picture of a gourmet dish in a " +
                     " fancy restaurant with a Gemini theme"),
         &genai.GenerateContentConfig{
             ResponseModalities: "Image",
@@ -4404,7 +4404,7 @@ The model defaults to returning text and image responses (i.e.`response_modaliti
     -d '{
       "contents": [{
         "parts": [
-          {"text": "Create a picture of a nano banana dish in a fancy restaurant with a Gemini theme"}
+          {"text": "Create a picture of a gourmet dish in a fancy restaurant with a Gemini theme"}
         ]
       }],
       "generationConfig": {
@@ -4472,7 +4472,7 @@ The model defaults to matching the output image size to that of your input image
     result, _ := client.Models.GenerateContent(
         ctx,
         "gemini-2.5-flash-image",
-        genai.Text("Create a picture of a nano banana dish in a " +
+        genai.Text("Create a picture of a gourmet dish in a " +
                     " fancy restaurant with a Gemini theme"),
         &genai.GenerateContentConfig{
             ImageConfig: &genai.ImageConfig{
@@ -4485,7 +4485,7 @@ The model defaults to matching the output image size to that of your input image
     result_gemini3, _ := client.Models.GenerateContent(
         ctx,
         "gemini-3-pro-image-preview",
-        genai.Text("Create a picture of a nano banana dish in a " +
+        genai.Text("Create a picture of a gourmet dish in a " +
                     " fancy restaurant with a Gemini theme"),
         &genai.GenerateContentConfig{
             ImageConfig: &genai.ImageConfig{
@@ -4524,7 +4524,7 @@ The model defaults to matching the output image size to that of your input image
     -d '{
       "contents": [{
         "parts": [
-          {"text": "Create a picture of a nano banana dish in a fancy restaurant with a Gemini theme"}
+          {"text": "Create a picture of a gourmet dish in a fancy restaurant with a Gemini theme"}
         ]
       }],
       "generationConfig": {
@@ -4538,7 +4538,7 @@ The model defaults to matching the output image size to that of your input image
     -d '{
       "contents": [{
         "parts": [
-          {"text": "Create a picture of a nano banana dish in a fancy restaurant with a Gemini theme"}
+          {"text": "Create a picture of a gourmet dish in a fancy restaurant with a Gemini theme"}
         ]
       }],
       "generationConfig": {
