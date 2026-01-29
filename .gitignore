@@ -151,7 +151,17 @@ integration_test/.test_coverage.dart
 .osgrep/
 opencode.json
 .skillsrc
+.sisyphus/
+
 
 # Exceptions to above rules (if needed)
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 .osgrep
+
+# Repomix output
+repomix-output.xml
+repomix-output.txt
+repomix-output.md
+
+# Gemini CLI settings (contains user-specific config)
+.gemini/

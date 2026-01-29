@@ -24,7 +24,6 @@ const GEMINI_MODELS = [
 
 interface GenerationRequest {
   jobId: string;
-  userId: string;
   prompt: string;
   model?: string;
   aspectRatio?: string;
@@ -284,24 +283,64 @@ Deno.serve(async (req) => {
   }
 
   try {
+    // Extract userId from JWT token (not from request body)
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
+      return new Response(
+        JSON.stringify({ error: "Missing authorization header" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const token = authHeader.replace("Bearer ", "");
+    const supabase = getSupabaseClient();
+
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+    if (authError || !user) {
+      return new Response(
+        JSON.stringify({ error: "Invalid or expired token" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const userId = user.id; // Trusted source from JWT
+
     const body: GenerationRequest = await req.json();
     const {
       jobId,
-      userId,
       prompt,
       model = "nano-banana-pro",
       aspectRatio = "1:1",
       imageInputs,
     } = body;
 
-    if (!jobId || !userId || !prompt) {
+    if (!jobId || !prompt) {
       return new Response(
-        JSON.stringify({ error: "Missing required fields: jobId, userId, prompt" }),
+        JSON.stringify({ error: "Missing required fields: jobId, prompt" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    const supabase = getSupabaseClient();
+    // Verify job ownership
+    const { data: job, error: jobError } = await supabase
+      .from("generation_jobs")
+      .select("user_id")
+      .eq("id", jobId)
+      .single();
+
+    if (jobError || !job) {
+      return new Response(
+        JSON.stringify({ error: "Job not found" }),
+        { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    if (job.user_id !== userId) {
+      return new Response(
+        JSON.stringify({ error: "Unauthorized: job belongs to another user" }),
+        { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
     const provider = getProvider(model);
 
     await updateJobStatus(supabase, jobId, { status: "processing", provider_task_id: null });

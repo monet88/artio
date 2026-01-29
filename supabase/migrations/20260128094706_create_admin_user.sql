@@ -1,7 +1,7 @@
 -- Create admin user for Artio Admin Dashboard
--- Email: minhthang4292@gmail.com
--- Password: Tonight123@
--- Note: User must be created FIRST via Supabase Dashboard or CLI
+-- Admin user created via Supabase Dashboard or CLI
+-- Password set via: supabase auth admin update-user --password $ADMIN_PASSWORD
+-- DO NOT hardcode passwords in migrations
 
 -- Add role column to profiles if not exists (already in profiles table migration)
 -- This is kept here for reference but skipped by IF NOT EXISTS

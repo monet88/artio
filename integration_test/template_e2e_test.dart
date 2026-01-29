@@ -1,3 +1,4 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -7,10 +8,22 @@ void main() {
 
   group('Templates E2E Test', () {
     setUpAll(() async {
-      // Initialize Supabase
+      // Load test environment variables
+      await dotenv.load(fileName: '.env.test');
+
+      final supabaseUrl = dotenv.env['SUPABASE_URL'];
+      final supabaseAnonKey = dotenv.env['SUPABASE_ANON_KEY'];
+
+      if (supabaseUrl == null || supabaseAnonKey == null) {
+        throw Exception(
+          'Missing required environment variables. '
+          'Copy .env.test.example to .env.test and fill in values.',
+        );
+      }
+
       await Supabase.initialize(
-        url: 'https://yqzhmmyovpnbelybadgp.supabase.co',
-        anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlxemhtbXlvdnBuYmVseWJhZGdwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk1NzE1MzEsImV4cCI6MjA4NTE0NzUzMX0.gHWpZFn7El1QKndepqv4nLK_wqgPq0M7Ld9LO-szXr0',
+        url: supabaseUrl,
+        anonKey: supabaseAnonKey,
       );
     });
 
