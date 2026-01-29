@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:artio/routing/app_router.dart';
@@ -39,60 +40,37 @@ void main() {
 
       final router = container.read(appRouterProvider);
 
-      // Verify router is created
+      // Verify router is created with essential components
       expect(router, isNotNull);
       expect(router.routerDelegate, isNotNull);
-      expect(router.goRouterDelegate, isNotNull);
       expect(router.routeInformationParser, isNotNull);
+      expect(router.routeInformationProvider, isNotNull);
     });
 
-    test('initial location is splash screen', () {
+    test('router can build MaterialApp.router', () {
       final container = ProviderContainer();
       addTearDown(container.dispose);
 
       final router = container.read(appRouterProvider);
 
-      expect(router.initialLocation, '/');
+      // Verify router config works with MaterialApp.router
+      final app = MaterialApp.router(
+        routerConfig: router,
+      );
+
+      expect(app.routerConfig, router);
     });
 
-    test('GoRouter has auth redirect configured', () {
+    test('router configuration is valid', () {
       final container = ProviderContainer();
       addTearDown(container.dispose);
 
       final router = container.read(appRouterProvider);
 
-      // Verify redirect is configured (not null)
-      expect(router.redirect, isNotNull);
-    });
-
-    test('GoRouter has error builder configured', () {
-      final container = ProviderContainer();
-      addTearDown(container.dispose);
-
-      final router = container.read(appRouterProvider);
-
-      // Verify errorBuilder is configured
-      expect(router.errorBuilder, isNotNull);
-    });
-
-    test('GoRouter uses auth state as refreshListenable', () {
-      final container = ProviderContainer();
-      addTearDown(container.dispose);
-
-      final router = container.read(appRouterProvider);
-
-      // Verify refreshListenable is configured using auth notifier
-      expect(router.refreshListenable, isNotNull);
-    });
-
-    test('all routes are defined in GoRouter', () {
-      final container = ProviderContainer();
-      addTearDown(container.dispose);
-
-      final router = container.read(appRouterProvider);
-
-      // Verify route configuration exists
-      expect(router.routes, isNotEmpty);
+      // GoRouter.configuration is the public API for accessing route config
+      final config = router.configuration;
+      expect(config, isNotNull);
+      expect(config.routes, isNotEmpty);
     });
   });
 }

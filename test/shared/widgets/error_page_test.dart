@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:artio/shared/widgets/error_page.dart';
 
@@ -16,7 +17,8 @@ void main() {
 
       await tester.pumpWidget(buildWidget(error: error));
 
-      expect(find.text('Test error message'), findsOneWidget);
+      // Exception.toString() includes "Exception:" prefix
+      expect(find.text('Exception: Test error message'), findsOneWidget);
     });
 
     testWidgets('renders generic message when error is null', (tester) async {
