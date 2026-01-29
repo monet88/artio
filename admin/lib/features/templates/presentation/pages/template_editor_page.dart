@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:artio/core/constants/app_constants.dart';
+import 'package:artio_admin/core/constants/app_constants.dart';
 
 class TemplateEditorPage extends ConsumerStatefulWidget {
   final String? templateId;

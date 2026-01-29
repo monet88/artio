@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../auth/presentation/view_models/auth_view_model.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/utils/app_exception_mapper.dart';
@@ -37,7 +38,18 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
           orElse: () => null,
         );
 
-    if (userId == null) return;
+    if (userId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Please log in to generate images'),
+          action: SnackBarAction(
+            label: 'Login',
+            onPressed: () => context.go('/login'),
+          ),
+        ),
+      );
+      return;
+    }
 
     final prompt = _buildPrompt(template);
     ref.read(generationViewModelProvider.notifier).generate(

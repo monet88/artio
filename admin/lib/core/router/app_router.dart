@@ -9,15 +9,22 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'app_router.g.dart';
 
 @riverpod
-GoRouter goRouter(Ref ref) {
-  final authState = ref.watch(adminAuthProvider);
+Raw<GoRouter> goRouter(Ref ref) {
+  final notifier = ref.watch(adminAuthProvider.notifier);
 
   return GoRouter(
     initialLocation: '/templates',
     debugLogDiagnostics: true,
+    refreshListenable: notifier,
     redirect: (context, state) {
+      final authState = ref.read(adminAuthProvider);
+      final isLoading = authState.isLoading;
       final isLoggedIn = authState.valueOrNull != null;
       final isLoggingIn = state.uri.path == '/login';
+
+      if (isLoading) {
+        return null;
+      }
 
       if (!isLoggedIn && !isLoggingIn) {
         return '/login';

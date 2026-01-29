@@ -1,4 +1,5 @@
 import 'package:artio_admin/features/templates/presentation/widgets/template_card.dart';
+import 'package:artio_admin/features/templates/domain/entities/admin_template_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -12,39 +13,38 @@ part 'templates_page.g.dart';
 @riverpod
 class Templates extends _$Templates {
   @override
-  Stream<List<Map<String, dynamic>>> build() {
+  Stream<List<AdminTemplateModel>> build() {
     return Supabase.instance.client
         .from('templates')
         .stream(primaryKey: ['id'])
-        .order('order', ascending: true);
+        .order('order', ascending: true)
+        .map((rows) => rows.map((row) => AdminTemplateModel.fromJson(row)).toList());
   }
 
   Future<void> reorder(int oldIndex, int newIndex) async {
-    final currentList = state.valueOrNull ?? [];
-    if (currentList.isEmpty) return;
+    final currentList = state.valueOrNull;
+    if (currentList == null || currentList.isEmpty) return;
 
     if (oldIndex < newIndex) {
       newIndex -= 1;
     }
 
-    final item = currentList.removeAt(oldIndex);
-    currentList.insert(newIndex, item);
+    // Create immutable copy for state update
+    final reorderedList = List<AdminTemplateModel>.from(currentList);
+    final item = reorderedList.removeAt(oldIndex);
+    reorderedList.insert(newIndex, item);
 
-    // Optimistic update
-    state = AsyncValue.data(currentList);
+    // Optimistic update with new list instance
+    state = AsyncValue.data(reorderedList);
 
-    // Batch update order in Supabase
-    // Note: In a real app with pagination, this needs more logic.
-    // For admin with limited templates, updating all orders is okay-ish,
-    // but updating only affected range is better.
-    // For simplicity, we just update the changed items' order field.
-    
+    // Batch update order in Supabase (1-indexed to match DB convention)
     final updates = <Map<String, dynamic>>[];
-    for (int i = 0; i < currentList.length; i++) {
-      if (currentList[i]['order'] != i) {
+    for (int i = 0; i < reorderedList.length; i++) {
+      final dbOrder = i + 1; // Convert to 1-indexed
+      if (reorderedList[i].order != dbOrder) {
         updates.add({
-          'id': currentList[i]['id'],
-          'order': i,
+          'id': reorderedList[i].id,
+          'order': dbOrder,
         });
       }
     }
@@ -97,17 +97,17 @@ class TemplatesPage extends ConsumerWidget {
             itemBuilder: (context, index) {
               final template = templates[index];
               return Container(
-                key: ValueKey(template['id']),
+                key: ValueKey(template.id),
                 margin: const EdgeInsets.only(bottom: 8),
                 child: TemplateCard(
                   template: template,
-                  onEdit: () => context.go('/templates/${template['id']}'),
+                  onEdit: () => context.go('/templates/${template.id}'),
                   onDelete: () async {
                     final confirm = await showDialog<bool>(
                       context: context,
                       builder: (context) => AlertDialog(
                         title: const Text('Delete Template'),
-                        content: const Text('Are you sure you want to delete this template?'),
+                        content: Text('Delete "${template.name}"?'),
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.pop(context, false),
@@ -122,7 +122,7 @@ class TemplatesPage extends ConsumerWidget {
                     );
 
                     if (confirm == true) {
-                      await ref.read(templatesProvider.notifier).deleteTemplate(template['id']);
+                      await ref.read(templatesProvider.notifier).deleteTemplate(template.id);
                     }
                   },
                 ),

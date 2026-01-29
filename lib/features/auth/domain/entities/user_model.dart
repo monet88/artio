@@ -4,6 +4,16 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 part 'user_model.freezed.dart';
 part 'user_model.g.dart';
 
+/// Safely parse DateTime, returns null on failure
+DateTime? _tryParseDateTime(String? value) {
+  if (value == null || value.isEmpty) return null;
+  try {
+    return DateTime.parse(value);
+  } catch (_) {
+    return null;
+  }
+}
+
 @freezed
 class UserModel with _$UserModel {
   const factory UserModel({
@@ -31,10 +41,8 @@ class UserModel with _$UserModel {
       avatarUrl: profile?['avatar_url'] ?? user.userMetadata?['avatar_url'],
       credits: profile?['credits'] ?? 0,
       isPremium: profile?['is_premium'] ?? false,
-      premiumExpiresAt: profile?['premium_expires_at'] != null
-          ? DateTime.parse(profile!['premium_expires_at'])
-          : null,
-      createdAt: user.createdAt.isNotEmpty ? DateTime.parse(user.createdAt) : null,
+      premiumExpiresAt: _tryParseDateTime(profile?['premium_expires_at']),
+      createdAt: _tryParseDateTime(user.createdAt),
     );
   }
 }

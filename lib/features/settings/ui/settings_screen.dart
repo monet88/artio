@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
 import 'package:artio/features/settings/ui/widgets/theme_switcher.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -32,7 +32,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   Future<void> _resetPassword(BuildContext context, String email) async {
     try {
-      await Supabase.instance.client.auth.resetPasswordForEmail(email);
+      await ref.read(authViewModelProvider.notifier).resetPassword(email);
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Password reset email sent to $email')),
@@ -72,7 +72,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     if (confirmed == true) {
       setState(() => _isLoading = true);
       try {
-        await Supabase.instance.client.auth.signOut();
+        await ref.read(authViewModelProvider.notifier).signOut();
         // Router will handle redirection via auth guard
       } catch (e) {
         if (context.mounted) {
@@ -88,8 +88,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final user = Supabase.instance.client.auth.currentUser;
-    final email = user?.email ?? 'Unknown';
+    final authState = ref.watch(authViewModelProvider);
+    final email = authState.maybeMap(
+      authenticated: (s) => s.user.email,
+      orElse: () => 'Unknown',
+    );
 
     return Scaffold(
       appBar: AppBar(title: const Text('Settings')),

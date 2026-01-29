@@ -1,9 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import '../../domain/entities/admin_template_model.dart';
 
 class TemplateCard extends StatelessWidget {
-  final Map<String, dynamic> template;
+  final AdminTemplateModel template;
   final VoidCallback onEdit;
   final VoidCallback? onDelete;
 
@@ -17,9 +18,9 @@ class TemplateCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isPremium = template['is_premium'] as bool? ?? false;
-    final isActive = template['is_active'] as bool? ?? true;
-    final thumbnailUrl = template['thumbnail_url'] as String?;
+    final isPremium = template.isPremium;
+    final isActive = template.isActive;
+    final thumbnailUrl = template.thumbnailUrl;
 
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
@@ -46,7 +47,7 @@ class TemplateCard extends StatelessWidget {
         title: Row(
           children: [
             Text(
-              template['name'] ?? 'Untitled',
+              template.name,
               style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             if (isPremium) ...[
@@ -92,7 +93,7 @@ class TemplateCard extends StatelessWidget {
           children: [
             const Gap(4),
             Text(
-              template['description'] ?? '',
+              template.description,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: theme.textTheme.bodyMedium,
@@ -103,14 +104,14 @@ class TemplateCard extends StatelessWidget {
                 Icon(Icons.category_outlined, size: 14, color: theme.hintColor),
                 const Gap(4),
                 Text(
-                  template['category'] ?? 'Uncategorized',
+                  template.category,
                   style: theme.textTheme.bodySmall?.copyWith(color: theme.hintColor),
                 ),
                 const Gap(12),
                 Icon(Icons.aspect_ratio, size: 14, color: theme.hintColor),
                 const Gap(4),
                 Text(
-                  template['default_aspect_ratio'] ?? '1:1',
+                  template.defaultAspectRatio,
                   style: theme.textTheme.bodySmall?.copyWith(color: theme.hintColor),
                 ),
               ],

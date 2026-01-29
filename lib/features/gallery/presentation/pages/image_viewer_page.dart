@@ -24,12 +24,14 @@ class ImageViewerPage extends ConsumerStatefulWidget {
 class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
   late PageController _pageController;
   late int _currentIndex;
+  late List<GalleryItem> _items; // Mutable local copy
   bool _isDownloading = false;
   bool _isSharing = false;
 
   @override
   void initState() {
     super.initState();
+    _items = List.from(widget.items); // Create mutable copy
     _currentIndex = widget.initialIndex;
     _pageController = PageController(initialPage: widget.initialIndex);
   }
@@ -40,7 +42,7 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
     super.dispose();
   }
 
-  GalleryItem get _currentItem => widget.items[_currentIndex];
+  GalleryItem get _currentItem => _items[_currentIndex];
 
   Future<void> _download() async {
     final imageUrl = _currentItem.imageUrl;
@@ -93,66 +95,55 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
 
   Future<void> _delete() async {
     final item = _currentItem;
-    
-    // Soft delete immediately
+    final deletedIndex = _currentIndex;
+
+    // Soft delete in backend
     await ref
         .read(galleryActionsNotifierProvider.notifier)
         .softDeleteImage(item.jobId);
 
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Image deleted'),
-          action: SnackBarAction(
-            label: 'Undo',
-            onPressed: () {
-              ref
-                  .read(galleryActionsNotifierProvider.notifier)
-                  .restoreImage(item.jobId);
-            },
-          ),
-          duration: const Duration(seconds: 5),
-        ),
-      );
+    if (!mounted) return;
 
-      // If this was the only item, pop
-      if (widget.items.length <= 1) {
+    // Remove from local list immediately
+    setState(() {
+      _items.removeAt(deletedIndex);
+
+      if (_items.isEmpty) {
         context.pop();
-      } else {
-        // Since we're passing the list statically via GoRouter extra, 
-        // strictly speaking the list in this widget won't update automatically 
-        // unless we passed a specialized controller or listener.
-        // However, the gallery page underneath WILL update because it watches the stream.
-        // For the viewer, we should probably close it if the user deletes the current item
-        // OR we just let them swipe to the next one?
-        // 
-        // The plan says: "Pop if was last image". 
-        // It's ambiguous if "last image" means "only one left" or "last index".
-        // Assuming "only one left in the view".
-        //
-        // However, standard UX is often to remove it from the view locally or close the viewer.
-        // Since we don't have a mutable list here (it's passed in widget), 
-        // the easiest "MVP" approach is to close the viewer on delete, 
-        // OR simply accept that it's "deleted" in backend but still visible in this session until pop.
-        //
-        // But the requirements say "Pop if was last image".
-        // If we have multiple images, maybe we shouldn't pop? 
-        // 
-        // Let's stick to the simplest interpretation:
-        // We performed the action. The user can Undo.
-        // If we want to hide it from the PageView, we'd need to manage the list state locally.
-        //
-        // Let's implement local list management to remove it from view instantly?
-        // But `widget.items` is final.
-        //
-        // Re-reading plan: "Pop if was last image"
-        // Let's just pop context if items.length == 1.
-        
-        if (widget.items.length == 1) {
-             context.pop();
-        }
+        return;
       }
-    }
+
+      // If deleted last item, move to previous
+      if (_currentIndex >= _items.length) {
+        _currentIndex = _items.length - 1;
+      }
+    });
+
+    // If no items left, we already popped above
+    if (_items.isEmpty) return;
+
+    // Jump to adjusted index
+    _pageController.jumpToPage(_currentIndex);
+
+    // Show undo snackbar
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text('Image deleted'),
+        action: SnackBarAction(
+          label: 'Undo',
+          onPressed: () {
+            ref
+                .read(galleryActionsNotifierProvider.notifier)
+                .restoreImage(item.jobId);
+            // Re-insert at original position
+            setState(() {
+              _items.insert(deletedIndex.clamp(0, _items.length), item);
+            });
+          },
+        ),
+        duration: const Duration(seconds: 5),
+      ),
+    );
   }
 
   @override
@@ -162,6 +153,7 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.white,
+        title: Text('${_currentIndex + 1} / ${_items.length}'),
         actions: [
           IconButton(
             icon: _isSharing
@@ -191,14 +183,14 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
       ),
       body: PageView.builder(
         controller: _pageController,
-        itemCount: widget.items.length,
+        itemCount: _items.length,
         onPageChanged: (index) {
           setState(() {
             _currentIndex = index;
           });
         },
         itemBuilder: (context, index) {
-          final item = widget.items[index];
+          final item = _items[index];
           final imageUrl = item.imageUrl;
 
           return InteractiveViewer(
