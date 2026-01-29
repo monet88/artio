@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:artio/features/gallery/presentation/pages/gallery_page.dart';
-import 'package:artio/features/gallery/presentation/providers/gallery_provider.dart';
 import 'package:artio/features/gallery/data/repositories/gallery_repository.dart';
 import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
 import 'package:artio/features/auth/presentation/state/auth_state.dart';

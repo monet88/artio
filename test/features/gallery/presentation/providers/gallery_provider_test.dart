@@ -5,7 +5,6 @@ import 'package:artio/features/gallery/presentation/providers/gallery_provider.d
 import 'package:artio/features/gallery/data/repositories/gallery_repository.dart';
 import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
 import 'package:artio/features/auth/presentation/state/auth_state.dart';
-import '../../../../core/fixtures/fixtures.dart';
 
 // Mock the concrete GalleryRepository class
 class MockGalleryRepository extends Mock implements GalleryRepository {}

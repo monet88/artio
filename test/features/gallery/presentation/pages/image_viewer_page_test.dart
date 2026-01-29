@@ -4,7 +4,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:artio/features/gallery/presentation/pages/image_viewer_page.dart';
 import 'package:artio/features/gallery/data/repositories/gallery_repository.dart';
-import 'package:artio/features/gallery/presentation/providers/gallery_provider.dart';
 import '../../../../core/fixtures/fixtures.dart';
 
 class MockGalleryRepository extends Mock implements GalleryRepository {}

@@ -1,12 +1,6 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
-import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
 import 'package:artio/features/auth/presentation/state/auth_state.dart';
-import 'package:artio/features/auth/data/repositories/auth_repository.dart';
-import 'package:artio/features/auth/domain/repositories/i_auth_repository.dart';
 import '../../../../core/fixtures/fixtures.dart';
-import '../../../../core/mocks/mocks.dart';
 
 void main() {
   group('AuthViewModel', () {

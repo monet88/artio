@@ -2,10 +2,9 @@ import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:supabase_flutter/supabase_flutter.dart' show AuthState, AuthChangeEvent, Session;
+import 'package:supabase_flutter/supabase_flutter.dart' show AuthState, AuthChangeEvent;
 
 import 'package:artio/features/auth/domain/repositories/i_auth_repository.dart';
-import 'package:artio/features/auth/domain/entities/user_model.dart';
 import 'package:artio/exceptions/app_exception.dart';
 
 import '../../../../core/fixtures/user_fixtures.dart';
