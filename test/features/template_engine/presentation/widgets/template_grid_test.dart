@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -30,13 +32,13 @@ void main() {
     });
 
     testWidgets('shows loading state', (tester) async {
+      // Use Completer that never completes to avoid pending timer issues
+      final completer = Completer<List<TemplateModel>>();
+
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            templatesProvider.overrideWith((ref) => Future.delayed(
-              const Duration(days: 1),
-              () => TemplateFixtures.list(count: 1),
-            )),
+            templatesProvider.overrideWith((ref) => completer.future),
           ],
           child: const MaterialApp(
             home: Scaffold(
@@ -73,7 +75,7 @@ void main() {
         ProviderScope(
           overrides: [
             templatesProvider.overrideWith(
-              (ref) => Future.error('Failed to load'),
+              (ref) => Future.error(Exception('Network error')),
             ),
           ],
           child: const MaterialApp(
@@ -85,7 +87,8 @@ void main() {
       );
       await tester.pump();
 
-      expect(find.text('Failed to load'), findsOneWidget);
+      // AppExceptionMapper converts non-AppException to generic message
+      expect(find.text('An unexpected error occurred. Please try again.'), findsOneWidget);
     });
   });
 }
