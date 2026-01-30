@@ -189,12 +189,25 @@ Password: test_password_123
 
 ### Add New Template
 
-Templates are stored in Supabase `templates` table:
+**Option 1: Admin App (Recommended)**
+
+```bash
+cd admin
+flutter pub get
+dart run build_runner build --delete-conflicting-outputs
+flutter run -d chrome
+```
+
+1. Login with admin account
+2. Go to **Templates** → Click **"+ New Template"**
+3. Fill form: Name, Category, Description, Prompt Template, Input Fields (JSON)
+4. Click **Save**
+
+**Option 2: SQL Insert**
 
 ```sql
-INSERT INTO templates (id, name, description, category, thumbnail_url, prompt_template, input_fields)
+INSERT INTO templates (name, description, category, thumbnail_url, prompt_template, input_fields)
 VALUES (
-  gen_random_uuid(),
   'My Template',
   'Template description',
   'portrait',
@@ -202,7 +215,7 @@ VALUES (
   'A photo of {subject} in {style} style',
   '[
     {"id": "subject", "type": "image", "label": "Your Photo", "required": true},
-    {"id": "style", "type": "select", "label": "Style", "options": ["anime", "realistic", "cartoon"]}
+    {"id": "style", "type": "select", "label": "Style", "options": ["anime", "realistic"]}
   ]'
 );
 ```
