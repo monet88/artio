@@ -151,8 +151,9 @@ integration_test/.test_coverage.dart
 .osgrep/
 opencode.json
 .skillsrc
-.sisyphus/
-
+.sisyphus/*
+WARP.md
+plans/ui-mocks/*
 
 # Exceptions to above rules (if needed)
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
@@ -165,3 +166,5 @@ repomix-output.md
 
 # Gemini CLI settings (contains user-specific config)
 .gemini/
+
+

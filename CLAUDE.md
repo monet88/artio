@@ -15,32 +15,75 @@ Your role is to analyze user requirements, implement features following the esta
 - **KISS**: Keep It Simple, Stupid - prefer simple solutions
 - **DRY**: Don't Repeat Yourself - extract reusable code
 
-## Flutter/Dart Skills (AUTO-ACTIVATE)
+## Recommended Skills
 
-When working with Flutter/Dart code, **ALWAYS active** `.claude/skills/flutter/flutter-expert/SKILL.md"` skill first.
+### P0 - Critical (Auto-activate)
 
-**P0 Critical Skills (read before ANY Flutter implementation):**
+| Skill | Trigger | Use Case |
+|-------|---------|----------|
+| `flutter-expert` | `lib/**/*.dart` | Meta-skill, orchestrates all Flutter patterns |
+| `fix` | Bug reports, errors | Intelligent bug fixing with routing |
+| `cook` | Feature implementation | Standalone feature development |
+| `supabase-postgres-best-practices` | Migrations, RLS, SQL | Database operations |
+
+### P1 - Operational
+
+| Skill | Use Case |
+|-------|----------|
+| `debug` / `debugging` | Root cause analysis, tracing |
+| `ai-multimodal` | Gemini API for image analysis (AI art generation) |
+| `databases` | Supabase/PostgreSQL queries, schema design |
+| `payment-integration` | SePay/Polar for subscription & credits |
+
+### P2 - Supporting
+
+| Skill | Use Case |
+|-------|----------|
+| `code-review` | Post-implementation review |
+| `planning` | Complex feature planning |
+| `scout` | Fast codebase exploration |
+| `ui-ux-pro-max` | UI/UX design decisions |
+
+### Flutter Sub-skills (read by flutter-expert)
+
 - `.claude/skills/flutter/feature-based-clean-architecture/SKILL.md`
 - `.claude/skills/flutter/riverpod-state-management/SKILL.md`
 - `.claude/skills/flutter/go-router-navigation/SKILL.md`
 - `.claude/skills/dart/best-practices/SKILL.md`
 
-## Supabase Skills (AUTO-ACTIVATE)
+## Development Workflow
 
-**CRITICAL:** When working with Supabase (migrations, SQL queries, RLS policies, database operations), **ALWAYS activate** `supabase-postgres-best-practices` skill.
-
-**Activation:**
-```bash
-# Use slash command before any Supabase-related work
-/supabase-postgres-best-practices
+### New Feature (Complex)
+```
+/brainstorm → /plan → /code → /test → /review:codebase → /git:cm
 ```
 
-**When to activate:**
-- Writing or applying SQL migrations
-- Creating/modifying RLS policies
-- Database schema changes
-- Query optimization
-- Index management
+### New Feature (Simple)
+```
+/cook → /test → /git:cm
+```
+
+### Bug Fix
+```
+/debug → /fix → /test → /git:cm
+```
+
+### End of Session
+```
+/watzup → /git:cm
+```
+
+### Quick Reference
+
+| Situation | Command |
+|-----------|---------|
+| Unclear approach, need debate | `/brainstorm` |
+| Feature with clear requirements | `/plan` → `/code` |
+| Small/simple feature | `/cook` |
+| Bug report from user | `/debug` → `/fix` |
+| Error during coding | `/fix` |
+| After implementation | `/test` → `/review:codebase` |
+| Wrap up session | `/watzup` → `/git:cm` |
 
 ## Project-Specific Guidelines
 

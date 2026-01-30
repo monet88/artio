@@ -1,10 +1,9 @@
 {
-  "active_plan": "F:\\CodeBase\\flutter-app\\aiart\\.sisyphus\\plans\\update-todos-plan2-readiness.md",
-  "started_at": "2026-01-27T17:34:15.559Z",
+  "active_plan": "F:\\CodeBase\\flutter-app\\aiart\\.sisyphus\\plans\\increase-coverage-80.md",
+  "started_at": "2026-01-29T06:32:35.243Z",
   "session_ids": [
-    "ses_3ff8482e5ffeB2fKTcz6s4dfBt",
-    "ses_3fcf9edfbffe6DZUAUTUq8OF4D",
-    "ses_3fc82c401ffeXx87yYdA3Y2hfE"
+    "ses_3f7bb79f8ffeezWsgOcBXxc8Lc",
+    "ses_3f6dd040dffet4jVh9CiUlubR7"
   ],
-  "plan_name": "update-todos-plan2-readiness"
+  "plan_name": "increase-coverage-80"
 }

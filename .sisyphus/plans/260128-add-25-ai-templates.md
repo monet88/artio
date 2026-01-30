@@ -47,10 +47,10 @@ Add 25 production-ready AI photo templates to Artio app, organized into 5 catego
 - All templates visible in app and generating correctly
 
 ### Definition of Done
-- [ ] 25 templates appear in template list screen
-- [ ] Each template generates images successfully via Nano Banana
-- [ ] Thumbnails load correctly for all templates
-- [ ] Categories filter works with new categories
+- [x] 25 templates appear in template list screen
+- [x] Each template generates images successfully via Nano Banana
+- [x] Thumbnails load correctly for all templates
+- [x] Categories filter works with new categories
 
 ### Must Have
 - All 25 templates with unique prompts
@@ -122,7 +122,7 @@ Add 25 production-ready AI photo templates to Artio app, organized into 5 catego
 
 ## TODOs
 
-- [ ] 1. Generate 25 thumbnail images using Nano Banana
+- [x] 1. Generate 25 thumbnail images using Nano Banana
 
   **What to do**:
   - Use Nano Banana API to generate sample output for each template
@@ -143,7 +143,7 @@ Add 25 production-ready AI photo templates to Artio app, organized into 5 catego
 
 ---
 
-- [ ] 2. Upload thumbnails to Supabase Storage
+- [x] 2. Upload thumbnails to Supabase Storage
 
   **What to do**:
   - Create `templates` bucket if not exists
@@ -163,7 +163,7 @@ Add 25 production-ready AI photo templates to Artio app, organized into 5 catego
 
 ---
 
-- [ ] 3. Create SQL migration with 25 templates
+- [x] 3. Create SQL migration with 25 templates
 
   **What to do**:
   - Create migration file: `supabase/migrations/XXXXXX_add_25_templates.sql`
@@ -203,7 +203,7 @@ Add 25 production-ready AI photo templates to Artio app, organized into 5 catego
 
 ---
 
-- [ ] 4. Apply migration to database
+- [x] 4. Apply migration to database
 
   **What to do**:
   - Run: `supabase db push` or apply via Supabase Dashboard
@@ -218,7 +218,7 @@ Add 25 production-ready AI photo templates to Artio app, organized into 5 catego
 
 ---
 
-- [ ] 5. Test all 25 templates E2E
+- [x] 5. Test all 25 templates E2E
 
   **What to do**:
   - Launch app on device/emulator
@@ -258,11 +258,11 @@ supabase db execute "SELECT count(*) FROM templates"
 ```
 
 ### Final Checklist
-- [ ] 25 templates in database
-- [ ] All thumbnails loading in app
-- [ ] Generation works for all templates
-- [ ] Categories display correctly
-- [ ] No console errors
+- [x] 25 templates in database
+- [x] All thumbnails loading in app
+- [x] Generation works for all templates
+- [x] Categories display correctly
+- [x] No console errors
 
 ---
 
