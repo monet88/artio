@@ -51,6 +51,53 @@ void main() {
 
       expect(find.textContaining('test@example.com'), findsOneWidget);
     });
+
+    testWidgets('renders Account section with expected items', (tester) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            authViewModelProvider.overrideWith(() => _FakeAuthViewModel()),
+          ],
+          child: const MaterialApp(home: SettingsScreen()),
+        ),
+      );
+      await tester.pump();
+
+      expect(find.text('Account'), findsOneWidget);
+      expect(find.text('Email'), findsOneWidget);
+      expect(find.text('Change Password'), findsOneWidget);
+      expect(find.text('Logout'), findsOneWidget);
+    });
+
+    testWidgets('renders Appearance section', (tester) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            authViewModelProvider.overrideWith(() => _FakeAuthViewModel()),
+          ],
+          child: const MaterialApp(home: SettingsScreen()),
+        ),
+      );
+      await tester.pump();
+
+      expect(find.text('Appearance'), findsOneWidget);
+      expect(find.text('Theme'), findsOneWidget);
+    });
+
+    testWidgets('renders About section with version', (tester) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            authViewModelProvider.overrideWith(() => _FakeAuthViewModel()),
+          ],
+          child: const MaterialApp(home: SettingsScreen()),
+        ),
+      );
+      await tester.pump();
+
+      expect(find.text('About'), findsOneWidget);
+      expect(find.text('Version'), findsOneWidget);
+    });
   });
 }
 

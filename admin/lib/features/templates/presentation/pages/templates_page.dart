@@ -50,7 +50,13 @@ class Templates extends _$Templates {
     }
 
     if (updates.isNotEmpty) {
-      await Supabase.instance.client.from('templates').upsert(updates);
+      try {
+        await Supabase.instance.client.from('templates').upsert(updates);
+      } catch (e) {
+        // Rollback on failure
+        state = AsyncValue.data(currentList);
+        rethrow;
+      }
     }
   }
 

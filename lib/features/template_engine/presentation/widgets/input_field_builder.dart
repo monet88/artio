@@ -25,6 +25,15 @@ class _InputFieldBuilderState extends State<InputFieldBuilder> {
   }
 
   @override
+  void didUpdateWidget(covariant InputFieldBuilder oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.field.id != widget.field.id ||
+        oldWidget.field.defaultValue != widget.field.defaultValue) {
+      _sliderValue = double.tryParse(widget.field.defaultValue ?? '50') ?? 50;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     switch (widget.field.type) {
       case 'select':
