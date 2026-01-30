@@ -27,7 +27,8 @@ class _InputFieldBuilderState extends State<InputFieldBuilder> {
   @override
   void didUpdateWidget(covariant InputFieldBuilder oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.field.name != widget.field.name ||
+    // Reset slider when field changes (compare by identity, not just name)
+    if (oldWidget.field != widget.field ||
         oldWidget.field.defaultValue != widget.field.defaultValue) {
       _sliderValue = double.tryParse(widget.field.defaultValue ?? '50') ?? 50;
     }

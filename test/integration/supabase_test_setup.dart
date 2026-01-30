@@ -1,9 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Integration test setup for real Supabase instance.
 ///
-/// Requires `.env.test` file with:
+/// Configuration priority:
+/// 1. Environment variables (for CI/CD)
+/// 2. `.env.test` file (for local development)
+///
+/// Required variables:
 /// - SUPABASE_URL
 /// - SUPABASE_ANON_KEY
 /// - TEST_USER_EMAIL
@@ -15,13 +21,21 @@ class SupabaseTestSetup {
   static Future<void> init() async {
     if (_initialized) return;
 
-    await dotenv.load(fileName: '.env.test');
+    // Try loading .env.test for local dev (ignore if missing for CI)
+    try {
+      await dotenv.load(fileName: '.env.test');
+    } catch (_) {
+      // .env.test not found, will use Platform.environment
+    }
 
-    final url = dotenv.env['SUPABASE_URL'];
-    final anonKey = dotenv.env['SUPABASE_ANON_KEY'];
+    final url = _getEnv('SUPABASE_URL');
+    final anonKey = _getEnv('SUPABASE_ANON_KEY');
 
     if (url == null || anonKey == null) {
-      throw StateError('Missing SUPABASE_URL or SUPABASE_ANON_KEY in .env.test');
+      throw StateError(
+        'Missing SUPABASE_URL or SUPABASE_ANON_KEY. '
+        'Set via environment variables or .env.test file.',
+      );
     }
 
     await Supabase.initialize(url: url, anonKey: anonKey);
@@ -30,11 +44,14 @@ class SupabaseTestSetup {
   }
 
   static Future<void> signInTestUser() async {
-    final email = dotenv.env['TEST_USER_EMAIL'];
-    final password = dotenv.env['TEST_USER_PASSWORD'];
+    final email = _getEnv('TEST_USER_EMAIL');
+    final password = _getEnv('TEST_USER_PASSWORD');
 
     if (email == null || password == null) {
-      throw StateError('Missing TEST_USER_EMAIL or TEST_USER_PASSWORD in .env.test');
+      throw StateError(
+        'Missing TEST_USER_EMAIL or TEST_USER_PASSWORD. '
+        'Set via environment variables or .env.test file.',
+      );
     }
 
     await client.auth.signInWithPassword(email: email, password: password);
@@ -46,5 +63,10 @@ class SupabaseTestSetup {
 
   static Future<void> cleanup() async {
     await signOut();
+  }
+
+  /// Get env var from Platform.environment first, fallback to dotenv.
+  static String? _getEnv(String key) {
+    return Platform.environment[key] ?? dotenv.env[key];
   }
 }

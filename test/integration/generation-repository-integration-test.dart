@@ -32,13 +32,14 @@ void main() {
 
     test('fetchUserJobs respects offset parameter', () async {
       final allJobs = await repository.fetchUserJobs(limit: 10, offset: 0);
-      if (allJobs.length < 2) return;
+      if (allJobs.length < 2) {
+        markTestSkipped('Requires at least 2 jobs in database to test offset');
+        return;
+      }
 
       final offsetJobs = await repository.fetchUserJobs(limit: 10, offset: 1);
 
-      if (offsetJobs.isNotEmpty && allJobs.length > 1) {
-        expect(offsetJobs.first.id, equals(allJobs[1].id));
-      }
+      expect(offsetJobs.first.id, equals(allJobs[1].id));
     });
 
     test('fetchJob returns null for non-existent job', () async {
