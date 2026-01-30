@@ -6,7 +6,6 @@ class AppTheme {
       useMaterial3: true,
       colorScheme: ColorScheme.fromSeed(
         seedColor: Colors.indigo,
-        brightness: Brightness.light,
       ),
       inputDecorationTheme: const InputDecorationTheme(
         border: OutlineInputBorder(),

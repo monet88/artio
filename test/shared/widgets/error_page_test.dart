@@ -22,7 +22,7 @@ void main() {
     });
 
     testWidgets('renders generic message when error is null', (tester) async {
-      await tester.pumpWidget(buildWidget(error: null));
+      await tester.pumpWidget(buildWidget());
 
       expect(find.text('Page not found'), findsOneWidget);
     });

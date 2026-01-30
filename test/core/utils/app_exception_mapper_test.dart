@@ -106,7 +106,6 @@ void main() {
       test('maps network errors without status code to "connection error"', () {
         const error = NetworkException(
           message: 'Network error',
-          statusCode: null,
         );
 
         final message = AppExceptionMapper.toUserMessage(error);

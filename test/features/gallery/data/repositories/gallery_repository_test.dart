@@ -24,14 +24,11 @@ void main() {
         final items = GalleryItemFixtures.list(count: 5);
 
         when(() => mockRepository.fetchGalleryItems(
-              limit: 20,
-              offset: 0,
-              templateId: null,
+              
             )).thenAnswer((_) async => items);
 
         final result = await mockRepository.fetchGalleryItems(
-          limit: 20,
-          offset: 0,
+          
         );
 
         expect(result, hasLength(5));
@@ -39,14 +36,11 @@ void main() {
 
       test('returns empty list when no items exist', () async {
         when(() => mockRepository.fetchGalleryItems(
-              limit: 20,
-              offset: 0,
-              templateId: null,
+              
             )).thenAnswer((_) async => []);
 
         final result = await mockRepository.fetchGalleryItems(
-          limit: 20,
-          offset: 0,
+          
         );
 
         expect(result, isEmpty);
@@ -58,14 +52,10 @@ void main() {
         ];
 
         when(() => mockRepository.fetchGalleryItems(
-              limit: 20,
-              offset: 0,
               templateId: 'template-1',
             )).thenAnswer((_) async => filteredItems);
 
         final result = await mockRepository.fetchGalleryItems(
-          limit: 20,
-          offset: 0,
           templateId: 'template-1',
         );
 

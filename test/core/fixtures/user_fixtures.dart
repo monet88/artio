@@ -29,8 +29,6 @@ class UserFixtures {
         id: 'guest-user-id',
         email: 'guest@example.com',
         displayName: 'Guest',
-        credits: 0,
-        isPremium: false,
       );
 
   /// Creates a premium user

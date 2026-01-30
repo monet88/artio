@@ -117,7 +117,7 @@ void main() {
         when(() => mockFunctions.invoke(
               'generate-image',
               body: any(named: 'body'),
-            )).thenThrow(FunctionException(
+            )).thenThrow(const FunctionException(
           status: 429,
           reasonPhrase: 'Too Many Requests',
         ));
@@ -274,7 +274,7 @@ void main() {
 
   group('Error mapping', () {
     test('PostgrestException maps to AppException.network', () {
-      final postgrestError = PostgrestException(
+      const postgrestError = PostgrestException(
         message: 'Connection failed',
         code: '500',
       );
@@ -288,7 +288,7 @@ void main() {
     });
 
     test('PostgrestException with non-numeric code handles gracefully', () {
-      final postgrestError = PostgrestException(
+      const postgrestError = PostgrestException(
         message: 'Auth error',
         code: 'PGRST301',
       );

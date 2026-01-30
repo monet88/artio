@@ -187,7 +187,7 @@ void main() {
         final stream = mockAuthRepository.onAuthStateChange;
 
         // Emit a mock auth state
-        final mockAuthState = AuthState(AuthChangeEvent.signedIn, null);
+        const mockAuthState = AuthState(AuthChangeEvent.signedIn, null);
         controller.add(mockAuthState);
 
         await expectLater(
