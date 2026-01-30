@@ -35,7 +35,6 @@ void main() {
         name: 'prompt',
         label: 'Prompt',
         type: 'text',
-        required: false,
       );
 
       String? capturedValue;
@@ -59,7 +58,6 @@ void main() {
         label: 'Style',
         type: 'select',
         options: ['Option A', 'Option B'],
-        required: false,
       );
 
       await tester.pumpApp(
@@ -82,7 +80,6 @@ void main() {
         label: 'Style',
         type: 'select',
         options: ['Option A', 'Option B'],
-        required: false,
       );
 
       String? capturedValue;
@@ -113,7 +110,6 @@ void main() {
         name: 'reference',
         label: 'Reference Image',
         type: 'image', // Unknown type, falls back to text
-        required: false,
       );
 
       await tester.pumpApp(
@@ -163,7 +159,6 @@ void main() {
         label: 'Prompt',
         type: 'text',
         defaultValue: 'Default text',
-        required: false,
       );
 
       await tester.pumpApp(

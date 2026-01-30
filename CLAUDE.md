@@ -240,6 +240,25 @@ We keep all important docs in `./docs` folder:
 | Settings feature | `lib/features/settings/` |
 | Create feature | `lib/features/create/` |
 
+## AI Model API Reference
+
+When working with AI image generation models (KIE API, Gemini, etc.):
+
+| Resource | Path | Description |
+|----------|------|-------------|
+| **Model Map (Index)** | `docs/kie-api/kie-model-map.md` | Master index of all models |
+| **Full Model List** | `docs/kie-api/kie-api-llms.txt` | Complete KIE API model catalog |
+| **Google/Imagen** | `docs/kie-api/google/` | Imagen4, Nano Banana, Pro models |
+| **Flux-2** | `docs/kie-api/flux2/` | Flex and Pro variants |
+| **GPT Image** | `docs/kie-api/gpt-image/` | GPT Image 1.5 models |
+| **Seedream** | `docs/kie-api/seedream/` | Seedream 4.5 models |
+
+**IMPORTANT:** The `docs/kie-api/` folder is the **source of truth** for all AI model API specifications. Always reference these docs when:
+- Adding new models to the app
+- Updating Edge Functions for generation
+- Debugging API issues
+- Understanding model-specific parameters
+
 ## Known Technical Debt
 
 | Issue | Priority | Status |

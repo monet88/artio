@@ -80,7 +80,7 @@ void main() {
 
     testWidgets('correct index selected for home route', (tester) async {
       await tester.pumpWidget(
-        buildWidget(child: const Text('Content'), initialLocation: '/home'),
+        buildWidget(child: const Text('Content')),
       );
       await tester.pumpAndSettle();
 

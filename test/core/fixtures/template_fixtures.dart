@@ -28,7 +28,6 @@ class TemplateFixtures {
         label: label ?? 'Style',
         type: 'select',
         options: options ?? const ['Realistic', 'Anime', 'Artistic'],
-        required: false,
       );
 
   /// Creates a basic template without input fields
@@ -45,8 +44,6 @@ class TemplateFixtures {
         category: category ?? 'general',
         promptTemplate: 'Generate {prompt}',
         inputFields: const [],
-        defaultAspectRatio: '1:1',
-        isPremium: false,
       );
 
   /// Creates a template with input fields
@@ -66,8 +63,6 @@ class TemplateFixtures {
           TemplateFixtures.basicInputField(),
           TemplateFixtures.selectInputField(),
         ],
-        defaultAspectRatio: '1:1',
-        isPremium: false,
       );
 
   /// Creates a premium template
@@ -85,12 +80,11 @@ class TemplateFixtures {
         inputFields: [
           TemplateFixtures.basicInputField(),
           TemplateFixtures.selectInputField(),
-          InputFieldModel(
+          const InputFieldModel(
             name: 'quality',
             label: 'Quality',
             type: 'select',
-            options: const ['Standard', 'HD', '4K'],
-            required: false,
+            options: ['Standard', 'HD', '4K'],
           ),
         ],
         defaultAspectRatio: '16:9',

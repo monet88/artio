@@ -160,14 +160,14 @@ void main() {
 
     group('equality', () {
       test('same jobs are equal', () {
-        final job1 = GenerationJobModel(
+        const job1 = GenerationJobModel(
           id: 'same-id',
           userId: 'user',
           templateId: 'template',
           prompt: 'prompt',
           status: JobStatus.pending,
         );
-        final job2 = GenerationJobModel(
+        const job2 = GenerationJobModel(
           id: 'same-id',
           userId: 'user',
           templateId: 'template',
@@ -188,7 +188,7 @@ void main() {
 
     group('fixtures', () {
       test('list fixture creates jobs with different statuses', () {
-        final jobs = GenerationJobFixtures.list(count: 5);
+        final jobs = GenerationJobFixtures.list();
 
         expect(jobs.length, 5);
         

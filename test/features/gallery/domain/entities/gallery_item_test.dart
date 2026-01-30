@@ -168,20 +168,20 @@ void main() {
 
     group('fixtures', () {
       test('list fixture creates multiple items', () {
-        final items = GalleryItemFixtures.list(count: 10);
+        final items = GalleryItemFixtures.list();
 
         expect(items.length, 10);
       });
 
       test('list fixture includes various statuses', () {
-        final items = GalleryItemFixtures.list(count: 10);
+        final items = GalleryItemFixtures.list();
         final statuses = items.map((i) => i.status).toSet();
 
         expect(statuses, contains(GenerationStatus.completed));
       });
 
       test('list fixture includes favorites', () {
-        final items = GalleryItemFixtures.list(count: 10);
+        final items = GalleryItemFixtures.list();
         final favorites = items.where((i) => i.isFavorite);
 
         expect(favorites, isNotEmpty);

@@ -2,10 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../auth/presentation/view_models/auth_view_model.dart';
-import '../../../../core/constants/app_constants.dart';
 import '../../../../core/utils/app_exception_mapper.dart';
+import '../../../../shared/widgets/aspect_ratio_selector.dart';
+import '../../../../shared/widgets/image_count_dropdown.dart';
+import '../../../../shared/widgets/model_selector.dart';
+import '../../../../shared/widgets/output_format_toggle.dart';
 import '../../domain/entities/generation_job_model.dart';
+import '../../domain/entities/input_field_model.dart';
 import '../../domain/entities/template_model.dart';
+import '../providers/generation_options_provider.dart';
 import '../providers/template_provider.dart';
 import '../view_models/generation_view_model.dart';
 import '../widgets/generation_progress.dart';
@@ -22,13 +27,22 @@ class TemplateDetailScreen extends ConsumerStatefulWidget {
 
 class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
   final Map<String, String> _inputValues = {};
-  String _selectedAspectRatio = AppConstants.defaultAspectRatio;
+
+  // Placeholder for premium status - will be integrated with subscription later
+  bool get _isPremium => false;
 
   String _buildPrompt(TemplateModel template) {
     var prompt = template.promptTemplate;
     for (final entry in _inputValues.entries) {
       prompt = prompt.replaceAll('{${entry.key}}', entry.value);
     }
+    
+    // Append otherIdeas if non-empty
+    final otherIdeas = _inputValues['otherIdeas']?.trim() ?? '';
+    if (otherIdeas.isNotEmpty) {
+      prompt += '\n\nAdditional details: $otherIdeas';
+    }
+    
     return prompt;
   }
 
@@ -51,12 +65,15 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
       return;
     }
 
+    final options = ref.read(generationOptionsProvider);
     final prompt = _buildPrompt(template);
+    
     ref.read(generationViewModelProvider.notifier).generate(
           templateId: template.id,
           prompt: prompt,
           userId: userId,
-          aspectRatio: _selectedAspectRatio,
+          aspectRatio: options.aspectRatio,
+          imageCount: options.imageCount,
         );
   }
 
@@ -64,6 +81,7 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
   Widget build(BuildContext context) {
     final templateAsync = ref.watch(templateByIdProvider(widget.templateId));
     final jobAsync = ref.watch(generationViewModelProvider);
+    final options = ref.watch(generationOptionsProvider);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Generate')),
@@ -80,6 +98,7 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                // Template thumbnail
                 if (template.thumbnailUrl.isNotEmpty) ...[
                   ClipRRect(
                     borderRadius: BorderRadius.circular(8),
@@ -93,11 +112,14 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
                   ),
                   const SizedBox(height: 16),
                 ],
+                
+                // Template info
                 Text(template.name, style: Theme.of(context).textTheme.headlineSmall),
                 const SizedBox(height: 8),
                 Text(template.description),
                 const SizedBox(height: 24),
 
+                // Template input fields
                 for (final field in template.inputFields) ...[
                   InputFieldBuilder(
                     field: field,
@@ -106,22 +128,60 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
                   const SizedBox(height: 16),
                 ],
 
-                const Text('Aspect Ratio'),
-                const SizedBox(height: 8),
-                Wrap(
-                  spacing: 8,
-                  children: AppConstants.aspectRatios.map((ratio) {
-                    return ChoiceChip(
-                      label: Text(ratio),
-                      selected: _selectedAspectRatio == ratio,
-                      onSelected: (selected) {
-                        if (selected) setState(() => _selectedAspectRatio = ratio);
-                      },
-                    );
-                  }).toList(),
+                // Other Ideas input (optional)
+                InputFieldBuilder(
+                  field: const InputFieldModel(
+                    name: 'otherIdeas',
+                    label: 'Other Ideas (Optional)',
+                    type: 'otherIdeas',
+                    placeholder: 'Share any additional ideas...',
+                  ),
+                  onChanged: (value) => _inputValues['otherIdeas'] = value,
                 ),
                 const SizedBox(height: 24),
 
+                // Generation Options Section
+                Text(
+                  'Generation Options',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 16),
+
+                // Aspect Ratio Selector
+                AspectRatioSelector(
+                  selectedRatio: options.aspectRatio,
+                  selectedModelId: options.modelId,
+                  onChanged: (ratio) => ref.read(generationOptionsProvider.notifier).updateAspectRatio(ratio),
+                ),
+                const SizedBox(height: 16),
+
+                // Image Count Dropdown
+                ImageCountDropdown(
+                  value: options.imageCount,
+                  onChanged: (count) => ref.read(generationOptionsProvider.notifier).updateImageCount(count),
+                ),
+                const SizedBox(height: 16),
+
+                // Output Format Toggle
+                OutputFormatToggle(
+                  value: options.outputFormat,
+                  isPremium: _isPremium,
+                  onChanged: (format) => ref.read(generationOptionsProvider.notifier).updateOutputFormat(format),
+                ),
+                const SizedBox(height: 16),
+
+                // Model Selector
+                ModelSelector(
+                  selectedModelId: options.modelId,
+                  isPremium: _isPremium,
+                  onChanged: (modelId) => ref.read(generationOptionsProvider.notifier).updateModel(modelId),
+                  filterByType: 'text-to-image',
+                ),
+                const SizedBox(height: 24),
+
+                // Generation State (button/progress)
                 _buildGenerationState(jobAsync, template),
               ],
             ),

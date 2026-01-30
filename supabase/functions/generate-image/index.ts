@@ -28,6 +28,7 @@ interface GenerationRequest {
   model?: string;
   aspectRatio?: string;
   imageCount?: number;
+  outputFormat?: string; // 'jpg' or 'png'
   imageInputs?: string[];
 }
 
@@ -64,11 +65,13 @@ async function createKieTask(
   prompt: string,
   model: string,
   aspectRatio: string,
+  imageCount: number,
   imageInputs?: string[]
 ): Promise<{ taskId: string } | { error: string }> {
   const input: Record<string, unknown> = {
     prompt,
     aspect_ratio: aspectRatio || "1:1",
+    num_images: imageCount || 1,
   };
 
   if (imageInputs?.length) {
@@ -193,15 +196,18 @@ async function uploadToStorage(
   userId: string,
   jobId: string,
   imageData: Uint8Array,
-  index: number
+  index: number,
+  outputFormat: string = "jpg"
 ): Promise<string> {
-  const fileName = index === 0 ? `${jobId}.png` : `${jobId}_${index}.png`;
+  const ext = outputFormat === "png" ? "png" : "jpg";
+  const contentType = outputFormat === "png" ? "image/png" : "image/jpeg";
+  const fileName = index === 0 ? `${jobId}.${ext}` : `${jobId}_${index}.${ext}`;
   const storagePath = `${userId}/${fileName}`;
 
   const { error } = await supabase.storage
     .from("generated-images")
     .upload(storagePath, imageData, {
-      contentType: "image/png",
+      contentType,
       upsert: true,
     });
 
@@ -216,13 +222,14 @@ async function mirrorUrlsToStorage(
   supabase: ReturnType<typeof getSupabaseClient>,
   userId: string,
   jobId: string,
-  imageUrls: string[]
+  imageUrls: string[],
+  outputFormat: string = "jpg"
 ): Promise<string[]> {
   const storagePaths: string[] = [];
 
   for (let i = 0; i < imageUrls.length; i++) {
     const imageData = await downloadImage(imageUrls[i]);
-    const storagePath = await uploadToStorage(supabase, userId, jobId, imageData, i);
+    const storagePath = await uploadToStorage(supabase, userId, jobId, imageData, i, outputFormat);
     storagePaths.push(storagePath);
   }
 
@@ -233,7 +240,8 @@ async function mirrorBase64ToStorage(
   supabase: ReturnType<typeof getSupabaseClient>,
   userId: string,
   jobId: string,
-  base64Images: string[]
+  base64Images: string[],
+  outputFormat: string = "jpg"
 ): Promise<string[]> {
   const storagePaths: string[] = [];
 
@@ -244,7 +252,7 @@ async function mirrorBase64ToStorage(
       bytes[j] = binaryString.charCodeAt(j);
     }
 
-    const storagePath = await uploadToStorage(supabase, userId, jobId, bytes, i);
+    const storagePath = await uploadToStorage(supabase, userId, jobId, bytes, i, outputFormat);
     storagePaths.push(storagePath);
   }
 
@@ -309,8 +317,10 @@ Deno.serve(async (req) => {
     const {
       jobId,
       prompt,
-      model = "nano-banana-pro",
+      model = "google/imagen4",
       aspectRatio = "1:1",
+      imageCount = 1,
+      outputFormat = "jpg",
       imageInputs,
     } = body;
 
@@ -348,9 +358,9 @@ Deno.serve(async (req) => {
     let storagePaths: string[] = [];
 
     if (provider === "kie") {
-      console.log(`[${jobId}] Kie.ai generation: ${model}`);
+      console.log(`[${jobId}] Kie.ai generation: ${model}, count: ${imageCount}, format: ${outputFormat}`);
 
-      const createResult = await createKieTask(prompt, model, aspectRatio, imageInputs);
+      const createResult = await createKieTask(prompt, model, aspectRatio, imageCount, imageInputs);
 
       if ("error" in createResult) {
         await updateJobStatus(supabase, jobId, { status: "failed", error_message: createResult.error });
@@ -374,10 +384,10 @@ Deno.serve(async (req) => {
       }
 
       console.log(`[${jobId}] Mirroring ${pollResult.images.length} images`);
-      storagePaths = await mirrorUrlsToStorage(supabase, userId, jobId, pollResult.images);
+      storagePaths = await mirrorUrlsToStorage(supabase, userId, jobId, pollResult.images, outputFormat);
 
     } else {
-      console.log(`[${jobId}] Gemini generation: ${model}`);
+      console.log(`[${jobId}] Gemini generation: ${model}, format: ${outputFormat}`);
 
       const geminiResult = await generateViaGemini(prompt, model, aspectRatio);
 
@@ -390,7 +400,7 @@ Deno.serve(async (req) => {
       }
 
       console.log(`[${jobId}] Mirroring ${geminiResult.base64Images.length} images`);
-      storagePaths = await mirrorBase64ToStorage(supabase, userId, jobId, geminiResult.base64Images);
+      storagePaths = await mirrorBase64ToStorage(supabase, userId, jobId, geminiResult.base64Images, outputFormat);
     }
 
     await updateJobStatus(supabase, jobId, {

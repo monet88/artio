@@ -46,16 +46,12 @@ class GalleryItemFixtures {
   static GalleryItem failed({String? id}) => GalleryItemFixtures.single(
         id: id,
         status: GenerationStatus.failed,
-        imageUrl: null,
-        resultPaths: null,
       );
 
   /// Creates a processing gallery item
   static GalleryItem processing({String? id}) => GalleryItemFixtures.single(
         id: id,
         status: GenerationStatus.processing,
-        imageUrl: null,
-        resultPaths: null,
       );
 
   /// Creates a favorite gallery item

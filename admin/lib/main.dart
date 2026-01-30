@@ -29,7 +29,6 @@ class AdminApp extends ConsumerWidget {
       title: 'Artio Admin',
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.system,
       routerConfig: router,
     );
   }
