@@ -47,7 +47,10 @@ class ModelSelector extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         DropdownButtonFormField<String>(
-          initialValue: selectedModelId,
+          // Guard: only set value if it exists in filtered list
+          value: _availableModels.any((m) => m.id == selectedModelId)
+              ? selectedModelId
+              : (_availableModels.isNotEmpty ? _availableModels.first.id : null),
           isExpanded: true,
           decoration: const InputDecoration(
             border: OutlineInputBorder(),

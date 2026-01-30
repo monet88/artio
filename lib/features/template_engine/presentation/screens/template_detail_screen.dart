@@ -73,6 +73,7 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
           prompt: prompt,
           userId: userId,
           aspectRatio: options.aspectRatio,
+          imageCount: options.imageCount,
         );
   }
 

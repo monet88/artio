@@ -32,7 +32,14 @@ class _AspectRatioSelectorState extends State<AspectRatioSelector> {
   List<String> get _displayedRatios {
     final available = _availableRatios;
     if (_expanded) return available;
-    return _primaryRatios.where((r) => available.contains(r)).toList();
+
+    // Always include selected ratio in collapsed view
+    final primary = _primaryRatios.where((r) => available.contains(r)).toList();
+    if (!primary.contains(widget.selectedRatio) &&
+        available.contains(widget.selectedRatio)) {
+      primary.add(widget.selectedRatio);
+    }
+    return primary;
   }
 
   bool get _hasMoreOptions {

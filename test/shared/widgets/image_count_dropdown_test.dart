@@ -48,7 +48,8 @@ void main() {
       await tester.tap(find.byType(DropdownButtonFormField<int>));
       await tester.pumpAndSettle();
 
-      expect(find.text('1 image'), findsWidgets);
+      // Dropdown shows selected item + menu items, so "1 image" appears twice
+      expect(find.text('1 image'), findsAtLeast(1));
       expect(find.text('2 images'), findsOneWidget);
       expect(find.text('3 images'), findsOneWidget);
       expect(find.text('4 images'), findsOneWidget);
@@ -63,7 +64,8 @@ void main() {
       await tester.tap(find.byType(DropdownButtonFormField<int>));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('3 images').last);
+      // Tap on the text inside the dropdown menu overlay
+      await tester.tap(find.text('3 images'));
       await tester.pumpAndSettle();
 
       expect(selectedValue, 3);

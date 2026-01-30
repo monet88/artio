@@ -31,5 +31,5 @@
 ```
 
 ## Notes
-- `auto` aspect ratio matches the first input image ratio
+- `auto` aspect ratio defaults to `1:1` for text-to-image (no input image reference)
 - Resolution: 1K or 2K output
