@@ -151,8 +151,13 @@ opencode.json
 .skillsrc
 .sisyphus/
 WARP.md
+.repomixignore
+.mcp.json
 plans/ui-mocks/*
 plans/reports/*
+
+# Build artifacts
+release-manifest.json
 
 # Exceptions to above rules (if needed)
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
