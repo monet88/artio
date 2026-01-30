@@ -97,8 +97,16 @@ class TemplatesPage extends ConsumerWidget {
           return ReorderableListView.builder(
             padding: const EdgeInsets.all(16),
             itemCount: templates.length,
-            onReorder: (oldIndex, newIndex) {
-              ref.read(templatesProvider.notifier).reorder(oldIndex, newIndex);
+            onReorder: (oldIndex, newIndex) async {
+              try {
+                await ref.read(templatesProvider.notifier).reorder(oldIndex, newIndex);
+              } catch (e) {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Failed to reorder: $e')),
+                  );
+                }
+              }
             },
             itemBuilder: (context, index) {
               final template = templates[index];

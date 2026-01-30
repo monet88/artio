@@ -1,22 +1,17 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
 import 'package:artio/features/auth/presentation/state/auth_state.dart';
 import 'package:artio/features/settings/ui/settings_screen.dart';
 import '../../../../core/fixtures/fixtures.dart';
+import '../../../../core/helpers/pump_app.dart';
 
 void main() {
   group('SettingsScreen', () {
     testWidgets('renders app bar with Settings title', (tester) async {
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            authViewModelProvider.overrideWith(() => _FakeAuthViewModel()),
-          ],
-          child: const MaterialApp(home: SettingsScreen()),
-        ),
+      await tester.pumpApp(
+        const SettingsScreen(),
+        overrides: [authViewModelProvider.overrideWith(() => _FakeAuthViewModel())],
       );
       await tester.pump();
 
@@ -25,13 +20,9 @@ void main() {
     });
 
     testWidgets('renders Scaffold', (tester) async {
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            authViewModelProvider.overrideWith(() => _FakeAuthViewModel()),
-          ],
-          child: const MaterialApp(home: SettingsScreen()),
-        ),
+      await tester.pumpApp(
+        const SettingsScreen(),
+        overrides: [authViewModelProvider.overrideWith(() => _FakeAuthViewModel())],
       );
       await tester.pump();
 
@@ -39,13 +30,9 @@ void main() {
     });
 
     testWidgets('displays user email when authenticated', (tester) async {
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            authViewModelProvider.overrideWith(() => _FakeAuthViewModel()),
-          ],
-          child: const MaterialApp(home: SettingsScreen()),
-        ),
+      await tester.pumpApp(
+        const SettingsScreen(),
+        overrides: [authViewModelProvider.overrideWith(() => _FakeAuthViewModel())],
       );
       await tester.pump();
 
@@ -53,13 +40,9 @@ void main() {
     });
 
     testWidgets('renders Account section with expected items', (tester) async {
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            authViewModelProvider.overrideWith(() => _FakeAuthViewModel()),
-          ],
-          child: const MaterialApp(home: SettingsScreen()),
-        ),
+      await tester.pumpApp(
+        const SettingsScreen(),
+        overrides: [authViewModelProvider.overrideWith(() => _FakeAuthViewModel())],
       );
       await tester.pump();
 
@@ -70,13 +53,9 @@ void main() {
     });
 
     testWidgets('renders Appearance section', (tester) async {
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            authViewModelProvider.overrideWith(() => _FakeAuthViewModel()),
-          ],
-          child: const MaterialApp(home: SettingsScreen()),
-        ),
+      await tester.pumpApp(
+        const SettingsScreen(),
+        overrides: [authViewModelProvider.overrideWith(() => _FakeAuthViewModel())],
       );
       await tester.pump();
 
@@ -85,13 +64,9 @@ void main() {
     });
 
     testWidgets('renders About section with version', (tester) async {
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            authViewModelProvider.overrideWith(() => _FakeAuthViewModel()),
-          ],
-          child: const MaterialApp(home: SettingsScreen()),
-        ),
+      await tester.pumpApp(
+        const SettingsScreen(),
+        overrides: [authViewModelProvider.overrideWith(() => _FakeAuthViewModel())],
       );
       await tester.pump();
 
