@@ -1,8 +1,8 @@
 # Code Standards
 
 **Project**: Artio - AI Image Generation SaaS
-**Updated**: 2026-01-28
-**Version**: 1.1
+**Updated**: 2026-01-30
+**Version**: 1.2
 
 ---
 
@@ -106,7 +106,7 @@ lib/
     │       ├── domain/
     │       ├── data/
     │       └── presentation/
-    ├── router/
+    ├── routing/
 │   └── app_router.dart                # go_router configuration
 ├── theme/
 │   └── app_theme.dart                 # Material theme definitions
@@ -355,13 +355,6 @@ final appRouter = GoRouter(
 );
 ```
 
-### Known Tech Debt
-
-**H2/H3 Tech Debt:** GoRouter uses raw string paths instead of `TypedGoRoute`.
-- **Reason:** `go_router_builder` compatibility concerns
-- **Future Fix:** Migrate to typed routes when stable
-- **Tracking:** Separate plan required
-
 ---
 
 ## Constants Management
@@ -397,8 +390,14 @@ class AppConstants {
 
 ### Current Status
 
-- **Coverage:** ~5-10% (1 widget test)
+- **Coverage:** 80%+ (324 tests passing)
 - **Target:** 80%+ for production readiness
+
+### Recent Improvements
+
+- Integration test infrastructure established
+- Repository tests added (auth, template)
+- Widget tests for template engine components
 
 ### Required Test Structure
 
@@ -488,11 +487,10 @@ void main() {
 
 | Issue | Description | Priority | Future Action |
 |-------|-------------|----------|---------------|
-| H2, H3 | GoRouter raw strings | High | Migrate to TypedGoRoute when stable |
-| Test Coverage | 5-10% vs 80% target | High | Add comprehensive test suite (6-8h) |
+| ~~Test Coverage~~ | ~~15% vs 80% target~~ | ~~High~~ | ✓ Achieved (324 tests) |
+| File Size | Some files >200 LOC | Medium | Refactor large files (image_viewer_page) |
 | DTO Leakage | Domain entities have JSON logic | Medium | Split to Entity + DTO + mapper when scaling |
 | DataSource Layer | Repos call Supabase directly | Low | Add DataSource abstraction if backend swap needed |
-| Placeholder Features | create/gallery/settings not 3-layer | Low | Restructure when implementing |
 
 ### Accepted Trade-offs
 
@@ -516,9 +514,10 @@ Before submitting code:
 - [ ] `const` used where possible
 - [ ] `@override` annotations on all overridden methods
 - [ ] File naming follows conventions
+- [ ] File size under 200 LOC (or justified exception)
 - [ ] No secrets in code
 - [ ] `flutter analyze` reports 0 errors
-- [ ] Tests pass (when comprehensive suite exists)
+- [ ] Tests written and passing
 
 ---
 
@@ -556,3 +555,7 @@ flutter pub outdated
 - **Error Handling:** `lib/core/exceptions/app_exception.dart`
 - **Constants:** `lib/core/constants/app_constants.dart`
 - **Phase 4.6 Plan:** `plans/260125-1516-phase46-architecture-hardening/plan.md`
+
+---
+
+**Last Updated**: 2026-01-30

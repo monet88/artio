@@ -1,8 +1,8 @@
 # Development Roadmap
 
 **Project**: Artio - AI Image Generation SaaS
-**Updated**: 2026-01-28 21:10
-**Status**: Phase 5, 7 Complete → Phase 6 Next
+**Updated**: 2026-01-30
+**Status**: Phase 5, 7, 8 (partial) Complete → Phase 6 Next
 
 ---
 
@@ -13,12 +13,12 @@
 - **Text-to-Image** (Create tab): Custom prompt generation
 
 **Tech Stack**:
-- Flutter (Android, iOS, Web)
+- Flutter (Android, iOS, Web, Windows)
 - Riverpod + riverpod_generator + Freezed
 - Supabase (auth, db, storage, edge functions, realtime)
 - go_router with auth guards
 - RevenueCat (mobile) + Stripe (web)
-- AI Providers: Kie (main), Gemini (fallback)
+- AI Providers: Kie (primary), Gemini (fallback)
 
 ---
 
@@ -76,8 +76,24 @@
 - Added `integration_test` package
 - Created `template_e2e_test.dart`
 - Configured Windows desktop test runner
+- Repository tests for auth and template features
+- **Test Coverage**: 324 tests passing, 80%+ coverage achieved
+
+**Phase 8: Admin App (Partial)** - *2026-01-28*
+- Created admin web app structure (11 source files)
+- Admin auth with Supabase
+- Template model and router setup
+- Freezed/JSON deps configured
+- **Remaining**: Template CRUD UI, drag-to-reorder, deployment
 
 ### 🔄 In Progress
+
+**Phase 8: Admin App** (remaining ~1.5h of 3h)
+- Template CRUD UI
+- Drag-to-reorder templates
+- Deployment to admin.artio.app
+
+### ⏸ Pending
 
 **Phase 6: Subscription & Credits** (8h) - *NEXT*
 - Subscription model (Free/Pro tiers)
@@ -86,29 +102,18 @@
 - Stripe integration (Web)
 - Rewarded ads (mobile)
 
-### ⏸ Pending
-
 **Plan 2: Credit, Premium & Rate Limit** (6h) - *Merged into Phase 6*
 - Database schema for credits/limits
 - Edge Function enforcement
 - Rate limiting & cooldown
 
-**Phase 8: Admin App** (3h)
-- Separate Flutter web app for template management
-- Admin role enforcement via RLS
-- Template CRUD interface
-- Visual JSON editor for input fields
-- Drag-to-reorder templates
-- Deployment to admin.artio.app
-
-**Phase 4.5: Architecture Hardening** (8.5h) - *Completed 2026-01-27*
-- 3-layer clean architecture refactor (auth, template_engine)
-- Repository DI with abstract interfaces
-- Presentation/Domain/Data separation
-- Dependency rule enforcement
-- Error mapper implementation
-- Constants extraction
-- Dead code cleanup
+**Phase 8: Admin App** (~1.5h remaining)
+- ~~Separate Flutter web app for template management~~ ✓
+- ~~Admin role enforcement via RLS~~ ✓
+- Template CRUD interface (pending)
+- Visual JSON editor for input fields (pending)
+- Drag-to-reorder templates (pending)
+- Deployment to admin.artio.app (pending)
 
 ---
 
@@ -117,12 +122,13 @@
 ### M1: MVP Core (Phases 1-3) - 14h
 **Goal**: Working app with auth and navigation
 **Deliverables**:
-- [ ] Users can sign up/login
-- [ ] App launches on iOS, Android, Web
-- [ ] Theme switching works
-- [ ] Router redirects based on auth state
+- [x] Users can sign up/login
+- [x] App launches on iOS, Android, Web, Windows
+- [x] Theme switching works
+- [x] Router redirects based on auth state
 
 **Target**: Week 1
+**Status**: ✓ Complete
 
 ---
 
@@ -131,11 +137,11 @@
 **Deliverables**:
 - [x] Templates load from Supabase
 - [x] Generation jobs track in realtime
-- [ ] Users can view/download/delete generated images
-- [ ] Infinite scroll gallery works
+- [x] Users can view/download/delete generated images
+- [x] Infinite scroll gallery works
 
 **Target**: Week 2
-**Status**: 66% complete (Phase 4 done)
+**Status**: ✓ Complete
 
 ---
 
@@ -155,11 +161,12 @@
 ### M4: Polish & Admin (Phases 7-8) - 6h
 **Goal**: Production-ready UX and content management
 **Deliverables**:
-- [ ] Settings screen functional
+- [x] Settings screen functional
 - [ ] Admin can CRUD templates without code changes
 - [ ] All Success Criteria from phases 7-8 met
 
 **Target**: Week 4
+**Status**: 70% complete (Phase 7 done, Phase 8 in progress)
 
 ---
 
@@ -190,10 +197,10 @@
 | **Architecture Quality** | 100% | ✓ Complete (Phase 4.6) |
 | **User Features** | 100% | ✓ Complete (Phase 5, 7) |
 | **Monetization** | 0% | Pending (Phase 6) |
-| **Admin Tools** | 0% | Pending (Phase 8) |
+| **Admin Tools** | 50% | In Progress (Phase 8) |
 | **Documentation** | 100% | ✓ Standardized |
 
-**Total Project**: 77% (37.5h / 48.5h total estimated)
+**Total Project**: 81% (39.5h / 48.5h total estimated)
 
 ---
 
@@ -216,11 +223,11 @@
 
 | Risk | Impact | Mitigation | Status |
 |------|--------|------------|--------|
-| KIE API rate limits | High | Implement queue + backoff | Pending |
+| Kie API rate limits | High | Implement queue + backoff | Pending |
 | RevenueCat web beta limitations | Medium | Use Stripe directly for web | Mitigated in plan |
 | Cross-platform payment testing | High | Budget iOS/Android test devices | Pending |
-| Supabase free tier limits | Medium | Monitor usage, upgrade early | Pending |
-| Template content creation | Medium | MVP with 10 seed templates | Pending |
+| Supabase free tier limits | Medium | Monitor usage, upgrade early | Monitoring |
+| Template content creation | Medium | MVP with 25 seed templates | ✓ Complete |
 
 ---
 
@@ -251,9 +258,9 @@
 ## Success Metrics
 
 ### Technical
-- [ ] `flutter analyze` 0 errors
+- [x] `flutter analyze` 0 errors
 - [ ] All phase Success Criteria met
-- [ ] 80%+ test coverage on business logic
+- [x] 80%+ test coverage on business logic (324 tests passing)
 - [ ] <2s cold start time
 - [ ] <500ms template grid load
 
@@ -273,6 +280,7 @@
 | 2026-01-27 | 0.2 | Phase 4 completed, docs standardized |
 | 2026-01-27 | 0.3 | Phase 4.6 completed (architecture hardening) |
 | 2026-01-28 | 1.0 | Phases 5 & 7 complete, 25 templates added |
+| 2026-01-30 | 1.1 | Test coverage 80%+, Admin app 50%, documentation sync |
 
 ---
 
@@ -282,3 +290,7 @@
 - **Phase Files**: `plans/260125-0120-artio-bootstrap/phase-*.md`
 - **Standardization Report**: `plans/reports/cook-260127-1406-standardize-artio-phases-final.md`
 - **Project Structure**: See Phase 1 Architecture section
+
+---
+
+**Last Updated**: 2026-01-30

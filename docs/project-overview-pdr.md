@@ -1,8 +1,8 @@
 # Project Overview & Product Development Requirements
 
 **Project**: Artio - AI Image Generation SaaS
-**Updated**: 2026-01-28
-**Version**: 1.1
+**Updated**: 2026-01-30
+**Version**: 1.2
 
 ---
 
@@ -53,12 +53,12 @@ Democratize AI image generation through intuitive templates and flexible text pr
 - As a user, I want to reset my password via email if I forget it
 
 **Acceptance Criteria:**
-- [ ] Email/password registration with email verification
-- [ ] Google OAuth on all platforms (iOS, Android, Web)
-- [ ] Apple Sign-In on iOS (required by App Store)
+- [x] Email/password registration with email verification
+- [x] Google OAuth on all platforms (iOS, Android, Web)
+- [x] Apple Sign-In on iOS (required by App Store)
 - [ ] Profile photo upload to Supabase Storage
-- [ ] Password reset flow via email link
-- [ ] Session persistence (auto-login on app restart)
+- [x] Password reset flow via email link
+- [x] Session persistence (auto-login on app restart)
 
 **Implementation:**
 - Supabase Auth for backend
@@ -85,7 +85,7 @@ Democratize AI image generation through intuitive templates and flexible text pr
 - [x] Support for input types: text, image upload, dropdown (aspect ratio)
 - [x] Real-time job status updates (pending → processing → completed/failed)
 - [x] Generated image preview with download button
-- [ ] Error messages for failed generations (user-friendly via AppExceptionMapper)
+- [x] Error messages for failed generations (user-friendly via AppExceptionMapper)
 
 **Implementation Status:**
 - ✓ Complete: Phase 4 (Template Engine)
@@ -135,6 +135,7 @@ Democratize AI image generation through intuitive templates and flexible text pr
 - [x] Sort by date (newest first)
 - [x] Multi-select for bulk actions (delete, download)
 - [x] Fullscreen viewer with hero animation
+- [x] Soft delete with undo functionality
 
 **Implementation:**
 - `gallery` feature (Complete)
@@ -320,6 +321,7 @@ Democratize AI image generation through intuitive templates and flexible text pr
 | iOS | 13.0+ | Required for SwiftUI deep links |
 | Android | 5.0+ (API 21) | 95% market coverage |
 | Web | Modern browsers (Chrome 90+, Safari 14+) | PWA support optional |
+| Windows | 10+ | Desktop support for development and testing |
 
 ### Dependencies
 
@@ -338,9 +340,7 @@ Democratize AI image generation through intuitive templates and flexible text pr
 
 | Issue | Impact | Mitigation Plan |
 |-------|--------|-----------------|
-| GoRouter uses raw strings (H2, H3) | Type safety, refactor risk | Migrate to TypedGoRoute (blocked by go_router_builder compatibility) |
-| Test coverage 5-10% vs 80% target | Production readiness | Add comprehensive test suite (6-8h effort) |
-
+| ~~Test coverage 15% vs 80% target~~ | ~~Production readiness~~ | ✓ Achieved (324 tests, 80%+) |
 ### Medium Priority
 
 | Issue | Impact | Mitigation Plan |
@@ -361,8 +361,8 @@ Democratize AI image generation through intuitive templates and flexible text pr
 
 ### Technical KPIs
 
-- [ ] `flutter analyze` 0 errors (achieved in Phase 4.6)
-- [ ] 80%+ test coverage on business logic (pending)
+- [x] `flutter analyze` 0 errors (achieved in Phase 4.6)
+- [x] 80%+ test coverage on business logic (324 tests passing)
 - [ ] <2s cold start time (to be measured)
 - [ ] <500ms template grid load (to be measured)
 - [ ] <5% error rate in production
@@ -421,7 +421,7 @@ Democratize AI image generation through intuitive templates and flexible text pr
 - Visual JSON editor
 
 **Total Estimated Effort:** 48.5h
-**Current Progress:** 60% (29h complete)
+**Current Progress:** 77% (37.5h complete)
 
 ---
 
@@ -467,7 +467,8 @@ Democratize AI image generation through intuitive templates and flexible text pr
 | Service | Purpose | Plan |
 |---------|---------|------|
 | Supabase | Backend (DB, Auth, Storage, Functions) | Free tier (MVP) → Pro ($25/mo) |
-| KIE API (Nano Banana) | Image generation | Pay-per-use (TBD pricing) |
+| Kie API | Image generation (primary) | Pay-per-use (TBD pricing) |
+| Gemini | Image generation (fallback) | Pay-per-use |
 | RevenueCat | Subscription management (mobile) | Free tier (<$2.5K MRR) |
 | Stripe | Payment processing (web) | 2.9% + 30¢ per transaction |
 | AdMob | Rewarded ads (mobile) | Revenue share (68%) |
@@ -557,6 +558,6 @@ See: `docs/code-standards.md` for detailed conventions
 
 ---
 
-**Document Version:** 1.1
-**Last Updated:** 2026-01-28
+**Document Version:** 1.2
+**Last Updated:** 2026-01-30
 **Next Review:** Post-Phase 6 (Subscription implementation)

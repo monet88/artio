@@ -154,6 +154,7 @@ opencode.json
 .sisyphus/*
 WARP.md
 plans/ui-mocks/*
+plans/reports/*
 
 # Exceptions to above rules (if needed)
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages

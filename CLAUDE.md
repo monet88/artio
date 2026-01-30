@@ -171,6 +171,36 @@ flutter test
 dart format .
 ```
 
+## Tool Limitations
+
+| Tool | Dart Support | Alternative |
+|------|--------------|-------------|
+| `ast-grep` (sg) | ❌ Not supported | `rg` (ripgrep), `dart analyze`, MCP dart LSP |
+| `ripgrep` (rg) | ✅ Text search | - |
+
+## Windows Bash Workarounds
+
+Claude Code uses Git Bash which doesn't resolve `.cmd` scripts. Use direct calls:
+
+```bash
+# osgrep (semantic search) - use direct node call
+node C:/Users/monet/AppData/Roaming/npm/node_modules/osgrep/dist/index.js "query"
+
+# osgrep trace
+node C:/Users/monet/AppData/Roaming/npm/node_modules/osgrep/dist/index.js trace functionName
+
+# osgrep skeleton
+node C:/Users/monet/AppData/Roaming/npm/node_modules/osgrep/dist/index.js skeleton path/to/file.dart
+```
+
+## Dart MCP Tools Setup
+
+Before using Dart MCP tools (`dart_*`, `lsp_*`), add project root first:
+
+```
+mcp__dart__add_roots with uri: file:///F:/CodeBase/flutter-app/aiart
+```
+
 ## Modularization Guidelines
 
 - If a code file exceeds 200 lines of code, consider modularizing it

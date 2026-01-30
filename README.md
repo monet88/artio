@@ -24,14 +24,14 @@
 
 | Category | Technology |
 |----------|------------|
-| **Framework** | Flutter 3.10+ (Android, iOS, Web) |
+| **Framework** | Flutter 3.10+ (Android, iOS, Web, Windows) |
 | **State Management** | Riverpod 2.6+ with code generation |
 | **Navigation** | go_router 14.8+ with auth guards |
 | **Data Models** | Freezed + JSON Serializable |
 | **Backend** | Supabase (Auth, PostgreSQL, Storage, Edge Functions, Realtime) |
 | **Payments** | RevenueCat (mobile) + Stripe (web) |
 | **Ads** | AdMob (rewarded ads) |
-| **AI Provider** | KIE API (Nano Banana, Imagen 4) |
+| **AI Provider** | Kie API (primary), Gemini (fallback) |
 
 ---
 
@@ -57,6 +57,8 @@ lib/
 ├── routing/               # GoRouter configuration
 ├── shared/                # Shared widgets (MainShell, ErrorPage)
 ├── theme/                 # Theme management
+├── test/                  # Unit and widget tests
+├── integration_test/      # E2E tests
 └── main.dart              # Entry point
 ```
 
@@ -107,16 +109,20 @@ SUPABASE_ANON_KEY=your_supabase_anon_key
 ### Run
 
 ```bash
-# Flutter (iOS/Android)
+# Flutter (iOS/Android/Windows)
 flutter run
 
 # Web
 flutter run -d chrome
 
+# Windows
+flutter run -d windows
+
 # Release build
-flutter build apk    # Android
-flutter build ios    # iOS
-flutter build web    # Web
+flutter build apk      # Android
+flutter build ios      # iOS
+flutter build web      # Web
+flutter build windows  # Windows
 ```
 
 ---
@@ -201,14 +207,12 @@ share_plus: ^12.0.1
 
 | Document | Description |
 |----------|-------------|
-| [ROADMAP.md](ROADMAP.md) | Project phases and progress tracking |
+| [docs/development-roadmap.md](docs/development-roadmap.md) | Project phases and progress tracking |
 | [CLAUDE.md](CLAUDE.md) | AI assistant guidelines |
-| [AGENTS.md](AGENTS.md) | Agent orchestration protocols |
 | [docs/code-standards.md](docs/code-standards.md) | Coding conventions |
 | [docs/system-architecture.md](docs/system-architecture.md) | Architecture documentation |
 | [docs/project-overview-pdr.md](docs/project-overview-pdr.md) | Product requirements |
 | [docs/codebase-summary.md](docs/codebase-summary.md) | Detailed code analysis |
-| [docs/development-roadmap.md](docs/development-roadmap.md) | Development phases |
 
 ---
 
@@ -221,9 +225,14 @@ flutter test
 # Run with coverage
 flutter test --coverage
 
+# Run integration tests (requires running app)
+flutter test integration_test/template_e2e_test.dart
+
 # Run specific test file
-flutter test test/features/auth/auth_repository_test.dart
+flutter test test/features/auth/data/repositories/auth_repository_test.dart
 ```
+
+**Current Coverage**: ~15% (target: 80%)
 
 ---
 
@@ -252,5 +261,7 @@ For issues, questions, or contributions, please [open an issue](https://github.c
 <div align="center">
 
 **Built with ❤️ using Flutter**
+
+**Last Updated**: 2026-01-30
 
 </div>

@@ -1,8 +1,8 @@
 # System Architecture
 
 **Project**: Artio - AI Image Generation SaaS
-**Updated**: 2026-01-27
-**Version**: 1.1
+**Updated**: 2026-01-30
+**Version**: 1.2
 
 ---
 
@@ -17,7 +17,7 @@ Artio is a cross-platform (Android, iOS, Web, Windows) AI image generation SaaS 
 ```
 ┌─────────────────────────────────────────────────────┐
 │                   Flutter App                       │
-│  (Android, iOS, Web - Single Codebase)              │
+│  (Android, iOS, Web, Windows - Single Codebase)     │
 │  • Riverpod State Management                        │
 │  • GoRouter Navigation                              │
 │  • Freezed + JSON Serializable                      │
@@ -33,9 +33,14 @@ Artio is a cross-platform (Android, iOS, Web, Windows) AI image generation SaaS 
 └─────────────────────────────────────────────────────┘
                         ↓↑
 ┌─────────────────────────────────────────────────────┐
-│           KIE API (Nano Banana)                     │
+│           Kie API (Primary AI Provider)             │
 │  • Google Imagen 4 (text-to-image)                  │
 │  • Nano Banana (image-to-image templates)           │
+└─────────────────────────────────────────────────────┘
+                        ↓↑
+┌─────────────────────────────────────────────────────┐
+│         Gemini API (Fallback AI Provider)           │
+│  • Multimodal image analysis and generation         │
 └─────────────────────────────────────────────────────┘
 ```
 
@@ -553,7 +558,8 @@ ref.listen(generationJobProvider(jobId), (prev, next) {
 ### Secrets Management
 
 - **Supabase URL/Anon Key:** Public (safe, enforced by RLS)
-- **KIE API Key:** Server-side only (Edge Function env vars)
+- **Kie API Key:** Server-side only (Edge Function env vars)
+- **Gemini API Key:** Server-side only (Edge Function env vars)
 - **OAuth Credentials:** Native app config (iOS/Android)
 - **No secrets in code:** All config via Supabase dashboard or `.env` (excluded from git)
 
@@ -580,6 +586,7 @@ ref.listen(generationJobProvider(jobId), (prev, next) {
 - iOS: Xcode build → App Store Connect → TestFlight/Production
 - Android: Gradle build → Google Play Console → Internal/Production
 - Web: `flutter build web` → Firebase Hosting / Vercel
+- Windows: `flutter build windows` → Desktop installer (development/testing)
 
 **Environment Config:**
 - Dev: `supabase.dev.dart` (staging Supabase project)
@@ -643,7 +650,8 @@ ref.listen(generationJobProvider(jobId), (prev, next) {
 ### Current Limits (MVP)
 
 - Supabase free tier: 500MB DB, 1GB storage, 2GB bandwidth
-- KIE API: Rate limits (TBD - depends on plan)
+- Kie API: Rate limits (TBD - depends on plan)
+- Gemini API: Rate limits per project tier
 - Edge Functions: 500K invocations/month (free tier)
 
 ### Future Scaling
@@ -663,3 +671,7 @@ ref.listen(generationJobProvider(jobId), (prev, next) {
 - **API Documentation:** `docs/kie-api-llms.txt`
 - **Phase 4 Plan:** `plans/260125-0120-artio-bootstrap/phase-04-template-engine.md`
 - **Phase 4.6 Plan:** `plans/260125-1516-phase46-architecture-hardening/plan.md`
+
+---
+
+**Last Updated**: 2026-01-30
