@@ -43,7 +43,7 @@ class _InputFieldBuilderState extends State<InputFieldBuilder> {
             labelText: widget.field.label,
             border: const OutlineInputBorder(),
           ),
-          value: widget.field.defaultValue,
+          initialValue: widget.field.defaultValue,
           items: widget.field.options
               ?.map((option) => DropdownMenuItem(
                     value: option,
@@ -90,6 +90,18 @@ class _InputFieldBuilderState extends State<InputFieldBuilder> {
               },
             ),
           ],
+        );
+
+      case 'otherIdeas':
+        return TextFormField(
+          initialValue: widget.field.defaultValue,
+          decoration: InputDecoration(
+            labelText: widget.field.label,
+            hintText: widget.field.placeholder ?? 'Share any additional ideas...',
+            border: const OutlineInputBorder(),
+          ),
+          maxLength: 500,
+          onChanged: widget.onChanged,
         );
 
       case 'text':
