@@ -27,10 +27,8 @@ ehthumbs.db
 *.iws
 .idea/
 
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
-# is commented out by default.
-#.vscode/
+# VS Code
+.vscode/
 
 # Flutter/Dart/Pub related
 **/doc/api/
@@ -151,7 +149,7 @@ integration_test/.test_coverage.dart
 .osgrep/
 opencode.json
 .skillsrc
-.sisyphus/*
+.sisyphus/
 WARP.md
 plans/ui-mocks/*
 plans/reports/*
