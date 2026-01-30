@@ -150,6 +150,90 @@ flutter build windows  # Windows
 
 ---
 
+## 📖 Usage Guide
+
+### Run the App
+
+```bash
+# Development (debug mode)
+flutter run
+
+# Specific platform
+flutter run -d chrome      # Web
+flutter run -d windows     # Windows
+flutter run -d android     # Android emulator/device
+flutter run -d ios         # iOS simulator/device
+```
+
+### Login
+
+| Method | How to use |
+|--------|------------|
+| **Email/Password** | Register new account or login with existing |
+| **Google OAuth** | Tap "Continue with Google" button |
+| **Apple Sign-In** | Tap "Continue with Apple" (iOS only) |
+
+**Test account** (for development):
+```
+Email: test@example.com
+Password: test_password_123
+```
+> Create this account in Supabase Dashboard > Authentication > Users
+
+### Generate Images
+
+1. **Home tab** → Browse templates
+2. **Select template** → Fill required inputs (photo, text, etc.)
+3. **Tap "Generate"** → Wait for AI processing
+4. **View result** → Save to Gallery or share
+
+### Add New Template
+
+Templates are stored in Supabase `templates` table:
+
+```sql
+INSERT INTO templates (id, name, description, category, thumbnail_url, prompt_template, input_fields)
+VALUES (
+  gen_random_uuid(),
+  'My Template',
+  'Template description',
+  'portrait',
+  'https://storage.url/thumbnail.jpg',
+  'A photo of {subject} in {style} style',
+  '[
+    {"id": "subject", "type": "image", "label": "Your Photo", "required": true},
+    {"id": "style", "type": "select", "label": "Style", "options": ["anime", "realistic", "cartoon"]}
+  ]'
+);
+```
+
+**Input field types**: `image`, `text`, `select`, `slider`
+
+### Run Tests
+
+```bash
+# All tests
+flutter test
+
+# Specific test file
+flutter test test/features/auth/
+
+# Integration tests (requires running app)
+flutter test integration_test/
+
+# With coverage report
+flutter test --coverage
+```
+
+### View Gallery
+
+- **Gallery tab** → View all generated images
+- **Tap image** → Full screen viewer
+- **Long press** → Delete option
+- **Share button** → Share to other apps
+
+---
+
 ## 🛠️ Development
 
 ### Code Generation
