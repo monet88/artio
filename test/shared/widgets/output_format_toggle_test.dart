@@ -94,5 +94,20 @@ void main() {
 
       expect(selectedFormat, 'png');
     });
+
+    testWidgets('does NOT call onChanged when PNG tapped (non-premium user)', (tester) async {
+      String? selectedFormat;
+      await tester.pumpWidget(buildWidget(
+        value: 'jpg',
+        isPremium: false,
+        onChanged: (format) => selectedFormat = format,
+      ));
+
+      await tester.tap(find.text('PNG'));
+      await tester.pumpAndSettle();
+
+      // Should remain null - callback not triggered for disabled segment
+      expect(selectedFormat, isNull);
+    });
   });
 }
