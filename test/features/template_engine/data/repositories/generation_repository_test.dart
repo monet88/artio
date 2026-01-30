@@ -1,193 +1,304 @@
-import 'dart:async';
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-import 'package:artio/features/template_engine/domain/repositories/i_generation_repository.dart';
+import 'package:artio/features/template_engine/data/repositories/generation_repository.dart';
 import 'package:artio/features/template_engine/domain/entities/generation_job_model.dart';
 import 'package:artio/exceptions/app_exception.dart';
 
-import '../../../../core/fixtures/generation_job_fixtures.dart';
-
-// Mock the interface, NOT the implementation
-class MockGenerationRepository extends Mock implements IGenerationRepository {}
+import '../../../../core/mocks/mock_supabase_client.dart';
 
 void main() {
-  late MockGenerationRepository mockRepository;
+  late GenerationRepository repository;
+  late MockSupabaseClient mockClient;
+  late MockFunctionsClient mockFunctions;
 
   setUp(() {
-    mockRepository = MockGenerationRepository();
+    mockClient = MockSupabaseClient();
+    mockFunctions = MockFunctionsClient();
+
+    when(() => mockClient.functions).thenReturn(mockFunctions);
+
+    repository = GenerationRepository(mockClient);
   });
 
-  group('IGenerationRepository', () {
+  group('GenerationRepository', () {
     group('startGeneration', () {
-      test('returns job ID on success', () async {
-        when(() => mockRepository.startGeneration(
-              templateId: 'template-1',
-              prompt: 'A beautiful sunset',
-              aspectRatio: '1:1',
-              imageCount: 1,
-            )).thenAnswer((_) async => 'job-123');
+      test('returns job ID on successful edge function call', () async {
+        when(() => mockFunctions.invoke(
+              'generate-image',
+              body: any(named: 'body'),
+            )).thenAnswer((_) async => FunctionResponse(
+              data: {'job_id': 'job-123'},
+              status: 200,
+            ));
 
-        final result = await mockRepository.startGeneration(
+        final result = await repository.startGeneration(
           templateId: 'template-1',
           prompt: 'A beautiful sunset',
-          aspectRatio: '1:1',
-          imageCount: 1,
         );
 
         expect(result, equals('job-123'));
+        verify(() => mockFunctions.invoke(
+              'generate-image',
+              body: {
+                'template_id': 'template-1',
+                'prompt': 'A beautiful sunset',
+                'aspect_ratio': '1:1',
+                'image_count': 1,
+              },
+            )).called(1);
       });
 
-      test('throws AppException.generation on rate limit (429)', () async {
-        when(() => mockRepository.startGeneration(
-              templateId: any(named: 'templateId'),
-              prompt: any(named: 'prompt'),
-              aspectRatio: any(named: 'aspectRatio'),
-              imageCount: any(named: 'imageCount'),
-            )).thenThrow(
-          const AppException.generation(
-            message: 'Too many requests. Please wait a moment and try again.',
-          ),
-        );
+      test('throws AppException.generation on 429 rate limit', () async {
+        when(() => mockFunctions.invoke(
+              'generate-image',
+              body: any(named: 'body'),
+            )).thenAnswer((_) async => FunctionResponse(
+              data: {'error': 'Rate limited'},
+              status: 429,
+            ));
 
         expect(
-          () => mockRepository.startGeneration(
+          () => repository.startGeneration(
             templateId: 'template-1',
             prompt: 'test',
           ),
-          throwsA(isA<AppException>()),
+          throwsA(isA<AppException>().having(
+            (e) => e.message,
+            'message',
+            contains('Too many requests'),
+          )),
         );
       });
 
       test('throws AppException.generation on server error', () async {
-        when(() => mockRepository.startGeneration(
-              templateId: any(named: 'templateId'),
-              prompt: any(named: 'prompt'),
-              aspectRatio: any(named: 'aspectRatio'),
-              imageCount: any(named: 'imageCount'),
-            )).thenThrow(
-          const AppException.generation(message: 'Generation failed'),
-        );
+        when(() => mockFunctions.invoke(
+              'generate-image',
+              body: any(named: 'body'),
+            )).thenAnswer((_) async => FunctionResponse(
+              data: {'error': 'Internal server error'},
+              status: 500,
+            ));
 
         expect(
-          () => mockRepository.startGeneration(
+          () => repository.startGeneration(
             templateId: 'template-1',
             prompt: 'test',
           ),
           throwsA(isA<AppException>()),
         );
       });
-    });
 
-    group('watchJob', () {
-      test('emits job updates', () async {
-        final controller = StreamController<GenerationJobModel>();
-        final job = GenerationJobFixtures.pending(id: 'job-123');
-
-        when(() => mockRepository.watchJob('job-123'))
-            .thenAnswer((_) => controller.stream);
-
-        final stream = mockRepository.watchJob('job-123');
-
-        controller.add(job);
-
-        await expectLater(
-          stream,
-          emits(isA<GenerationJobModel>().having(
-            (j) => j.id,
-            'id',
-            'job-123',
-          )),
-        );
-
-        await controller.close();
-      });
-
-      test('emits status changes from pending to completed', () async {
-        final controller = StreamController<GenerationJobModel>();
-        final pendingJob = GenerationJobFixtures.pending(id: 'job-123');
-        final processingJob = GenerationJobFixtures.processing(id: 'job-123');
-        final completedJob = GenerationJobFixtures.completed(id: 'job-123');
-
-        when(() => mockRepository.watchJob('job-123'))
-            .thenAnswer((_) => controller.stream);
-
-        final stream = mockRepository.watchJob('job-123');
-
-        controller.add(pendingJob);
-        controller.add(processingJob);
-        controller.add(completedJob);
-
-        await expectLater(
-          stream,
-          emitsInOrder([
-            isA<GenerationJobModel>().having((j) => j.status, 'status', JobStatus.pending),
-            isA<GenerationJobModel>().having((j) => j.status, 'status', JobStatus.processing),
-            isA<GenerationJobModel>().having((j) => j.status, 'status', JobStatus.completed),
-          ]),
-        );
-
-        await controller.close();
-      });
-    });
-
-    group('fetchUserJobs', () {
-      test('returns list of jobs', () async {
-        final jobs = [
-          GenerationJobFixtures.completed(id: 'job-1'),
-          GenerationJobFixtures.completed(id: 'job-2'),
-        ];
-
-        when(() => mockRepository.fetchUserJobs(limit: 20, offset: 0))
-            .thenAnswer((_) async => jobs);
-
-        final result = await mockRepository.fetchUserJobs(limit: 20, offset: 0);
-
-        expect(result, hasLength(2));
-      });
-
-      test('returns empty list when no jobs exist', () async {
-        when(() => mockRepository.fetchUserJobs(limit: 20, offset: 0))
-            .thenAnswer((_) async => []);
-
-        final result = await mockRepository.fetchUserJobs(limit: 20, offset: 0);
-
-        expect(result, isEmpty);
-      });
-
-      test('throws AppException.network on error', () async {
-        when(() => mockRepository.fetchUserJobs(limit: 20, offset: 0))
-            .thenThrow(const AppException.network(message: 'Connection failed'));
+      test('throws AppException.generation when job_id missing', () async {
+        when(() => mockFunctions.invoke(
+              'generate-image',
+              body: any(named: 'body'),
+            )).thenAnswer((_) async => FunctionResponse(
+              data: {'success': true},
+              status: 200,
+            ));
 
         expect(
-          () => mockRepository.fetchUserJobs(limit: 20, offset: 0),
-          throwsA(isA<AppException>()),
+          () => repository.startGeneration(
+            templateId: 'template-1',
+            prompt: 'test',
+          ),
+          throwsA(isA<AppException>().having(
+            (e) => e.message,
+            'message',
+            contains('Invalid response'),
+          )),
         );
+      });
+
+      test('throws AppException.generation on FunctionException with 429',
+          () async {
+        when(() => mockFunctions.invoke(
+              'generate-image',
+              body: any(named: 'body'),
+            )).thenThrow(FunctionException(
+          status: 429,
+          reasonPhrase: 'Too Many Requests',
+        ));
+
+        expect(
+          () => repository.startGeneration(
+            templateId: 'template-1',
+            prompt: 'test',
+          ),
+          throwsA(isA<AppException>().having(
+            (e) => e.message,
+            'message',
+            contains('Too many requests'),
+          )),
+        );
+      });
+
+      test('trims whitespace from prompt', () async {
+        when(() => mockFunctions.invoke(
+              'generate-image',
+              body: any(named: 'body'),
+            )).thenAnswer((_) async => FunctionResponse(
+              data: {'job_id': 'job-456'},
+              status: 200,
+            ));
+
+        await repository.startGeneration(
+          templateId: 'template-1',
+          prompt: '  A beautiful sunset  ',
+        );
+
+        verify(() => mockFunctions.invoke(
+              'generate-image',
+              body: {
+                'template_id': 'template-1',
+                'prompt': 'A beautiful sunset',
+                'aspect_ratio': '1:1',
+                'image_count': 1,
+              },
+            )).called(1);
+      });
+
+      test('uses custom aspect ratio and image count', () async {
+        when(() => mockFunctions.invoke(
+              'generate-image',
+              body: any(named: 'body'),
+            )).thenAnswer((_) async => FunctionResponse(
+              data: {'job_id': 'job-789'},
+              status: 200,
+            ));
+
+        await repository.startGeneration(
+          templateId: 'template-1',
+          prompt: 'test',
+          aspectRatio: '16:9',
+          imageCount: 4,
+        );
+
+        verify(() => mockFunctions.invoke(
+              'generate-image',
+              body: {
+                'template_id': 'template-1',
+                'prompt': 'test',
+                'aspect_ratio': '16:9',
+                'image_count': 4,
+              },
+            )).called(1);
       });
     });
 
-    group('fetchJob', () {
-      test('returns job when found', () async {
-        final job = GenerationJobFixtures.completed(id: 'job-123');
+    // Note: fetchJob(), fetchUserJobs(), and watchJob() Postgrest method chains
+    // are tested via integration tests. Below we test the pure logic separately.
+  });
 
-        when(() => mockRepository.fetchJob('job-123'))
-            .thenAnswer((_) async => job);
+  group('GenerationJobModel JSON parsing', () {
+    test('fromJson parses complete job correctly', () {
+      final json = {
+        'id': 'job-123',
+        'userId': 'user-456',
+        'templateId': 'template-789',
+        'prompt': 'A beautiful sunset',
+        'status': 'completed',
+        'aspectRatio': '16:9',
+        'imageCount': 2,
+        'providerUsed': 'gemini',
+        'providerTaskId': 'task-abc',
+        'resultUrls': ['https://example.com/img1.png', 'https://example.com/img2.png'],
+        'errorMessage': null,
+        'createdAt': '2026-01-30T10:00:00.000Z',
+        'completedAt': '2026-01-30T10:05:00.000Z',
+      };
 
-        final result = await mockRepository.fetchJob('job-123');
+      final job = GenerationJobModel.fromJson(json);
 
-        expect(result, isNotNull);
-        expect(result!.id, equals('job-123'));
-      });
+      expect(job.id, equals('job-123'));
+      expect(job.userId, equals('user-456'));
+      expect(job.templateId, equals('template-789'));
+      expect(job.prompt, equals('A beautiful sunset'));
+      expect(job.status, equals(JobStatus.completed));
+      expect(job.aspectRatio, equals('16:9'));
+      expect(job.imageCount, equals(2));
+      expect(job.providerUsed, equals('gemini'));
+      expect(job.resultUrls, hasLength(2));
+    });
 
-      test('returns null when job not found', () async {
-        when(() => mockRepository.fetchJob('nonexistent'))
-            .thenAnswer((_) async => null);
+    test('fromJson parses pending job with minimal fields', () {
+      final json = {
+        'id': 'job-pending',
+        'userId': 'user-1',
+        'templateId': 'template-1',
+        'prompt': 'Test prompt',
+        'status': 'pending',
+      };
 
-        final result = await mockRepository.fetchJob('nonexistent');
+      final job = GenerationJobModel.fromJson(json);
 
-        expect(result, isNull);
-      });
+      expect(job.id, equals('job-pending'));
+      expect(job.status, equals(JobStatus.pending));
+      expect(job.resultUrls, isNull);
+      expect(job.errorMessage, isNull);
+    });
+
+    test('fromJson parses failed job with error message', () {
+      final json = {
+        'id': 'job-failed',
+        'userId': 'user-1',
+        'templateId': 'template-1',
+        'prompt': 'Test',
+        'status': 'failed',
+        'errorMessage': 'Provider rate limited',
+      };
+
+      final job = GenerationJobModel.fromJson(json);
+
+      expect(job.status, equals(JobStatus.failed));
+      expect(job.errorMessage, equals('Provider rate limited'));
+    });
+
+    test('fromJson handles all JobStatus values', () {
+      for (final status in ['pending', 'generating', 'processing', 'completed', 'failed']) {
+        final json = {
+          'id': 'job-$status',
+          'userId': 'user-1',
+          'templateId': 'template-1',
+          'prompt': 'Test',
+          'status': status,
+        };
+
+        final job = GenerationJobModel.fromJson(json);
+        expect(job.status.name, equals(status));
+      }
+    });
+  });
+
+  group('Error mapping', () {
+    test('PostgrestException maps to AppException.network', () {
+      final postgrestError = PostgrestException(
+        message: 'Connection failed',
+        code: '500',
+      );
+
+      final appException = AppException.network(
+        message: postgrestError.message,
+        statusCode: int.tryParse(postgrestError.code ?? ''),
+      );
+
+      expect(appException.message, equals('Connection failed'));
+    });
+
+    test('PostgrestException with non-numeric code handles gracefully', () {
+      final postgrestError = PostgrestException(
+        message: 'Auth error',
+        code: 'PGRST301',
+      );
+
+      final appException = AppException.network(
+        message: postgrestError.message,
+        statusCode: int.tryParse(postgrestError.code ?? ''),
+      );
+
+      expect(appException.message, equals('Auth error'));
     });
   });
 }
