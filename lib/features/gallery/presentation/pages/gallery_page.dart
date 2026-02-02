@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
-import '../../../../routing/app_router.dart';
+import '../../../../routing/routes/app_routes.dart';
 import '../providers/gallery_provider.dart';
 import '../widgets/empty_gallery_state.dart';
 import '../widgets/masonry_image_grid.dart';
@@ -43,13 +42,13 @@ class GalleryPage extends ConsumerWidget {
           return MasonryImageGrid(
             items: items,
             onItemTap: (item, index) {
-              context.push(
-                AppRoutes.galleryImagePath(item.id),
-                extra: {
-                  'items': items,
-                  'initialIndex': index,
-                },
-              );
+              GalleryImageRoute(
+                id: item.id,
+                $extra: GalleryImageExtra(
+                  items: items,
+                  initialIndex: index,
+                ),
+              ).push(context);
             },
           );
         },

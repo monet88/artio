@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../../routing/app_router.dart';
+import '../../../../routing/routes/app_routes.dart';
 import '../../domain/entities/user_model.dart';
 import '../../data/repositories/auth_repository.dart';
 import '../state/auth_state.dart';
@@ -137,20 +137,20 @@ class AuthViewModel extends _$AuthViewModel implements Listenable {
       _ => false,
     };
 
-    final isAuthRoute = currentPath == AppRoutes.login ||
-        currentPath == AppRoutes.register ||
+    final isAuthRoute = currentPath == const LoginRoute().location ||
+        currentPath == const RegisterRoute().location ||
         currentPath.startsWith('/forgot-password');
 
-    if (!isLoggedIn && !isAuthRoute && currentPath != AppRoutes.splash) {
-      return AppRoutes.login;
+    if (!isLoggedIn && !isAuthRoute && currentPath != const SplashRoute().location) {
+      return const LoginRoute().location;
     }
 
     if (isLoggedIn && isAuthRoute) {
-      return AppRoutes.home;
+      return const HomeRoute().location;
     }
 
-    if (currentPath == AppRoutes.splash) {
-      return isLoggedIn ? AppRoutes.home : AppRoutes.login;
+    if (currentPath == const SplashRoute().location) {
+      return isLoggedIn ? const HomeRoute().location : const LoginRoute().location;
     }
 
     return null;

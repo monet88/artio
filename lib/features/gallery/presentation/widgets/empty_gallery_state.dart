@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import '../../../../routing/app_router.dart';
+
+import '../../../../routing/routes/app_routes.dart';
 
 class EmptyGalleryState extends StatelessWidget {
   const EmptyGalleryState({super.key});
@@ -33,7 +33,7 @@ class EmptyGalleryState extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             FilledButton.icon(
-              onPressed: () => context.go(AppRoutes.home),
+              onPressed: () => const HomeRoute().go(context),
               icon: const Icon(Icons.add_photo_alternate_outlined),
               label: const Text('Create New'),
             ),
