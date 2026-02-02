@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
-import 'package:artio/features/settings/ui/widgets/theme_switcher.dart';
+import 'package:artio/features/settings/presentation/widgets/theme_switcher.dart';
 import 'package:artio/features/settings/data/notifications_provider.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
