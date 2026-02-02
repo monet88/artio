@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
 import 'package:artio/features/settings/ui/widgets/theme_switcher.dart';
+import 'package:artio/features/settings/data/notifications_provider.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -136,6 +137,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       ThemeSwitcher(),
                     ],
                   ),
+                ),
+                const Divider(),
+                _buildSectionHeader(context, 'Notifications'),
+                SwitchListTile(
+                  secondary: const Icon(Icons.notifications_outlined),
+                  title: const Text('Push Notifications'),
+                  subtitle: const Text('Receive updates about your generations'),
+                  value: ref.watch(notificationsNotifierProvider),
+                  onChanged: (_) => ref.read(notificationsNotifierProvider.notifier).toggle(),
                 ),
                 const Divider(),
                 _buildSectionHeader(context, 'About'),

@@ -37,14 +37,14 @@ class ArtioApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(appRouterProvider);
-    final themeMode = ref.watch(themeModeNotifierProvider);
+    final themeModeAsync = ref.watch(themeModeNotifierProvider);
 
     return MaterialApp.router(
       title: 'Artio',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
-      themeMode: themeMode,
+      themeMode: themeModeAsync.valueOrNull ?? ThemeMode.system,
       routerConfig: router,
     );
   }

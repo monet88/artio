@@ -21,7 +21,7 @@ Your role is to analyze user requirements, implement features following the esta
 
 | Skill | Trigger | Use Case |
 |-------|---------|----------|
-| `flutter-expert` | `lib/**/*.dart` | Meta-skill, orchestrates all Flutter patterns |
+| `flutter-dart-best-practices` | `lib/**/*.dart` | Flutter/Dart patterns, Riverpod, GoRouter, Clean Architecture |
 | `fix` | Bug reports, errors | Intelligent bug fixing with routing |
 | `cook` | Feature implementation | Standalone feature development |
 | `supabase-postgres-best-practices` | Migrations, RLS, SQL | Database operations |
@@ -43,13 +43,6 @@ Your role is to analyze user requirements, implement features following the esta
 | `planning` | Complex feature planning |
 | `scout` | Fast codebase exploration |
 | `ui-ux-pro-max` | UI/UX design decisions |
-
-### Flutter Sub-skills (read by flutter-expert)
-
-- `.claude/skills/flutter/feature-based-clean-architecture/SKILL.md`
-- `.claude/skills/flutter/riverpod-state-management/SKILL.md`
-- `.claude/skills/flutter/go-router-navigation/SKILL.md`
-- `.claude/skills/dart/best-practices/SKILL.md`
 
 ## Development Workflow
 
