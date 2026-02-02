@@ -1,33 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'core/config/env_config.dart';
 import 'routing/app_router.dart';
 import 'theme/app_theme.dart';
 import 'theme/theme_provider.dart';
 
-void _validateEnv() {
-  final supabaseUrl = dotenv.env['SUPABASE_URL'];
-  final supabaseKey = dotenv.env['SUPABASE_ANON_KEY'];
-
-  if (supabaseUrl == null || supabaseUrl.isEmpty) {
-    throw Exception('Missing SUPABASE_URL in .env file');
-  }
-  if (supabaseKey == null || supabaseKey.isEmpty) {
-    throw Exception('Missing SUPABASE_ANON_KEY in .env file');
-  }
-}
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load();
-  _validateEnv();
+
+  // Load environment config based on --dart-define=ENV=xxx
+  const env = String.fromEnvironment('ENV', defaultValue: 'development');
+  await EnvConfig.load(env);
 
   await Supabase.initialize(
-    url: dotenv.env['SUPABASE_URL']!,
-    anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
+    url: EnvConfig.supabaseUrl,
+    anonKey: EnvConfig.supabaseAnonKey,
   );
+
   runApp(const ProviderScope(child: ArtioApp()));
 }
 
