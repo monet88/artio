@@ -1,0 +1,41 @@
+
+┌─────────────────────────────────────────────────────────┐
+│ A new version of Flutter is available!                  │
+│                                                         │
+│ To update to the latest version, run "flutter upgrade". │
+└─────────────────────────────────────────────────────────┘
+Analyzing aiart...                                              
+
+warning - The annotation 'JsonKey.new' can only be used on fields or getters - admin\lib\features\templates\domain\entities\admin_template_model.dart:13:6 - invalid_annotation_target
+warning - The annotation 'JsonKey.new' can only be used on fields or getters - admin\lib\features\templates\domain\entities\admin_template_model.dart:14:6 - invalid_annotation_target
+warning - The annotation 'JsonKey.new' can only be used on fields or getters - admin\lib\features\templates\domain\entities\admin_template_model.dart:15:6 - invalid_annotation_target
+warning - The annotation 'JsonKey.new' can only be used on fields or getters - admin\lib\features\templates\domain\entities\admin_template_model.dart:16:6 - invalid_annotation_target
+warning - The annotation 'JsonKey.new' can only be used on fields or getters - admin\lib\features\templates\domain\entities\admin_template_model.dart:17:6 - invalid_annotation_target
+warning - The annotation 'JsonKey.new' can only be used on fields or getters - admin\lib\features\templates\domain\entities\admin_template_model.dart:18:6 - invalid_annotation_target
+warning - The annotation 'JsonKey.new' can only be used on fields or getters - admin\lib\features\templates\domain\entities\admin_template_model.dart:19:6 - invalid_annotation_target
+warning - The annotation 'JsonKey.new' can only be used on fields or getters - admin\lib\features\templates\domain\entities\admin_template_model.dart:20:6 - invalid_annotation_target
+warning - The annotation 'JsonKey.new' can only be used on fields or getters - admin\lib\features\templates\domain\entities\admin_template_model.dart:21:6 - invalid_annotation_target
+   info - Unnecessary use of multiple underscores - admin\lib\features\templates\presentation\pages\template_editor_page.dart:354:49 - unnecessary_underscores
+   info - Unnecessary use of multiple underscores - admin\lib\features\templates\presentation\pages\template_editor_page.dart:354:53 - unnecessary_underscores
+   info - Don't invoke 'print' in production code - integration_test\template_e2e_test.dart:94:7 - avoid_print
+   info - Don't invoke 'print' in production code - integration_test\template_e2e_test.dart:95:7 - avoid_print
+   info - Don't invoke 'print' in production code - integration_test\template_e2e_test.dart:96:7 - avoid_print
+   info - Don't invoke 'print' in production code - integration_test\template_e2e_test.dart:97:7 - avoid_print
+   info - Don't invoke 'print' in production code - integration_test\template_e2e_test.dart:119:7 - avoid_print
+   info - Don't invoke 'print' in production code - integration_test\template_e2e_test.dart:121:9 - avoid_print
+   info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre - lib\shared\widgets\model_selector.dart:74:11 - deprecated_member_use
+warning - Unused import: 'package:artio/features/template_engine/domain/entities/generation_options_model.dart' - test\features\template_engine\presentation\providers\generation_options_provider_test.dart:4:8 - unused_import
+   info - The value of the argument is redundant because it matches the default value - test\shared\widgets\image_count_dropdown_test.dart:34:50 - avoid_redundant_argument_values
+warning - Unused import: 'package:artio/core/constants/ai_models.dart' - test\shared\widgets\model_selector_test.dart:4:8 - unused_import
+   info - The value of the argument is redundant because it matches the default value - test\shared\widgets\model_selector_test.dart:40:60 - avoid_redundant_argument_values
+   info - The value of the argument is redundant because it matches the default value - test\shared\widgets\model_selector_test.dart:53:60 - avoid_redundant_argument_values
+   info - The value of the argument is redundant because it matches the default value - test\shared\widgets\model_selector_test.dart:90:54 - avoid_redundant_argument_values
+   info - The value of the argument is redundant because it matches the default value - test\shared\widgets\output_format_toggle_test.dart:43:50 - avoid_redundant_argument_values
+   info - The value of the argument is redundant because it matches the default value - test\shared\widgets\output_format_toggle_test.dart:52:54 - avoid_redundant_argument_values
+   info - The value of the argument is redundant because it matches the default value - test\shared\widgets\output_format_toggle_test.dart:65:54 - avoid_redundant_argument_values
+   info - The value of the argument is redundant because it matches the default value - test\shared\widgets\output_format_toggle_test.dart:65:68 - avoid_redundant_argument_values
+   info - The value of the argument is redundant because it matches the default value - test\shared\widgets\output_format_toggle_test.dart:87:16 - avoid_redundant_argument_values
+   info - The value of the argument is redundant because it matches the default value - test\shared\widgets\output_format_toggle_test.dart:101:16 - avoid_redundant_argument_values
+   info - The value of the argument is redundant because it matches the default value - test\shared\widgets\output_format_toggle_test.dart:102:20 - avoid_redundant_argument_values
+
+31 issues found. (ran in 3.7s)
