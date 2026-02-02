@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../routing/app_router.dart';
+import '../../../../routing/routes/app_routes.dart';
 import '../view_models/auth_view_model.dart';
 import '../state/auth_state.dart';
 import '../widgets/social_login_buttons.dart';
@@ -129,7 +129,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(
-                    onPressed: () => context.push(AppRoutes.forgotPassword),
+                    onPressed: () => const ForgotPasswordRoute().push(context),
                     child: const Text('Forgot Password?'),
                   ),
                 ),
@@ -152,7 +152,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   children: [
                     const Text("Don't have an account?"),
                     TextButton(
-                      onPressed: () => context.push(AppRoutes.register),
+                      onPressed: () => const RegisterRoute().push(context),
                       child: const Text('Sign Up'),
                     ),
                   ],

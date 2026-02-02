@@ -21,9 +21,7 @@ Future<void> main() async {
   );
 
   await SentryConfig.init();
-  SentryFlutter.wrap(() async {
-    runApp(const ProviderScope(child: ArtioApp()));
-  });
+  runApp(const ProviderScope(child: ArtioApp()));
 }
 
 class ArtioApp extends ConsumerWidget {

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../routing/app_router.dart';
+import '../../../../routing/routes/app_routes.dart';
 import '../view_models/auth_view_model.dart';
 import '../state/auth_state.dart';
 import '../widgets/social_login_buttons.dart';
@@ -181,7 +181,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   children: [
                     const Text('Already have an account?'),
                     TextButton(
-                      onPressed: () => context.go(AppRoutes.login),
+                      onPressed: () => const LoginRoute().go(context),
                       child: const Text('Sign In'),
                     ),
                   ],
