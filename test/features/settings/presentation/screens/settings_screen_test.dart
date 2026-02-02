@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
 import 'package:artio/features/auth/presentation/state/auth_state.dart';
-import 'package:artio/features/settings/ui/settings_screen.dart';
+import 'package:artio/features/settings/presentation/settings_screen.dart';
 import '../../../../core/fixtures/fixtures.dart';
 import '../../../../core/helpers/pump_app.dart';
 
