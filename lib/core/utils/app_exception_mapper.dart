@@ -1,3 +1,4 @@
+import '../config/sentry_config.dart';
 import '../exceptions/app_exception.dart';
 
 /// Maps [AppException] variants to user-friendly messages.
@@ -19,6 +20,10 @@ class AppExceptionMapper {
   static String toUserMessage(Object error) {
     if (error is! AppException) {
       return 'An unexpected error occurred. Please try again.';
+    }
+
+    if (error is UnknownException || error is NetworkException) {
+      SentryConfig.captureException(error);
     }
 
     return switch (error) {

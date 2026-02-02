@@ -36,6 +36,9 @@ dependencies:
   # Ads (mobile only)
   google_mobile_ads: ^6.0.0
 
+  # Error Tracking
+  sentry_flutter: ^8.12.0
+
   # Utils
   intl: ^0.20.1
   cached_network_image: ^3.4.1
