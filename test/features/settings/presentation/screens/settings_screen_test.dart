@@ -125,4 +125,7 @@ class _FakeNotificationsNotifier extends NotificationsNotifier {
   bool build() {
     return true;
   }
+
+  @override
+  Future<void> init() async {}
 }

@@ -4,6 +4,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
 import 'package:artio/features/settings/presentation/widgets/theme_switcher.dart';
 import 'package:artio/features/settings/data/notifications_provider.dart';
+import 'package:artio/utils/logger_service.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -20,6 +21,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   void initState() {
     super.initState();
     _loadVersion();
+    _initNotifications();
+  }
+
+  Future<void> _initNotifications() async {
+    try {
+      await ref.read(notificationsNotifierProvider.notifier).init();
+    } catch (error, stackTrace) {
+      Log.e('Failed to load notification settings', error, stackTrace);
+    }
   }
 
   Future<void> _loadVersion() async {
