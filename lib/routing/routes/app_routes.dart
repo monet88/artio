@@ -123,14 +123,43 @@ class TemplateDetailRoute extends GoRouteData {
       TemplateDetailScreen(templateId: id);
 }
 
-@TypedGoRoute<GalleryImageRoute>(path: '/gallery')
+/// Gallery viewer requires [GalleryImageExtra] in `extra` with:
+/// - non-empty `items`
+/// - `initialIndex` within `items` bounds
+/// Invalid extras redirect to [GalleryRoute].
+@TypedGoRoute<GalleryImageRoute>(path: '/gallery/viewer')
 class GalleryImageRoute extends GoRouteData {
-  const GalleryImageRoute({required this.$extra});
-  final GalleryImageExtra $extra;
+  const GalleryImageRoute({this.$extra});
+  final Object? $extra;
 
   @override
-  Widget build(BuildContext context, GoRouterState state) => ImageViewerPage(
-        items: $extra.items,
-        initialIndex: $extra.initialIndex,
-      );
+  String? redirect(BuildContext context, GoRouterState state) {
+    final extra = $extra;
+    final galleryLocation = const GalleryRoute().location;
+    if (extra is! GalleryImageExtra) {
+      return galleryLocation;
+    }
+
+    if (extra.items.isEmpty) {
+      return galleryLocation;
+    }
+
+    if (extra.initialIndex < 0 || extra.initialIndex >= extra.items.length) {
+      return galleryLocation;
+    }
+
+    return null;
+  }
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    final extra = $extra;
+    if (extra is! GalleryImageExtra) {
+      return const GalleryPage();
+    }
+    return ImageViewerPage(
+      items: extra.items,
+      initialIndex: extra.initialIndex,
+    );
+  }
 }
