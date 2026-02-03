@@ -16,9 +16,13 @@ class SentryConfig {
     );
   }
 
-  static void captureException(dynamic exception, {StackTrace? stackTrace}) {
-    if (EnvConfig.environment == 'production') {
-      Sentry.captureException(exception, stackTrace: stackTrace);
+  static Future<void> captureException(
+    dynamic exception, {
+    StackTrace? stackTrace,
+  }) async {
+    if (EnvConfig.environment != 'production') {
+      return;
     }
+    await Sentry.captureException(exception, stackTrace: stackTrace);
   }
 }
