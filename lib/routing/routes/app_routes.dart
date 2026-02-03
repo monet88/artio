@@ -123,11 +123,9 @@ class TemplateDetailRoute extends GoRouteData {
       TemplateDetailScreen(templateId: id);
 }
 
-@TypedGoRoute<GalleryImageRoute>(path: '/gallery/:id')
+@TypedGoRoute<GalleryImageRoute>(path: '/gallery')
 class GalleryImageRoute extends GoRouteData {
-  const GalleryImageRoute({required this.id, required this.$extra});
-
-  final String id;
+  const GalleryImageRoute({required this.$extra});
   final GalleryImageExtra $extra;
 
   @override

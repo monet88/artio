@@ -209,19 +209,16 @@ extension $TemplateDetailRouteExtension on TemplateDetailRoute {
 }
 
 RouteBase get $galleryImageRoute => GoRouteData.$route(
-  path: '/gallery/:id',
+  path: '/gallery',
 
   factory: $GalleryImageRouteExtension._fromState,
 );
 
 extension $GalleryImageRouteExtension on GalleryImageRoute {
-  static GalleryImageRoute _fromState(GoRouterState state) => GalleryImageRoute(
-    id: state.pathParameters['id']!,
-    $extra: state.extra as GalleryImageExtra,
-  );
+  static GalleryImageRoute _fromState(GoRouterState state) =>
+      GalleryImageRoute($extra: state.extra as GalleryImageExtra);
 
-  String get location =>
-      GoRouteData.$location('/gallery/${Uri.encodeComponent(id)}');
+  String get location => GoRouteData.$location('/gallery');
 
   void go(BuildContext context) => context.go(location, extra: $extra);
 

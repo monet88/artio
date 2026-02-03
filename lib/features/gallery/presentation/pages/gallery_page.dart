@@ -43,7 +43,6 @@ class GalleryPage extends ConsumerWidget {
             items: items,
             onItemTap: (item, index) {
               GalleryImageRoute(
-                id: item.id,
                 $extra: GalleryImageExtra(
                   items: items,
                   initialIndex: index,
