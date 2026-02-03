@@ -23,7 +23,7 @@ created: 2026-02-03
 - Test helpers in `test/core/helpers/pump_app.dart`.
 
 ## Verification (required)
-- `lsp_diagnostics` on touched files.
+- `flutter analyze` on touched files.
 - `flutter test test/routing/app_router_test.dart`.
 
 ## Notes

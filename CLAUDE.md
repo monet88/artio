@@ -164,7 +164,30 @@ flutter test
 dart format .
 ```
 
-## Tool Limitations
+## Code Search Tools
+
+### Semantic Search (claude-context MCP)
+
+Index codebase để search theo ý nghĩa, không chỉ text match:
+
+```bash
+# Index codebase (chạy 1 lần, hoặc khi code thay đổi nhiều)
+mcp__claude-context__index_codebase path=F:/CodeBase/flutter-app/aiart splitter=ast
+
+# Search theo semantic
+mcp__claude-context__search_code query="nơi xử lý lỗi từ API"
+
+# Check indexing status
+mcp__claude-context__get_indexing_status
+```
+
+| Tool | Use Case |
+|------|----------|
+| `search_code` | Tìm code theo ý nghĩa: "authentication flow", "error handling" |
+| `Grep` | Exact match: `class AuthRepository`, `@riverpod` |
+| Dart MCP | Symbol navigation: go-to-definition, find-references |
+
+### Tool Limitations
 
 | Tool | Dart Support | Alternative |
 |------|--------------|-------------|
@@ -173,18 +196,7 @@ dart format .
 
 ## Windows Bash Workarounds
 
-Claude Code uses Git Bash which doesn't resolve `.cmd` scripts. Use direct calls:
-
-```bash
-# osgrep (semantic search) - use direct node call
-node C:/Users/monet/AppData/Roaming/npm/node_modules/osgrep/dist/index.js "query"
-
-# osgrep trace
-node C:/Users/monet/AppData/Roaming/npm/node_modules/osgrep/dist/index.js trace functionName
-
-# osgrep skeleton
-node C:/Users/monet/AppData/Roaming/npm/node_modules/osgrep/dist/index.js skeleton path/to/file.dart
-```
+Claude Code uses Git Bash which doesn't resolve `.cmd` scripts. Use direct calls when needed.
 
 ## Dart MCP Tools Setup
 

@@ -19,17 +19,22 @@ class _MockAuthViewModel extends AuthViewModel {
   AuthState build() => AuthState.authenticated(UserFixtures.authenticated());
 }
 
-ProviderContainer _createAuthedContainer({List<Override>? overrides}) {
+ProviderContainer _createAuthedContainer(
+  WidgetTester tester, {
+  List<Override>? overrides,
+}) {
   final baseOverrides = <Override>[
     authViewModelProvider.overrideWith(() => _MockAuthViewModel()),
   ];
 
-  return ProviderContainer(
+  final container = ProviderContainer(
     overrides: [
       ...baseOverrides,
       ...?overrides,
     ],
   );
+  tester.addTearDown(container.dispose);
+  return container;
 }
 
 Future<GoRouter> _pumpRouter(
@@ -165,7 +170,7 @@ void main() {
     });
 
     testWidgets('redirects viewer route when extra is missing', (tester) async {
-      final container = _createAuthedContainer();
+      final container = _createAuthedContainer(tester);
       final router = await _pumpRouter(tester, container);
       router.go(const GalleryImageRoute().location);
       await tester.pumpAndSettle();
@@ -177,7 +182,7 @@ void main() {
 
     testWidgets('redirects viewer route when extra has wrong type',
         (tester) async {
-      final container = _createAuthedContainer();
+      final container = _createAuthedContainer(tester);
       final router = await _pumpRouter(tester, container);
       router.go(
         const GalleryImageRoute($extra: 'invalid-extra').location,
@@ -192,7 +197,7 @@ void main() {
 
     testWidgets('opens viewer when extra is valid', (tester) async {
       final items = [_galleryItem(id: '1'), _galleryItem(id: '2')];
-      final container = _createAuthedContainer();
+      final container = _createAuthedContainer(tester);
       final router = await _pumpRouter(tester, container);
       final route = GalleryImageRoute(
         $extra: GalleryImageExtra(items: items, initialIndex: 0),
@@ -206,7 +211,7 @@ void main() {
     });
 
     testWidgets('redirects viewer when items are empty', (tester) async {
-      final container = _createAuthedContainer();
+      final container = _createAuthedContainer(tester);
       final router = await _pumpRouter(tester, container);
       final route = GalleryImageRoute(
         $extra: const GalleryImageExtra(items: [], initialIndex: 0),
@@ -221,7 +226,7 @@ void main() {
 
     testWidgets('redirects viewer when index is out of range', (tester) async {
       final items = [_galleryItem(id: '1')];
-      final container = _createAuthedContainer();
+      final container = _createAuthedContainer(tester);
       final router = await _pumpRouter(tester, container);
       final route = GalleryImageRoute(
         $extra: GalleryImageExtra(items: items, initialIndex: 5),
