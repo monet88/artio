@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 
 /// Extension on [WidgetTester] to simplify widget pumping in tests
 extension PumpApp on WidgetTester {
@@ -33,17 +34,16 @@ extension PumpApp on WidgetTester {
   ///
   /// Use this in tests that need to verify navigation behavior.
   Future<void> pumpAppWithRouter(
-    Widget widget, {
+    {
+    required GoRouter router,
     List<Override>? overrides,
+    ProviderContainer? parent,
   }) async {
-    // Simplified version - for full router tests, import actual router config
     await pumpWidget(
       ProviderScope(
+        parent: parent,
         overrides: overrides ?? [],
-        child: MaterialApp(
-          title: 'Test App',
-          home: widget,
-        ),
+        child: MaterialApp.router(routerConfig: router),
       ),
     );
   }
