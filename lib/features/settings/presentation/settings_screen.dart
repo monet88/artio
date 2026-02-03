@@ -155,7 +155,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   title: const Text('Push Notifications'),
                   subtitle: const Text('Receive updates about your generations'),
                   value: ref.watch(notificationsNotifierProvider),
-                  onChanged: (_) => ref.read(notificationsNotifierProvider.notifier).toggle(),
+                  onChanged: (value) => ref.read(notificationsNotifierProvider.notifier).setState(value),
                 ),
                 const Divider(),
                 _buildSectionHeader(context, 'About'),

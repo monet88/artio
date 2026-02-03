@@ -11,12 +11,12 @@ class NotificationsNotifier extends _$NotificationsNotifier {
   @override
   bool build() => true;
 
-  Future<void> toggle() async {
-    final nextValue = !state;
+  Future<void> setState(bool value) async {
+    if (state == value) return;
     _hasUserToggled = true;
-    state = nextValue;
+    state = value;
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_key, nextValue);
+    await prefs.setBool(_key, value);
   }
 
   Future<void> init() async {
