@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../auth/presentation/view_models/auth_view_model.dart';
+import '../../../../core/config/sentry_config.dart';
 import '../../../../core/utils/app_exception_mapper.dart';
 import '../../../../shared/widgets/aspect_ratio_selector.dart';
 import '../../../../shared/widgets/image_count_dropdown.dart';
@@ -27,6 +28,7 @@ class TemplateDetailScreen extends ConsumerStatefulWidget {
 
 class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
   final Map<String, String> _inputValues = {};
+  final Set<String> _reportedErrors = <String>{};
 
   // Placeholder for premium status - will be integrated with subscription later
   bool get _isPremium => false;
@@ -75,6 +77,39 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
           aspectRatio: options.aspectRatio,
           imageCount: options.imageCount,
         );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    ref.listen<AsyncValue<TemplateModel?>>(
+      templateByIdProvider(widget.templateId),
+      (previous, next) {
+        next.whenOrNull(
+          error: (error, stackTrace) {
+            _captureOnce(error, stackTrace);
+          },
+        );
+      },
+    );
+
+    ref.listen<AsyncValue<GenerationJobModel?>>(
+      generationViewModelProvider,
+      (previous, next) {
+        next.whenOrNull(
+          error: (error, stackTrace) {
+            _captureOnce(error, stackTrace);
+          },
+        );
+      },
+    );
+  }
+
+  void _captureOnce(Object error, StackTrace? stackTrace) {
+    final signature = '${error.runtimeType}:${error.toString()}';
+    if (_reportedErrors.add(signature)) {
+      SentryConfig.captureException(error, stackTrace: stackTrace);
+    }
   }
 
   @override
@@ -194,12 +229,12 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
   Widget _buildGenerationState(AsyncValue<GenerationJobModel?> jobAsync, TemplateModel template) {
     return jobAsync.when(
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, _) => Column(
-        children: [
-          Text(
-            AppExceptionMapper.toUserMessage(error),
-            style: TextStyle(color: Theme.of(context).colorScheme.error),
-          ),
+       error: (error, _) => Column(
+         children: [
+           Text(
+             AppExceptionMapper.toUserMessage(error),
+             style: TextStyle(color: Theme.of(context).colorScheme.error),
+           ),
           const SizedBox(height: 8),
           FilledButton(
             onPressed: () {
