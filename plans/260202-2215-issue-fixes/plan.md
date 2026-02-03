@@ -52,7 +52,7 @@ Move Sentry capture into explicit error-handling points, make capture awaitable,
 4. [ ] Add explicit Sentry capture in template UI error handlers and generation view model.
 5. [ ] Refactor notifications provider to async build, update Settings screen and tests.
 6. [ ] Remove `.env.production` asset and update any docs if required.
-7. [ ] Remove gallery route `:id` param and adjust navigation.
+7. [x] Reconcile gallery image route param (`:id`) vs shell `/gallery` path.
 8. [ ] Run `dart run build_runner build --delete-conflicting-outputs` if needed.
 9. [ ] Run `lsp_diagnostics` on all modified files.
 10. [ ] Run tests and build.
@@ -73,7 +73,28 @@ Revert changes in the above files and restore previous env and routing behavior.
 | Removing `.env.production` breaks release setup | Medium | Confirm runtime uses dart-define | 
 
 ## TODO Checklist
-- [ ] Implement fixes
-- [ ] Update tests
+- [ ] Implement fixes (TemplateDetailScreen listener update done; routing + roadmap updates done; remaining items pending)
+- [x] Update tests (routing viewer redirect coverage)
+- [ ] Update tests (notifications/settings pending)
 - [ ] Run analyze/build/tests
-- [ ] Code review
+- [x] Code review
+
+## Status Update (2026-02-03)
+- Routing: `GalleryImageRoute` now uses `/gallery/viewer`; app route and test updated, no path collision with `/gallery`.
+- Routing: viewer still requires `state.extra` (`GalleryImageExtra`); redirect added so missing extra falls back to `GalleryPage`.
+- Review: `app_routes.g.dart` now stores `state.extra` as `Object?`, so wrong extra types do not crash before redirect.
+- Review: `TemplateDetailScreen` now uses `ref.listenManual` in `initState` with disposal to avoid repeated listener registration on rebuilds.
+- Tests: added widget test to assert viewer route redirects when extra is missing.
+- Tests: added widget test to assert viewer route redirects when extra has wrong type.
+- Docs: `docs/development-roadmap.md` header and footer dates updated to 2026-02-03.
+- QA: `flutter analyze` run; existing errors in auth and gallery repositories remain.
+- Review: Gallery image viewer hardening/tests re-checked; no path regression found; add coverage for happy path + invalid index.
+
+## Next Steps
+1. Decide if `/gallery/viewer` should support deep links (by id) or remain extra-only.
+2. If supporting deep links, add a guard/fallback for missing `state.extra` (or introduce `:id` and load by id).
+3. If extra-only is acceptable, document the non-deep-link constraint for web refreshes.
+4. If keeping fallback, redirect to `GalleryRoute` so the MainShell wraps `GalleryPage`.
+5. Harden extra handling so invalid `state.extra` types do not crash before redirect.
+6. Sync `docs/development-roadmap.md` `Last Updated` footer with header date.
+7. Add tests for viewer happy path and invalid index/empty items redirect.

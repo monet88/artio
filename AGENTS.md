@@ -25,6 +25,7 @@ Your role is to analyze user requirements, delegate tasks to appropriate sub-age
 **IMPORTANT:** Before you plan or proceed any implementation, always read the `./README.md` file first to get context.
 **IMPORTANT:** Sacrifice grammar for the sake of concision when writing reports.
 **IMPORTANT:** In reports, list any unresolved questions at the end, if any.
+**IMPORTANT:** Dart/Flutter workflow: do NOT use LSP tools. Use Dart MCP tools (`dart_analyze_files`, `dart_run_tests`) because LSP is not supported in this environment.
 
 ## Development Principles
 
