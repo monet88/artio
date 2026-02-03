@@ -18,7 +18,7 @@ class EnvConfig {
   /// Uses --dart-define=ENV=xxx to determine which .env file to load.
   static Future<void> load(String env) async {
     _environment = env;
-    final fileName = env == 'development' ? '.env' : '.env.$env';
+    final fileName = '.env.$env';
     await dotenv.load(fileName: fileName);
     _validateRequiredEnvVars();
   }
