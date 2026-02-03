@@ -29,6 +29,8 @@ class TemplateDetailScreen extends ConsumerStatefulWidget {
 class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
   final Map<String, String> _inputValues = {};
   final Set<String> _reportedErrors = <String>{};
+  ProviderSubscription<AsyncValue<TemplateModel?>>? _templateErrorSub;
+  ProviderSubscription<AsyncValue<GenerationJobModel?>>? _jobErrorSub;
 
   // Placeholder for premium status - will be integrated with subscription later
   bool get _isPremium => false;
@@ -79,10 +81,17 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
         );
   }
 
+  void _captureOnce(Object error, StackTrace? stackTrace) {
+    final signature = '${error.runtimeType}:${error.toString()}';
+    if (_reportedErrors.add(signature)) {
+      SentryConfig.captureException(error, stackTrace: stackTrace);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    ref.listen<AsyncValue<TemplateModel?>>(
+    _templateErrorSub = ref.listenManual<AsyncValue<TemplateModel?>>(
       templateByIdProvider(widget.templateId),
       (previous, next) {
         next.whenOrNull(
@@ -93,7 +102,7 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
       },
     );
 
-    ref.listen<AsyncValue<GenerationJobModel?>>(
+    _jobErrorSub = ref.listenManual<AsyncValue<GenerationJobModel?>>(
       generationViewModelProvider,
       (previous, next) {
         next.whenOrNull(
@@ -105,11 +114,11 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
     );
   }
 
-  void _captureOnce(Object error, StackTrace? stackTrace) {
-    final signature = '${error.runtimeType}:${error.toString()}';
-    if (_reportedErrors.add(signature)) {
-      SentryConfig.captureException(error, stackTrace: stackTrace);
-    }
+  @override
+  void dispose() {
+    _templateErrorSub?.close();
+    _jobErrorSub?.close();
+    super.dispose();
   }
 
   @override
