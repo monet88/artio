@@ -1,4 +1,4 @@
-import 'package:artio/core/utils/log.dart';
+import 'package:artio/utils/logger_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
