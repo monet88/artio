@@ -29,7 +29,7 @@ class NotificationsNotifier extends _$NotificationsNotifier {
     try {
       final prefs = await SharedPreferences.getInstance();
       final value = prefs.getBool(_key);
-      if (value != null) {
+      if (value != null && !_hasUserToggled) {
         state = value;
       }
     } catch (e, st) {
