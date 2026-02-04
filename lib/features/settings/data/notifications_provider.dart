@@ -1,3 +1,4 @@
+import 'package:artio/core/utils/log.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -15,19 +16,24 @@ class NotificationsNotifier extends _$NotificationsNotifier {
     if (state == value) return;
     _hasUserToggled = true;
     state = value;
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_key, value);
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool(_key, value);
+    } catch (e, st) {
+      Log.e('Failed to save notification preference', e, st);
+    }
   }
 
   Future<void> init() async {
-    if (_hasUserToggled) {
-      return;
-    }
-    final prefs = await SharedPreferences.getInstance();
-    final value = prefs.getBool(_key);
-    if (value != null && !_hasUserToggled) {
-      state = value;
+    if (_hasUserToggled) return;
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final value = prefs.getBool(_key);
+      if (value != null) {
+        state = value;
+      }
+    } catch (e, st) {
+      Log.e('Failed to load notification preference', e, st);
     }
   }
-
 }
