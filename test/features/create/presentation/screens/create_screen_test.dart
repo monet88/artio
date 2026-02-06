@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:artio/features/create/ui/create_screen.dart';
+import 'package:artio/features/create/presentation/create_screen.dart';
 import '../../../../core/helpers/helpers.dart';
 
 void main() {

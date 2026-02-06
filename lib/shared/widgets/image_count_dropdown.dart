@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:artio/core/design_system/app_spacing.dart';
 
 /// Dropdown for selecting image count (1-4)
 class ImageCountDropdown extends StatelessWidget {
@@ -19,7 +20,7 @@ class ImageCountDropdown extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('Image Count', style: theme.textTheme.titleSmall),
-        const SizedBox(height: 8),
+        SizedBox(height: AppSpacing.sm),
         DropdownButtonFormField<int>(
           initialValue: value,
           decoration: const InputDecoration(

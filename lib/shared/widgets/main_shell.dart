@@ -6,6 +6,8 @@ class MainShell extends StatelessWidget {
 
   final Widget child;
 
+  static const _routes = ['/home', '/create', '/gallery', '/settings'];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,15 +28,13 @@ class MainShell extends StatelessWidget {
 
   int _calculateSelectedIndex(BuildContext context) {
     final location = GoRouterState.of(context).matchedLocation;
-    if (location.startsWith('/home')) return 0;
-    if (location.startsWith('/create')) return 1;
-    if (location.startsWith('/gallery')) return 2;
-    if (location.startsWith('/settings')) return 3;
+    for (int i = 0; i < _routes.length; i++) {
+      if (location.startsWith(_routes[i])) return i;
+    }
     return 0;
   }
 
   void _onItemTapped(BuildContext context, int index) {
-    const routes = ['/home', '/create', '/gallery', '/settings'];
-    context.go(routes[index]);
+    context.go(_routes[index]);
   }
 }

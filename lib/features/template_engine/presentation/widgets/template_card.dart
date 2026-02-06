@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+
 import '../../domain/entities/template_model.dart';
-import '../../../../routing/app_router.dart';
+import '../../../../core/design_system/app_spacing.dart';
+import '../../../../routing/routes/app_routes.dart';
+import '../../../../shared/widgets/loading_state_widget.dart';
 
 class TemplateCard extends StatelessWidget {
   final TemplateModel template;
@@ -13,7 +15,7 @@ class TemplateCard extends StatelessWidget {
     return Card(
       clipBehavior: Clip.antiAlias,
       child: InkWell(
-        onTap: () => context.push(AppRoutes.templateDetailPath(template.id)),
+        onTap: () => TemplateDetailRoute(id: template.id).push(context),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -25,12 +27,12 @@ class TemplateCard extends StatelessWidget {
                     const Center(child: Icon(Icons.broken_image)),
                 loadingBuilder: (context, child, loadingProgress) {
                   if (loadingProgress == null) return child;
-                  return const Center(child: CircularProgressIndicator());
+                  return const LoadingStateWidget();
                 },
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: AppSpacing.cardPadding,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

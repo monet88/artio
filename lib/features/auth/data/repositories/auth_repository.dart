@@ -5,7 +5,7 @@ import 'package:supabase_flutter/supabase_flutter.dart' hide AuthException;
 
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/providers/supabase_provider.dart';
-import '../../../../exceptions/app_exception.dart';
+import '../../../../core/exceptions/app_exception.dart';
 import '../../domain/entities/user_model.dart';
 import '../../domain/repositories/i_auth_repository.dart';
 

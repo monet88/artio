@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../../core/design_system/app_dimensions.dart';
+import '../../../../core/design_system/app_spacing.dart';
 import '../providers/gallery_provider.dart';
 
 class FailedImageCard extends ConsumerWidget {
@@ -15,28 +18,27 @@ class FailedImageCard extends ConsumerWidget {
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.errorContainer,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppDimensions.cardRadius,
       ),
-      padding: const EdgeInsets.all(8),
+      padding: AppSpacing.cardPadding,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
             Icons.error_outline,
             color: Theme.of(context).colorScheme.error,
-            size: 32,
+            size: AppDimensions.iconLg,
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: AppSpacing.sm),
           Text(
             'Generation Failed',
             textAlign: TextAlign.center,
-            style: TextStyle(
+            style: Theme.of(context).textTheme.labelSmall?.copyWith(
               color: Theme.of(context).colorScheme.error,
-              fontSize: 12,
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: AppSpacing.sm),
           TextButton.icon(
             onPressed: () {
               ref
@@ -45,20 +47,18 @@ class FailedImageCard extends ConsumerWidget {
             },
             icon: Icon(
               Icons.refresh,
-              size: 16,
+              size: AppDimensions.iconSm,
               color: Theme.of(context).colorScheme.onErrorContainer,
             ),
             label: Text(
               'Retry',
-              style: TextStyle(
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
                 color: Theme.of(context).colorScheme.onErrorContainer,
-                fontSize: 12,
               ),
             ),
             style: TextButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              minimumSize: Size.zero,
-              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
+              minimumSize: const Size(AppDimensions.touchTargetMin, AppDimensions.touchTargetMin),
             ),
           ),
         ],

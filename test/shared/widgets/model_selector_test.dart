@@ -1,7 +1,6 @@
+import 'package:artio/shared/widgets/model_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:artio/shared/widgets/model_selector.dart';
-import 'package:artio/core/constants/ai_models.dart';
 
 void main() {
   group('ModelSelector', () {

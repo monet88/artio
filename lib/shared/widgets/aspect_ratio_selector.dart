@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:artio/core/design_system/app_spacing.dart';
 import '../../core/constants/ai_models.dart';
 
 /// Grid selector for aspect ratios with expand functionality
@@ -54,10 +55,10 @@ class _AspectRatioSelectorState extends State<AspectRatioSelector> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('Aspect Ratio', style: theme.textTheme.titleSmall),
-        const SizedBox(height: 8),
+        SizedBox(height: AppSpacing.sm),
         Wrap(
-          spacing: 8,
-          runSpacing: 8,
+          spacing: AppSpacing.sm,
+          runSpacing: AppSpacing.sm,
           children: [
             ..._displayedRatios.map((ratio) {
               final isSelected = widget.selectedRatio == ratio;

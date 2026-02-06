@@ -7,7 +7,8 @@ class ThemeSwitcher extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final themeMode = ref.watch(themeModeNotifierProvider);
+    final themeModeAsync = ref.watch(themeModeNotifierProvider);
+    final themeMode = themeModeAsync.valueOrNull ?? ThemeMode.system;
 
     return SegmentedButton<ThemeMode>(
       segments: const [

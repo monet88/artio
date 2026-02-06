@@ -4,7 +4,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:artio/features/template_engine/data/repositories/generation_repository.dart';
 import 'package:artio/features/template_engine/domain/entities/generation_job_model.dart';
-import 'package:artio/exceptions/app_exception.dart';
+import 'package:artio/core/exceptions/app_exception.dart';
 
 import '../../../../core/mocks/mock_supabase_client.dart';
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/design_system/app_spacing.dart';
 import '../view_models/auth_view_model.dart';
 
 class ForgotPasswordScreen extends ConsumerStatefulWidget {
@@ -57,7 +58,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(24),
+          padding: EdgeInsets.all(AppSpacing.lg),
           child: _emailSent ? _buildSuccessView() : _buildFormView(),
         ),
       ),
@@ -73,7 +74,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
           size: 80,
           color: Theme.of(context).colorScheme.primary,
         ),
-        const SizedBox(height: 24),
+        SizedBox(height: AppSpacing.lg),
         Text(
           'Check Your Email',
           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
@@ -81,13 +82,13 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
               ),
           textAlign: TextAlign.center,
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: AppSpacing.md),
         Text(
           'We sent a password reset link to\n${_emailController.text}',
           style: Theme.of(context).textTheme.bodyLarge,
           textAlign: TextAlign.center,
         ),
-        const SizedBox(height: 32),
+        SizedBox(height: AppSpacing.xl),
         FilledButton(
           onPressed: () => context.pop(),
           child: const Text('Back to Login'),
@@ -102,7 +103,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const SizedBox(height: 24),
+          SizedBox(height: AppSpacing.lg),
           Text(
             'Forgot Password?',
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
@@ -110,7 +111,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                 ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: AppSpacing.sm),
           Text(
             "Enter your email and we'll send you a reset link",
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
@@ -118,7 +119,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                 ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 32),
+          SizedBox(height: AppSpacing.xl),
           TextFormField(
             controller: _emailController,
             keyboardType: TextInputType.emailAddress,
@@ -138,7 +139,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
               return null;
             },
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: AppSpacing.lg),
           FilledButton(
             onPressed: _isLoading ? null : _handleResetPassword,
             child: _isLoading

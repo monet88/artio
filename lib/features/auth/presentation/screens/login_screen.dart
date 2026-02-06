@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
-import '../../../../routing/app_router.dart';
+import '../../../../core/design_system/app_spacing.dart';
+import '../../../../routing/routes/app_routes.dart';
 import '../view_models/auth_view_model.dart';
 import '../state/auth_state.dart';
 import '../widgets/social_login_buttons.dart';
@@ -55,13 +55,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
+          padding: EdgeInsets.all(AppSpacing.lg),
           child: Form(
             key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const SizedBox(height: 48),
+                SizedBox(height: AppSpacing.xxl),
                 Text(
                   'Welcome to Artio',
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
@@ -69,7 +69,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 8),
+                SizedBox(height: AppSpacing.sm),
                 Text(
                   'Art Made Simple',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
@@ -77,7 +77,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 48),
+                SizedBox(height: AppSpacing.xxl),
                 TextFormField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
@@ -87,7 +87,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     prefixIcon: Icon(Icons.email_outlined),
                   ),
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
+                    if (value == null || value.trim().isEmpty) {
                       return 'Please enter your email';
                     }
                     if (!value.contains('@')) {
@@ -96,7 +96,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: AppSpacing.md),
                 TextFormField(
                   controller: _passwordController,
                   obscureText: _obscurePassword,
@@ -116,7 +116,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                   ),
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
+                    if (value == null || value.trim().isEmpty) {
                       return 'Please enter your password';
                     }
                     if (value.length < 6) {
@@ -125,15 +125,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 8),
+                SizedBox(height: AppSpacing.sm),
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(
-                    onPressed: () => context.push(AppRoutes.forgotPassword),
+                    onPressed: () => const ForgotPasswordRoute().push(context),
                     child: const Text('Forgot Password?'),
                   ),
                 ),
-                const SizedBox(height: 24),
+                SizedBox(height: AppSpacing.lg),
                 FilledButton(
                   onPressed: isLoading ? null : _handleLogin,
                   child: isLoading
@@ -144,15 +144,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         )
                       : const Text('Sign In'),
                 ),
-                const SizedBox(height: 24),
+                SizedBox(height: AppSpacing.lg),
                 const SocialLoginButtons(),
-                const SizedBox(height: 24),
+                SizedBox(height: AppSpacing.lg),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text("Don't have an account?"),
                     TextButton(
-                      onPressed: () => context.push(AppRoutes.register),
+                      onPressed: () => const RegisterRoute().push(context),
                       child: const Text('Sign Up'),
                     ),
                   ],

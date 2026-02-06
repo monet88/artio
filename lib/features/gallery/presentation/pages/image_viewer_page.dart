@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../../../core/design_system/app_dimensions.dart';
+import '../../../../core/design_system/app_spacing.dart';
 import '../../data/repositories/gallery_repository.dart';
 import '../../domain/entities/gallery_item.dart';
 import '../providers/gallery_provider.dart';
@@ -213,12 +215,12 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
                           );
                         },
                         errorBuilder: (context, error, stackTrace) {
-                            return const Column(
+                            return Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                    Icon(Icons.broken_image, color: Colors.white, size: 48),
-                                    SizedBox(height: 16),
-                                    Text('Failed to load image', style: TextStyle(color: Colors.white)),
+                                    Icon(Icons.broken_image, color: Colors.white, size: AppDimensions.iconXl),
+                                    SizedBox(height: AppSpacing.md),
+                                    const Text('Failed to load image', style: TextStyle(color: Colors.white)),
                                 ],
                             );
                         },
@@ -227,7 +229,7 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           const CircularProgressIndicator(),
-                          const SizedBox(height: 16),
+                          SizedBox(height: AppSpacing.md),
                           Text(
                             item.status == GenerationStatus.pending
                                 ? 'Pending...'
@@ -243,7 +245,7 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
       ),
       bottomNavigationBar: _currentItem.prompt?.isNotEmpty == true
           ? Container(
-              padding: const EdgeInsets.all(16),
+              padding: AppSpacing.screenPadding,
               color: Colors.black.withValues(alpha: 0.5),
               child: SafeArea(
                 child: Column(
@@ -258,7 +260,7 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                    const SizedBox(height: 4),
+                    SizedBox(height: AppSpacing.xs),
                     Text(
                       _currentItem.prompt ?? '',
                       style: const TextStyle(color: Colors.white70, fontSize: 12),

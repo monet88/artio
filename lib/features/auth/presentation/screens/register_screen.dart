@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../routing/app_router.dart';
+import '../../../../core/design_system/app_spacing.dart';
+import '../../../../routing/routes/app_routes.dart';
 import '../view_models/auth_view_model.dart';
 import '../state/auth_state.dart';
 import '../widgets/social_login_buttons.dart';
@@ -64,13 +65,13 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
+          padding: EdgeInsets.all(AppSpacing.lg),
           child: Form(
             key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const SizedBox(height: 24),
+                SizedBox(height: AppSpacing.lg),
                 Text(
                   'Create Account',
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
@@ -78,7 +79,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 8),
+                SizedBox(height: AppSpacing.sm),
                 Text(
                   'Start creating amazing art',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
@@ -86,7 +87,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 32),
+                SizedBox(height: AppSpacing.xl),
                 TextFormField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
@@ -96,7 +97,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     prefixIcon: Icon(Icons.email_outlined),
                   ),
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
+                    if (value == null || value.trim().isEmpty) {
                       return 'Please enter your email';
                     }
                     if (!value.contains('@')) {
@@ -105,7 +106,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: AppSpacing.md),
                 TextFormField(
                   controller: _passwordController,
                   obscureText: _obscurePassword,
@@ -124,7 +125,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     ),
                   ),
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
+                    if (value == null || value.trim().isEmpty) {
                       return 'Please enter a password';
                     }
                     if (value.length < 6) {
@@ -133,7 +134,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: AppSpacing.md),
                 TextFormField(
                   controller: _confirmPasswordController,
                   obscureText: _obscureConfirmPassword,
@@ -153,7 +154,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     ),
                   ),
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
+                    if (value == null || value.trim().isEmpty) {
                       return 'Please confirm your password';
                     }
                     if (value != _passwordController.text) {
@@ -162,7 +163,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 24),
+                SizedBox(height: AppSpacing.lg),
                 FilledButton(
                   onPressed: isLoading ? null : _handleRegister,
                   child: isLoading
@@ -173,15 +174,15 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         )
                       : const Text('Create Account'),
                 ),
-                const SizedBox(height: 24),
+                SizedBox(height: AppSpacing.lg),
                 const SocialLoginButtons(),
-                const SizedBox(height: 24),
+                SizedBox(height: AppSpacing.lg),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text('Already have an account?'),
                     TextButton(
-                      onPressed: () => context.go(AppRoutes.login),
+                      onPressed: () => const LoginRoute().go(context),
                       child: const Text('Sign In'),
                     ),
                   ],
