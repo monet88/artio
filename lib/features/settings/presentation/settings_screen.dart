@@ -5,6 +5,9 @@ import 'package:artio/features/auth/presentation/view_models/auth_view_model.dar
 import 'package:artio/features/settings/presentation/widgets/theme_switcher.dart';
 import 'package:artio/features/settings/data/notifications_provider.dart';
 import 'package:artio/utils/logger_service.dart';
+import 'package:artio/core/design_system/app_spacing.dart';
+import 'package:artio/shared/widgets/section_header.dart';
+import 'package:artio/shared/widgets/loading_state_widget.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -116,10 +119,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('Settings')),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const LoadingStateWidget()
           : ListView(
               children: [
-                _buildSectionHeader(context, 'Account'),
+                const SectionHeader(title: 'Account'),
                 ListTile(
                   leading: const Icon(Icons.email),
                   title: const Text('Email'),
@@ -144,20 +147,20 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   onTap: () => _signOut(context),
                 ),
                 const Divider(),
-                _buildSectionHeader(context, 'Appearance'),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                const SectionHeader(title: 'Appearance'),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Theme', style: TextStyle(fontSize: 16)),
-                      SizedBox(height: 8),
+                      Text('Theme', style: Theme.of(context).textTheme.bodyLarge),
+                      const SizedBox(height: AppSpacing.sm),
                       ThemeSwitcher(),
                     ],
                   ),
                 ),
                 const Divider(),
-                _buildSectionHeader(context, 'Notifications'),
+                const SectionHeader(title: 'Notifications'),
                 SwitchListTile(
                   secondary: const Icon(Icons.notifications_outlined),
                   title: const Text('Push Notifications'),
@@ -166,7 +169,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   onChanged: (value) => ref.read(notificationsNotifierProvider.notifier).setState(value),
                 ),
                 const Divider(),
-                _buildSectionHeader(context, 'About'),
+                const SectionHeader(title: 'About'),
                 ListTile(
                   leading: const Icon(Icons.info_outline),
                   title: const Text('Version'),
@@ -174,19 +177,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 ),
               ],
             ),
-    );
-  }
-
-  Widget _buildSectionHeader(BuildContext context, String title) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-      child: Text(
-        title,
-        style: Theme.of(context).textTheme.titleSmall?.copyWith(
-              color: Theme.of(context).colorScheme.primary,
-              fontWeight: FontWeight.bold,
-            ),
-      ),
     );
   }
 }

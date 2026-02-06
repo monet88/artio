@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/design_system/app_dimensions.dart';
+import '../../../../core/design_system/app_spacing.dart';
 import '../../../../routing/routes/app_routes.dart';
 
 class EmptyGalleryState extends StatelessWidget {
@@ -9,21 +11,21 @@ class EmptyGalleryState extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(32.0),
+        padding: EdgeInsets.all(AppSpacing.xl),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
               Icons.image_outlined,
-              size: 64,
+              size: AppDimensions.iconXxl,
               color: Theme.of(context).colorScheme.outline,
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: AppSpacing.md),
             Text(
               'No images yet',
               style: Theme.of(context).textTheme.titleMedium,
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: AppSpacing.sm),
             Text(
               'Start generating to see your creations here',
               textAlign: TextAlign.center,
@@ -31,7 +33,7 @@ class EmptyGalleryState extends StatelessWidget {
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: AppSpacing.lg),
             FilledButton.icon(
               onPressed: () => const HomeRoute().go(context),
               icon: const Icon(Icons.add_photo_alternate_outlined),

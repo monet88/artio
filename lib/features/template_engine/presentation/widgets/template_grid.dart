@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/config/sentry_config.dart';
+import '../../../../core/design_system/app_spacing.dart';
 import '../../../../core/utils/app_exception_mapper.dart';
+import '../../../../shared/widgets/loading_state_widget.dart';
 import '../providers/template_provider.dart';
 import 'template_card.dart';
 
@@ -18,12 +20,12 @@ class TemplateGrid extends ConsumerWidget {
           return const Center(child: Text('No templates available'));
         }
         return GridView.builder(
-          padding: const EdgeInsets.all(16),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          padding: AppSpacing.screenPadding,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             childAspectRatio: 0.75,
-            crossAxisSpacing: 16,
-            mainAxisSpacing: 16,
+            crossAxisSpacing: AppSpacing.md,
+            mainAxisSpacing: AppSpacing.md,
           ),
           itemCount: templates.length,
           itemBuilder: (context, index) {
@@ -31,7 +33,7 @@ class TemplateGrid extends ConsumerWidget {
           },
         );
       },
-      loading: () => const Center(child: CircularProgressIndicator()),
+      loading: () => const LoadingStateWidget(),
       error: (error, stack) => _ErrorMessage(error: error, stackTrace: stack),
     );
   }

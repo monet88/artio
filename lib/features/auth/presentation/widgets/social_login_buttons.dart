@@ -1,5 +1,7 @@
 import 'dart:io' show Platform;
 
+import 'package:artio/core/design_system/app_dimensions.dart';
+import 'package:artio/core/design_system/app_spacing.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,7 +21,7 @@ class SocialLoginButtons extends ConsumerWidget {
           children: [
             const Expanded(child: Divider()),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
               child: Text(
                 'Or continue with',
                 style: Theme.of(context).textTheme.bodySmall,
@@ -28,7 +30,7 @@ class SocialLoginButtons extends ConsumerWidget {
             const Expanded(child: Divider()),
           ],
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.md),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -39,7 +41,7 @@ class SocialLoginButtons extends ConsumerWidget {
               label: 'Google',
             ),
             if (showApple) ...[
-              const SizedBox(width: 16),
+              const SizedBox(width: AppSpacing.md),
               _SocialButton(
                 onPressed: () =>
                     ref.read(authViewModelProvider.notifier).signInWithApple(),
@@ -69,10 +71,10 @@ class _SocialButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return OutlinedButton.icon(
       onPressed: onPressed,
-      icon: Icon(icon, size: 24),
+      icon: Icon(icon, size: AppDimensions.iconMd),
       label: Text(label),
       style: OutlinedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: 12),
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:artio/core/design_system/app_spacing.dart';
 import '../../core/constants/ai_models.dart';
 
 /// Dropdown selector for AI models with premium badges and credit costs
@@ -69,7 +70,7 @@ class _ModelSelectorState extends State<ModelSelector> {
             ),
           ],
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: AppSpacing.sm),
         DropdownButtonFormField<String>(
           value: _effectiveValue,
           isExpanded: true,
@@ -82,7 +83,7 @@ class _ModelSelectorState extends State<ModelSelector> {
               return Row(
                 children: [
                   Expanded(child: Text(model.displayName)),
-                  const SizedBox(width: 8),
+                  SizedBox(width: AppSpacing.sm),
                   const Text('\u{1F48E}', style: TextStyle(fontSize: 12)), // Diamond
                   const SizedBox(width: 2),
                   Text(
@@ -111,7 +112,7 @@ class _ModelSelectorState extends State<ModelSelector> {
                             : null,
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    SizedBox(width: AppSpacing.sm),
                     const Text('\u{1F48E}', style: TextStyle(fontSize: 12)), // Diamond
                     const SizedBox(width: 2),
                     Text(
@@ -119,7 +120,7 @@ class _ModelSelectorState extends State<ModelSelector> {
                       style: theme.textTheme.bodySmall,
                     ),
                     if (model.isNew) ...[
-                      const SizedBox(width: 8),
+                      SizedBox(width: AppSpacing.sm),
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
@@ -136,11 +137,11 @@ class _ModelSelectorState extends State<ModelSelector> {
                       ),
                     ],
                     if (model.isPremium) ...[
-                      const SizedBox(width: 8),
+                      SizedBox(width: AppSpacing.sm),
                       const Text('\u{1F451}', style: TextStyle(fontSize: 12)), // Crown
                     ],
                     if (widget.selectedModelId == model.id) ...[
-                      const SizedBox(width: 8),
+                      SizedBox(width: AppSpacing.sm),
                       Icon(
                         Icons.check,
                         size: 16,

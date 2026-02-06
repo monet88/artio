@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:artio/core/design_system/app_spacing.dart';
 
 class CreateScreen extends StatelessWidget {
   const CreateScreen({super.key});
@@ -16,12 +17,12 @@ class CreateScreen extends StatelessWidget {
               size: 64,
               color: Theme.of(context).colorScheme.outline,
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: AppSpacing.md),
             Text(
               'Coming Soon',
               style: Theme.of(context).textTheme.headlineSmall,
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: AppSpacing.sm),
             Text(
               'This feature is under development',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(

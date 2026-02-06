@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/design_system/app_spacing.dart';
 import '../../../../routing/routes/app_routes.dart';
 import '../view_models/auth_view_model.dart';
 import '../state/auth_state.dart';
@@ -55,13 +56,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
+          padding: EdgeInsets.all(AppSpacing.lg),
           child: Form(
             key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const SizedBox(height: 48),
+                SizedBox(height: AppSpacing.xxl),
                 Text(
                   'Welcome to Artio',
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
@@ -69,7 +70,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 8),
+                SizedBox(height: AppSpacing.sm),
                 Text(
                   'Art Made Simple',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
@@ -77,7 +78,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 48),
+                SizedBox(height: AppSpacing.xxl),
                 TextFormField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
@@ -96,7 +97,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: AppSpacing.md),
                 TextFormField(
                   controller: _passwordController,
                   obscureText: _obscurePassword,
@@ -125,7 +126,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 8),
+                SizedBox(height: AppSpacing.sm),
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(
@@ -133,7 +134,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     child: const Text('Forgot Password?'),
                   ),
                 ),
-                const SizedBox(height: 24),
+                SizedBox(height: AppSpacing.lg),
                 FilledButton(
                   onPressed: isLoading ? null : _handleLogin,
                   child: isLoading
@@ -144,9 +145,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         )
                       : const Text('Sign In'),
                 ),
-                const SizedBox(height: 24),
+                SizedBox(height: AppSpacing.lg),
                 const SocialLoginButtons(),
-                const SizedBox(height: 24),
+                SizedBox(height: AppSpacing.lg),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

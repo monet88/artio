@@ -1,6 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+
+import '../../../../core/design_system/app_dimensions.dart';
+import '../../../../core/design_system/app_spacing.dart';
 import '../../domain/entities/gallery_item.dart';
 import 'failed_image_card.dart';
 
@@ -28,10 +31,10 @@ class MasonryImageGrid extends StatelessWidget {
     }
 
     return MasonryGridView.count(
-      padding: const EdgeInsets.all(8),
+      padding: AppSpacing.cardPadding,
       crossAxisCount: crossAxisCount,
-      mainAxisSpacing: 8,
-      crossAxisSpacing: 8,
+      mainAxisSpacing: AppSpacing.sm,
+      crossAxisSpacing: AppSpacing.sm,
       itemCount: items.length,
       itemBuilder: (context, index) {
         final item = items[index];
@@ -61,17 +64,17 @@ class MasonryImageGrid extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surfaceContainerHighest,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppDimensions.cardRadius,
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const SizedBox(
-                width: 24,
-                height: 24,
-                child: CircularProgressIndicator(strokeWidth: 2.5),
+              SizedBox(
+                width: AppDimensions.iconMd,
+                height: AppDimensions.iconMd,
+                child: const CircularProgressIndicator(strokeWidth: 2.5),
               ),
-              const SizedBox(height: 8),
+              SizedBox(height: AppSpacing.sm),
               Text(
                 item.status == GenerationStatus.pending
                     ? 'Pending'
@@ -90,7 +93,7 @@ class MasonryImageGrid extends StatelessWidget {
       return Hero(
         tag: 'gallery-image-${item.id}',
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: AppDimensions.cardRadius,
           child: CachedNetworkImage(
             imageUrl: item.imageUrl!,
             placeholder: (context, url) => AspectRatio(

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../../domain/entities/template_model.dart';
+import '../../../../core/design_system/app_spacing.dart';
 import '../../../../routing/routes/app_routes.dart';
+import '../../../../shared/widgets/loading_state_widget.dart';
 
 class TemplateCard extends StatelessWidget {
   final TemplateModel template;
@@ -25,12 +27,12 @@ class TemplateCard extends StatelessWidget {
                     const Center(child: Icon(Icons.broken_image)),
                 loadingBuilder: (context, child, loadingProgress) {
                   if (loadingProgress == null) return child;
-                  return const Center(child: CircularProgressIndicator());
+                  return const LoadingStateWidget();
                 },
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: AppSpacing.cardPadding,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

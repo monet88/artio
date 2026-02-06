@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../routing/routes/app_routes.dart';
+import '../../../../shared/widgets/error_state_widget.dart';
 import '../providers/gallery_provider.dart';
 import '../widgets/empty_gallery_state.dart';
 import '../widgets/masonry_image_grid.dart';
@@ -18,21 +19,9 @@ class GalleryPage extends ConsumerWidget {
       appBar: AppBar(title: const Text('Gallery')),
       body: galleryAsync.when(
         loading: () => const ShimmerGrid(),
-        error: (error, stackTrace) => Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.error_outline, size: 48, color: Colors.red),
-              const SizedBox(height: 16),
-              Text('Error loading gallery: $error'),
-              const SizedBox(height: 16),
-              FilledButton.icon(
-                onPressed: () => ref.invalidate(galleryStreamProvider),
-                icon: const Icon(Icons.refresh),
-                label: const Text('Retry'),
-              ),
-            ],
-          ),
+        error: (error, stackTrace) => ErrorStateWidget(
+          message: 'Error loading gallery: $error',
+          onRetry: () => ref.invalidate(galleryStreamProvider),
         ),
         data: (items) {
           if (items.isEmpty) {
