@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../routing/route_paths.dart';
 
 class MainShell extends StatelessWidget {
   const MainShell({super.key, required this.child});
 
   final Widget child;
+
+  static const _routes = ['/home', '/create', '/gallery', '/settings'];
 
   @override
   Widget build(BuildContext context) {
@@ -27,20 +28,13 @@ class MainShell extends StatelessWidget {
 
   int _calculateSelectedIndex(BuildContext context) {
     final location = GoRouterState.of(context).matchedLocation;
-    if (location.startsWith(RoutePaths.home)) return 0;
-    if (location.startsWith(RoutePaths.create)) return 1;
-    if (location.startsWith(RoutePaths.gallery)) return 2;
-    if (location.startsWith(RoutePaths.settings)) return 3;
+    for (int i = 0; i < _routes.length; i++) {
+      if (location.startsWith(_routes[i])) return i;
+    }
     return 0;
   }
 
   void _onItemTapped(BuildContext context, int index) {
-    const routes = [
-      RoutePaths.home,
-      RoutePaths.create,
-      RoutePaths.gallery,
-      RoutePaths.settings
-    ];
-    context.go(routes[index]);
+    context.go(_routes[index]);
   }
 }

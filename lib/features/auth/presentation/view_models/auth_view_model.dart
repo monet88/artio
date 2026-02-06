@@ -3,13 +3,13 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../core/config/sentry_config.dart';
+import '../../../../core/exceptions/app_exception.dart';
+import '../../../../core/state/user_scoped_providers.dart';
 import '../../../../routing/routes/app_routes.dart';
 import '../../domain/entities/user_model.dart';
 import '../../data/repositories/auth_repository.dart';
 import '../state/auth_state.dart';
-import '../../../gallery/presentation/providers/gallery_provider.dart';
-import '../../../template_engine/presentation/providers/template_provider.dart';
-import '../../../template_engine/presentation/view_models/generation_view_model.dart';
 
 part 'auth_view_model.g.dart';
 
@@ -23,14 +23,19 @@ class AuthViewModel extends _$AuthViewModel implements Listenable {
     final authRepo = ref.watch(authRepositoryProvider);
 
     _authSubscription?.cancel();
-    _authSubscription = authRepo.onAuthStateChange.listen((data) {
-      if (data.session != null) {
-        _handleSignedIn();
-      } else {
-        state = const AuthState.unauthenticated();
-        _notifyRouter();
-      }
-    });
+    _authSubscription = authRepo.onAuthStateChange.listen(
+      (data) {
+        if (data.session != null) {
+          _handleSignedIn();
+        } else {
+          state = const AuthState.unauthenticated();
+          _notifyRouter();
+        }
+      },
+      onError: (Object e, StackTrace st) async {
+        await SentryConfig.captureException(e, stackTrace: st);
+      },
+    );
 
     ref.onDispose(() => _authSubscription?.cancel());
 
@@ -48,7 +53,8 @@ class AuthViewModel extends _$AuthViewModel implements Listenable {
       } else {
         state = const AuthState.unauthenticated();
       }
-    } catch (e) {
+    } catch (e, st) {
+      await SentryConfig.captureException(e, stackTrace: st);
       state = const AuthState.unauthenticated();
     }
     _notifyRouter();
@@ -112,22 +118,25 @@ class AuthViewModel extends _$AuthViewModel implements Listenable {
   }
 
   Future<void> signOut() async {
-    final authRepo = ref.read(authRepositoryProvider);
-    await authRepo.signOut();
-
-    // Invalidate user-scoped providers to prevent stale data on re-login
-    ref.invalidate(galleryStreamProvider);
-    ref.invalidate(galleryActionsNotifierProvider);
-    ref.invalidate(templatesProvider);
-    ref.invalidate(generationViewModelProvider);
-
-    state = const AuthState.unauthenticated();
-    _notifyRouter();
+    try {
+      final authRepo = ref.read(authRepositoryProvider);
+      await authRepo.signOut();
+    } catch (e, st) {
+      await SentryConfig.captureException(e, stackTrace: st);
+    } finally {
+      invalidateUserScopedProviders(ref);
+      state = const AuthState.unauthenticated();
+      _notifyRouter();
+    }
   }
 
   Future<void> resetPassword(String email) async {
-    final authRepo = ref.read(authRepositoryProvider);
-    await authRepo.resetPassword(email);
+    try {
+      final authRepo = ref.read(authRepositoryProvider);
+      await authRepo.resetPassword(email);
+    } catch (e) {
+      throw AppException.auth(message: 'Failed to send reset email');
+    }
   }
 
   UserModel? get currentUser => switch (state) {

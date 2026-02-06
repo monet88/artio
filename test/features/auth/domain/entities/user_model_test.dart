@@ -1,5 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:artio/features/auth/domain/entities/user_model.dart';
+import '../../../../core/mocks/mock_supabase_client.dart';
 import '../../../../core/fixtures/fixtures.dart';
 
 void main() {
@@ -108,6 +110,56 @@ void main() {
         expect(restored.displayName, original.displayName);
         expect(restored.credits, original.credits);
         expect(restored.isPremium, original.isPremium);
+      });
+    });
+
+    group('fromSupabaseUser', () {
+      test('casts profile values safely', () {
+        final user = MockUser();
+        when(() => user.id).thenReturn('user-123');
+        when(() => user.email).thenReturn('cast@example.com');
+        when(() => user.userMetadata).thenReturn({
+          'name': 'Metadata Name',
+          'avatar_url': 'https://example.com/metadata.png',
+        });
+        when(() => user.createdAt)
+            .thenReturn(DateTime(2024, 1, 2).toIso8601String());
+
+        final profile = {
+          'display_name': 'Profile Name',
+          'avatar_url': 'https://example.com/profile.png',
+          'credits': 10.0,
+          'is_premium': true,
+          'premium_expires_at': '2024-12-31T00:00:00.000Z',
+        };
+
+        final model = UserModel.fromSupabaseUser(user, profile: profile);
+
+        expect(model.displayName, 'Profile Name');
+        expect(model.avatarUrl, 'https://example.com/profile.png');
+        expect(model.credits, 10);
+        expect(model.isPremium, true);
+        expect(model.premiumExpiresAt, DateTime.parse('2024-12-31T00:00:00.000Z'));
+      });
+
+      test('falls back to metadata and defaults when profile missing', () {
+        final user = MockUser();
+        when(() => user.id).thenReturn('user-456');
+        when(() => user.email).thenReturn('fallback@example.com');
+        when(() => user.userMetadata).thenReturn({
+          'name': 'Metadata Name',
+          'avatar_url': 'https://example.com/metadata.png',
+        });
+        when(() => user.createdAt).thenReturn('');
+
+        final model = UserModel.fromSupabaseUser(user);
+
+        expect(model.displayName, 'Metadata Name');
+        expect(model.avatarUrl, 'https://example.com/metadata.png');
+        expect(model.credits, 0);
+        expect(model.isPremium, false);
+        expect(model.premiumExpiresAt, isNull);
+        expect(model.createdAt, isNull);
       });
     });
 

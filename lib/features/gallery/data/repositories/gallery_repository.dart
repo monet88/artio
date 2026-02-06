@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:storage_client/storage_client.dart' as storage_client;
 
 import '../../../../core/providers/supabase_provider.dart';
 import '../../domain/entities/gallery_item.dart';
@@ -134,27 +136,32 @@ class GalleryRepository implements IGalleryRepository {
 
   @override
   Future<void> deleteJob(String jobId) async {
-    // Hard delete - use softDeleteImage for soft delete
-    final job = await _supabase
-        .from('generation_jobs')
-        .select('result_urls, user_id')
-        .eq('id', jobId)
-        .single();
+    try {
+      // Hard delete - use softDeleteImage for soft delete
+      final job = await _supabase
+          .from('generation_jobs')
+          .select('result_urls, user_id')
+          .eq('id', jobId)
+          .single();
 
-    final userId = job['user_id'] as String;
-    final urls = (job['result_urls'] as List?) ?? [];
+      final userId = job['user_id'] as String;
+      final urls = (job['result_urls'] as List?) ?? [];
 
-    for (int i = 0; i < urls.length; i++) {
-      try {
-        await _supabase.storage
-            .from('generated-images')
-            .remove(['$userId/$jobId/$i.png']);
-      } catch (_) {
-        // Continue even if storage deletion fails
+      for (int i = 0; i < urls.length; i++) {
+        try {
+          await _supabase.storage
+              .from('generated-images')
+              .remove(['$userId/$jobId/$i.png']);
+        } on storage_client.StorageException catch (e) {
+          // Log but continue - orphaned files acceptable
+          debugPrint('Storage cleanup failed: ${e.message}');
+        }
       }
-    }
 
-    await _supabase.from('generation_jobs').delete().eq('id', jobId);
+      await _supabase.from('generation_jobs').delete().eq('id', jobId);
+    } on PostgrestException catch (e) {
+      throw AppException.storage(message: e.message);
+    }
   }
 
   @override
@@ -184,47 +191,72 @@ class GalleryRepository implements IGalleryRepository {
   /// Retry failed generation
   @override
   Future<void> retryGeneration(String jobId) async {
-    // Reset status to pending
-    await _supabase
-        .from('generation_jobs')
-        .update({'status': 'pending', 'error_message': null})
-        .eq('id', jobId);
+    try {
+      // Reset status to pending
+      await _supabase
+          .from('generation_jobs')
+          .update({'status': 'pending', 'error_message': null})
+          .eq('id', jobId);
 
-    // Re-trigger Edge Function
-    await _supabase.functions.invoke('generate-image', body: {'jobId': jobId});
+      // Re-trigger Edge Function
+      await _supabase.functions.invoke('generate-image', body: {'jobId': jobId});
+    } on PostgrestException catch (e) {
+      throw AppException.storage(message: e.message);
+    } on FunctionException catch (e) {
+      throw AppException.generation(message: e.details?.toString() ?? 'Retry failed');
+    } catch (e) {
+      if (e is AppException) rethrow;
+      throw AppException.unknown(message: 'Failed to retry generation', originalError: e);
+    }
   }
 
   @override
   Future<String> downloadImage(String imageUrl) async {
-    final response = await http.get(Uri.parse(imageUrl));
-    if (response.statusCode != 200) {
-      throw Exception('Failed to download image');
+    try {
+      final response = await http.get(Uri.parse(imageUrl));
+      if (response.statusCode != 200) {
+        throw AppException.network(
+          message: 'Download failed',
+          statusCode: response.statusCode,
+        );
+      }
+
+      final directory = await getApplicationDocumentsDirectory();
+      final fileName = 'artio_${DateTime.now().millisecondsSinceEpoch}.png';
+      final filePath = '${directory.path}/$fileName';
+
+      final file = File(filePath);
+      await file.writeAsBytes(response.bodyBytes);
+
+      return filePath;
+    } catch (e) {
+      if (e is AppException) rethrow;
+      throw AppException.network(message: 'Failed to download image');
     }
-
-    final directory = await getApplicationDocumentsDirectory();
-    final fileName = 'artio_${DateTime.now().millisecondsSinceEpoch}.png';
-    final filePath = '${directory.path}/$fileName';
-
-    final file = File(filePath);
-    await file.writeAsBytes(response.bodyBytes);
-
-    return filePath;
   }
 
   @override
   Future<File> getImageFile(String imageUrl) async {
-    final response = await http.get(Uri.parse(imageUrl));
-    if (response.statusCode != 200) {
-      throw Exception('Failed to download image');
+    try {
+      final response = await http.get(Uri.parse(imageUrl));
+      if (response.statusCode != 200) {
+        throw AppException.network(
+          message: 'Failed to get image file',
+          statusCode: response.statusCode,
+        );
+      }
+
+      final directory = await getTemporaryDirectory();
+      final file = File(
+        '${directory.path}/share_${DateTime.now().millisecondsSinceEpoch}.png',
+      );
+      await file.writeAsBytes(response.bodyBytes);
+
+      return file;
+    } catch (e) {
+      if (e is AppException) rethrow;
+      throw AppException.network(message: 'Failed to get image file');
     }
-
-    final directory = await getTemporaryDirectory();
-    final file = File(
-      '${directory.path}/share_${DateTime.now().millisecondsSinceEpoch}.png',
-    );
-    await file.writeAsBytes(response.bodyBytes);
-
-    return file;
   }
 
   @override
