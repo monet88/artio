@@ -7,6 +7,9 @@ import '../../../../routing/routes/app_routes.dart';
 import '../../domain/entities/user_model.dart';
 import '../../data/repositories/auth_repository.dart';
 import '../state/auth_state.dart';
+import '../../../gallery/presentation/providers/gallery_provider.dart';
+import '../../../template_engine/presentation/providers/template_provider.dart';
+import '../../../template_engine/presentation/view_models/generation_view_model.dart';
 
 part 'auth_view_model.g.dart';
 
@@ -111,6 +114,13 @@ class AuthViewModel extends _$AuthViewModel implements Listenable {
   Future<void> signOut() async {
     final authRepo = ref.read(authRepositoryProvider);
     await authRepo.signOut();
+
+    // Invalidate user-scoped providers to prevent stale data on re-login
+    ref.invalidate(galleryStreamProvider);
+    ref.invalidate(galleryActionsNotifierProvider);
+    ref.invalidate(templatesProvider);
+    ref.invalidate(generationViewModelProvider);
+
     state = const AuthState.unauthenticated();
     _notifyRouter();
   }

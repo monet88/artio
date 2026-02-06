@@ -9,6 +9,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/providers/supabase_provider.dart';
 import '../../domain/entities/gallery_item.dart';
+import '../../../../core/exceptions/app_exception.dart';
 import '../../domain/repositories/i_gallery_repository.dart';
 
 part 'gallery_repository.g.dart';
@@ -70,34 +71,37 @@ class GalleryRepository implements IGalleryRepository {
     int offset = 0,
     String? templateId,
   }) async {
-    var query = _supabase
-        .from('generation_jobs')
-        .select('*, templates(name)')
-        .isFilter('deleted_at', null); // Only non-deleted items
+    try {
+      var query = _supabase
+          .from('generation_jobs')
+          .select('*, templates(name)')
+          .isFilter('deleted_at', null);
 
-    if (templateId != null) {
-      query = query.eq('template_id', templateId);
-    }
+      if (templateId != null) {
+        query = query.eq('template_id', templateId);
+      }
 
-    final response = await query
-        .order('created_at', ascending: false)
-        .range(offset, offset + limit - 1);
-    
-    final items = <GalleryItem>[];
+      final response = await query
+          .order('created_at', ascending: false)
+          .range(offset, offset + limit - 1);
 
-    for (final job in response as List) {
-      final urls = (job['result_urls'] as List?) ?? [];
-      if (urls.isEmpty && job['status'] != 'completed') {
-        // Show pending/failed jobs without images
-        items.add(_parseJob(job, 0));
-      } else {
-        for (int i = 0; i < urls.length; i++) {
-          items.add(_parseJob(job, i));
+      final items = <GalleryItem>[];
+
+      for (final job in response as List) {
+        final urls = (job['result_urls'] as List?) ?? [];
+        if (urls.isEmpty && job['status'] != 'completed') {
+          items.add(_parseJob(job, 0));
+        } else {
+          for (int i = 0; i < urls.length; i++) {
+            items.add(_parseJob(job, i));
+          }
         }
       }
-    }
 
-    return items;
+      return items;
+    } on PostgrestException catch (e) {
+      throw AppException.network(message: e.message);
+    }
   }
 
   /// Watch user images with realtime updates
@@ -151,22 +155,28 @@ class GalleryRepository implements IGalleryRepository {
     await _supabase.from('generation_jobs').delete().eq('id', jobId);
   }
 
-  /// Soft delete - sets deleted_at timestamp
   @override
   Future<void> softDeleteImage(String jobId) async {
-    await _supabase
-        .from('generation_jobs')
-        .update({'deleted_at': DateTime.now().toIso8601String()})
-        .eq('id', jobId);
+    try {
+      await _supabase
+          .from('generation_jobs')
+          .update({'deleted_at': DateTime.now().toIso8601String()})
+          .eq('id', jobId);
+    } on PostgrestException catch (e) {
+      throw AppException.storage(message: e.message);
+    }
   }
 
-  /// Restore soft-deleted image
   @override
   Future<void> restoreImage(String jobId) async {
-    await _supabase
-        .from('generation_jobs')
-        .update({'deleted_at': null})
-        .eq('id', jobId);
+    try {
+      await _supabase
+          .from('generation_jobs')
+          .update({'deleted_at': null})
+          .eq('id', jobId);
+    } on PostgrestException catch (e) {
+      throw AppException.storage(message: e.message);
+    }
   }
 
   /// Retry failed generation
@@ -217,9 +227,13 @@ class GalleryRepository implements IGalleryRepository {
 
   @override
   Future<void> toggleFavorite(String itemId, bool isFavorite) async {
-    final jobId = itemId.split('_').first;
-    await _supabase
-        .from('generation_jobs')
-        .update({'is_favorite': isFavorite}).eq('id', jobId);
+    try {
+      final jobId = itemId.split('_').first;
+      await _supabase
+          .from('generation_jobs')
+          .update({'is_favorite': isFavorite}).eq('id', jobId);
+    } on PostgrestException catch (e) {
+      throw AppException.storage(message: e.message);
+    }
   }
 }

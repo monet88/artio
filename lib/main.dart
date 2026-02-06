@@ -15,13 +15,49 @@ Future<void> main() async {
   const env = String.fromEnvironment('ENV', defaultValue: 'development');
   await EnvConfig.load(env);
 
-  await Supabase.initialize(
-    url: EnvConfig.supabaseUrl,
-    anonKey: EnvConfig.supabaseAnonKey,
-  );
+  try {
+    await Supabase.initialize(
+      url: EnvConfig.supabaseUrl,
+      anonKey: EnvConfig.supabaseAnonKey,
+    );
+  } catch (e) {
+    runApp(InitErrorApp(error: e.toString()));
+    return;
+  }
 
   await SentryConfig.init();
   runApp(const ProviderScope(child: ArtioApp()));
+}
+
+class InitErrorApp extends StatelessWidget {
+  final String error;
+  const InitErrorApp({super.key, required this.error});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.error_outline, size: 64, color: Colors.red),
+                const SizedBox(height: 16),
+                const Text(
+                  'Failed to initialize app',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 8),
+                Text(error, textAlign: TextAlign.center),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class ArtioApp extends ConsumerWidget {
