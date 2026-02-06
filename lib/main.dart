@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -50,7 +51,12 @@ class InitErrorApp extends StatelessWidget {
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 8),
-                Text(error, textAlign: TextAlign.center),
+                if (kDebugMode) Text(error, textAlign: TextAlign.center),
+                if (!kDebugMode)
+                  const Text(
+                    'Please check your internet connection and try again.',
+                    textAlign: TextAlign.center,
+                  ),
               ],
             ),
           ),
