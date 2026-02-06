@@ -87,7 +87,8 @@ class GalleryRepository implements IGalleryRepository {
 
       final items = <GalleryItem>[];
 
-      for (final job in response as List) {
+      for (final row in response as List) {
+        final job = row as Map<String, dynamic>;
         final urls = (job['result_urls'] as List?) ?? [];
         if (urls.isEmpty && job['status'] != 'completed') {
           items.add(_parseJob(job, 0));
@@ -114,9 +115,10 @@ class GalleryRepository implements IGalleryRepository {
         .order('created_at')
         .map((data) {
           final items = <GalleryItem>[];
-          for (final job in data) {
-            if (job['deleted_at'] != null) continue; // Skip deleted
-            
+          for (final row in data) {
+            final job = row as Map<String, dynamic>;
+            if (job['deleted_at'] != null) continue;
+
             final urls = (job['result_urls'] as List?) ?? [];
             if (urls.isEmpty) {
               items.add(_parseJob(job, 0));
