@@ -1,7 +1,7 @@
 # Project Overview & Product Development Requirements
 
 **Project**: Artio - AI Image Generation SaaS
-**Updated**: 2026-01-30
+**Updated**: 2026-02-09
 **Version**: 1.2
 
 ---
@@ -90,8 +90,9 @@ Democratize AI image generation through intuitive templates and flexible text pr
 **Implementation Status:**
 - ✓ Complete: Phase 4 (Template Engine)
 - ✓ Complete: Phase 4.6 (Architecture Hardening)
-- ✓ Complete: 25+ Templates added via SQL migration (Portrait, Editing, Art Style, Fun)
-- Pending: KIE API integration in Edge Function
+- ✓ Complete: 25 seed templates (5 per category: Portrait, Removal, Art Style, Enhancement, Creative)
+- ✓ Complete: TypedGoRoute navigation with route path constants
+- Pending: KIE API integration in Edge Function (Imagen 4/Flux-2/GPT Image/Seedream)
 
 ---
 
@@ -105,12 +106,13 @@ Democratize AI image generation through intuitive templates and flexible text pr
 - As a user, I want to save prompts for reuse
 
 **Acceptance Criteria:**
-- [x] Create Screen UI implemented
+- [x] Create Screen UI implemented with prompt input placeholder
+- [x] Parameter selection UI layout ready
+- [ ] Backend integration (Edge Function Imagen 4/Flux-2/GPT Image/Seedream)
 - [ ] Prompt input with character limit (500 chars)
-- [ ] Parameter controls: style (photorealistic, artistic, cartoon), size (1024x1024, etc.)
-- [ ] Negative prompt support
+- [ ] Parameter controls: style, size, negative prompt
 - [ ] Prompt history (last 10 prompts)
-- [ ] Generation queue (same flow as template engine)
+- [ ] Generation queue (reuse template engine flow)
 
 **Implementation:**
 - `create` feature (UI implemented)
@@ -340,7 +342,8 @@ Democratize AI image generation through intuitive templates and flexible text pr
 
 | Issue | Impact | Mitigation Plan |
 |-------|--------|-----------------|
-| ~~Test coverage 15% vs 80% target~~ | ~~Production readiness~~ | ✓ Achieved (324 tests, 80%+) |
+| ~~Test coverage gap~~ | ~~Production readiness~~ | ✓ Resolved (324 tests, comprehensive suite) |
+| ~~GoRouter raw strings~~ | ~~Type safety~~ | ✓ Resolved (TypedGoRoute implemented) |
 ### Medium Priority
 
 | Issue | Impact | Mitigation Plan |
@@ -362,7 +365,8 @@ Democratize AI image generation through intuitive templates and flexible text pr
 ### Technical KPIs
 
 - [x] `flutter analyze` 0 errors (achieved in Phase 4.6)
-- [x] 80%+ test coverage on business logic (324 tests passing)
+- [x] Comprehensive test coverage (324 tests passing)
+- [x] TypedGoRoute navigation (type-safe routing)
 - [ ] <2s cold start time (to be measured)
 - [ ] <500ms template grid load (to be measured)
 - [ ] <5% error rate in production
@@ -421,7 +425,7 @@ Democratize AI image generation through intuitive templates and flexible text pr
 - Visual JSON editor
 
 **Total Estimated Effort:** 48.5h
-**Current Progress:** 77% (37.5h complete)
+**Current Progress:** 81% (39.5h complete)
 
 ---
 
@@ -476,14 +480,14 @@ Democratize AI image generation through intuitive templates and flexible text pr
 
 ### Third-Party Libraries
 
-- `supabase_flutter`: ^2.x
-- `riverpod`: ^2.x + `riverpod_generator`
-- `go_router`: ^14.x
-- `freezed`: ^2.x + `freezed_annotation` + `json_serializable`
-- `cached_network_image`: ^3.x
-- `image_picker`: ^1.x
-- `share_plus`: ^7.x
-- `revenue_cat`: ^6.x (mobile only)
+- `supabase_flutter`: ^2.11.0
+- `flutter_riverpod`: ^2.6.1 + `riverpod_annotation`
+- `go_router`: ^14.8.1
+- `freezed`: ^2.5.8 + `freezed_annotation` + `json_serializable`
+- `cached_network_image`: ^3.4.1
+- `image_picker`: ^1.1.2
+- `share_plus`: ^12.0.1
+- `purchases_flutter`: ^9.0.0 (mobile only)
 - `url_launcher`: ^6.x
 
 ---
@@ -558,6 +562,6 @@ See: `docs/code-standards.md` for detailed conventions
 
 ---
 
-**Document Version:** 1.2
-**Last Updated:** 2026-01-30
+**Document Version:** 1.3
+**Last Updated:** 2026-02-09
 **Next Review:** Post-Phase 6 (Subscription implementation)

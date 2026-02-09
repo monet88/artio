@@ -1,8 +1,9 @@
+import 'package:artio/features/auth/domain/entities/user_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:artio/features/auth/domain/entities/user_model.dart';
-import '../../../../core/mocks/mock_supabase_client.dart';
+
 import '../../../../core/fixtures/fixtures.dart';
+import '../../../../core/mocks/mock_supabase_client.dart';
 
 void main() {
   group('UserModel', () {
