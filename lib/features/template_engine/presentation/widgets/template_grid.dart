@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/config/sentry_config.dart';
@@ -57,13 +59,10 @@ class _ErrorMessageState extends ConsumerState<_ErrorMessage> {
     _captureOnce();
   }
 
-  @override
   void _captureOnce() {
-    if (_didCapture) {
-      return;
-    }
+    if (_didCapture) return;
     _didCapture = true;
-    SentryConfig.captureException(widget.error, stackTrace: widget.stackTrace);
+    unawaited(SentryConfig.captureException(widget.error, stackTrace: widget.stackTrace));
   }
 
   @override

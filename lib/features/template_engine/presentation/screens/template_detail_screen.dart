@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -87,7 +89,7 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
   void _captureOnce(Object error, StackTrace? stackTrace) {
     final signature = '${error.runtimeType}:${error.toString()}';
     if (_reportedErrors.add(signature)) {
-      SentryConfig.captureException(error, stackTrace: stackTrace);
+      unawaited(SentryConfig.captureException(error, stackTrace: stackTrace));
     }
   }
 
