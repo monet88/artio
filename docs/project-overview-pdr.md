@@ -437,7 +437,7 @@ Democratize AI image generation through intuitive templates and flexible text pr
 | RevenueCat web beta limitations | Medium | Medium | Use Stripe directly for web (already planned) |
 | Cross-platform payment testing | High | High | Budget iOS/Android test devices; use sandbox mode |
 | Supabase free tier limits | Medium | Medium | Monitor usage dashboard; upgrade early if needed |
-| Template content creation | Medium | Medium | MVP with 10 seed templates; hire designer post-launch |
+| Template content creation | Medium | Medium | MVP with 25 seed templates; hire designer post-launch |
 | App Store approval delays | Medium | Low | Submit beta early; address review feedback promptly |
 
 ---

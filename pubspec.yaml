@@ -81,3 +81,4 @@ flutter:
     - .env
     - .env.development
     - .env.staging
+    - .env.test
