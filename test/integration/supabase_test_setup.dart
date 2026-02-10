@@ -5,6 +5,9 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Integration test setup for real Supabase instance.
 ///
+/// Uses SupabaseClient directly (no Supabase.initialize) to avoid
+/// SharedPreferences plugin dependency in flutter test environment.
+///
 /// Configuration priority:
 /// 1. Environment variables (for CI/CD)
 /// 2. `.env.test` file (for local development)
@@ -12,21 +15,17 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 /// Required variables:
 /// - SUPABASE_URL
 /// - SUPABASE_ANON_KEY
-/// - TEST_USER_EMAIL
-/// - TEST_USER_PASSWORD
+/// - TEST_USER_EMAIL (for authenticated tests)
+/// - TEST_USER_PASSWORD (for authenticated tests)
 class SupabaseTestSetup {
   static late SupabaseClient client;
   static bool _initialized = false;
+  static bool _dotenvLoaded = false;
 
   static Future<void> init() async {
     if (_initialized) return;
 
-    // Try loading .env.test for local dev (ignore if missing for CI)
-    try {
-      await dotenv.load(fileName: '.env.test');
-    } catch (_) {
-      // .env.test not found, will use Platform.environment
-    }
+    await _loadDotenv();
 
     final url = _getEnv('SUPABASE_URL');
     final anonKey = _getEnv('SUPABASE_ANON_KEY');
@@ -38,8 +37,8 @@ class SupabaseTestSetup {
       );
     }
 
-    await Supabase.initialize(url: url, anonKey: anonKey);
-    client = Supabase.instance.client;
+    // Use SupabaseClient directly to avoid SharedPreferences dependency
+    client = SupabaseClient(url, anonKey);
     _initialized = true;
   }
 
@@ -65,8 +64,20 @@ class SupabaseTestSetup {
     await signOut();
   }
 
+  /// Load .env.test for local dev (ignore if missing for CI).
+  static Future<void> _loadDotenv() async {
+    if (_dotenvLoaded) return;
+    try {
+      await dotenv.load(fileName: '.env.test');
+      _dotenvLoaded = true;
+    } catch (_) {
+      // .env.test not found, will use Platform.environment
+    }
+  }
+
   /// Get env var from Platform.environment first, fallback to dotenv.
   static String? _getEnv(String key) {
-    return Platform.environment[key] ?? dotenv.env[key];
+    return Platform.environment[key] ??
+        (_dotenvLoaded ? dotenv.env[key] : null);
   }
 }

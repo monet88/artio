@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import '../../../../core/design_system/app_spacing.dart';
+import '../../../../core/design_system/app_dimensions.dart';
+import '../../../../shared/widgets/loading_state_widget.dart';
 import '../../domain/entities/generation_job_model.dart';
 
 class GenerationProgress extends StatelessWidget {
@@ -10,7 +13,7 @@ class GenerationProgress extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: AppSpacing.cardPadding,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -18,29 +21,29 @@ class GenerationProgress extends StatelessWidget {
                 job.status == JobStatus.generating ||
                 job.status == JobStatus.processing) ...[
               const LinearProgressIndicator(),
-              const SizedBox(height: 16),
+              SizedBox(height: AppSpacing.md),
               Text(
                 _getStatusText(job.status),
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
             ] else if (job.status == JobStatus.completed) ...[
-              const Icon(Icons.check_circle, color: Colors.green, size: 48),
-              const SizedBox(height: 16),
+              Icon(Icons.check_circle, color: Colors.green, size: AppDimensions.iconXl),
+              SizedBox(height: AppSpacing.md),
               if (job.resultUrls != null && job.resultUrls!.isNotEmpty)
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: AppDimensions.buttonRadius,
                   child: Image.network(
                     job.resultUrls!.first,
                     fit: BoxFit.cover,
                     loadingBuilder: (context, child, loadingProgress) {
                       if (loadingProgress == null) return child;
-                      return const Center(child: CircularProgressIndicator());
+                      return const LoadingStateWidget();
                     },
                   ),
                 ),
             ] else if (job.status == JobStatus.failed) ...[
-              const Icon(Icons.error, color: Colors.red, size: 48),
-              const SizedBox(height: 16),
+              Icon(Icons.error, color: Colors.red, size: AppDimensions.iconXl),
+              SizedBox(height: AppSpacing.md),
               Text(
                 job.errorMessage ?? 'Generation failed',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(

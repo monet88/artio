@@ -153,8 +153,7 @@ opencode.json
 WARP.md
 .repomixignore
 .mcp.json
-plans/ui-mocks/*
-plans/reports/*
+plans/
 
 # Build artifacts
 release-manifest.json

@@ -1,4 +1,4 @@
-import '../../exceptions/app_exception.dart';
+import '../exceptions/app_exception.dart';
 
 /// Maps [AppException] variants to user-friendly messages.
 ///

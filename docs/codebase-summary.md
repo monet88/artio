@@ -1,9 +1,9 @@
 # Codebase Summary
 
 **Project**: Artio - AI Image Generation SaaS
-**Generated**: 2026-01-30
-**Lines of Code**: ~7,100 (source files only)
-**Total Files**: ~120 files (62 Dart source in features/)
+**Generated**: 2026-02-09
+**Lines of Code**: ~10,539 (source files only)
+**Total Files**: ~150 files (94 Dart source in lib/, 57 test files)
 
 ---
 
@@ -19,23 +19,22 @@ Artio is a Flutter-based cross-platform application implementing clean architect
 
 | Type | Count | Purpose |
 |------|-------|---------|
-| Dart source files | 62 (features/) | Application logic |
-| Test files | 52 | Unit, widget, integration tests |
-| Generated files (.freezed/.g.dart) | ~30 | Code generation artifacts |
+| Dart source files | 94 (lib/) | Application logic |
+| Test files | 57 | Unit, widget, integration tests |
+| Generated files (.freezed/.g.dart) | ~40 | Code generation artifacts |
 | Config files | 5 | pubspec, analysis_options, etc. |
-| Documentation | 10+ | Plans, reports, docs |
+| Documentation | 15+ | Plans, reports, docs |
 
 ### Code Metrics
 
-- **Total Files**: ~120 files
+- **Total Files**: ~150 files
 - **Source LOC**:
-  - features/auth: 1,033 LOC (15 files)
-  - features/template_engine: ~960 LOC (30 files)
-  - features/gallery: 1,530 LOC (14 files)
-  - features/settings: 209 LOC (2 files)
-  - features/create: 37 LOC (1 file)
-  - Total source: ~7,100 LOC
-- **Test LOC**: 5,527 LOC (52 test files)
+  - lib/core: 1,723 LOC (12 files)
+  - lib/features: 7,830 LOC (69 files)
+  - lib/routing: 451 LOC (4 files)
+  - lib/shared: 535 LOC (9 files)
+  - Total source: ~10,539 LOC
+- **Test LOC**: 6,291 LOC (57 test files)
 - **Largest Files**:
   - `pubspec.lock`: Dependencies lock file
   - Generated Freezed files: ~20,000 tokens combined
@@ -258,11 +257,11 @@ lib/
 
 | Feature | 3-Layer Structure | Repository DI | Error Handling | Test Coverage |
 |---------|-------------------|---------------|----------------|---------------|
-| `auth` | ✓ Yes | ✓ Yes | ✓ Yes | ✓ Yes (80%+) |
-| `template_engine` | ✓ Yes | ✓ Yes | ✓ Yes | ✓ Yes (80%+) |
-| `gallery` | ✓ Yes | ✓ Yes | ✓ Yes | ✓ Yes (80%+) |
-| `settings` | ✓ Yes | ✓ Yes | N/A | ❌ N/A |
-| `create` | ✓ Yes | N/A | N/A | ❌ N/A |
+| `auth` | ✓ Yes | ✓ Yes | ✓ Yes | ✓ Comprehensive |
+| `template_engine` | ✓ Yes | ✓ Yes | ✓ Yes | ✓ Comprehensive |
+| `gallery` | ✓ Yes | ✓ Yes | ✓ Yes | ✓ Comprehensive |
+| `settings` | ✓ Yes | ✓ Yes | ✓ Yes | ✓ Complete |
+| `create` | ✓ Yes | N/A | N/A | ✓ Complete |
 
 ### Code Quality Metrics
 
@@ -408,7 +407,7 @@ class UnknownException extends AppException { ... }
 
 ### Current Coverage
 
-**Overall**: 80%+ (324 tests passing - widget, unit, integration)
+**Overall**: Comprehensive test suite (324 tests passing - widget, unit, integration)
 
 ### Required Tests (Target: 80%)
 
@@ -431,8 +430,8 @@ class UnknownException extends AppException { ... }
 
 | Issue | Impact | Severity | Status |
 |-------|--------|----------|--------|
-| ~~Test coverage gap~~ | ~~Production readiness~~ | ~~High~~ | ✓ Resolved (80%+) |
-| GoRouter raw strings | Type safety | Medium | Deferred |
+| ~~Test coverage gap~~ | ~~Production readiness~~ | ~~High~~ | ✓ Resolved (324 tests) |
+| ~~GoRouter raw strings~~ | ~~Type safety~~ | ~~Medium~~ | ✓ Resolved (TypedGoRoute) |
 | Large files (ImageViewerPage 275 LOC) | Maintainability | Low | Monitoring |
 
 ### Medium Priority
@@ -560,6 +559,6 @@ dart run build_runner watch
 
 ---
 
-**Generated**: 2026-01-30
-**Analysis Depth**: Comprehensive (120+ files, 7,100+ LOC source)
-**Codebase Grade**: A- (Excellent architecture, improving test coverage)
+**Generated**: 2026-02-09
+**Analysis Depth**: Comprehensive (150+ files, 10,539 LOC source)
+**Codebase Grade**: A (Excellent architecture, comprehensive test coverage)

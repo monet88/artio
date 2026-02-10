@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:artio/core/design_system/app_spacing.dart';
 
 /// Toggle for output format (JPG/PNG) with premium indicator for PNG
 class OutputFormatToggle extends StatelessWidget {
@@ -21,7 +22,7 @@ class OutputFormatToggle extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('Output Format', style: theme.textTheme.titleSmall),
-        const SizedBox(height: 8),
+        SizedBox(height: AppSpacing.sm),
         SegmentedButton<String>(
           segments: [
             const ButtonSegment(

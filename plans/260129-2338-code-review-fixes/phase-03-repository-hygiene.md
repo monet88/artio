@@ -31,7 +31,7 @@ git rm repomix-output.xml
 
 ### Step 2: Add to `.gitignore`
 
-Add after line 159 (`.osgrep`):
+Add repomix patterns:
 ```gitignore
 # Repomix output
 repomix-output.xml

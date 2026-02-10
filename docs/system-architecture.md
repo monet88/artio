@@ -1,7 +1,7 @@
 # System Architecture
 
 **Project**: Artio - AI Image Generation SaaS
-**Updated**: 2026-01-30
+**Updated**: 2026-02-09
 **Version**: 1.2
 
 ---
@@ -34,14 +34,18 @@ Artio is a cross-platform (Android, iOS, Web, Windows) AI image generation SaaS 
                         ↓↑
 ┌─────────────────────────────────────────────────────┐
 │           Kie API (Primary AI Provider)             │
-│  • Google Imagen 4 (text-to-image)                  │
-│  • Nano Banana (image-to-image templates)           │
+│  • Google Imagen 4 & Nano Banana                    │
+│  • Flux-2 (Flex & Pro variants)                     │
+│  • GPT Image 1.5                                    │
+│  • Seedream 4.5                                     │
 └─────────────────────────────────────────────────────┘
                         ↓↑
 ┌─────────────────────────────────────────────────────┐
 │         Gemini API (Fallback AI Provider)           │
 │  • Multimodal image analysis and generation         │
 └─────────────────────────────────────────────────────┘
+
+**AI Model Reference**: See `docs/kie-api/` for complete model specifications
 ```
 
 ---
@@ -367,29 +371,36 @@ GenerationProgressScreen shows:
   - Failed → Shows error message (via AppExceptionMapper)
 ```
 
-### Text-to-Image Generation (Future)
+### Text-to-Image Generation (UI Complete, Backend Pending)
 
-Similar flow, but:
+**Current Status**:
+- CreateScreen UI implemented with prompt input placeholder
+- Parameter selection UI ready
+- Backend integration pending (Edge Function needs Imagen 4 setup)
+
+**Planned Flow**:
 - No image upload required
-- Edge Function calls Imagen 4 instead of Nano Banana
-- Longer processing time (~30s vs ~10s)
+- Edge Function calls Imagen 4 (or Flux-2, GPT Image, Seedream)
+- Longer processing time (~30-60s)
 
 ---
 
 ## Navigation (go_router)
 
-### Route Structure
+### Route Structure (TypedGoRoute)
 
 ```
-/ (home)                      → TemplateListScreen (auth required)
+/ (home)                      → HomeScreen (auth required)
 /template/:id                 → TemplateDetailScreen (auth required)
-/generation/:id               → GenerationProgressScreen (auth required)
 /login                        → LoginScreen (redirect to / if authenticated)
-/signup                       → SignupScreen (redirect to / if authenticated)
-/gallery                      → GalleryScreen (auth required)
+/register                     → RegisterScreen (redirect to / if authenticated)
+/forgot-password              → ForgotPasswordScreen
+/gallery                      → GalleryPage (auth required)
 /create                       → CreateScreen (auth required)
 /settings                     → SettingsScreen (auth required)
 ```
+
+**Navigation**: Uses TypedGoRoute with route path constants in `lib/routing/app_router.dart`
 
 ### Auth Guards
 
@@ -674,4 +685,6 @@ ref.listen(generationJobProvider(jobId), (prev, next) {
 
 ---
 
-**Last Updated**: 2026-01-30
+**AI Model Documentation**: `docs/kie-api/` (source of truth for model specs, parameters, Edge Function integration)
+
+**Last Updated**: 2026-02-09

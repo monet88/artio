@@ -10,12 +10,12 @@ class TemplateModel with _$TemplateModel {
     required String id,
     required String name,
     required String description,
-    required String thumbnailUrl,
+    @JsonKey(name: 'thumbnail_url') required String thumbnailUrl,
     required String category,
-    required String promptTemplate,
-    required List<InputFieldModel> inputFields,
-    @Default('1:1') String defaultAspectRatio,
-    @Default(false) bool isPremium,
+    @JsonKey(name: 'prompt_template') required String promptTemplate,
+    @JsonKey(name: 'input_fields') required List<InputFieldModel> inputFields,
+    @JsonKey(name: 'default_aspect_ratio') @Default('1:1') String defaultAspectRatio,
+    @JsonKey(name: 'is_premium') @Default(false) bool isPremium,
     @Default(0) int order,
   }) = _TemplateModel;
 

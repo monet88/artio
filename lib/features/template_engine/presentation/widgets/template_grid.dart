@@ -1,6 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../core/config/sentry_config.dart';
+import '../../../../core/design_system/app_spacing.dart';
 import '../../../../core/utils/app_exception_mapper.dart';
+import '../../../../shared/widgets/loading_state_widget.dart';
 import '../providers/template_provider.dart';
 import 'template_card.dart';
 
@@ -17,12 +22,12 @@ class TemplateGrid extends ConsumerWidget {
           return const Center(child: Text('No templates available'));
         }
         return GridView.builder(
-          padding: const EdgeInsets.all(16),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          padding: AppSpacing.screenPadding,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             childAspectRatio: 0.75,
-            crossAxisSpacing: 16,
-            mainAxisSpacing: 16,
+            crossAxisSpacing: AppSpacing.md,
+            mainAxisSpacing: AppSpacing.md,
           ),
           itemCount: templates.length,
           itemBuilder: (context, index) {
@@ -30,10 +35,38 @@ class TemplateGrid extends ConsumerWidget {
           },
         );
       },
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, stack) => Center(
-        child: Text(AppExceptionMapper.toUserMessage(error)),
-      ),
+      loading: () => const LoadingStateWidget(),
+      error: (error, stack) => _ErrorMessage(error: error, stackTrace: stack),
     );
+  }
+}
+
+class _ErrorMessage extends ConsumerStatefulWidget {
+  const _ErrorMessage({required this.error, required this.stackTrace});
+
+  final Object error;
+  final StackTrace? stackTrace;
+
+  @override
+  ConsumerState<_ErrorMessage> createState() => _ErrorMessageState();
+}
+
+class _ErrorMessageState extends ConsumerState<_ErrorMessage> {
+  bool _didCapture = false;
+  @override
+  void initState() {
+    super.initState();
+    _captureOnce();
+  }
+
+  void _captureOnce() {
+    if (_didCapture) return;
+    _didCapture = true;
+    unawaited(SentryConfig.captureException(widget.error, stackTrace: widget.stackTrace));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(child: Text(AppExceptionMapper.toUserMessage(widget.error)));
   }
 }

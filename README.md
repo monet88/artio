@@ -150,100 +150,24 @@ flutter build windows  # Windows
 
 ---
 
-## 📖 Usage Guide
+## 📖 Quick Start
 
 ### Run the App
 
 ```bash
-# Development (debug mode)
-flutter run
-
-# Specific platform
-flutter run -d chrome      # Web
-flutter run -d windows     # Windows
-flutter run -d android     # Android emulator/device
-flutter run -d ios         # iOS simulator/device
+flutter run              # Default device
+flutter run -d chrome    # Web
+flutter run -d windows   # Windows
 ```
 
-### Login
+### Basic Workflow
 
-| Method | How to use |
-|--------|------------|
-| **Email/Password** | Register new account or login with existing |
-| **Google OAuth** | Tap "Continue with Google" button |
-| **Apple Sign-In** | Tap "Continue with Apple" (iOS only) |
+1. **Sign up** → Email/password or Google/Apple OAuth
+2. **Home tab** → Browse 25 AI templates
+3. **Select template** → Fill inputs → Generate
+4. **Gallery** → View/download/share your creations
 
-**Test account** (for development):
-```
-Email: test@example.com
-Password: test_password_123
-```
-> Create this account in Supabase Dashboard > Authentication > Users
-
-### Generate Images
-
-1. **Home tab** → Browse templates
-2. **Select template** → Fill required inputs (photo, text, etc.)
-3. **Tap "Generate"** → Wait for AI processing
-4. **View result** → Save to Gallery or share
-
-### Add New Template
-
-**Option 1: Admin App (Recommended)**
-
-```bash
-cd admin
-flutter pub get
-dart run build_runner build --delete-conflicting-outputs
-flutter run -d chrome
-```
-
-1. Login with admin account
-2. Go to **Templates** → Click **"+ New Template"**
-3. Fill form: Name, Category, Description, Prompt Template, Input Fields (JSON)
-4. Click **Save**
-
-**Option 2: SQL Insert**
-
-```sql
-INSERT INTO templates (name, description, category, thumbnail_url, prompt_template, input_fields)
-VALUES (
-  'My Template',
-  'Template description',
-  'portrait',
-  'https://storage.url/thumbnail.jpg',
-  'A photo of {subject} in {style} style',
-  '[
-    {"id": "subject", "type": "image", "label": "Your Photo", "required": true},
-    {"id": "style", "type": "select", "label": "Style", "options": ["anime", "realistic"]}
-  ]'
-);
-```
-
-**Input field types**: `image`, `text`, `select`, `slider`
-
-### Run Tests
-
-```bash
-# All tests
-flutter test
-
-# Specific test file
-flutter test test/features/auth/
-
-# Integration tests (requires running app)
-flutter test integration_test/
-
-# With coverage report
-flutter test --coverage
-```
-
-### View Gallery
-
-- **Gallery tab** → View all generated images
-- **Tap image** → Full screen viewer
-- **Long press** → Delete option
-- **Share button** → Share to other apps
+See [docs/](docs/) for detailed guides
 
 ---
 
@@ -329,7 +253,7 @@ flutter test integration_test/template_e2e_test.dart
 flutter test test/features/auth/data/repositories/auth_repository_test.dart
 ```
 
-**Current Coverage**: ~15% (target: 80%)
+**Test Suite**: 324 tests (comprehensive coverage)
 
 ---
 
@@ -359,6 +283,6 @@ For issues, questions, or contributions, please [open an issue](https://github.c
 
 **Built with ❤️ using Flutter**
 
-**Last Updated**: 2026-01-30
+**Last Updated**: 2026-02-09
 
 </div>

@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../core/providers/supabase_provider.dart';
-import '../../../../exceptions/app_exception.dart';
+import '../../../../core/exceptions/app_exception.dart';
 import '../../domain/entities/template_model.dart';
 import '../../domain/repositories/i_template_repository.dart';
 

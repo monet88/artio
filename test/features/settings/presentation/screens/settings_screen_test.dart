@@ -1,18 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
 import 'package:artio/features/auth/presentation/state/auth_state.dart';
-import 'package:artio/features/settings/ui/settings_screen.dart';
+import 'package:artio/features/settings/data/notifications_provider.dart';
+import 'package:artio/features/settings/presentation/settings_screen.dart';
 import '../../../../core/fixtures/fixtures.dart';
 import '../../../../core/helpers/pump_app.dart';
 
 void main() {
+  setUpAll(() {
+    PackageInfo.setMockInitialValues(
+      appName: 'Test App',
+      packageName: 'com.test.app',
+      version: '1.0.0',
+      buildNumber: '1',
+      buildSignature: '',
+    );
+  });
   group('SettingsScreen', () {
     testWidgets('renders app bar with Settings title', (tester) async {
       await tester.pumpApp(
         const SettingsScreen(),
-        overrides: [authViewModelProvider.overrideWith(() => _FakeAuthViewModel())],
+        overrides: [
+          authViewModelProvider.overrideWith(() => _FakeAuthViewModel()),
+          notificationsNotifierProvider.overrideWith(() => _FakeNotificationsNotifier()),
+        ],
       );
       await tester.pump();
 
@@ -23,7 +37,10 @@ void main() {
     testWidgets('renders Scaffold', (tester) async {
       await tester.pumpApp(
         const SettingsScreen(),
-        overrides: [authViewModelProvider.overrideWith(() => _FakeAuthViewModel())],
+        overrides: [
+          authViewModelProvider.overrideWith(() => _FakeAuthViewModel()),
+          notificationsNotifierProvider.overrideWith(() => _FakeNotificationsNotifier()),
+        ],
       );
       await tester.pump();
 
@@ -33,7 +50,10 @@ void main() {
     testWidgets('displays user email when authenticated', (tester) async {
       await tester.pumpApp(
         const SettingsScreen(),
-        overrides: [authViewModelProvider.overrideWith(() => _FakeAuthViewModel())],
+        overrides: [
+          authViewModelProvider.overrideWith(() => _FakeAuthViewModel()),
+          notificationsNotifierProvider.overrideWith(() => _FakeNotificationsNotifier()),
+        ],
       );
       await tester.pump();
 
@@ -43,7 +63,10 @@ void main() {
     testWidgets('renders Account section with expected items', (tester) async {
       await tester.pumpApp(
         const SettingsScreen(),
-        overrides: [authViewModelProvider.overrideWith(() => _FakeAuthViewModel())],
+        overrides: [
+          authViewModelProvider.overrideWith(() => _FakeAuthViewModel()),
+          notificationsNotifierProvider.overrideWith(() => _FakeNotificationsNotifier()),
+        ],
       );
       await tester.pump();
 
@@ -56,7 +79,10 @@ void main() {
     testWidgets('renders Appearance section', (tester) async {
       await tester.pumpApp(
         const SettingsScreen(),
-        overrides: [authViewModelProvider.overrideWith(() => _FakeAuthViewModel())],
+        overrides: [
+          authViewModelProvider.overrideWith(() => _FakeAuthViewModel()),
+          notificationsNotifierProvider.overrideWith(() => _FakeNotificationsNotifier()),
+        ],
       );
       await tester.pump();
 
@@ -67,9 +93,19 @@ void main() {
     testWidgets('renders About section with version', (tester) async {
       await tester.pumpApp(
         const SettingsScreen(),
-        overrides: [authViewModelProvider.overrideWith(() => _FakeAuthViewModel())],
+        overrides: [
+          authViewModelProvider.overrideWith(() => _FakeAuthViewModel()),
+          notificationsNotifierProvider.overrideWith(() => _FakeNotificationsNotifier()),
+        ],
       );
-      await tester.pump();
+      // Wait for widget to build and PackageInfo to load
+      await tester.pumpAndSettle();
+
+      // Scroll to find the Version text
+      await tester.scrollUntilVisible(
+        find.text('Version'),
+        200.0,
+      );
 
       expect(find.text('About'), findsOneWidget);
       expect(find.text('Version'), findsOneWidget);
@@ -82,4 +118,14 @@ class _FakeAuthViewModel extends AuthViewModel {
   AuthState build() {
     return AuthState.authenticated(UserFixtures.authenticated());
   }
+}
+
+class _FakeNotificationsNotifier extends NotificationsNotifier {
+  @override
+  bool build() {
+    return true;
+  }
+
+  @override
+  Future<void> init() async {}
 }

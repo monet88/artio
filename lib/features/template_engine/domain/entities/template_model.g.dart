@@ -11,14 +11,14 @@ _$TemplateModelImpl _$$TemplateModelImplFromJson(Map<String, dynamic> json) =>
       id: json['id'] as String,
       name: json['name'] as String,
       description: json['description'] as String,
-      thumbnailUrl: json['thumbnailUrl'] as String,
+      thumbnailUrl: json['thumbnail_url'] as String,
       category: json['category'] as String,
-      promptTemplate: json['promptTemplate'] as String,
-      inputFields: (json['inputFields'] as List<dynamic>)
+      promptTemplate: json['prompt_template'] as String,
+      inputFields: (json['input_fields'] as List<dynamic>)
           .map((e) => InputFieldModel.fromJson(e as Map<String, dynamic>))
           .toList(),
-      defaultAspectRatio: json['defaultAspectRatio'] as String? ?? '1:1',
-      isPremium: json['isPremium'] as bool? ?? false,
+      defaultAspectRatio: json['default_aspect_ratio'] as String? ?? '1:1',
+      isPremium: json['is_premium'] as bool? ?? false,
       order: (json['order'] as num?)?.toInt() ?? 0,
     );
 
@@ -27,11 +27,11 @@ Map<String, dynamic> _$$TemplateModelImplToJson(_$TemplateModelImpl instance) =>
       'id': instance.id,
       'name': instance.name,
       'description': instance.description,
-      'thumbnailUrl': instance.thumbnailUrl,
+      'thumbnail_url': instance.thumbnailUrl,
       'category': instance.category,
-      'promptTemplate': instance.promptTemplate,
-      'inputFields': instance.inputFields,
-      'defaultAspectRatio': instance.defaultAspectRatio,
-      'isPremium': instance.isPremium,
+      'prompt_template': instance.promptTemplate,
+      'input_fields': instance.inputFields,
+      'default_aspect_ratio': instance.defaultAspectRatio,
+      'is_premium': instance.isPremium,
       'order': instance.order,
     };

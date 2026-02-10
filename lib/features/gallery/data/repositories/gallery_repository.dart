@@ -1,14 +1,17 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:storage_client/storage_client.dart' as storage_client;
 
 import '../../../../core/providers/supabase_provider.dart';
 import '../../domain/entities/gallery_item.dart';
+import '../../../../core/exceptions/app_exception.dart';
 import '../../domain/repositories/i_gallery_repository.dart';
 
 part 'gallery_repository.g.dart';
@@ -70,34 +73,38 @@ class GalleryRepository implements IGalleryRepository {
     int offset = 0,
     String? templateId,
   }) async {
-    var query = _supabase
-        .from('generation_jobs')
-        .select('*, templates(name)')
-        .isFilter('deleted_at', null); // Only non-deleted items
+    try {
+      var query = _supabase
+          .from('generation_jobs')
+          .select('*, templates(name)')
+          .isFilter('deleted_at', null);
 
-    if (templateId != null) {
-      query = query.eq('template_id', templateId);
-    }
+      if (templateId != null) {
+        query = query.eq('template_id', templateId);
+      }
 
-    final response = await query
-        .order('created_at', ascending: false)
-        .range(offset, offset + limit - 1);
-    
-    final items = <GalleryItem>[];
+      final response = await query
+          .order('created_at', ascending: false)
+          .range(offset, offset + limit - 1);
 
-    for (final job in response as List) {
-      final urls = (job['result_urls'] as List?) ?? [];
-      if (urls.isEmpty && job['status'] != 'completed') {
-        // Show pending/failed jobs without images
-        items.add(_parseJob(job, 0));
-      } else {
-        for (int i = 0; i < urls.length; i++) {
-          items.add(_parseJob(job, i));
+      final items = <GalleryItem>[];
+
+      for (final row in response as List) {
+        final job = row as Map<String, dynamic>;
+        final urls = (job['result_urls'] as List?) ?? [];
+        if (urls.isEmpty && job['status'] != 'completed') {
+          items.add(_parseJob(job, 0));
+        } else {
+          for (int i = 0; i < urls.length; i++) {
+            items.add(_parseJob(job, i));
+          }
         }
       }
-    }
 
-    return items;
+      return items;
+    } on PostgrestException catch (e) {
+      throw AppException.network(message: e.message);
+    }
   }
 
   /// Watch user images with realtime updates
@@ -110,9 +117,10 @@ class GalleryRepository implements IGalleryRepository {
         .order('created_at')
         .map((data) {
           final items = <GalleryItem>[];
-          for (final job in data) {
-            if (job['deleted_at'] != null) continue; // Skip deleted
-            
+          for (final row in data) {
+            final job = row as Map<String, dynamic>;
+            if (job['deleted_at'] != null) continue;
+
             final urls = (job['result_urls'] as List?) ?? [];
             if (urls.isEmpty) {
               items.add(_parseJob(job, 0));
@@ -128,98 +136,138 @@ class GalleryRepository implements IGalleryRepository {
 
   @override
   Future<void> deleteJob(String jobId) async {
-    // Hard delete - use softDeleteImage for soft delete
-    final job = await _supabase
-        .from('generation_jobs')
-        .select('result_urls, user_id')
-        .eq('id', jobId)
-        .single();
+    try {
+      // Hard delete - use softDeleteImage for soft delete
+      final job = await _supabase
+          .from('generation_jobs')
+          .select('result_urls, user_id')
+          .eq('id', jobId)
+          .single();
 
-    final userId = job['user_id'] as String;
-    final urls = (job['result_urls'] as List?) ?? [];
+      final userId = job['user_id'] as String;
+      final urls = (job['result_urls'] as List?) ?? [];
 
-    for (int i = 0; i < urls.length; i++) {
-      try {
-        await _supabase.storage
-            .from('generated-images')
-            .remove(['$userId/$jobId/$i.png']);
-      } catch (_) {
-        // Continue even if storage deletion fails
+      for (int i = 0; i < urls.length; i++) {
+        try {
+          await _supabase.storage
+              .from('generated-images')
+              .remove(['$userId/$jobId/$i.png']);
+        } on storage_client.StorageException catch (e) {
+          // Log but continue - orphaned files acceptable
+          debugPrint('Storage cleanup failed: ${e.message}');
+        }
       }
-    }
 
-    await _supabase.from('generation_jobs').delete().eq('id', jobId);
+      await _supabase.from('generation_jobs').delete().eq('id', jobId);
+    } on PostgrestException catch (e) {
+      throw AppException.storage(message: e.message);
+    }
   }
 
-  /// Soft delete - sets deleted_at timestamp
   @override
   Future<void> softDeleteImage(String jobId) async {
-    await _supabase
-        .from('generation_jobs')
-        .update({'deleted_at': DateTime.now().toIso8601String()})
-        .eq('id', jobId);
+    try {
+      await _supabase
+          .from('generation_jobs')
+          .update({'deleted_at': DateTime.now().toIso8601String()})
+          .eq('id', jobId);
+    } on PostgrestException catch (e) {
+      throw AppException.storage(message: e.message);
+    }
   }
 
-  /// Restore soft-deleted image
   @override
   Future<void> restoreImage(String jobId) async {
-    await _supabase
-        .from('generation_jobs')
-        .update({'deleted_at': null})
-        .eq('id', jobId);
+    try {
+      await _supabase
+          .from('generation_jobs')
+          .update({'deleted_at': null})
+          .eq('id', jobId);
+    } on PostgrestException catch (e) {
+      throw AppException.storage(message: e.message);
+    }
   }
 
   /// Retry failed generation
   @override
   Future<void> retryGeneration(String jobId) async {
-    // Reset status to pending
-    await _supabase
-        .from('generation_jobs')
-        .update({'status': 'pending', 'error_message': null})
-        .eq('id', jobId);
+    try {
+      // Reset status to pending
+      await _supabase
+          .from('generation_jobs')
+          .update({'status': 'pending', 'error_message': null})
+          .eq('id', jobId);
 
-    // Re-trigger Edge Function
-    await _supabase.functions.invoke('generate-image', body: {'jobId': jobId});
+      // Re-trigger Edge Function
+      await _supabase.functions.invoke('generate-image', body: {'jobId': jobId});
+    } on PostgrestException catch (e) {
+      throw AppException.storage(message: e.message);
+    } on FunctionException catch (e) {
+      throw AppException.generation(message: e.details?.toString() ?? 'Retry failed');
+    } catch (e) {
+      if (e is AppException) rethrow;
+      throw AppException.unknown(message: 'Failed to retry generation', originalError: e);
+    }
   }
 
   @override
   Future<String> downloadImage(String imageUrl) async {
-    final response = await http.get(Uri.parse(imageUrl));
-    if (response.statusCode != 200) {
-      throw Exception('Failed to download image');
+    try {
+      final response = await http.get(Uri.parse(imageUrl));
+      if (response.statusCode != 200) {
+        throw AppException.network(
+          message: 'Download failed',
+          statusCode: response.statusCode,
+        );
+      }
+
+      final directory = await getApplicationDocumentsDirectory();
+      final fileName = 'artio_${DateTime.now().millisecondsSinceEpoch}.png';
+      final filePath = '${directory.path}/$fileName';
+
+      final file = File(filePath);
+      await file.writeAsBytes(response.bodyBytes);
+
+      return filePath;
+    } catch (e) {
+      if (e is AppException) rethrow;
+      throw AppException.network(message: 'Failed to download image');
     }
-
-    final directory = await getApplicationDocumentsDirectory();
-    final fileName = 'artio_${DateTime.now().millisecondsSinceEpoch}.png';
-    final filePath = '${directory.path}/$fileName';
-
-    final file = File(filePath);
-    await file.writeAsBytes(response.bodyBytes);
-
-    return filePath;
   }
 
   @override
   Future<File> getImageFile(String imageUrl) async {
-    final response = await http.get(Uri.parse(imageUrl));
-    if (response.statusCode != 200) {
-      throw Exception('Failed to download image');
+    try {
+      final response = await http.get(Uri.parse(imageUrl));
+      if (response.statusCode != 200) {
+        throw AppException.network(
+          message: 'Failed to get image file',
+          statusCode: response.statusCode,
+        );
+      }
+
+      final directory = await getTemporaryDirectory();
+      final file = File(
+        '${directory.path}/share_${DateTime.now().millisecondsSinceEpoch}.png',
+      );
+      await file.writeAsBytes(response.bodyBytes);
+
+      return file;
+    } catch (e) {
+      if (e is AppException) rethrow;
+      throw AppException.network(message: 'Failed to get image file');
     }
-
-    final directory = await getTemporaryDirectory();
-    final file = File(
-      '${directory.path}/share_${DateTime.now().millisecondsSinceEpoch}.png',
-    );
-    await file.writeAsBytes(response.bodyBytes);
-
-    return file;
   }
 
   @override
   Future<void> toggleFavorite(String itemId, bool isFavorite) async {
-    final jobId = itemId.split('_').first;
-    await _supabase
-        .from('generation_jobs')
-        .update({'is_favorite': isFavorite}).eq('id', jobId);
+    try {
+      final jobId = itemId.split('_').first;
+      await _supabase
+          .from('generation_jobs')
+          .update({'is_favorite': isFavorite}).eq('id', jobId);
+    } on PostgrestException catch (e) {
+      throw AppException.storage(message: e.message);
+    }
   }
 }

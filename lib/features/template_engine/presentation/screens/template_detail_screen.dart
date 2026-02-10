@@ -1,10 +1,16 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../auth/presentation/view_models/auth_view_model.dart';
+import '../../../../core/config/sentry_config.dart';
+import '../../../../core/design_system/app_spacing.dart';
+import '../../../../core/design_system/app_dimensions.dart';
 import '../../../../core/utils/app_exception_mapper.dart';
 import '../../../../shared/widgets/aspect_ratio_selector.dart';
 import '../../../../shared/widgets/image_count_dropdown.dart';
+import '../../../../shared/widgets/loading_state_widget.dart';
 import '../../../../shared/widgets/model_selector.dart';
 import '../../../../shared/widgets/output_format_toggle.dart';
 import '../../domain/entities/generation_job_model.dart';
@@ -27,6 +33,9 @@ class TemplateDetailScreen extends ConsumerStatefulWidget {
 
 class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
   final Map<String, String> _inputValues = {};
+  final Set<String> _reportedErrors = <String>{};
+  ProviderSubscription<AsyncValue<TemplateModel?>>? _templateErrorSub;
+  ProviderSubscription<AsyncValue<GenerationJobModel?>>? _jobErrorSub;
 
   // Placeholder for premium status - will be integrated with subscription later
   bool get _isPremium => false;
@@ -77,6 +86,46 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
         );
   }
 
+  void _captureOnce(Object error, StackTrace? stackTrace) {
+    final signature = '${error.runtimeType}:${error.toString()}';
+    if (_reportedErrors.add(signature)) {
+      unawaited(SentryConfig.captureException(error, stackTrace: stackTrace));
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _templateErrorSub = ref.listenManual<AsyncValue<TemplateModel?>>(
+      templateByIdProvider(widget.templateId),
+      (previous, next) {
+        next.whenOrNull(
+          error: (error, stackTrace) {
+            _captureOnce(error, stackTrace);
+          },
+        );
+      },
+    );
+
+    _jobErrorSub = ref.listenManual<AsyncValue<GenerationJobModel?>>(
+      generationViewModelProvider,
+      (previous, next) {
+        next.whenOrNull(
+          error: (error, stackTrace) {
+            _captureOnce(error, stackTrace);
+          },
+        );
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _templateErrorSub?.close();
+    _jobErrorSub?.close();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final templateAsync = ref.watch(templateByIdProvider(widget.templateId));
@@ -86,7 +135,7 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('Generate')),
       body: templateAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => const LoadingStateWidget(),
         error: (e, _) => Center(child: Text(AppExceptionMapper.toUserMessage(e))),
         data: (template) {
           if (template == null) {
@@ -94,30 +143,30 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
           }
 
           return SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
+            padding: AppSpacing.screenPadding,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 // Template thumbnail
                 if (template.thumbnailUrl.isNotEmpty) ...[
                   ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: AppDimensions.buttonRadius,
                     child: Image.network(
                       template.thumbnailUrl,
                       height: 200,
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) =>
-                          const SizedBox(height: 200, child: Icon(Icons.broken_image, size: 50)),
+                          SizedBox(height: 200, child: Icon(Icons.broken_image, size: AppDimensions.iconXl)),
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: AppSpacing.md),
                 ],
-                
+
                 // Template info
                 Text(template.name, style: Theme.of(context).textTheme.headlineSmall),
-                const SizedBox(height: 8),
+                SizedBox(height: AppSpacing.sm),
                 Text(template.description),
-                const SizedBox(height: 24),
+                SizedBox(height: AppSpacing.lg),
 
                 // Template input fields
                 for (final field in template.inputFields) ...[
@@ -125,7 +174,7 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
                     field: field,
                     onChanged: (value) => _inputValues[field.name] = value,
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: AppSpacing.md),
                 ],
 
                 // Other Ideas input (optional)
@@ -138,7 +187,7 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
                   ),
                   onChanged: (value) => _inputValues['otherIdeas'] = value,
                 ),
-                const SizedBox(height: 24),
+                SizedBox(height: AppSpacing.lg),
 
                 // Generation Options Section
                 Text(
@@ -147,7 +196,7 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: AppSpacing.md),
 
                 // Aspect Ratio Selector
                 AspectRatioSelector(
@@ -155,14 +204,14 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
                   selectedModelId: options.modelId,
                   onChanged: (ratio) => ref.read(generationOptionsProvider.notifier).updateAspectRatio(ratio),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: AppSpacing.md),
 
                 // Image Count Dropdown
                 ImageCountDropdown(
                   value: options.imageCount,
                   onChanged: (count) => ref.read(generationOptionsProvider.notifier).updateImageCount(count),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: AppSpacing.md),
 
                 // Output Format Toggle
                 OutputFormatToggle(
@@ -170,7 +219,7 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
                   isPremium: _isPremium,
                   onChanged: (format) => ref.read(generationOptionsProvider.notifier).updateOutputFormat(format),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: AppSpacing.md),
 
                 // Model Selector
                 ModelSelector(
@@ -179,7 +228,7 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
                   onChanged: (modelId) => ref.read(generationOptionsProvider.notifier).updateModel(modelId),
                   filterByType: 'text-to-image',
                 ),
-                const SizedBox(height: 24),
+                SizedBox(height: AppSpacing.lg),
 
                 // Generation State (button/progress)
                 _buildGenerationState(jobAsync, template),
@@ -193,14 +242,14 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
 
   Widget _buildGenerationState(AsyncValue<GenerationJobModel?> jobAsync, TemplateModel template) {
     return jobAsync.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, _) => Column(
-        children: [
-          Text(
-            AppExceptionMapper.toUserMessage(error),
-            style: TextStyle(color: Theme.of(context).colorScheme.error),
-          ),
-          const SizedBox(height: 8),
+      loading: () => const LoadingStateWidget(),
+       error: (error, _) => Column(
+         children: [
+           Text(
+             AppExceptionMapper.toUserMessage(error),
+             style: TextStyle(color: Theme.of(context).colorScheme.error),
+           ),
+          SizedBox(height: AppSpacing.sm),
           FilledButton(
             onPressed: () {
               ref.read(generationViewModelProvider.notifier).reset();
@@ -221,7 +270,7 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
         return Column(
           children: [
             GenerationProgress(job: job),
-            const SizedBox(height: 16),
+            SizedBox(height: AppSpacing.md),
             if (job.status == JobStatus.completed)
               FilledButton(
                 onPressed: () => ref.read(generationViewModelProvider.notifier).reset(),

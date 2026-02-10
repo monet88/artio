@@ -24,11 +24,16 @@ mixin _$TemplateModel {
   String get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String get description => throw _privateConstructorUsedError;
+  @JsonKey(name: 'thumbnail_url')
   String get thumbnailUrl => throw _privateConstructorUsedError;
   String get category => throw _privateConstructorUsedError;
+  @JsonKey(name: 'prompt_template')
   String get promptTemplate => throw _privateConstructorUsedError;
+  @JsonKey(name: 'input_fields')
   List<InputFieldModel> get inputFields => throw _privateConstructorUsedError;
+  @JsonKey(name: 'default_aspect_ratio')
   String get defaultAspectRatio => throw _privateConstructorUsedError;
+  @JsonKey(name: 'is_premium')
   bool get isPremium => throw _privateConstructorUsedError;
   int get order => throw _privateConstructorUsedError;
 
@@ -53,12 +58,12 @@ abstract class $TemplateModelCopyWith<$Res> {
     String id,
     String name,
     String description,
-    String thumbnailUrl,
+    @JsonKey(name: 'thumbnail_url') String thumbnailUrl,
     String category,
-    String promptTemplate,
-    List<InputFieldModel> inputFields,
-    String defaultAspectRatio,
-    bool isPremium,
+    @JsonKey(name: 'prompt_template') String promptTemplate,
+    @JsonKey(name: 'input_fields') List<InputFieldModel> inputFields,
+    @JsonKey(name: 'default_aspect_ratio') String defaultAspectRatio,
+    @JsonKey(name: 'is_premium') bool isPremium,
     int order,
   });
 }
@@ -150,12 +155,12 @@ abstract class _$$TemplateModelImplCopyWith<$Res>
     String id,
     String name,
     String description,
-    String thumbnailUrl,
+    @JsonKey(name: 'thumbnail_url') String thumbnailUrl,
     String category,
-    String promptTemplate,
-    List<InputFieldModel> inputFields,
-    String defaultAspectRatio,
-    bool isPremium,
+    @JsonKey(name: 'prompt_template') String promptTemplate,
+    @JsonKey(name: 'input_fields') List<InputFieldModel> inputFields,
+    @JsonKey(name: 'default_aspect_ratio') String defaultAspectRatio,
+    @JsonKey(name: 'is_premium') bool isPremium,
     int order,
   });
 }
@@ -239,12 +244,13 @@ class _$TemplateModelImpl implements _TemplateModel {
     required this.id,
     required this.name,
     required this.description,
-    required this.thumbnailUrl,
+    @JsonKey(name: 'thumbnail_url') required this.thumbnailUrl,
     required this.category,
-    required this.promptTemplate,
+    @JsonKey(name: 'prompt_template') required this.promptTemplate,
+    @JsonKey(name: 'input_fields')
     required final List<InputFieldModel> inputFields,
-    this.defaultAspectRatio = '1:1',
-    this.isPremium = false,
+    @JsonKey(name: 'default_aspect_ratio') this.defaultAspectRatio = '1:1',
+    @JsonKey(name: 'is_premium') this.isPremium = false,
     this.order = 0,
   }) : _inputFields = inputFields;
 
@@ -258,13 +264,16 @@ class _$TemplateModelImpl implements _TemplateModel {
   @override
   final String description;
   @override
+  @JsonKey(name: 'thumbnail_url')
   final String thumbnailUrl;
   @override
   final String category;
   @override
+  @JsonKey(name: 'prompt_template')
   final String promptTemplate;
   final List<InputFieldModel> _inputFields;
   @override
+  @JsonKey(name: 'input_fields')
   List<InputFieldModel> get inputFields {
     if (_inputFields is EqualUnmodifiableListView) return _inputFields;
     // ignore: implicit_dynamic_type
@@ -272,10 +281,10 @@ class _$TemplateModelImpl implements _TemplateModel {
   }
 
   @override
-  @JsonKey()
+  @JsonKey(name: 'default_aspect_ratio')
   final String defaultAspectRatio;
   @override
-  @JsonKey()
+  @JsonKey(name: 'is_premium')
   final bool isPremium;
   @override
   @JsonKey()
@@ -347,12 +356,13 @@ abstract class _TemplateModel implements TemplateModel {
     required final String id,
     required final String name,
     required final String description,
-    required final String thumbnailUrl,
+    @JsonKey(name: 'thumbnail_url') required final String thumbnailUrl,
     required final String category,
-    required final String promptTemplate,
+    @JsonKey(name: 'prompt_template') required final String promptTemplate,
+    @JsonKey(name: 'input_fields')
     required final List<InputFieldModel> inputFields,
-    final String defaultAspectRatio,
-    final bool isPremium,
+    @JsonKey(name: 'default_aspect_ratio') final String defaultAspectRatio,
+    @JsonKey(name: 'is_premium') final bool isPremium,
     final int order,
   }) = _$TemplateModelImpl;
 
@@ -366,16 +376,21 @@ abstract class _TemplateModel implements TemplateModel {
   @override
   String get description;
   @override
+  @JsonKey(name: 'thumbnail_url')
   String get thumbnailUrl;
   @override
   String get category;
   @override
+  @JsonKey(name: 'prompt_template')
   String get promptTemplate;
   @override
+  @JsonKey(name: 'input_fields')
   List<InputFieldModel> get inputFields;
   @override
+  @JsonKey(name: 'default_aspect_ratio')
   String get defaultAspectRatio;
   @override
+  @JsonKey(name: 'is_premium')
   bool get isPremium;
   @override
   int get order;
