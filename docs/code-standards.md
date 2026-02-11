@@ -1,7 +1,7 @@
 # Code Standards
 
 **Project**: Artio - AI Image Generation SaaS
-**Updated**: 2026-02-09
+**Updated**: 2026-02-10
 **Version**: 1.2
 
 ---
@@ -45,12 +45,21 @@ lib/features/{feature}/
 ```
 lib/
 ├── core/
+│   ├── config/
+│   │   ├── env_config.dart            # Environment configuration
+│   │   └── sentry_config.dart         # Sentry error tracking config
 │   ├── constants/
-│   │   └── app_constants.dart         # Centralized constants
+│   │   ├── app_constants.dart         # Centralized constants
+│   │   └── ai_models.dart             # AI model configurations
+│   ├── design_system/
+│   │   ├── app_dimensions.dart        # Design system dimensions
+│   │   └── app_spacing.dart           # Spacing constants
 │   ├── exceptions/
 │   │   └── app_exception.dart         # Sealed exception hierarchy
 │   ├── providers/
 │   │   └── supabase_provider.dart     # Global dependencies
+│   ├── state/
+│   │   └── user_scoped_providers.dart # User-scoped state providers
 │   └── utils/
 │       ├── app_exception_mapper.dart  # User-friendly error messages
 │       └── logger_service.dart        # Logging abstraction
@@ -107,7 +116,9 @@ lib/
     │       ├── data/
     │       └── presentation/
     ├── routing/
-│   └── app_router.dart                # go_router configuration
+│   ├── app_router.dart                # go_router configuration
+│   └── routes/
+│       └── app_routes.dart            # TypedGoRoute definitions
 ├── theme/
 │   └── app_theme.dart                 # Material theme definitions
 └── main.dart                          # App entry point
@@ -336,42 +347,37 @@ class AuthRepository implements IAuthRepository {
 
 ### Current Implementation (TypedGoRoute)
 
-**Uses route path constants for type safety:**
+**Uses TypedGoRoute with route definitions in separate file:**
 
 ```dart
-// routing/app_router.dart
-class RoutePaths {
-  static const home = '/';
-  static const login = '/login';
-  static const register = '/register';
-  static const forgotPassword = '/forgot-password';
-  static const templateDetail = '/template/:id';
-  static const gallery = '/gallery';
-  static const create = '/create';
-  static const settings = '/settings';
+// routing/routes/app_routes.dart
+class HomeRoute extends GoRouteData {
+  const HomeRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) => const HomeScreen();
 }
 
+class TemplateDetailRoute extends GoRouteData {
+  final String id;
+  const TemplateDetailRoute({required this.id});
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+    TemplateDetailScreen(templateId: id);
+}
+
+// routing/app_router.dart
 final appRouter = GoRouter(
-  routes: [
-    GoRoute(
-      path: RoutePaths.home,
-      builder: (context, state) => const HomeScreen(),
-    ),
-    GoRoute(
-      path: RoutePaths.templateDetail,
-      builder: (context, state) {
-        final id = state.pathParameters['id']!;
-        return TemplateDetailScreen(templateId: id);
-      },
-    ),
-  ],
+  routes: $appRoutes, // Generated from TypedGoRoute
+  redirect: _authGuard,
 );
 ```
 
 **Navigation Usage:**
 ```dart
-context.go(RoutePaths.gallery);
-context.push('${RoutePaths.templateDetail.replaceFirst(':id', templateId)}');
+const HomeRoute().go(context);
+TemplateDetailRoute(id: templateId).push(context);
 ```
 
 ---
@@ -578,4 +584,4 @@ flutter pub outdated
 
 ---
 
-**Last Updated**: 2026-02-09
+**Last Updated**: 2026-02-10

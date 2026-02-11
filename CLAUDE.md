@@ -2,233 +2,105 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Role & Responsibilities
-
-Your role is to analyze user requirements, implement features following the established architecture, and ensure code quality standards are met.
-
 ## Development Rules
 
-**IMPORTANT:** You must follow strictly the development rules in `.claude/rules/development-rules.md` file.
+Follow `.claude/rules/development-rules.md` strictly. Core principles: **YAGNI, KISS, DRY**.
 
-**Core Principles:**
-- **YAGNI**: You Aren't Gonna Need It - implement only what's needed now
-- **KISS**: Keep It Simple, Stupid - prefer simple solutions
-- **DRY**: Don't Repeat Yourself - extract reusable code
-
-## Recommended Skills
-
-### P0 - Critical (Auto-activate)
-
-| Skill | Trigger | Use Case |
-|-------|---------|----------|
-| `flutter-dart-best-practices` | `lib/**/*.dart` | Flutter/Dart patterns, Riverpod, GoRouter, Clean Architecture |
-| `fix` | Bug reports, errors | Intelligent bug fixing with routing |
-| `cook` | Feature implementation | Standalone feature development |
-| `supabase-postgres-best-practices` | Migrations, RLS, SQL | Database operations |
-
-### P1 - Operational
-
-| Skill | Use Case |
-|-------|----------|
-| `debug` / `debugging` | Root cause analysis, tracing |
-| `ai-multimodal` | Gemini API for image analysis (AI art generation) |
-| `databases` | Supabase/PostgreSQL queries, schema design |
-| `payment-integration` | SePay/Polar for subscription & credits |
-
-### P2 - Supporting
-
-| Skill | Use Case |
-|-------|----------|
-| `code-review` | Post-implementation review |
-| `planning` | Complex feature planning |
-| `scout` | Fast codebase exploration |
-| `ui-ux-pro-max` | UI/UX design decisions |
-
-## Development Workflow
-
-### New Feature (Complex)
-```
-/brainstorm → /plan → /code → /test → /review:codebase → /git:cm
-```
-
-### New Feature (Simple)
-```
-/cook → /test → /git:cm
-```
-
-### Bug Fix
-```
-/debug → /fix → /test → /git:cm
-```
-
-### End of Session
-```
-/watzup → /git:cm
-```
-
-### Quick Reference
-
-| Situation | Command |
-|-----------|---------|
-| Unclear approach, need debate | `/brainstorm` |
-| Feature with clear requirements | `/plan` → `/code` |
-| Small/simple feature | `/cook` |
-| Bug report from user | `/debug` → `/fix` |
-| Error during coding | `/fix` |
-| After implementation | `/test` → `/review:codebase` |
-| Wrap up session | `/watzup` → `/git:cm` |
-
-## Project-Specific Guidelines
-
-### Architecture Pattern
-
-**Artio follows Feature-First Clean Architecture:**
-
-```
-lib/features/{feature}/
-├── domain/              # Business logic + Interfaces
-│   ├── entities/        # Freezed models
-│   └── repositories/    # Abstract interfaces
-├── data/                # Implementation
-│   └── repositories/    # Concrete implementations
-└── presentation/        # UI + State
-    ├── providers/       # @riverpod providers
-    ├── screens/         # Full-screen pages
-    └── widgets/         # Reusable components
-```
-
-### Dependency Rule
-
-**Presentation → Domain ← Data**
-
-- Presentation depends on Domain (interfaces only)
-- Data depends on Domain (implements interfaces)
-- Domain depends on nothing (pure business logic)
-- Never import Data directly in Presentation
-
-### State Management (Riverpod)
-
-- **Always use `@riverpod` annotations** (code generation)
-- Never use manual providers
-- Use `AsyncValue.guard` for error handling
-- Inject repositories via constructor
-
-### Data Models (Freezed)
-
-- All domain entities use Freezed
-- Include `part 'model.freezed.dart'` and `part 'model.g.dart'`
-- Use factory constructors for JSON serialization
-
-### Navigation (GoRouter)
-
-- Use `ShellRoute` for main shell (bottom nav)
-- Implement auth guards via redirect callback
-- Route paths defined in `lib/routing/app_router.dart`
-
-### Error Handling
-
-- Throw `AppException` from data layer
-- Use `AppExceptionMapper` for user-friendly messages
-- Never expose stack traces to users
-
-## Implemented Features
-
-| Feature | Status | Notes |
-|---------|--------|-------|
-| Authentication | ✅ Complete | Email, OAuth, password reset |
-| Template Engine | ✅ Complete | Browse, generate, track progress |
-| Gallery | ✅ Complete | Masonry grid, view, download, share, delete |
-| Settings | ✅ Complete | Theme switcher |
-| Subscription & Credits | 🔲 Pending | Plan 3 |
-
-## Code Generation
+## Build & Run Commands
 
 ```bash
-# Run after modifying Freezed/Riverpod annotations
+# Install dependencies
+flutter pub get
+
+# Code generation (required after modifying Freezed/Riverpod annotations)
 dart run build_runner build --delete-conflicting-outputs
 
-# Watch mode for development
+# Watch mode (auto-regenerate during development)
 dart run build_runner watch
-```
 
-## Code Quality
+# Run app
+flutter run                # Default device
+flutter run -d chrome      # Web
+flutter run -d windows     # Windows
 
-```bash
-# Analyze code
+# Compile check (run after modifying any .dart file)
 flutter analyze
 
-# Run tests
-flutter test
-
-# Format code
+# Format
 dart format .
 ```
 
-## Code Search Tools
-
-### Semantic Search (claude-context MCP)
-
-Index codebase để search theo ý nghĩa, không chỉ text match:
+## Testing
 
 ```bash
-# Index codebase (chạy 1 lần, hoặc khi code thay đổi nhiều)
-mcp__claude-context__index_codebase path=F:/CodeBase/flutter-app/aiart splitter=ast
+# All tests
+flutter test
 
-# Search theo semantic
-mcp__claude-context__search_code query="nơi xử lý lỗi từ API"
+# Single test file
+flutter test test/features/auth/data/repositories/auth_repository_test.dart
 
-# Check indexing status
-mcp__claude-context__get_indexing_status
+# With coverage
+flutter test --coverage
+
+# Integration tests (requires Supabase credentials in .env.test)
+flutter test integration_test/template_e2e_test.dart
 ```
 
-| Tool | Use Case |
-|------|----------|
-| `search_code` | Tìm code theo ý nghĩa: "authentication flow", "error handling" |
-| `Grep` | Exact match: `class AuthRepository`, `@riverpod` |
-| Dart MCP | Symbol navigation: go-to-definition, find-references |
+## Environment Setup
 
-### Tool Limitations
-
-| Tool | Dart Support | Alternative |
-|------|--------------|-------------|
-| `ast-grep` (sg) | ❌ Not supported | `rg` (ripgrep), `dart analyze`, MCP dart LSP |
-| `ripgrep` (rg) | ✅ Text search | - |
-
-## Windows Bash Workarounds
-
-Claude Code uses Git Bash which doesn't resolve `.cmd` scripts. Use direct calls when needed.
-
-## Dart MCP Tools Setup
-
-Before using Dart MCP tools (`dart_*`, `lsp_*`), add project root first:
-
-```
-mcp__dart__add_roots with uri: file:///F:/CodeBase/flutter-app/aiart
+Create `.env` from `.env.example`:
+```env
+SUPABASE_URL=your_supabase_url
+SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
 
-## Modularization Guidelines
+Environment files loaded as Flutter assets (see `pubspec.yaml` flutter.assets). Do NOT bundle `.env.test` in release assets.
 
-- If a code file exceeds 200 lines of code, consider modularizing it
-- Check existing modules before creating new
-- Analyze logical separation boundaries (functions, classes, concerns)
-- Use kebab-case naming with long descriptive names
-- Write descriptive code comments
-- When not to modularize: Markdown files, plain text files, bash scripts, configuration files
+## Architecture
 
-## Documentation
+**Artio** is a cross-platform AI image generation SaaS (Flutter 3.10+, Dart 3.10+).
 
-We keep all important docs in `./docs` folder:
+### Feature-First Clean Architecture
 
 ```
-./docs
-├── project-overview-pdr.md
-├── code-standards.md
-├── codebase-summary.md
-├── system-architecture.md
-└── development-roadmap.md
+lib/
++-- core/                   # Cross-cutting: constants, exceptions, providers, utils
++-- features/               # Each feature follows 3-layer pattern below
+|   +-- auth/               # Email/OAuth/password reset
+|   +-- template_engine/    # CORE: AI template-based image generation
+|   +-- gallery/            # Masonry grid, download/share/delete
+|   +-- settings/           # Theme switcher
+|   +-- create/             # Text-to-image (placeholder)
++-- routing/                # GoRouter config
++-- shared/                 # MainShell, ErrorPage
++-- theme/                  # Theme management
++-- main.dart               # Entry point
 ```
 
-**IMPORTANT:** Before implementing anything, always read the `./README.md` file first to get context.
+### 3-Layer Pattern per Feature
+
+```
+features/{name}/
++-- domain/                 # Business logic (depends on nothing)
+|   +-- entities/           # Freezed models
+|   +-- repositories/       # Abstract interfaces
++-- data/                   # Implementation (depends on Domain)
+|   +-- repositories/       # Concrete Supabase implementations
++-- presentation/           # UI + State (depends on Domain only)
+    +-- providers/          # @riverpod annotated providers
+    +-- screens/            # Full-screen pages
+    +-- widgets/            # Reusable components
+```
+
+**Dependency rule**: Presentation -> Domain <- Data. Never import Data in Presentation.
+
+### Key Patterns
+
+- **State Management**: Riverpod with `@riverpod` code generation only (no manual providers). Use `AsyncValue.guard` for error handling.
+- **Data Models**: Freezed with `part 'model.freezed.dart'` + `part 'model.g.dart'`. Factory constructors for JSON.
+- **Navigation**: GoRouter with `ShellRoute` for bottom nav, auth guards via redirect. Config in `lib/routing/app_router.dart`.
+- **Error Handling**: `AppException` from data layer -> `AppExceptionMapper` for user-friendly messages. Never expose stack traces.
+- **Backend**: Supabase (Auth, PostgreSQL with RLS, Storage, Edge Functions, Realtime).
 
 ## Quick File Reference
 
@@ -239,35 +111,46 @@ We keep all important docs in `./docs` folder:
 | Supabase provider | `lib/core/providers/supabase_provider.dart` |
 | Error mapper | `lib/core/utils/app_exception_mapper.dart` |
 | Constants | `lib/core/constants/app_constants.dart` |
-| Auth feature | `lib/features/auth/` |
-| Template engine | `lib/features/template_engine/` |
-| Gallery feature | `lib/features/gallery/` |
-| Settings feature | `lib/features/settings/` |
-| Create feature | `lib/features/create/` |
+| Env config | `lib/core/config/env_config.dart` |
 
 ## AI Model API Reference
 
-When working with AI image generation models (KIE API, Gemini, etc.):
+`docs/kie-api/` is the source of truth for all AI model API specs. Key files:
 
-| Resource | Path | Description |
-|----------|------|-------------|
-| **Model Map (Index)** | `docs/kie-api/kie-model-map.md` | Master index of all models |
-| **Full Model List** | `docs/kie-api/kie-api-llms.txt` | Complete KIE API model catalog |
-| **Google/Imagen** | `docs/kie-api/google/` | Imagen4, Nano Banana, Pro models |
-| **Flux-2** | `docs/kie-api/flux2/` | Flex and Pro variants |
-| **GPT Image** | `docs/kie-api/gpt-image/` | GPT Image 1.5 models |
-| **Seedream** | `docs/kie-api/seedream/` | Seedream 4.5 models |
+| Resource | Path |
+|----------|------|
+| Model Map (Index) | `docs/kie-api/kie-model-map.md` |
+| Full Model List | `docs/kie-api/kie-api-llms.txt` |
+| Google/Imagen | `docs/kie-api/google/` |
+| Flux-2 | `docs/kie-api/flux2/` |
+| GPT Image | `docs/kie-api/gpt-image/` |
+| Seedream | `docs/kie-api/seedream/` |
 
-**IMPORTANT:** The `docs/kie-api/` folder is the **source of truth** for all AI model API specifications. Always reference these docs when:
-- Adding new models to the app
-- Updating Edge Functions for generation
-- Debugging API issues
-- Understanding model-specific parameters
+Reference these when adding models, updating Edge Functions, or debugging API issues.
+
+## Feature Status
+
+| Feature | Status |
+|---------|--------|
+| Authentication | Complete |
+| Template Engine | Complete |
+| Gallery | Complete |
+| Settings | Complete |
+| Subscription & Credits | Pending |
 
 ## Known Technical Debt
 
-| Issue | Priority | Status |
-|-------|----------|--------|
-| Test coverage (5-10% vs 80% target) | High | Pending |
-| GoRouter raw strings (not TypedGoRoute) | Medium | Deferred |
-| DTO leakage in domain entities | Low | Acceptable for MVP |
+| Issue | Priority |
+|-------|----------|
+| Test coverage ~5-10% (target 80%) | High |
+| GoRouter uses raw strings (not TypedGoRoute) | Medium |
+| DTO leakage in domain entities | Low (acceptable for MVP) |
+
+## Tool Limitations
+
+- `ast-grep` (sg) does not support Dart. Use `rg` (ripgrep), `flutter analyze`, or Dart LSP instead.
+- On Windows, Claude Code uses Git Bash which may not resolve `.cmd` scripts.
+
+## Documentation
+
+All project docs in `./docs/`: project-overview-pdr.md, code-standards.md, codebase-summary.md, system-architecture.md, development-roadmap.md. Read `./README.md` for full project context.

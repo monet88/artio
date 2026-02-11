@@ -1,7 +1,7 @@
 # Project Overview & Product Development Requirements
 
 **Project**: Artio - AI Image Generation SaaS
-**Updated**: 2026-02-09
+**Updated**: 2026-02-10
 **Version**: 1.2
 
 ---
@@ -386,7 +386,7 @@ Democratize AI image generation through intuitive templates and flexible text pr
 ## Roadmap
 
 ### Phase 1-3: Foundation (14h)
-**Status:** Pending
+**Status:** ✓ Complete
 - Project setup, dependencies, folder structure
 - Core infrastructure (router, theme, HTTP client)
 - Auth feature (email/password, OAuth)
@@ -420,7 +420,7 @@ Democratize AI image generation through intuitive templates and flexible text pr
 - Sign out, delete account
 
 ### Phase 8: Admin App (3h)
-**Status:** Pending
+**Status:** 50% In Progress
 - Admin web app for template CRUD
 - Visual JSON editor
 
@@ -482,7 +482,7 @@ Democratize AI image generation through intuitive templates and flexible text pr
 
 - `supabase_flutter`: ^2.11.0
 - `flutter_riverpod`: ^2.6.1 + `riverpod_annotation`
-- `go_router`: ^14.8.1
+- `go_router`: ^14.6.0
 - `freezed`: ^2.5.8 + `freezed_annotation` + `json_serializable`
 - `cached_network_image`: ^3.4.1
 - `image_picker`: ^1.1.2
@@ -563,5 +563,5 @@ See: `docs/code-standards.md` for detailed conventions
 ---
 
 **Document Version:** 1.3
-**Last Updated:** 2026-02-09
+**Last Updated:** 2026-02-10
 **Next Review:** Post-Phase 6 (Subscription implementation)
