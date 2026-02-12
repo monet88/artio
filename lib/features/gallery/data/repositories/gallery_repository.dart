@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_gallery_saver_plus/image_gallery_saver_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -213,26 +214,65 @@ class GalleryRepository implements IGalleryRepository {
     }
   }
 
+  /// Extract file extension from URL path, fallback to .png
+  String _extensionFromUrl(String url) {
+    try {
+      final path = Uri.parse(url).path;
+      final lastDot = path.lastIndexOf('.');
+      if (lastDot != -1 && lastDot < path.length - 1) {
+        final ext = path.substring(lastDot).toLowerCase();
+        if (const ['.png', '.jpg', '.jpeg', '.webp', '.gif'].contains(ext)) {
+          return ext;
+        }
+      }
+    } catch (_) {}
+    return '.png';
+  }
+
+  /// Download image bytes to a file in the given directory
+  Future<File> _downloadToFile(
+    String imageUrl,
+    Directory directory,
+    String prefix,
+  ) async {
+    final response = await http.get(Uri.parse(imageUrl));
+    if (response.statusCode != 200) {
+      throw AppException.network(
+        message: 'Download failed',
+        statusCode: response.statusCode,
+      );
+    }
+
+    final ext = _extensionFromUrl(imageUrl);
+    final fileName = '${prefix}_${DateTime.now().millisecondsSinceEpoch}$ext';
+    final file = File('${directory.path}/$fileName');
+    await file.writeAsBytes(response.bodyBytes);
+    return file;
+  }
+
   @override
   Future<String> downloadImage(String imageUrl) async {
     return retry(() async {
       try {
-        final response = await http.get(Uri.parse(imageUrl));
-        if (response.statusCode != 200) {
-          throw AppException.network(
-            message: 'Download failed',
-            statusCode: response.statusCode,
-          );
+        final directory = await getTemporaryDirectory();
+        final file = await _downloadToFile(imageUrl, directory, 'artio');
+
+        // Save to gallery on mobile platforms
+        if (!kIsWeb &&
+            (defaultTargetPlatform == TargetPlatform.android ||
+                defaultTargetPlatform == TargetPlatform.iOS)) {
+          final result = await ImageGallerySaverPlus.saveFile(file.path);
+          await file.delete().catchError((_) => file);
+          if (result['isSuccess'] == true) {
+            return 'Photos';
+          }
         }
 
-        final directory = await getApplicationDocumentsDirectory();
-        final fileName = 'artio_${DateTime.now().millisecondsSinceEpoch}.png';
-        final filePath = '${directory.path}/$fileName';
-
-        final file = File(filePath);
-        await file.writeAsBytes(response.bodyBytes);
-
-        return filePath;
+        // Desktop fallback: move to Documents
+        final docsDir = await getApplicationDocumentsDirectory();
+        final destPath = '${docsDir.path}/${file.uri.pathSegments.last}';
+        await file.rename(destPath);
+        return destPath;
       } catch (e) {
         if (e is AppException) rethrow;
         throw AppException.network(message: 'Failed to download image');
@@ -243,21 +283,8 @@ class GalleryRepository implements IGalleryRepository {
   @override
   Future<File> getImageFile(String imageUrl) async {
     try {
-      final response = await http.get(Uri.parse(imageUrl));
-      if (response.statusCode != 200) {
-        throw AppException.network(
-          message: 'Failed to get image file',
-          statusCode: response.statusCode,
-        );
-      }
-
       final directory = await getTemporaryDirectory();
-      final file = File(
-        '${directory.path}/share_${DateTime.now().millisecondsSinceEpoch}.png',
-      );
-      await file.writeAsBytes(response.bodyBytes);
-
-      return file;
+      return await _downloadToFile(imageUrl, directory, 'share');
     } catch (e) {
       if (e is AppException) rethrow;
       throw AppException.network(message: 'Failed to get image file');
