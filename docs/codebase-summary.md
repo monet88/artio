@@ -1,9 +1,9 @@
 # Codebase Summary
 
 **Project**: Artio - AI Image Generation SaaS
-**Generated**: 2026-02-09
-**Lines of Code**: ~10,539 (source files only)
-**Total Files**: ~150 files (94 Dart source in lib/, 57 test files)
+**Generated**: 2026-02-10
+**Lines of Code**: ~10,803 (source files only)
+**Total Files**: ~150 files (100 Dart source in lib/, 57 test files)
 
 ---
 
@@ -19,7 +19,7 @@ Artio is a Flutter-based cross-platform application implementing clean architect
 
 | Type | Count | Purpose |
 |------|-------|---------|
-| Dart source files | 94 (lib/) | Application logic |
+| Dart source files | 100 (lib/) | Application logic |
 | Test files | 57 | Unit, widget, integration tests |
 | Generated files (.freezed/.g.dart) | ~40 | Code generation artifacts |
 | Config files | 5 | pubspec, analysis_options, etc. |
@@ -29,12 +29,12 @@ Artio is a Flutter-based cross-platform application implementing clean architect
 
 - **Total Files**: ~150 files
 - **Source LOC**:
-  - lib/core: 1,723 LOC (12 files)
-  - lib/features: 7,830 LOC (69 files)
-  - lib/routing: 451 LOC (4 files)
-  - lib/shared: 535 LOC (9 files)
-  - Total source: ~10,539 LOC
-- **Test LOC**: 6,291 LOC (57 test files)
+  - lib/core: 1,850 LOC (15 files)
+  - lib/features: 7,960 LOC (72 files)
+  - lib/routing: 485 LOC (5 files)
+  - lib/shared: 508 LOC (8 files)
+  - Total source: ~10,803 LOC
+- **Test LOC**: 6,443 LOC (57 test files)
 - **Largest Files**:
   - `pubspec.lock`: Dependencies lock file
   - Generated Freezed files: ~20,000 tokens combined
@@ -50,12 +50,21 @@ Artio is a Flutter-based cross-platform application implementing clean architect
 ```
 lib/
 ├── core/                           # Cross-cutting concerns
+│   ├── config/
+│   │   ├── env_config.dart         # Environment configuration
+│   │   └── sentry_config.dart      # Sentry error tracking config
 │   ├── constants/
-│   │   └── app_constants.dart      # Centralized constants
+│   │   ├── app_constants.dart      # Centralized constants
+│   │   └── ai_models.dart          # AI model configurations
+│   ├── design_system/
+│   │   ├── app_dimensions.dart     # Design system dimensions
+│   │   └── app_spacing.dart        # Spacing constants
 │   ├── exceptions/
 │   │   └── app_exception.dart      # Sealed exception hierarchy
 │   ├── providers/
 │   │   └── supabase_provider.dart  # Global Supabase client DI
+│   ├── state/
+│   │   └── user_scoped_providers.dart # User-scoped state providers
 │   └── utils/
 │       ├── app_exception_mapper.dart # User-friendly error messages
 │       └── logger_service.dart     # Logging abstraction
@@ -359,7 +368,7 @@ All domain entities use Freezed for:
 
 ### Exception Hierarchy
 
-**File**: `lib/exceptions/app_exception.dart`
+**File**: `lib/core/exceptions/app_exception.dart`
 
 ```dart
 sealed class AppException implements Exception {
@@ -396,7 +405,7 @@ class UnknownException extends AppException { ... }
 | `freezed_annotation` | ^2.4.4 | Code generation annotations |
 | `json_serializable` | ^6.9.0 | JSON serialization |
 | `supabase_flutter` | ^2.11.0 | Backend integration |
-| `go_router` | ^14.8.1 | Navigation |
+| `go_router` | ^14.6.0 | Navigation |
 | `flex_color_scheme` | ^8.2.0 | Theme |
 | `purchases_flutter` | ^9.0.0 | Payments |
 | `google_mobile_ads` | ^6.0.0 | Ads |
@@ -559,6 +568,6 @@ dart run build_runner watch
 
 ---
 
-**Generated**: 2026-02-09
-**Analysis Depth**: Comprehensive (150+ files, 10,539 LOC source)
+**Generated**: 2026-02-10
+**Analysis Depth**: Comprehensive (150+ files, 10,803 LOC source)
 **Codebase Grade**: A (Excellent architecture, comprehensive test coverage)

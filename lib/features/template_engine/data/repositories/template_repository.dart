@@ -3,6 +3,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../core/providers/supabase_provider.dart';
 import '../../../../core/exceptions/app_exception.dart';
+import '../../../../core/utils/retry.dart';
 import '../../domain/entities/template_model.dart';
 import '../../domain/repositories/i_template_repository.dart';
 
@@ -20,19 +21,21 @@ class TemplateRepository implements ITemplateRepository {
 
   @override
   Future<List<TemplateModel>> fetchTemplates() async {
-    try {
-      final response = await _supabase
-          .from('templates')
-          .select()
-          .eq('is_active', true)
-          .order('order', ascending: true);
+    return retry(() async {
+      try {
+        final response = await _supabase
+            .from('templates')
+            .select()
+            .eq('is_active', true)
+            .order('order', ascending: true);
 
-      return response.map((json) => TemplateModel.fromJson(json)).toList();
-    } on PostgrestException catch (e) {
-      throw AppException.network(message: e.message, statusCode: int.tryParse(e.code ?? ''));
-    } catch (e) {
-      throw AppException.unknown(message: e.toString(), originalError: e);
-    }
+        return response.map((json) => TemplateModel.fromJson(json)).toList();
+      } on PostgrestException catch (e) {
+        throw AppException.network(message: e.message, statusCode: int.tryParse(e.code ?? ''));
+      } catch (e) {
+        throw AppException.unknown(message: e.toString(), originalError: e);
+      }
+    });
   }
 
   @override

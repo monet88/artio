@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/utils/app_exception_mapper.dart';
 import '../../../../routing/routes/app_routes.dart';
 import '../../../../shared/widgets/error_state_widget.dart';
 import '../providers/gallery_provider.dart';
@@ -20,7 +21,7 @@ class GalleryPage extends ConsumerWidget {
       body: galleryAsync.when(
         loading: () => const ShimmerGrid(),
         error: (error, stackTrace) => ErrorStateWidget(
-          message: 'Error loading gallery: $error',
+          message: AppExceptionMapper.toUserMessage(error),
           onRetry: () => ref.invalidate(galleryStreamProvider),
         ),
         data: (items) {

@@ -5,6 +5,7 @@ import 'package:share_plus/share_plus.dart';
 
 import '../../../../core/design_system/app_dimensions.dart';
 import '../../../../core/design_system/app_spacing.dart';
+import '../../../../core/utils/app_exception_mapper.dart';
 import '../../data/repositories/gallery_repository.dart';
 import '../../domain/entities/gallery_item.dart';
 import '../providers/gallery_provider.dart';
@@ -62,7 +63,7 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Download failed: $e')),
+          SnackBar(content: Text(AppExceptionMapper.toUserMessage(e))),
         );
       }
     } finally {
@@ -87,7 +88,7 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Share failed: $e')),
+          SnackBar(content: Text(AppExceptionMapper.toUserMessage(e))),
         );
       }
     } finally {

@@ -1,7 +1,7 @@
 # System Architecture
 
 **Project**: Artio - AI Image Generation SaaS
-**Updated**: 2026-02-09
+**Updated**: 2026-02-10
 **Version**: 1.2
 
 ---
@@ -57,9 +57,12 @@ Artio is a cross-platform (Android, iOS, Web, Windows) AI image generation SaaS 
 ```
 lib/
 ├── core/                    # Shared infrastructure
+│   ├── config/              # Environment and service configs
 │   ├── constants/           # App-wide constants
+│   ├── design_system/       # Design tokens (spacing, dimensions)
 │   ├── exceptions/          # Exception hierarchy
 │   ├── providers/           # Global dependencies (Supabase)
+│   ├── state/               # User-scoped state providers
 │   └── utils/               # Helpers (error mapper, logger)
 ├── features/                # Feature modules
 │   ├── auth/                # Authentication feature
@@ -82,8 +85,10 @@ lib/
 │           ├── providers/   # Template, generation state
 │           ├── screens/     # List, detail, progress screens
 │           └── widgets/     # Template card, input builder
-├── router/                  # Navigation configuration
-│   └── app_router.dart      # GoRouter setup with auth guards
+├── routing/                 # Navigation configuration
+│   ├── app_router.dart      # GoRouter setup with auth guards
+│   └── routes/
+│       └── app_routes.dart  # TypedGoRoute definitions
 ├── theme/                   # Material theme
 │   └── app_theme.dart       # Light/dark theme definitions
 └── main.dart                # App entry point
@@ -172,8 +177,12 @@ class TemplateModel with _$TemplateModel {
     required String id,
     required String name,
     required String category,
-    required String thumbnailUrl,
-    required List<InputField> inputFields,
+    @JsonKey(name: 'thumbnail_url') required String thumbnailUrl,
+    @JsonKey(name: 'input_fields') required List<InputField> inputFields,
+    @JsonKey(name: 'prompt_template') String? promptTemplate,
+    @JsonKey(name: 'default_aspect_ratio') String? defaultAspectRatio,
+    @JsonKey(name: 'is_active') @Default(true) bool isActive,
+    int? order,
     String? description,
   }) = _TemplateModel;
 
@@ -216,6 +225,10 @@ CREATE TABLE templates (
   description TEXT,
   thumbnail_url TEXT NOT NULL,
   input_fields JSONB NOT NULL,  -- Array of InputField specs
+  prompt_template TEXT,
+  default_aspect_ratio TEXT,
+  is_active BOOLEAN DEFAULT true,
+  "order" INTEGER,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -224,11 +237,13 @@ CREATE TABLE templates (
 CREATE TABLE generation_jobs (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  template_id UUID NOT NULL REFERENCES templates(id) ON DELETE CASCADE,
+  template_id UUID REFERENCES templates(id) ON DELETE SET NULL,
   status TEXT NOT NULL CHECK (status IN ('pending', 'processing', 'completed', 'failed')),
   input_data JSONB NOT NULL,     -- User-provided values for input_fields
-  result_url TEXT,               -- Generated image URL (Storage)
+  provider_used TEXT,            -- AI provider (kie, gemini)
+  result_urls TEXT[],            -- Array of generated image URLs
   error_message TEXT,
+  deleted_at TIMESTAMPTZ,        -- Soft delete timestamp
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -272,7 +287,7 @@ user_uploads/             # User-uploaded input images
     {job_id}/
       input.jpg
 
-generated_images/         # AI-generated outputs
+generated-images/         # AI-generated outputs (note: hyphen, not underscore)
   {user_id}/
     {job_id}/
       output.png
@@ -280,7 +295,7 @@ generated_images/         # AI-generated outputs
 
 **RLS Policies:**
 - `user_uploads`: Users can upload/read own files
-- `generated_images`: Users can read own files, Edge Function writes
+- `generated-images`: Users can read own files, Edge Function writes
 
 ---
 
@@ -371,12 +386,12 @@ GenerationProgressScreen shows:
   - Failed → Shows error message (via AppExceptionMapper)
 ```
 
-### Text-to-Image Generation (UI Complete, Backend Pending)
+### Text-to-Image Generation
 
 **Current Status**:
-- CreateScreen UI implemented with prompt input placeholder
-- Parameter selection UI ready
-- Backend integration pending (Edge Function needs Imagen 4 setup)
+- CreateScreen UI implemented with prompt input
+- Parameter selection UI implemented
+- Backend integration: Edge Function supports multiple AI providers (KIE API, Gemini)
 
 **Planned Flow**:
 - No image upload required
@@ -400,7 +415,7 @@ GenerationProgressScreen shows:
 /settings                     → SettingsScreen (auth required)
 ```
 
-**Navigation**: Uses TypedGoRoute with route path constants in `lib/routing/app_router.dart`
+**Navigation**: Uses TypedGoRoute with `GoRouteData` classes in `lib/routing/routes/app_routes.dart`
 
 ### Auth Guards
 
@@ -600,8 +615,8 @@ ref.listen(generationJobProvider(jobId), (prev, next) {
 - Windows: `flutter build windows` → Desktop installer (development/testing)
 
 **Environment Config:**
-- Dev: `supabase.dev.dart` (staging Supabase project)
-- Prod: `supabase.prod.dart` (production Supabase project)
+- Dev: `.env.dev` via `EnvConfig` (staging Supabase project)
+- Prod: `.env` via `EnvConfig` (production Supabase project)
 
 ### Supabase Backend
 
@@ -687,4 +702,4 @@ ref.listen(generationJobProvider(jobId), (prev, next) {
 
 **AI Model Documentation**: `docs/kie-api/` (source of truth for model specs, parameters, Edge Function integration)
 
-**Last Updated**: 2026-02-09
+**Last Updated**: 2026-02-10

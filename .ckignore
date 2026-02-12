@@ -1,0 +1,112 @@
+# .ckignore - Default patterns for ck semantic search
+# Created automatically during first index
+# Syntax: same as .gitignore (glob patterns, ! for negation)
+
+# Images
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.bmp
+*.svg
+*.ico
+*.webp
+*.tiff
+
+# Video
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.wmv
+*.flv
+*.webm
+
+# Audio
+*.mp3
+*.wav
+*.flac
+*.aac
+*.ogg
+*.m4a
+
+# Binary/Compiled
+*.exe
+*.dll
+*.so
+*.dylib
+*.a
+*.lib
+*.obj
+*.o
+
+# Archives
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.rar
+*.7z
+*.bz2
+*.gz
+
+# Data files
+*.db
+*.sqlite
+*.sqlite3
+*.parquet
+*.arrow
+
+# Config formats (issue #27)
+*.json
+*.yaml
+*.yml
+
+# Add your custom patterns below this line
+
+# Documentation & Plans (non-code)
+*.md
+*.txt
+*.log
+*.csv
+
+# Plans & Reports
+plans/
+docs/
+
+# Flutter/Dart generated
+*.freezed.dart
+*.g.dart
+*.mocks.dart
+
+# Build artifacts
+build/
+.dart_tool/
+.ck/
+
+# Dependencies
+.pub-cache/
+.pub/
+
+# IDE & tooling
+.idea/
+.vscode/
+.sisyphus/
+.claude/
+.agents/
+
+# Environment
+*.env
+*.env.*
+
+# Fonts & assets (non-code)
+*.ttf
+*.otf
+*.woff
+*.woff2
+*.eot
+
+# Misc
+*.lock
+*.toml
+LICENSE*

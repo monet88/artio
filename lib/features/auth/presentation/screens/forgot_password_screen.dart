@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/design_system/app_spacing.dart';
+import '../../../../core/utils/app_exception_mapper.dart';
 import '../view_models/auth_view_model.dart';
 
 class ForgotPasswordScreen extends ConsumerStatefulWidget {
@@ -37,7 +38,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(e.toString().replaceAll('Exception: ', '')),
+            content: Text(AppExceptionMapper.toUserMessage(e)),
             backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );

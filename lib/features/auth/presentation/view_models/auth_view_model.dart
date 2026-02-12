@@ -6,6 +6,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../core/config/sentry_config.dart';
 import '../../../../core/exceptions/app_exception.dart';
 import '../../../../core/state/user_scoped_providers.dart';
+import '../../../../core/utils/app_exception_mapper.dart';
 import '../../../../routing/routes/app_routes.dart';
 import '../../domain/entities/user_model.dart';
 import '../../data/repositories/auth_repository.dart';
@@ -69,7 +70,7 @@ class AuthViewModel extends _$AuthViewModel implements Listenable {
         _notifyRouter();
       }
     } catch (e) {
-      state = AuthState.error(e.toString());
+      state = AuthState.error(AppExceptionMapper.toUserMessage(e));
     }
   }
 

@@ -7,6 +7,7 @@ import 'package:artio/features/settings/data/notifications_provider.dart';
 import 'package:artio/utils/logger_service.dart';
 import 'package:artio/core/design_system/app_spacing.dart';
 import 'package:artio/shared/widgets/section_header.dart';
+import 'package:artio/core/utils/app_exception_mapper.dart';
 import 'package:artio/shared/widgets/loading_state_widget.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -63,7 +64,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error sending reset email: $e')),
+          SnackBar(content: Text(AppExceptionMapper.toUserMessage(e))),
         );
       }
     }
@@ -99,7 +100,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       } catch (e) {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error signing out: $e')),
+            SnackBar(content: Text(AppExceptionMapper.toUserMessage(e))),
           );
         }
       } finally {
