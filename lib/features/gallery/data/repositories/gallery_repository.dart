@@ -10,6 +10,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:storage_client/storage_client.dart' as storage_client;
 
 import '../../../../core/providers/supabase_provider.dart';
+import '../../../../core/utils/retry.dart';
 import '../../domain/entities/gallery_item.dart';
 import '../../../../core/exceptions/app_exception.dart';
 import '../../domain/repositories/i_gallery_repository.dart';
@@ -73,38 +74,40 @@ class GalleryRepository implements IGalleryRepository {
     int offset = 0,
     String? templateId,
   }) async {
-    try {
-      var query = _supabase
-          .from('generation_jobs')
-          .select('*, templates(name)')
-          .isFilter('deleted_at', null);
+    return retry(() async {
+      try {
+        var query = _supabase
+            .from('generation_jobs')
+            .select('*, templates(name)')
+            .isFilter('deleted_at', null);
 
-      if (templateId != null) {
-        query = query.eq('template_id', templateId);
-      }
+        if (templateId != null) {
+          query = query.eq('template_id', templateId);
+        }
 
-      final response = await query
-          .order('created_at', ascending: false)
-          .range(offset, offset + limit - 1);
+        final response = await query
+            .order('created_at', ascending: false)
+            .range(offset, offset + limit - 1);
 
-      final items = <GalleryItem>[];
+        final items = <GalleryItem>[];
 
-      for (final row in response as List) {
-        final job = row as Map<String, dynamic>;
-        final urls = (job['result_urls'] as List?) ?? [];
-        if (urls.isEmpty && job['status'] != 'completed') {
-          items.add(_parseJob(job, 0));
-        } else {
-          for (int i = 0; i < urls.length; i++) {
-            items.add(_parseJob(job, i));
+        for (final row in response as List) {
+          final job = row as Map<String, dynamic>;
+          final urls = (job['result_urls'] as List?) ?? [];
+          if (urls.isEmpty && job['status'] != 'completed') {
+            items.add(_parseJob(job, 0));
+          } else {
+            for (int i = 0; i < urls.length; i++) {
+              items.add(_parseJob(job, i));
+            }
           }
         }
-      }
 
-      return items;
-    } on PostgrestException catch (e) {
-      throw AppException.network(message: e.message);
-    }
+        return items;
+      } on PostgrestException catch (e) {
+        throw AppException.network(message: e.message);
+      }
+    });
   }
 
   /// Watch user images with realtime updates
@@ -212,27 +215,29 @@ class GalleryRepository implements IGalleryRepository {
 
   @override
   Future<String> downloadImage(String imageUrl) async {
-    try {
-      final response = await http.get(Uri.parse(imageUrl));
-      if (response.statusCode != 200) {
-        throw AppException.network(
-          message: 'Download failed',
-          statusCode: response.statusCode,
-        );
+    return retry(() async {
+      try {
+        final response = await http.get(Uri.parse(imageUrl));
+        if (response.statusCode != 200) {
+          throw AppException.network(
+            message: 'Download failed',
+            statusCode: response.statusCode,
+          );
+        }
+
+        final directory = await getApplicationDocumentsDirectory();
+        final fileName = 'artio_${DateTime.now().millisecondsSinceEpoch}.png';
+        final filePath = '${directory.path}/$fileName';
+
+        final file = File(filePath);
+        await file.writeAsBytes(response.bodyBytes);
+
+        return filePath;
+      } catch (e) {
+        if (e is AppException) rethrow;
+        throw AppException.network(message: 'Failed to download image');
       }
-
-      final directory = await getApplicationDocumentsDirectory();
-      final fileName = 'artio_${DateTime.now().millisecondsSinceEpoch}.png';
-      final filePath = '${directory.path}/$fileName';
-
-      final file = File(filePath);
-      await file.writeAsBytes(response.bodyBytes);
-
-      return filePath;
-    } catch (e) {
-      if (e is AppException) rethrow;
-      throw AppException.network(message: 'Failed to download image');
-    }
+    });
   }
 
   @override
