@@ -65,6 +65,8 @@ Environment files loaded as Flutter assets (see `pubspec.yaml` flutter.assets). 
 ```
 lib/
 +-- core/                   # Cross-cutting: constants, exceptions, providers, utils
+|   +-- providers/          # Riverpod providers (Supabase, connectivity)
+|   +-- utils/              # Utilities (retry logic, error mapper)
 +-- features/               # Each feature follows 3-layer pattern below
 |   +-- auth/               # Email/OAuth/password reset
 |   +-- template_engine/    # CORE: AI template-based image generation
@@ -72,7 +74,7 @@ lib/
 |   +-- settings/           # Theme switcher
 |   +-- create/             # Text-to-image (placeholder)
 +-- routing/                # GoRouter config
-+-- shared/                 # MainShell, ErrorPage
++-- shared/                 # MainShell, OfflineBanner, ErrorPage
 +-- theme/                  # Theme management
 +-- main.dart               # Entry point
 ```
@@ -98,8 +100,10 @@ features/{name}/
 
 - **State Management**: Riverpod with `@riverpod` code generation only (no manual providers). Use `AsyncValue.guard` for error handling.
 - **Data Models**: Freezed with `part 'model.freezed.dart'` + `part 'model.g.dart'`. Factory constructors for JSON.
-- **Navigation**: GoRouter with `ShellRoute` for bottom nav, auth guards via redirect. Config in `lib/routing/app_router.dart`.
-- **Error Handling**: `AppException` from data layer -> `AppExceptionMapper` for user-friendly messages. Never expose stack traces.
+- **Navigation**: TypedGoRoute with code generation (`@TypedGoRoute`). Use `.push(context)` or `.go(context)` methods on route classes. Config in `lib/routing/routes/app_routes.dart` (generated to `app_routes.g.dart`). Auth guards via redirect in router config.
+- **Error Handling**: `AppException` from data layer -> `AppExceptionMapper` for user-friendly messages. Use `ErrorStateWidget` for consistent error UI. Never expose stack traces.
+- **Network Resilience**: Wrap repository calls with `retry()` for automatic retry on transient errors (SocketException, TimeoutException, 5xx). Monitor connectivity with `connectivityProvider` stream. Show `OfflineBanner` when offline.
+- **Design System**: Centralized constants in `lib/core/design_system/` (spacing, dimensions, colors). Never use magic numbers.
 - **Backend**: Supabase (Auth, PostgreSQL with RLS, Storage, Edge Functions, Realtime).
 
 ## Quick File Reference
@@ -108,8 +112,13 @@ features/{name}/
 |----------|------|
 | Main entry | `lib/main.dart` |
 | Router config | `lib/routing/app_router.dart` |
+| Typed routes | `lib/routing/routes/app_routes.dart` (generated: `.g.dart`) |
 | Supabase provider | `lib/core/providers/supabase_provider.dart` |
+| Connectivity provider | `lib/core/providers/connectivity_provider.dart` |
+| Retry utility | `lib/core/utils/retry.dart` |
 | Error mapper | `lib/core/utils/app_exception_mapper.dart` |
+| Error widget | `lib/shared/widgets/error_state_widget.dart` |
+| Design system | `lib/core/design_system/` (spacing, dimensions, colors) |
 | Constants | `lib/core/constants/app_constants.dart` |
 | Env config | `lib/core/config/env_config.dart` |
 
@@ -143,8 +152,20 @@ Reference these when adding models, updating Edge Functions, or debugging API is
 | Issue | Priority |
 |-------|----------|
 | Test coverage ~5-10% (target 80%) | High |
-| GoRouter uses raw strings (not TypedGoRoute) | Medium |
 | DTO leakage in domain entities | Low (acceptable for MVP) |
+
+## Code Search & Navigation
+
+**Semantic search** via `mcp__ck-search__semantic_search` for concept-based discovery:
+- "Where does X happen?" → `semantic_search` (finds by meaning, not keywords)
+- "Find all uses of pattern Y" → `Grep` or `lexical_search` (exact match)
+- Use `semantic_search` with `top_k: 5-10`, `snippet_length: 300` for best results.
+- Index: `.ck/` directory (192 code files, model `bge-small`). Reindex after major changes: `ck --clean . && ck --index .`
+
+**Serena MCP** symbolic code navigation configured (`.serena/project.yml`):
+- Prefer Serena tools over Read/Edit/Grep for code navigation and editing
+- Source directories: `lib/`, `test/`
+- See global rules (`code-search.md`) for Serena best practices and parameter names
 
 ## Tool Limitations
 
