@@ -68,8 +68,11 @@ class SupabaseTestSetup {
   static Future<void> _loadDotenv() async {
     if (_dotenvLoaded) return;
     try {
-      await dotenv.load(fileName: '.env.test');
-      _dotenvLoaded = true;
+      final file = File('.env.test');
+      if (file.existsSync()) {
+        dotenv.testLoad(fileInput: file.readAsStringSync());
+        _dotenvLoaded = true;
+      }
     } catch (_) {
       // .env.test not found, will use Platform.environment
     }

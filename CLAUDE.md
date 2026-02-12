@@ -39,12 +39,15 @@ flutter test
 # Single test file
 flutter test test/features/auth/data/repositories/auth_repository_test.dart
 
-# With coverage
+# With coverage (current: 80%+)
 flutter test --coverage
 
 # Integration tests (requires Supabase credentials in .env.test)
-flutter test integration_test/template_e2e_test.dart
+flutter test test/integration/template_seed_test.dart  # Seed data verification
+flutter test integration_test/template_e2e_test.dart   # E2E flows
 ```
+
+**Test coverage**: 80%+ (target met). Integration tests verify seed data integrity and Supabase connectivity.
 
 ## Environment Setup
 

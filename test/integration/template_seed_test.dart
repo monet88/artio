@@ -29,8 +29,9 @@ void main() {
         .eq('is_active', true)
         .order('order', ascending: true);
 
-    templates =
-        (response as List).map((json) => TemplateModel.fromJson(json)).toList();
+    templates = (response as List)
+        .map((json) => TemplateModel.fromJson(json as Map<String, dynamic>))
+        .toList();
   });
 
   group('Seed templates count', () {

@@ -20,12 +20,12 @@ void main() {
           'id': 'template-1',
           'name': 'Anime Style',
           'description': 'Generate anime art',
-          'thumbnailUrl': 'https://example.com/thumb.png',
+          'thumbnail_url': 'https://example.com/thumb.png',
           'category': 'portrait',
-          'promptTemplate': 'Generate {prompt} in anime style',
-          'inputFields': <Map<String, dynamic>>[],
-          'defaultAspectRatio': '1:1',
-          'isPremium': false,
+          'prompt_template': 'Generate {prompt} in anime style',
+          'input_fields': <Map<String, dynamic>>[],
+          'default_aspect_ratio': '1:1',
+          'is_premium': false,
           'order': 1,
         };
 
@@ -44,10 +44,10 @@ void main() {
           'id': 'template-2',
           'name': 'Basic',
           'description': 'Basic template',
-          'thumbnailUrl': 'https://example.com/basic.png',
+          'thumbnail_url': 'https://example.com/basic.png',
           'category': 'general',
-          'promptTemplate': '{prompt}',
-          'inputFields': <Map<String, dynamic>>[],
+          'prompt_template': '{prompt}',
+          'input_fields': <Map<String, dynamic>>[],
         };
 
         final template = TemplateModel.fromJson(json);
@@ -62,10 +62,10 @@ void main() {
           'id': 'template-3',
           'name': 'With Fields',
           'description': 'Template with inputs',
-          'thumbnailUrl': 'https://example.com/fields.png',
+          'thumbnail_url': 'https://example.com/fields.png',
           'category': 'art',
-          'promptTemplate': '{prompt} in {style}',
-          'inputFields': [
+          'prompt_template': '{prompt} in {style}',
+          'input_fields': [
             {
               'name': 'style',
               'label': 'Style',
@@ -74,8 +74,8 @@ void main() {
               'required': true,
             },
           ],
-          'defaultAspectRatio': '16:9',
-          'isPremium': true,
+          'default_aspect_ratio': '16:9',
+          'is_premium': true,
           'order': 5,
         };
 

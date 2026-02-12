@@ -56,7 +56,7 @@ void main() {
         expect(json['id'], template.id);
         expect(json['name'], template.name);
         expect(json['category'], template.category);
-        expect(json['inputFields'], isList);
+        expect(json['input_fields'], isList);
       });
 
       test('deserializes from JSON correctly', () {
@@ -64,12 +64,12 @@ void main() {
           'id': 'json-template',
           'name': 'JSON Template',
           'description': 'From JSON',
-          'thumbnailUrl': 'https://example.com/thumb.png',
+          'thumbnail_url': 'https://example.com/thumb.png',
           'category': 'landscape',
-          'promptTemplate': 'Generate {prompt}',
-          'inputFields': [],
-          'defaultAspectRatio': '16:9',
-          'isPremium': true,
+          'prompt_template': 'Generate {prompt}',
+          'input_fields': <Map<String, dynamic>>[],
+          'default_aspect_ratio': '16:9',
+          'is_premium': true,
           'order': 5,
         };
 
@@ -86,8 +86,8 @@ void main() {
         final template = TemplateFixtures.withInputFields();
         final json = template.toJson();
 
-        expect(json['inputFields'], isList);
-        expect((json['inputFields'] as List).isNotEmpty, true);
+        expect(json['input_fields'], isList);
+        expect((json['input_fields'] as List).isNotEmpty, true);
       });
 
       test('roundtrip serialization preserves data', () {
