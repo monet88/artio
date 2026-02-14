@@ -1,4 +1,3 @@
-import 'package:artio/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:shimmer/shimmer.dart';
@@ -6,13 +5,12 @@ import 'package:shimmer/shimmer.dart';
 import '../../../../core/design_system/app_dimensions.dart';
 import '../../../../core/design_system/app_spacing.dart';
 
-/// Branded shimmer grid skeleton loader matching the gallery masonry layout.
 class ShimmerGrid extends StatelessWidget {
   const ShimmerGrid({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    // Responsive column count calculation
     final width = MediaQuery.sizeOf(context).width;
     final int crossAxisCount;
     if (width > 900) {
@@ -29,18 +27,14 @@ class ShimmerGrid extends StatelessWidget {
         crossAxisCount: crossAxisCount,
         mainAxisSpacing: AppSpacing.sm,
         crossAxisSpacing: AppSpacing.sm,
-        itemCount: 12,
+        itemCount: 12, // Show enough items to fill screen
         itemBuilder: (context, index) {
           // Randomized heights for masonry effect
           final height = (index % 3 + 1) * 100.0 + (index % 2 * 50.0);
 
           return Shimmer.fromColors(
-            baseColor: isDark
-                ? AppColors.shimmerBase
-                : const Color(0xFFE8EAF0),
-            highlightColor: isDark
-                ? AppColors.shimmerHighlight
-                : const Color(0xFFF3F4F8),
+            baseColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+            highlightColor: Theme.of(context).colorScheme.surface,
             child: Container(
               height: height,
               decoration: BoxDecoration(

@@ -32,7 +32,7 @@ void main() {
         ),
       );
 
-      // Uses CachedNetworkImage which renders Image internally
+      // Image.network is rendered
       expect(find.byType(Image), findsOneWidget);
     });
 
@@ -64,7 +64,7 @@ void main() {
       expect(find.text('PRO'), findsNothing);
     });
 
-    testWidgets('card is tappable (GestureDetector exists)', (tester) async {
+    testWidgets('card is tappable (InkWell exists)', (tester) async {
       final template = TemplateFixtures.basic();
 
       await tester.pumpApp(
@@ -75,8 +75,7 @@ void main() {
         ),
       );
 
-      // Redesigned card uses GestureDetector for tap animation
-      expect(find.byType(GestureDetector), findsWidgets);
+      expect(find.byType(InkWell), findsOneWidget);
     });
 
     testWidgets('truncates long template names', (tester) async {
@@ -95,8 +94,7 @@ void main() {
       final textWidget = tester.widget<Text>(find.text(
         'This is a very long template name that should be truncated',
       ));
-      // Redesigned template card uses maxLines: 2 for bottom overlay text
-      expect(textWidget.maxLines, 2);
+      expect(textWidget.maxLines, 1);
       expect(textWidget.overflow, TextOverflow.ellipsis);
     });
   });

@@ -20,7 +20,6 @@ void main() {
         final job = GenerationJobFixtures.pending();
 
         await tester.pumpWidget(buildWidget(job: job));
-        await tester.pump();
 
         expect(find.byType(LinearProgressIndicator), findsOneWidget);
       });
@@ -29,10 +28,8 @@ void main() {
         final job = GenerationJobFixtures.pending();
 
         await tester.pumpWidget(buildWidget(job: job));
-        await tester.pump();
 
-        // Redesigned status text
-        expect(find.text('Queued — waiting for your turn...'), findsOneWidget);
+        expect(find.text('Queued...'), findsOneWidget);
       });
     });
 
@@ -41,23 +38,16 @@ void main() {
         final job = GenerationJobFixtures.generating();
 
         await tester.pumpWidget(buildWidget(job: job));
-        await tester.pump();
 
-        // Redesigned generating status text
-        expect(find.text('Creating your masterpiece ✨'), findsOneWidget);
+        expect(find.text('Generating...'), findsOneWidget);
       });
 
       testWidgets('shows processing status text', (tester) async {
         final job = GenerationJobFixtures.processing();
 
         await tester.pumpWidget(buildWidget(job: job));
-        await tester.pump();
 
-        // Redesigned processing status text
-        expect(
-          find.text('Almost there — applying finishing touches...'),
-          findsOneWidget,
-        );
+        expect(find.text('Processing...'), findsOneWidget);
       });
     });
 
@@ -67,19 +57,19 @@ void main() {
         final job = GenerationJobFixtures.completed(resultUrls: []);
 
         await tester.pumpWidget(buildWidget(job: job));
-        await tester.pump();
 
-        // Redesigned — uses check_rounded inside gradient circle
-        expect(find.byIcon(Icons.check_rounded), findsOneWidget);
+        expect(find.byIcon(Icons.check_circle), findsOneWidget);
       });
 
       testWidgets('shows completed state with resultUrls', (tester) async {
+        // Verify completed job with URLs shows success icon
+        // Note: Cannot test Image.network in widget tests due to HTTP 400
         final job = GenerationJobFixtures.completed(resultUrls: []);
 
         await tester.pumpWidget(buildWidget(job: job));
-        await tester.pump();
 
-        expect(find.byIcon(Icons.check_rounded), findsOneWidget);
+        // Completed state should show success icon
+        expect(find.byIcon(Icons.check_circle), findsOneWidget);
       });
     });
 
@@ -88,10 +78,8 @@ void main() {
         final job = GenerationJobFixtures.failed();
 
         await tester.pumpWidget(buildWidget(job: job));
-        await tester.pump();
 
-        // Redesigned — uses error_outline_rounded
-        expect(find.byIcon(Icons.error_outline_rounded), findsOneWidget);
+        expect(find.byIcon(Icons.error), findsOneWidget);
       });
 
       testWidgets('shows error message', (tester) async {
@@ -100,16 +88,15 @@ void main() {
         );
 
         await tester.pumpWidget(buildWidget(job: job));
-        await tester.pump();
 
         expect(find.text('API rate limit exceeded'), findsOneWidget);
       });
 
       testWidgets('shows default error message from fixture', (tester) async {
+        // Fixture default errorMessage is 'Generation failed: Internal server error'
         final job = GenerationJobFixtures.failed();
 
         await tester.pumpWidget(buildWidget(job: job));
-        await tester.pump();
 
         expect(find.text('Generation failed: Internal server error'), findsOneWidget);
       });
