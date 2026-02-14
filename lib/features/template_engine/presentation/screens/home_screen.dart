@@ -143,9 +143,7 @@ class HomeScreen extends ConsumerWidget {
               ),
 
               // ── Template Grid ───────────────────────────────────────
-              const SliverToBoxAdapter(
-                child: TemplateGrid(),
-              ),
+              const TemplateGrid(),
             ],
           ),
         ),

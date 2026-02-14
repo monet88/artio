@@ -15,6 +15,7 @@ import '../providers/template_provider.dart';
 import 'template_card.dart';
 
 /// Template grid with staggered appear animation for items.
+/// Returns sliver-compatible widgets — use directly inside a CustomScrollView.
 class TemplateGrid extends ConsumerWidget {
   const TemplateGrid({super.key});
 
@@ -25,30 +26,36 @@ class TemplateGrid extends ConsumerWidget {
     return templatesAsync.when(
       data: (templates) {
         if (templates.isEmpty) {
-          return Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.palette_outlined,
-                  size: 48,
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? AppColors.textMuted
-                      : AppColors.textMutedLight,
-                ),
-                const SizedBox(height: AppSpacing.md),
-                Text(
-                  'No templates available',
-                  style: AppTypography.bodySecondary(context),
-                ),
-              ],
+          return SliverToBoxAdapter(
+            child: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.palette_outlined,
+                    size: 48,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? AppColors.textMuted
+                        : AppColors.textMutedLight,
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  Text(
+                    'No templates available',
+                    style: AppTypography.bodySecondary(context),
+                  ),
+                ],
+              ),
             ),
           );
         }
         return _StaggeredGrid(templates: templates);
       },
-      loading: () => const LoadingStateWidget(),
-      error: (error, stack) => _ErrorMessage(error: error, stackTrace: stack),
+      loading: () => const SliverToBoxAdapter(
+        child: LoadingStateWidget(),
+      ),
+      error: (error, stack) => SliverToBoxAdapter(
+        child: _ErrorMessage(error: error, stackTrace: stack),
+      ),
     );
   }
 }
@@ -112,63 +119,63 @@ class _StaggeredGridState extends State<_StaggeredGrid>
     final templates = widget.templates;
     final itemCount = templates.length;
 
-    return GridView.builder(
+    return SliverPadding(
       padding: AppSpacing.screenPadding,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        childAspectRatio: 0.75,
-        crossAxisSpacing: AppSpacing.md,
-        mainAxisSpacing: AppSpacing.md,
-      ),
-      itemCount: itemCount,
-      itemBuilder: (context, index) {
-        // Stagger calculation
-        final maxItems = AppAnimations.maxStaggerItems;
-        final clampedItemCount = templates.length.clamp(0, maxItems);
-        final staggerIndex = index.clamp(0, maxItems);
-        final totalStaggerTime = AppAnimations.staggerDelay.inMilliseconds *
-            clampedItemCount;
-        final totalDuration = AppAnimations.normal.inMilliseconds +
-            totalStaggerTime;
+      sliver: SliverGrid.builder(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          childAspectRatio: 0.75,
+          crossAxisSpacing: AppSpacing.md,
+          mainAxisSpacing: AppSpacing.md,
+        ),
+        itemCount: itemCount,
+        itemBuilder: (context, index) {
+          // Stagger calculation
+          final maxItems = AppAnimations.maxStaggerItems;
+          final clampedItemCount = templates.length.clamp(0, maxItems);
+          final staggerIndex = index.clamp(0, maxItems);
+          final totalStaggerTime = AppAnimations.staggerDelay.inMilliseconds *
+              clampedItemCount;
+          final totalDuration = AppAnimations.normal.inMilliseconds +
+              totalStaggerTime;
 
-        final startFraction =
-            (staggerIndex * AppAnimations.staggerDelay.inMilliseconds) /
-                totalDuration;
-        final endFraction =
-            (staggerIndex * AppAnimations.staggerDelay.inMilliseconds +
-                AppAnimations.normal.inMilliseconds) /
-                totalDuration;
+          final startFraction =
+              (staggerIndex * AppAnimations.staggerDelay.inMilliseconds) /
+                  totalDuration;
+          final endFraction =
+              (staggerIndex * AppAnimations.staggerDelay.inMilliseconds +
+                  AppAnimations.normal.inMilliseconds) /
+                  totalDuration;
 
-        final itemAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-          CurvedAnimation(
-            parent: _staggerController,
-            curve: Interval(
-              startFraction.clamp(0.0, 1.0),
-              endFraction.clamp(0.0, 1.0),
-              curve: AppAnimations.defaultCurve,
-            ),
-          ),
-        );
-
-        return AnimatedBuilder(
-          animation: itemAnimation,
-          builder: (context, child) {
-            return Opacity(
-              opacity: itemAnimation.value,
-              child: Transform.translate(
-                offset: Offset(0, _kStaggerSlideOffset * (1 - itemAnimation.value)),
-                child: child,
+          final itemAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+            CurvedAnimation(
+              parent: _staggerController,
+              curve: Interval(
+                startFraction.clamp(0.0, 1.0),
+                endFraction.clamp(0.0, 1.0),
+                curve: AppAnimations.defaultCurve,
               ),
-            );
-          },
-          child: TemplateCard(
-            template: templates[index],
-            index: index,
-          ),
-        );
-      },
+            ),
+          );
+
+          return AnimatedBuilder(
+            animation: itemAnimation,
+            builder: (context, child) {
+              return Opacity(
+                opacity: itemAnimation.value,
+                child: Transform.translate(
+                  offset: Offset(0, _kStaggerSlideOffset * (1 - itemAnimation.value)),
+                  child: child,
+                ),
+              );
+            },
+            child: TemplateCard(
+              template: templates[index],
+              index: index,
+            ),
+          );
+        },
+      ),
     );
   }
 }

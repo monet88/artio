@@ -9,26 +9,38 @@ import 'package:artio/features/template_engine/domain/entities/template_model.da
 
 import '../../../../core/fixtures/template_fixtures.dart';
 
+/// Helper to wrap TemplateGrid (which returns slivers) inside a CustomScrollView.
+Widget _buildTestHarness({required List<Override> overrides}) {
+  return ProviderScope(
+    overrides: overrides,
+    child: const MaterialApp(
+      home: Scaffold(
+        body: CustomScrollView(
+          slivers: [
+            TemplateGrid(),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
 void main() {
   group('TemplateGrid', () {
     testWidgets('renders grid with templates', (tester) async {
       final templates = TemplateFixtures.list(count: 4);
 
       await tester.pumpWidget(
-        ProviderScope(
+        _buildTestHarness(
           overrides: [
             templatesProvider.overrideWith((ref) => Future.value(templates)),
           ],
-          child: const MaterialApp(
-            home: Scaffold(
-              body: TemplateGrid(),
-            ),
-          ),
         ),
       );
       await tester.pump();
 
-      expect(find.byType(GridView), findsOneWidget);
+      // SliverGrid is used internally; verify cards render
+      expect(find.byType(SliverGrid), findsOneWidget);
     });
 
     testWidgets('shows loading state', (tester) async {
@@ -36,15 +48,10 @@ void main() {
       final completer = Completer<List<TemplateModel>>();
 
       await tester.pumpWidget(
-        ProviderScope(
+        _buildTestHarness(
           overrides: [
             templatesProvider.overrideWith((ref) => completer.future),
           ],
-          child: const MaterialApp(
-            home: Scaffold(
-              body: TemplateGrid(),
-            ),
-          ),
         ),
       );
       await tester.pump();
@@ -54,15 +61,10 @@ void main() {
 
     testWidgets('shows empty state when no templates', (tester) async {
       await tester.pumpWidget(
-        ProviderScope(
+        _buildTestHarness(
           overrides: [
             templatesProvider.overrideWith((ref) => Future.value([])),
           ],
-          child: const MaterialApp(
-            home: Scaffold(
-              body: TemplateGrid(),
-            ),
-          ),
         ),
       );
       await tester.pump();
@@ -72,17 +74,12 @@ void main() {
 
     testWidgets('shows error state on error', (tester) async {
       await tester.pumpWidget(
-        ProviderScope(
+        _buildTestHarness(
           overrides: [
             templatesProvider.overrideWith(
               (ref) => Future.error(Exception('Network error')),
             ),
           ],
-          child: const MaterialApp(
-            home: Scaffold(
-              body: TemplateGrid(),
-            ),
-          ),
         ),
       );
       await tester.pump();
