@@ -61,6 +61,12 @@ abstract class AppColors {
   static const darkSurface2 = Color(0xFF1E2342);
   static const darkSurface3 = Color(0xFF282E55);
 
+  /// Elevated surface — used for cards/panels that need to "float"
+  static const darkSurfaceElevated = Color(0xFF2F3566);
+
+  /// Subtle border for dark mode cards, chips, inputs (WCAG compliant)
+  static const darkBorderSubtle = Color(0x26FFFFFF); // ~15% white
+
   // ── Overlay Colors ───────────────────────────────────────────────────
   /// Black overlays with controlled opacity
   static const black05 = Color(0x0D000000);
@@ -77,10 +83,16 @@ abstract class AppColors {
   static const white60 = Color(0x99FFFFFF);
 
   // ── Semantic Colors ──────────────────────────────────────────────────
-  static const error = Color(0xFFE53935);
-  static const success = Color(0xFF43A047);
-  static const warning = Color(0xFFFFA726);
-  static const info = Color(0xFF29B6F6);
+  static const error = Color(0xFFEF5350);
+  static const success = Color(0xFF66BB6A);
+  static const warning = Color(0xFFFFB74D);
+  static const info = Color(0xFF42A5F5);
+
+  /// Semantic colors with better contrast for dark backgrounds
+  static const errorDark = Color(0xFFEF9A9A);
+  static const successDark = Color(0xFFA5D6A7);
+  static const warningDark = Color(0xFFFFE082);
+  static const infoDark = Color(0xFF90CAF9);
 
   /// Semantic text/icon on dark surfaces
   static const textPrimary = Color(0xFFFFFFFF);

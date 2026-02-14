@@ -354,8 +354,8 @@ abstract class AppTheme {
           surfaceTintColor: Colors.transparent,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(_borderRadius),
-            side: BorderSide(
-              color: AppColors.white10,
+            side: const BorderSide(
+              color: AppColors.darkBorderSubtle,
               width: 0.5,
             ),
           ),
@@ -488,8 +488,8 @@ abstract class AppTheme {
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(_borderRadius),
-            borderSide: BorderSide(
-              color: AppColors.white10,
+            borderSide: const BorderSide(
+              color: AppColors.darkBorderSubtle,
               width: 0.5,
             ),
           ),
@@ -531,8 +531,8 @@ abstract class AppTheme {
           ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(_borderRadiusSm),
-            side: BorderSide(
-              color: AppColors.white10,
+            side: const BorderSide(
+              color: AppColors.darkBorderSubtle,
               width: 0.5,
             ),
           ),
@@ -558,8 +558,8 @@ abstract class AppTheme {
           ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(_borderRadius),
-            side: BorderSide(
-              color: AppColors.white10,
+            side: const BorderSide(
+              color: AppColors.darkBorderSubtle,
               width: 0.5,
             ),
           ),
@@ -580,8 +580,8 @@ abstract class AppTheme {
           surfaceTintColor: Colors.transparent,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(_borderRadiusLg),
-            side: BorderSide(
-              color: AppColors.white10,
+            side: const BorderSide(
+              color: AppColors.darkBorderSubtle,
               width: 0.5,
             ),
           ),
