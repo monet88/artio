@@ -37,8 +37,9 @@ void main() {
     testWidgets('renders Sign In button', (tester) async {
       await tester.pumpApp(const LoginScreen(), overrides: overrides);
 
+      // Auth screens use _GradientButton wrapping InkWell, not FilledButton
       expect(find.text('Sign In'), findsOneWidget);
-      expect(find.byType(FilledButton), findsOneWidget);
+      expect(find.byType(InkWell), findsWidgets);
     });
 
     testWidgets('shows error on empty email submission', (tester) async {

@@ -39,15 +39,17 @@ void main() {
     }
 
     group('renders', () {
-      testWidgets('displays app bar with title', (tester) async {
+      testWidgets('displays HomeScreen with greeting header', (tester) async {
         when(() => mockTemplateRepository.fetchTemplates())
             .thenAnswer((_) async => []);
 
         await tester.pumpWidget(createTestWidget());
         await tester.pump();
 
-        // HomeScreen should render with templates section
+        // HomeScreen should render with greeting text instead of AppBar title
         expect(find.byType(HomeScreen), findsOneWidget);
+        // Redesigned — greeting text like "Good morning/afternoon/evening, Artist"
+        expect(find.textContaining('Artist'), findsOneWidget);
       });
 
       testWidgets('shows loading state initially', (tester) async {
@@ -68,7 +70,7 @@ void main() {
             .thenAnswer((_) async => templates);
 
         await tester.pumpWidget(createTestWidget());
-        await tester.pumpAndSettle();
+        await tester.pump(const Duration(seconds: 1));
 
         // Should display template content
         expect(find.byType(HomeScreen), findsOneWidget);

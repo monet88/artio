@@ -1,0 +1,5 @@
+tags:
+  integration:
+    # Integration tests require external services (Supabase, etc.)
+    # Run separately: flutter test --tags integration
+    # Excluded from default: flutter test --exclude-tags integration
