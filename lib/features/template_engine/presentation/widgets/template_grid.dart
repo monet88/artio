@@ -64,19 +64,41 @@ class _StaggeredGrid extends StatefulWidget {
 
 class _StaggeredGridState extends State<_StaggeredGrid>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _staggerController;
+  late AnimationController _staggerController;
+  int _previousTemplateCount = 0;
+
+  /// Vertical offset (px) for the stagger slide-up entrance animation.
+  static const double _kStaggerSlideOffset = 20.0;
 
   @override
   void initState() {
     super.initState();
-    _staggerController = AnimationController(
+    _previousTemplateCount = widget.templates.length;
+    _staggerController = _createController();
+    _staggerController.forward();
+  }
+
+  @override
+  void didUpdateWidget(covariant _StaggeredGrid oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.templates.length != _previousTemplateCount) {
+      _previousTemplateCount = widget.templates.length;
+      _staggerController.dispose();
+      _staggerController = _createController();
+      _staggerController.forward();
+    }
+  }
+
+  AnimationController _createController() {
+    return AnimationController(
       vsync: this,
       duration: Duration(
         milliseconds: AppAnimations.normal.inMilliseconds +
             (AppAnimations.staggerDelay.inMilliseconds *
-                widget.templates.length.clamp(0, AppAnimations.maxStaggerItems)),
+                widget.templates.length
+                    .clamp(0, AppAnimations.maxStaggerItems)),
       ),
-    )..forward();
+    );
   }
 
   @override
@@ -92,6 +114,8 @@ class _StaggeredGridState extends State<_StaggeredGrid>
 
     return GridView.builder(
       padding: AppSpacing.screenPadding,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         childAspectRatio: 0.75,
@@ -102,9 +126,10 @@ class _StaggeredGridState extends State<_StaggeredGrid>
       itemBuilder: (context, index) {
         // Stagger calculation
         final maxItems = AppAnimations.maxStaggerItems;
+        final clampedItemCount = templates.length.clamp(0, maxItems);
         final staggerIndex = index.clamp(0, maxItems);
         final totalStaggerTime = AppAnimations.staggerDelay.inMilliseconds *
-            maxItems;
+            clampedItemCount;
         final totalDuration = AppAnimations.normal.inMilliseconds +
             totalStaggerTime;
 
@@ -133,7 +158,7 @@ class _StaggeredGridState extends State<_StaggeredGrid>
             return Opacity(
               opacity: itemAnimation.value,
               child: Transform.translate(
-                offset: Offset(0, 20 * (1 - itemAnimation.value)),
+                offset: Offset(0, _kStaggerSlideOffset * (1 - itemAnimation.value)),
                 child: child,
               ),
             );

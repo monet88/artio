@@ -88,7 +88,12 @@ class _GenerationProgressState extends State<GenerationProgress>
     }
 
     if (status == JobStatus.failed) {
-      _shakeController.forward(from: 0);
+      _shakeController.forward(from: 0).then((_) {
+        // Reset to center after shake completes
+        if (mounted) {
+          _shakeController.reset();
+        }
+      });
     }
   }
 

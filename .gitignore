@@ -143,7 +143,6 @@ integration_test/.test_coverage.dart
 # Agents & Tools (AI IDEs)
 .agent/
 .app-template/
-.claude/
 .codex/
 .cursor/
 .github/
@@ -179,4 +178,5 @@ package-lock.json
 
 # Tracked: project rules, skills, and config for AI tools
 !.serena/
+!.claude/
 

@@ -65,8 +65,16 @@ class _OfflineBannerState extends ConsumerState<OfflineBanner>
       _showReconnected = true;
       Future.delayed(const Duration(seconds: 2), () {
         if (mounted) {
-          _controller.reverse();
-          setState(() => _showReconnected = false);
+          // Re-check connectivity before dismissing — if user went
+          // offline again during the delay, keep banner visible.
+          final stillOnline = ref.read(connectivityProvider).whenOrNull(
+                data: (isConnected) => isConnected,
+              ) ??
+              true;
+          if (stillOnline) {
+            _controller.reverse();
+            setState(() => _showReconnected = false);
+          }
         }
       });
     }

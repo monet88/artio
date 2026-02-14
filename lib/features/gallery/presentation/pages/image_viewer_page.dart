@@ -10,7 +10,9 @@ import 'package:share_plus/share_plus.dart';
 import '../../../../core/design_system/app_animations.dart';
 import '../../../../core/design_system/app_gradients.dart';
 import '../../../../core/design_system/app_spacing.dart';
+import '../../../../core/services/haptic_service.dart';
 import '../../../../core/utils/app_exception_mapper.dart';
+import '../../../../shared/widgets/app_snackbar.dart';
 import '../../../../theme/app_colors.dart';
 import '../../data/repositories/gallery_repository.dart';
 import '../../domain/entities/gallery_item.dart';
@@ -49,6 +51,14 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage>
   double _dragOffset = 0;
   double _dragScale = 1.0;
   bool _isDragging = false;
+
+  // ── Swipe-to-dismiss thresholds ───────────────────────────────────
+  static const double _kOpacityFadeStart = 100.0;
+  static const double _kOpacityFadeRange = 200.0;
+  static const double _kMaxOpacityReduction = 0.6;
+  static const double _kDismissThreshold = 150.0;
+  static const double _kScaleDivisor = 1500.0;
+  static const double _kMaxScaleReduction = 0.15;
 
   // Page indicator animation
   late final AnimationController _indicatorController;
@@ -95,29 +105,19 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage>
     final imageUrl = _currentItem.imageUrl;
     if (imageUrl == null) return;
 
-    HapticFeedback.lightImpact();
+    HapticService.buttonTap();
     setState(() => _isDownloading = true);
     try {
       final repo = ref.read(galleryRepositoryProvider);
       final path = await repo.downloadImage(imageUrl);
-      HapticFeedback.mediumImpact();
+      HapticService.downloadComplete();
       if (mounted) {
-        _showCustomSnackbar(
-          context,
-          icon: Icons.download_done_rounded,
-          message: 'Saved to $path',
-          type: _SnackbarType.success,
-        );
+        AppSnackbar.success(context, 'Saved to $path');
       }
     } catch (e) {
-      HapticFeedback.heavyImpact();
+      HapticService.error();
       if (mounted) {
-        _showCustomSnackbar(
-          context,
-          icon: Icons.error_outline_rounded,
-          message: AppExceptionMapper.toUserMessage(e),
-          type: _SnackbarType.error,
-        );
+        AppSnackbar.error(context, AppExceptionMapper.toUserMessage(e));
       }
     } finally {
       if (mounted) setState(() => _isDownloading = false);
@@ -128,7 +128,7 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage>
     final imageUrl = _currentItem.imageUrl;
     if (imageUrl == null) return;
 
-    HapticFeedback.lightImpact();
+    HapticService.share();
     setState(() => _isSharing = true);
     try {
       final repo = ref.read(galleryRepositoryProvider);
@@ -141,12 +141,7 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage>
       );
     } catch (e) {
       if (mounted) {
-        _showCustomSnackbar(
-          context,
-          icon: Icons.error_outline_rounded,
-          message: AppExceptionMapper.toUserMessage(e),
-          type: _SnackbarType.error,
-        );
+        AppSnackbar.error(context, AppExceptionMapper.toUserMessage(e));
       }
     } finally {
       if (mounted) setState(() => _isSharing = false);
@@ -154,7 +149,7 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage>
   }
 
   Future<void> _delete() async {
-    HapticFeedback.mediumImpact();
+    HapticService.destructive();
     final item = _currentItem;
     final deletedIndex = _currentIndex;
 
@@ -178,23 +173,21 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage>
     if (_items.isEmpty) return;
     _pageController.jumpToPage(_currentIndex);
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text('Image deleted'),
-        action: SnackBarAction(
-          label: 'Undo',
-          onPressed: () {
-            HapticFeedback.lightImpact();
-            ref
-                .read(galleryActionsNotifierProvider.notifier)
-                .restoreImage(item.jobId);
-            setState(() {
-              _items.insert(deletedIndex.clamp(0, _items.length), item);
-            });
-          },
-        ),
-        duration: const Duration(seconds: 5),
-      ),
+    AppSnackbar.show(
+      context,
+      message: 'Image deleted',
+      type: AppSnackbarType.info,
+      actionLabel: 'Undo',
+      onAction: () {
+        HapticService.buttonTap();
+        ref
+            .read(galleryActionsNotifierProvider.notifier)
+            .restoreImage(item.jobId);
+        setState(() {
+          _items.insert(deletedIndex.clamp(0, _items.length), item);
+        });
+      },
+      duration: const Duration(seconds: 5),
     );
   }
 
@@ -202,25 +195,22 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage>
     final prompt = _currentItem.prompt;
     if (prompt == null || prompt.isEmpty) return;
 
-    HapticFeedback.lightImpact();
+    HapticService.copy();
     Clipboard.setData(ClipboardData(text: prompt));
-    _showCustomSnackbar(
-      context,
-      icon: Icons.content_copy_rounded,
-      message: 'Prompt copied to clipboard',
-      type: _SnackbarType.info,
-    );
+    AppSnackbar.info(context, 'Prompt copied to clipboard');
   }
 
   void _toggleInfoSheet() {
-    HapticFeedback.selectionClick();
+    HapticService.navigationTap();
     setState(() => _showInfo = !_showInfo);
   }
 
   @override
   Widget build(BuildContext context) {
-    final viewerOpacity = (_dragOffset.abs() > 100)
-        ? (1.0 - ((_dragOffset.abs() - 100) / 200).clamp(0.0, 0.6))
+    final viewerOpacity = (_dragOffset.abs() > _kOpacityFadeStart)
+        ? (1.0 -
+            ((_dragOffset.abs() - _kOpacityFadeStart) / _kOpacityFadeRange)
+                .clamp(0.0, _kMaxOpacityReduction))
         : 1.0;
 
     return Scaffold(
@@ -237,13 +227,15 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage>
             onVerticalDragUpdate: (details) {
               setState(() {
                 _dragOffset += details.delta.dy;
-                _dragScale = 1.0 - (_dragOffset.abs() / 1500).clamp(0.0, 0.15);
+                _dragScale = 1.0 -
+                    (_dragOffset.abs() / _kScaleDivisor)
+                        .clamp(0.0, _kMaxScaleReduction);
               });
             },
             onVerticalDragEnd: (details) {
-              if (_dragOffset.abs() > 150) {
+              if (_dragOffset.abs() > _kDismissThreshold) {
                 // Dismiss
-                HapticFeedback.lightImpact();
+                HapticService.dragThreshold();
                 context.pop();
               } else {
                 setState(() {
@@ -261,7 +253,7 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage>
                   controller: _pageController,
                   itemCount: _items.length,
                   onPageChanged: (index) {
-                    HapticFeedback.selectionClick();
+                    HapticService.pageTurn();
                     setState(() {
                       _currentIndex = index;
                     });
@@ -634,48 +626,7 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage>
     );
   }
 
-  void _showCustomSnackbar(
-    BuildContext context, {
-    required IconData icon,
-    required String message,
-    required _SnackbarType type,
-  }) {
-    final color = switch (type) {
-      _SnackbarType.success => AppColors.success,
-      _SnackbarType.error => AppColors.error,
-      _SnackbarType.info => AppColors.info,
-    };
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        behavior: SnackBarBehavior.floating,
-        backgroundColor: Colors.black.withValues(alpha: 0.85),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
-          side: BorderSide(
-            color: color.withValues(alpha: 0.3),
-            width: 0.5,
-          ),
-        ),
-        content: Row(
-          children: [
-            Icon(icon, color: color, size: 20),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Text(
-                message,
-                style: const TextStyle(color: Colors.white, fontSize: 14),
-              ),
-            ),
-          ],
-        ),
-        duration: const Duration(seconds: 3),
-      ),
-    );
-  }
 }
-
-enum _SnackbarType { success, error, info }
 
 /// Frosted glass-style icon button for the info panel.
 class _GlassIconButton extends StatelessWidget {

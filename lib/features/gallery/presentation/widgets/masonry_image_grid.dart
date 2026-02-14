@@ -72,9 +72,10 @@ class _MasonryImageGridState extends State<MasonryImageGrid>
 
         // Stagger animation
         final maxItems = AppAnimations.maxStaggerItems;
+        final clampedItemCount = widget.items.length.clamp(0, maxItems);
         final staggerIndex = index.clamp(0, maxItems);
         final totalStaggerTime =
-            AppAnimations.staggerDelay.inMilliseconds * maxItems;
+            AppAnimations.staggerDelay.inMilliseconds * clampedItemCount;
         final totalDuration =
             AppAnimations.normal.inMilliseconds + totalStaggerTime;
         final startFrac =
