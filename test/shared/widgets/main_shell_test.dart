@@ -69,9 +69,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      // Home tab is selected → shows selectedIcon (home_rounded)
-      // Unselected shows home_outlined
-      expect(find.byIcon(Icons.home_rounded), findsOneWidget);
+      expect(find.byIcon(Icons.home), findsOneWidget);
     });
 
     testWidgets('renders Create icon', (tester) async {
@@ -80,8 +78,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      // Create tab is unselected → shows auto_awesome_outlined
-      expect(find.byIcon(Icons.auto_awesome_outlined), findsOneWidget);
+      expect(find.byIcon(Icons.add_circle), findsOneWidget);
     });
 
     testWidgets('correct index selected for home route', (tester) async {

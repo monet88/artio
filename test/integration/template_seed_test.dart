@@ -1,4 +1,3 @@
-@Tags(['integration'])
 import 'package:flutter_test/flutter_test.dart';
 import 'package:artio/features/template_engine/domain/entities/template_model.dart';
 

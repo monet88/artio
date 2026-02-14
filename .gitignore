@@ -9,11 +9,9 @@
 *.tmp
 .DS_Store
 .atom/
-.build/
 .buildlog/
 .history
 .svn/
-.swiftpm/
 migrate_working_dir/
 nul
 
@@ -143,7 +141,7 @@ integration_test/.test_coverage.dart
 # Agents & Tools (AI IDEs)
 .agent/
 .app-template/
-.claude/
+# .claude/ - tracked for project rules & skills
 .codex/
 .cursor/
 .github/
@@ -178,5 +176,6 @@ package.json
 package-lock.json
 
 # Tracked: project rules, skills, and config for AI tools
+!.claude/
 !.serena/
 
