@@ -235,7 +235,7 @@ class _GradientCTAButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 52,
-      constraints: const BoxConstraints(maxWidth: 220),
+      constraints: const BoxConstraints(maxWidth: 260),
       decoration: BoxDecoration(
         gradient: AppGradients.primaryGradient,
         borderRadius: BorderRadius.circular(14),
