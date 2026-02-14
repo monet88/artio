@@ -1,288 +1,111 @@
-# Artio - AI Art Generation App
-
 <div align="center">
 
-**A Flutter cross-platform AI image generation SaaS**
+# 🛰️ AntiGravity IDE
+### *Advanced Edition • v4.1.4 Meta-Engine*
 
-[![Flutter](https://img.shields.io/badge/Flutter-3.10+-02569B?logo=flutter)](https://flutter.dev)
-[![Dart](https://img.shields.io/badge/Dart-3.10+-0175C2?logo=dart)](https://dart.dev)
-[![Riverpod](https://img.shields.io/badge/Riverpod-2.6+-AFB5C8?logo=flutter)](https://riverpod.dev)
-[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![npm version](https://img.shields.io/npm/v/antigravity-ide.svg?style=for-the-badge&color=2ea44f)](https://www.npmjs.com/package/antigravity-ide)
+[![npm downloads](https://img.shields.io/npm/dm/antigravity-ide.svg?style=for-the-badge&color=blueviolet)](https://www.npmjs.com/package/antigravity-ide)
+[![license](https://img.shields.io/npm/l/antigravity-ide.svg?style=for-the-badge&color=orange)](LICENSE)
+
+**Easy Vibe, Lazy Code. One Command to Rule Them All.**
+## Acknowledgments
+
+This project adopts the **[Agent Skills Standard](https://github.com/HoangNguyen0403/agent-skills-standard)** for AI engineering practices.
+- **Goal**: Token Economy, High-Density Context, and Universal Compatibility.
+- **License**: MIT (Ref: HoangNguyen0403)
+
+We also integrate official skills from **[anthropics/skills](https://github.com/anthropics/skills)** (Apache 2.0).
+
+
+
+[Explore Docs](https://antigravity-ide-cli.vercel.app/) • [Github](https://github.com/Dokhacgiakhoa/antigravity-ide) • [Report Bug](https://github.com/Dokhacgiakhoa/antigravity-ide/issues)
+
+---
+
+### 📊 Project Mastery at a Glance
+
+| **15** Rules | **22** Agents | **573** Skills | **2977** Patterns | **30** Flows | **135** DNA |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| *Governance* | *Specialists* | *Operational* | *Advanced AI* | *Standardized* | *Core Libraries* |
 
 </div>
 
 ---
 
-## 🎯 Overview
+## ⚡ Global Installation (npx)
 
-**Artio** ("Art Made Simple") is a cross-platform AI image generation SaaS delivering enterprise-grade image creation through two distinct modes:
+The recommended way to use Antigravity IDE is via **npx**. No global clutter, always the latest engine.
 
-- **Template Engine** (Home tab): Guided image-to-image transformation with curated presets
-- **Text-to-Image** (Create tab): Freeform prompt-based generation
+# UNIFIED COMMAND: Create, Update, Repair, and Sync
+npx antigravity-ide [project-name]
 
-### Tech Stack
+# If run in an existing project, it automatically REPAIRS & UPDATES
+npx antigravity-ide .
 
-| Category | Technology |
-|----------|------------|
-| **Framework** | Flutter 3.10+ (Android, iOS, Web, Windows) |
-| **State Management** | Riverpod 2.6+ with code generation |
-| **Navigation** | go_router 14.8+ with auth guards |
-| **Data Models** | Freezed + JSON Serializable |
-| **Backend** | Supabase (Auth, PostgreSQL, Storage, Edge Functions, Realtime) |
-| **Payments** | RevenueCat (mobile) + Stripe (web) |
-| **Ads** | AdMob (rewarded ads) |
-| **AI Provider** | Kie API (primary), Gemini (fallback) |
+# Validate your project against Agent Skills Standard
+npx antigravity-ide validate
+
+> [!TIP]
+> **New to npx?** Check our [NPX Installation Guide](docs/INSTALL_NPX_GUIDE.vi.md) for a step-by-step setup.
 
 ---
 
-## 🏗️ Architecture
+## ✨ The Premium Edge (v4.1.0)
 
-### Feature-First Clean Architecture
-
-```
-lib/
-├── core/                   # Cross-cutting concerns
-│   ├── constants/         # App-wide constants
-│   ├── exceptions/        # AppException hierarchy
-│   ├── providers/         # Supabase client DI
-│   └── utils/             # Error mapper, logger
-│
-├── features/              # Feature modules (3-layer each)
-│   ├── auth/              # ✓ Authentication (login/register/OAuth)
-│   ├── template_engine/   # ✓ CORE: AI template-based generation
-│   ├── gallery/           # ✓ User's generated images
-│   ├── settings/          # ✓ App settings (theme switcher)
-│   └── create/            # ✓ Create screen
-│
-├── routing/               # GoRouter configuration
-├── shared/                # Shared widgets (MainShell, ErrorPage)
-├── theme/                 # Theme management
-├── test/                  # Unit and widget tests
-├── integration_test/      # E2E tests
-└── main.dart              # Entry point
-```
-
-### 3-Layer Pattern per Feature
-
-Each feature follows Clean Architecture:
-- **Domain**: Entities, Repository interfaces
-- **Data**: Repository implementations, Supabase integration
-- **Presentation**: Providers (Riverpod), Screens, Widgets
+| Feature | **AntiGravity IDE** | Standard AI Wrappers |
+| :--- | :--- | :--- |
+| **🧠 Fractal Intelligence** | **573 Core Skills** with 2977 nested tactics | Single-purpose prompts |
+| **🛡️ Watchdog System** | Real-time hang detection & error learning | Direct failures / Silent crashes |
+| **🌊 Scale Adaptive** | Modular DNA for Instant, Creative, or SME | One-size-fits-all |
+| **🛠️ Self-Healing** | Auto-repair logic via unified god command | Manual JSON debugging |
 
 ---
 
-## 🚀 Getting Started
+## 🎯 3 Steps to Your First App
+1. **Launch Terminal**: Open Command Prompt or Powershell.
+2. **Execute God Command**: `npx antigravity-ide my-app`
+3. **Talk to the Brain**: Interact with your new Virtual Team.
 
-### Prerequisites
+---
 
-- Flutter SDK 3.10+ ([Install](https://docs.flutter.dev/get-started/install))
-- Dart SDK 3.10+
-- Supabase project ([Create free](https://supabase.com))
+## 📂 Visual Brain Structure
 
-### Installation
-
-```bash
-# Clone repository
-git clone <repo-url>
-cd aiart
-
-# Install dependencies
-flutter pub get
-
-# Run code generation
-dart run build_runner build --delete-conflicting-outputs
-
-# Configure environment
-cp .env.example .env
-# Edit .env with your Supabase credentials
-```
-
-### Configuration
-
-Create `.env` file in project root:
-
-```env
-SUPABASE_URL=your_supabase_url
-SUPABASE_ANON_KEY=your_supabase_anon_key
-```
-
-### Run
-
-```bash
-# Flutter (iOS/Android/Windows)
-flutter run
-
-# Web
-flutter run -d chrome
-
-# Windows
-flutter run -d windows
-
-# Release build
-flutter build apk      # Android
-flutter build ios      # iOS
-flutter build web      # Web
-flutter build windows  # Windows
+```text
+your-project/
+├── .agent/              # 🧠 THE BRAIN (Fractal Core)
+│   ├── .shared/         # ⛩️ DNA (API/DB/Security Standards)
+│   ├── agents/          # 🎭 Specialists (Lead, PM, Auditor)
+│   ├── rules/           # ⚖️ Governance (Compliance, Context)
+│   ├── skills/          # 🛠️ Mastery (573 Fractal Skills)
+│   ├── workflows/       # 🚀 Ops (/create, /debug, /audit)
+│   └── scripts/         # 🧪 Continuous Validation
+└── (your app)           # ⚡ Your Source Code
 ```
 
 ---
 
-## 📦 Features
+## 🧠 Master Ecosystem
 
-### ✅ Implemented
+### 🎭 Virtual Specialist Team
+- **Lead Developer**: System Design & Architecture.
+- **Security Auditor**: Real-time vulnerability scanning.
+- **Product Manager**: Semantic task planning.
+- *...and 19 other senior industrial personas.*
 
-| Feature | Description | Status |
-|---------|-------------|--------|
-| **Authentication** | Email/password, Google OAuth, Apple Sign-In, password reset | ✅ Complete |
-| **Template Engine** | Browse templates, dynamic inputs, generation tracking | ✅ Complete |
-| **Gallery** | Masonry grid, image viewer, download/share/delete | ✅ Complete |
-| **Settings** | Theme switcher (light/dark/system) | ✅ Complete |
-| **Realtime Updates** | Job status streaming via Supabase Realtime | ✅ Complete |
-| **Error Handling** | Centralized AppException hierarchy | ✅ Complete |
-
-### 🚧 Planned
-
-| Feature | Description | Status |
-|---------|-------------|--------|
-| **Subscription & Credits** | Free/Pro tiers, RevenueCat integration | 🚧 Planned |
-| **Rate Limiting** | Daily generation limits, cooldown | 🚧 Planned |
-| **Text-to-Image** | Custom prompt generation | 🚧 Planned |
-
----
-
-## 📖 Quick Start
-
-### Run the App
-
-```bash
-flutter run              # Default device
-flutter run -d chrome    # Web
-flutter run -d windows   # Windows
-```
-
-### Basic Workflow
-
-1. **Sign up** → Email/password or Google/Apple OAuth
-2. **Home tab** → Browse 25 AI templates
-3. **Select template** → Fill inputs → Generate
-4. **Gallery** → View/download/share your creations
-
-See [docs/](docs/) for detailed guides
-
----
-
-## 🛠️ Development
-
-### Code Generation
-
-```bash
-# One-time generation
-dart run build_runner build --delete-conflicting-outputs
-
-# Watch mode (development)
-dart run build_runner watch
-```
-
-### Code Quality
-
-```bash
-# Analyze code
-flutter analyze
-
-# Run tests
-flutter test
-
-# Format code
-dart format .
-```
-
-### Key Libraries
-
-```yaml
-# State Management
-flutter_riverpod: ^2.6.1
-riverpod_annotation: ^2.6.1
-
-# Data Classes
-freezed: ^2.5.8
-json_serializable: ^6.9.2
-
-# Backend
-supabase_flutter: ^2.11.0
-
-# Routing
-go_router: ^14.8.1
-
-# Payments
-purchases_flutter: ^9.0.0
-
-# Utils
-cached_network_image: ^3.4.1
-image_picker: ^1.1.2
-share_plus: ^12.0.1
-```
+### 🛠️ Strategic Skill Domains
+- **High-Perf Web**: Next.js 15, React 19, Tailwind v4.
+- **Offensive Security**: OWASP, Malware, Pentesting.
+- **Infra & Cloud**: K8s, Docker, AWS, Vercel, Supabase.
+- **Advanced AI**: LangGraph, RAG, Multi-Agent Orchestration.
 
 ---
 
 ## 📚 Documentation
+- **[Gemini Usage Guide](docs/GEMINI_USAGE.md)**: How to configure and use with Google Gemini.
+- **[Master Operations](docs/MASTER_OPERATIONS.md)**: Deep dive into the IDE's core mechanics.
+- **[Publishing Guide](docs/PUBLISHING_GUIDE.md)**: How to release your own Agent packages.
 
-| Document | Description |
-|----------|-------------|
-| [docs/development-roadmap.md](docs/development-roadmap.md) | Project phases and progress tracking |
-| [CLAUDE.md](CLAUDE.md) | AI assistant guidelines |
-| [docs/code-standards.md](docs/code-standards.md) | Coding conventions |
-| [docs/system-architecture.md](docs/system-architecture.md) | Architecture documentation |
-| [docs/project-overview-pdr.md](docs/project-overview-pdr.md) | Product requirements |
-| [docs/codebase-summary.md](docs/codebase-summary.md) | Detailed code analysis |
+## 🙏 Credits
+Authored by **Dokhacgiakhoa**. Inspired by [Antigravity Kit](https://github.com/vudovn/antigravity-kit), [Awesome Skills](https://github.com/sickn33/antigravity-awesome-skills), [MCP](https://modelcontextprotocol.io/), and [Fabric](https://github.com/danielmiessler/fabric).
 
----
-
-## 🧪 Testing
-
-```bash
-# Run all tests
-flutter test
-
-# Run with coverage
-flutter test --coverage
-
-# Run integration tests (requires running app)
-flutter test integration_test/template_e2e_test.dart
-
-# Run specific test file
-flutter test test/features/auth/data/repositories/auth_repository_test.dart
-```
-
-**Test Suite**: 324 tests (comprehensive coverage)
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'feat: add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
----
-
-## 📞 Support
-
-For issues, questions, or contributions, please [open an issue](https://github.com/your-repo/issues).
-
----
-
-<div align="center">
-
-**Built with ❤️ using Flutter**
-
-**Last Updated**: 2026-02-09
-
-</div>
+Developed with 💡 by **Dokhacgiakhoa** • [MIT LICENSE](LICENSE)

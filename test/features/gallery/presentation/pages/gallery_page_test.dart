@@ -73,7 +73,8 @@ void main() {
           .thenAnswer((_) => Stream.value([]));
 
       await tester.pumpWidget(createTestWidget());
-      await tester.pumpAndSettle();
+      // Use pump with explicit duration since EmptyGalleryState has continuous float animation
+      await tester.pump(const Duration(milliseconds: 500));
 
       expect(find.byType(GalleryPage), findsOneWidget);
     });
@@ -84,7 +85,7 @@ void main() {
           .thenAnswer((_) => Stream.value(items));
 
       await tester.pumpWidget(createTestWidget());
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
 
       expect(find.byType(GalleryPage), findsOneWidget);
     });
@@ -94,10 +95,12 @@ void main() {
           .thenAnswer((_) => Stream.error(Exception('Network error')));
 
       await tester.pumpWidget(createTestWidget());
-      await tester.pumpAndSettle();
+      // Pump past the fade-in animation
+      await tester.pump(const Duration(milliseconds: 500));
 
-      expect(find.byIcon(Icons.error_outline), findsOneWidget);
-      expect(find.text('Retry'), findsOneWidget);
+      // Redesigned ErrorStateWidget uses categorized icons & 'Try Again' button
+      expect(find.byIcon(Icons.sentiment_dissatisfied_rounded), findsOneWidget);
+      expect(find.text('Try Again'), findsOneWidget);
     });
   });
 }
