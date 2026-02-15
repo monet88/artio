@@ -147,6 +147,7 @@ integration_test/.test_coverage.dart
 .github/
 .opencode/
 .osgrep/
+.ck/
 opencode.json
 .skillsrc
 .sisyphus/
