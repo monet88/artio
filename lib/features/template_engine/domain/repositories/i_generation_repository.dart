@@ -6,6 +6,8 @@ abstract class IGenerationRepository {
     required String prompt,
     String aspectRatio = '1:1',
     int imageCount = 1,
+    String? outputFormat,
+    String? modelId,
   });
 
   Stream<GenerationJobModel> watchJob(String jobId);

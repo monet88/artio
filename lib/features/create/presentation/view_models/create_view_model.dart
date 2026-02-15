@@ -1,6 +1,9 @@
 import 'dart:async';
 
+import 'package:artio/core/constants/ai_models.dart';
+import 'package:artio/core/constants/app_constants.dart';
 import 'package:artio/core/constants/generation_constants.dart';
+import 'package:artio/core/exceptions/app_exception.dart';
 import 'package:artio/features/create/domain/entities/create_form_state.dart';
 import 'package:artio/features/template_engine/data/repositories/generation_repository.dart';
 import 'package:artio/features/template_engine/domain/entities/generation_job_model.dart';
@@ -14,6 +17,12 @@ part 'create_view_model.g.dart';
 class CreateViewModel extends _$CreateViewModel {
   late final GenerationJobManager _jobManager;
 
+  bool get isGenerating =>
+      state.isLoading ||
+      state.valueOrNull?.status == JobStatus.pending ||
+      state.valueOrNull?.status == JobStatus.generating ||
+      state.valueOrNull?.status == JobStatus.processing;
+
   @override
   AsyncValue<GenerationJobModel?> build() {
     _jobManager = GenerationJobManager();
@@ -24,10 +33,55 @@ class CreateViewModel extends _$CreateViewModel {
   Future<void> generate({
     required CreateFormState formState,
     required String userId,
+    required bool isPremiumUser,
   }) async {
-    if (!formState.isValid) {
+    if (isGenerating) {
+      return;
+    }
+
+    final trimmedPrompt = formState.prompt.trim();
+    if (trimmedPrompt.length < 3) {
       state = AsyncError(
-        Exception('Prompt must be at least 3 characters'),
+        const AppException.generation(message: 'Prompt must be at least 3 characters'),
+        StackTrace.current,
+      );
+      return;
+    }
+
+    if (trimmedPrompt.length > AppConstants.maxPromptLength) {
+      state = AsyncError(
+        AppException.generation(
+          message: 'Prompt must be at most ${AppConstants.maxPromptLength} characters',
+        ),
+        StackTrace.current,
+      );
+      return;
+    }
+
+    final selectedModel = AiModels.getById(formState.modelId);
+    if (selectedModel == null) {
+      state = AsyncError(
+        const AppException.generation(message: 'Selected model is not supported'),
+        StackTrace.current,
+      );
+      return;
+    }
+
+    if (!selectedModel.supportedAspectRatios.contains(formState.aspectRatio)) {
+      state = AsyncError(
+        const AppException.generation(
+          message: 'Selected aspect ratio is not supported by this model',
+        ),
+        StackTrace.current,
+      );
+      return;
+    }
+
+    if (selectedModel.isPremium && !isPremiumUser) {
+      state = AsyncError(
+        const AppException.generation(
+          message: 'This model requires a premium subscription',
+        ),
         StackTrace.current,
       );
       return;
@@ -36,6 +90,8 @@ class CreateViewModel extends _$CreateViewModel {
     state = const AsyncLoading();
 
     try {
+      _jobManager.resetErrorDedup();
+
       final policy = ref.read(generationPolicyProvider);
       final eligibility = await policy.canGenerate(
         userId: userId,
@@ -44,7 +100,9 @@ class CreateViewModel extends _$CreateViewModel {
 
       if (eligibility.isDenied) {
         state = AsyncError(
-          Exception(eligibility.denialReason ?? 'Generation not allowed'),
+          AppException.generation(
+            message: eligibility.denialReason ?? 'Generation not allowed',
+          ),
           StackTrace.current,
         );
         return;
@@ -57,6 +115,8 @@ class CreateViewModel extends _$CreateViewModel {
         prompt: params.prompt,
         aspectRatio: params.aspectRatio,
         imageCount: params.imageCount,
+        outputFormat: params.outputFormat,
+        modelId: params.modelId,
       );
 
       _jobManager.watchJob(
@@ -64,9 +124,9 @@ class CreateViewModel extends _$CreateViewModel {
         onData: (job) => state = AsyncData(job),
         onError: (e, st) => state = AsyncError(e, st),
         onTimeout: () => state = AsyncError(
-          Exception(
-            'Generation timed out after '
-            '${GenerationJobManager.defaultTimeoutMinutes} minutes',
+          AppException.generation(
+            message: 'Generation timed out after '
+                '${GenerationJobManager.defaultTimeoutMinutes} minutes',
           ),
           StackTrace.current,
         ),

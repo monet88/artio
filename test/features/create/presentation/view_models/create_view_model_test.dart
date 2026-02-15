@@ -1,5 +1,8 @@
 import 'dart:async';
 
+import 'package:artio/core/constants/app_constants.dart';
+import 'package:artio/core/exceptions/app_exception.dart';
+import 'package:artio/core/exceptions/app_exception.dart' show GenerationException;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -57,7 +60,70 @@ void main() {
         await container.read(createViewModelProvider.notifier).generate(
               formState: const CreateFormState(prompt: 'ab'),
               userId: 'user-1',
+              isPremiumUser: false,
             );
+
+        final state = container.read(createViewModelProvider);
+        expect(state.hasError, true);
+      });
+
+      test('rejects when prompt exceeds max length', () async {
+        container = createContainer();
+        final longPrompt = 'a' * (AppConstants.maxPromptLength + 1);
+
+        await container.read(createViewModelProvider.notifier).generate(
+              formState: CreateFormState(prompt: longPrompt),
+              userId: 'user-1',
+              isPremiumUser: false,
+            );
+
+        final state = container.read(createViewModelProvider);
+        expect(state.hasError, true);
+        expect(state.error, isA<GenerationException>());
+      });
+
+      test('rejects when model does not support selected aspect ratio', () async {
+        container = createContainer();
+
+        await container.read(createViewModelProvider.notifier).generate(
+              formState: const CreateFormState(
+                prompt: 'A sunset',
+                modelId: 'gpt-image/1.5-text-to-image',
+                aspectRatio: '16:9',
+              ),
+              userId: 'user-1',
+              isPremiumUser: false,
+            );
+
+        final state = container.read(createViewModelProvider);
+        expect(state.hasError, true);
+        expect(state.error, isA<GenerationException>());
+      });
+
+      test('rejects premium model when user is not premium', () async {
+        container = createContainer();
+
+        await container.read(createViewModelProvider.notifier).generate(
+              formState: const CreateFormState(
+                prompt: 'A sunset',
+                modelId: 'google/imagen4-ultra',
+              ),
+              userId: 'user-1',
+              isPremiumUser: false,
+            );
+
+        verifyNever(() => mockPolicy.canGenerate(
+          userId: any(named: 'userId'),
+          templateId: any(named: 'templateId'),
+        ));
+        verifyNever(() => mockRepository.startGeneration(
+          templateId: any(named: 'templateId'),
+          prompt: any(named: 'prompt'),
+          aspectRatio: any(named: 'aspectRatio'),
+          imageCount: any(named: 'imageCount'),
+          outputFormat: any(named: 'outputFormat'),
+          modelId: any(named: 'modelId'),
+        ));
 
         final state = container.read(createViewModelProvider);
         expect(state.hasError, true);
@@ -74,6 +140,8 @@ void main() {
           prompt: any(named: 'prompt'),
           aspectRatio: any(named: 'aspectRatio'),
           imageCount: any(named: 'imageCount'),
+          outputFormat: any(named: 'outputFormat'),
+          modelId: any(named: 'modelId'),
         )).thenAnswer((_) async => 'job-123');
 
         when(() => mockRepository.watchJob('job-123'))
@@ -84,6 +152,7 @@ void main() {
         unawaited(container.read(createViewModelProvider.notifier).generate(
               formState: const CreateFormState(prompt: 'A sunset'),
               userId: 'user-123',
+              isPremiumUser: false,
             ));
 
         await Future.delayed(const Duration(milliseconds: 10));
@@ -105,6 +174,8 @@ void main() {
           prompt: any(named: 'prompt'),
           aspectRatio: any(named: 'aspectRatio'),
           imageCount: any(named: 'imageCount'),
+          outputFormat: any(named: 'outputFormat'),
+          modelId: any(named: 'modelId'),
         )).thenAnswer((_) async => 'job-123');
 
         when(() => mockRepository.watchJob('job-123'))
@@ -119,6 +190,7 @@ void main() {
                 imageCount: 2,
               ),
               userId: 'user-123',
+              isPremiumUser: false,
             ));
 
         await Future.delayed(const Duration(milliseconds: 10));
@@ -128,6 +200,50 @@ void main() {
           prompt: 'A beautiful landscape',
           aspectRatio: '16:9',
           imageCount: 2,
+          outputFormat: 'jpg',
+          modelId: 'google/imagen4',
+        )).called(1);
+      });
+
+      test('passes output format and model id to repository', () async {
+        when(() => mockPolicy.canGenerate(
+          userId: any(named: 'userId'),
+          templateId: any(named: 'templateId'),
+        )).thenAnswer((_) async => const GenerationEligibility.allowed());
+
+        when(() => mockRepository.startGeneration(
+          templateId: any(named: 'templateId'),
+          prompt: any(named: 'prompt'),
+          aspectRatio: any(named: 'aspectRatio'),
+          imageCount: any(named: 'imageCount'),
+          outputFormat: any(named: 'outputFormat'),
+          modelId: any(named: 'modelId'),
+        )).thenAnswer((_) async => 'job-123');
+
+        when(() => mockRepository.watchJob('job-123'))
+            .thenAnswer((_) => jobStreamController.stream);
+
+        container = createContainer();
+
+        unawaited(container.read(createViewModelProvider.notifier).generate(
+              formState: const CreateFormState(
+                prompt: 'A beautiful landscape',
+                outputFormat: 'png',
+                modelId: 'flux-2/flex-text-to-image',
+              ),
+              userId: 'user-123',
+              isPremiumUser: false,
+            ));
+
+        await Future.delayed(const Duration(milliseconds: 10));
+
+        verify(() => mockRepository.startGeneration(
+          templateId: 'free-text',
+          prompt: 'A beautiful landscape',
+          aspectRatio: '1:1',
+          imageCount: 1,
+          outputFormat: 'png',
+          modelId: 'flux-2/flex-text-to-image',
         )).called(1);
       });
 
@@ -144,10 +260,59 @@ void main() {
         await container.read(createViewModelProvider.notifier).generate(
               formState: const CreateFormState(prompt: 'A sunset'),
               userId: 'user-123',
+              isPremiumUser: false,
             );
 
         final state = container.read(createViewModelProvider);
         expect(state.hasError, true);
+      });
+
+      test('prevents duplicate submission while generating', () async {
+        when(() => mockPolicy.canGenerate(
+          userId: any(named: 'userId'),
+          templateId: any(named: 'templateId'),
+        )).thenAnswer((_) async => const GenerationEligibility.allowed());
+
+        when(() => mockRepository.startGeneration(
+          templateId: any(named: 'templateId'),
+          prompt: any(named: 'prompt'),
+          aspectRatio: any(named: 'aspectRatio'),
+          imageCount: any(named: 'imageCount'),
+          outputFormat: any(named: 'outputFormat'),
+          modelId: any(named: 'modelId'),
+        )).thenAnswer((_) async {
+          await Future<void>.delayed(const Duration(milliseconds: 50));
+          return 'job-123';
+        });
+
+        when(() => mockRepository.watchJob('job-123'))
+            .thenAnswer((_) => jobStreamController.stream);
+
+        container = createContainer();
+
+        final notifier = container.read(createViewModelProvider.notifier);
+        unawaited(notifier.generate(
+          formState: const CreateFormState(prompt: 'First request'),
+          userId: 'user-123',
+          isPremiumUser: false,
+        ));
+
+        await Future<void>.delayed(const Duration(milliseconds: 1));
+
+        await notifier.generate(
+          formState: const CreateFormState(prompt: 'Second request'),
+          userId: 'user-123',
+          isPremiumUser: false,
+        );
+
+        verify(() => mockRepository.startGeneration(
+          templateId: any(named: 'templateId'),
+          prompt: any(named: 'prompt'),
+          aspectRatio: any(named: 'aspectRatio'),
+          imageCount: any(named: 'imageCount'),
+          outputFormat: any(named: 'outputFormat'),
+          modelId: any(named: 'modelId'),
+        )).called(1);
       });
 
       test('sets error state when repository throws', () async {
@@ -161,6 +326,8 @@ void main() {
           prompt: any(named: 'prompt'),
           aspectRatio: any(named: 'aspectRatio'),
           imageCount: any(named: 'imageCount'),
+          outputFormat: any(named: 'outputFormat'),
+          modelId: any(named: 'modelId'),
         )).thenThrow(Exception('Network error'));
 
         container = createContainer();
@@ -168,6 +335,7 @@ void main() {
         await container.read(createViewModelProvider.notifier).generate(
               formState: const CreateFormState(prompt: 'A sunset'),
               userId: 'user-123',
+              isPremiumUser: false,
             );
 
         final state = container.read(createViewModelProvider);
@@ -187,6 +355,8 @@ void main() {
           prompt: any(named: 'prompt'),
           aspectRatio: any(named: 'aspectRatio'),
           imageCount: any(named: 'imageCount'),
+          outputFormat: any(named: 'outputFormat'),
+          modelId: any(named: 'modelId'),
         )).thenAnswer((_) async => 'job-123');
 
         when(() => mockRepository.watchJob('job-123'))
@@ -197,6 +367,7 @@ void main() {
         unawaited(container.read(createViewModelProvider.notifier).generate(
               formState: const CreateFormState(prompt: 'Test'),
               userId: 'user-123',
+              isPremiumUser: false,
             ));
 
         await Future.delayed(Duration.zero);

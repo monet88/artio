@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -16,6 +18,8 @@ GenerationRepository generationRepository(Ref ref) {
 class GenerationRepository implements IGenerationRepository {
   final SupabaseClient _supabase;
 
+  static const _maxEmptyWatchEvents = 3;
+
   const GenerationRepository(this._supabase);
 
   @override
@@ -24,6 +28,8 @@ class GenerationRepository implements IGenerationRepository {
     required String prompt,
     String aspectRatio = '1:1',
     int imageCount = 1,
+    String? outputFormat,
+    String? modelId,
   }) async {
     try {
       final response = await _supabase.functions.invoke(
@@ -33,6 +39,8 @@ class GenerationRepository implements IGenerationRepository {
           'prompt': prompt.trim(),
           'aspect_ratio': aspectRatio,
           'image_count': imageCount,
+          if (outputFormat != null) 'outputFormat': outputFormat,
+          if (modelId != null) 'model': modelId,
         },
       );
 
@@ -50,11 +58,12 @@ class GenerationRepository implements IGenerationRepository {
       }
 
       final data = response.data as Map<String, dynamic>?;
-      if (data == null || data['job_id'] == null) {
+      final jobId = data?['job_id'] ?? data?['jobId'];
+      if (jobId is! String || jobId.isEmpty) {
         throw const AppException.generation(message: 'Invalid response from server');
       }
 
-      return data['job_id'] as String;
+      return jobId;
     } on FunctionException catch (e) {
       if (e.status == 429) {
         throw const AppException.generation(
@@ -71,16 +80,30 @@ class GenerationRepository implements IGenerationRepository {
 
   @override
   Stream<GenerationJobModel> watchJob(String jobId) {
+    var emptyEventCount = 0;
+
     return _supabase
         .from('generation_jobs')
         .stream(primaryKey: ['id'])
         .eq('id', jobId)
-        .map((data) {
-          if (data.isEmpty) {
-            throw AppException.generation(message: 'Job not found', jobId: jobId);
-          }
-          return GenerationJobModel.fromJson(data.first);
-        });
+        .transform(
+          StreamTransformer.fromHandlers(
+            handleData: (data, sink) {
+              if (data.isEmpty) {
+                emptyEventCount += 1;
+                if (emptyEventCount >= _maxEmptyWatchEvents) {
+                  sink.addError(
+                    AppException.generation(message: 'Job not found', jobId: jobId),
+                  );
+                }
+                return;
+              }
+
+              emptyEventCount = 0;
+              sink.add(GenerationJobModel.fromJson(data.first));
+            },
+          ),
+        );
   }
 
   @override

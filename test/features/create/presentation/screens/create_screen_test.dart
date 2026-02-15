@@ -1,3 +1,4 @@
+import 'package:artio/features/auth/domain/entities/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -8,11 +9,14 @@ import 'package:artio/features/template_engine/domain/entities/generation_job_mo
 import 'package:artio/features/create/presentation/view_models/create_view_model.dart';
 import '../../../../core/helpers/helpers.dart';
 
-/// Stub AuthViewModel that returns [AuthState.unauthenticated()] without
-/// touching Supabase.
+/// Stub AuthViewModel configurable auth state without touching Supabase.
 class _StubAuthViewModel extends AuthViewModel {
+  _StubAuthViewModel(this._state);
+
+  final AuthState _state;
+
   @override
-  AuthState build() => const AuthState.unauthenticated();
+  AuthState build() => _state;
 }
 
 /// Stub CreateViewModel that returns an initial [AsyncData(null)] state.
@@ -21,19 +25,37 @@ class _StubCreateViewModel extends CreateViewModel {
   AsyncValue<GenerationJobModel?> build() => const AsyncData(null);
 }
 
+class _FailedCreateViewModel extends CreateViewModel {
+  @override
+  AsyncValue<GenerationJobModel?> build() =>
+      AsyncData(GenerationJobModel(
+        id: 'job-failed',
+        userId: 'user-1',
+        templateId: 'free-text',
+        prompt: 'A prompt',
+        status: JobStatus.failed,
+        errorMessage: 'Provider failed',
+      ));
+}
+
 void main() {
-  /// Common overrides that prevent Supabase from being called.
-  final testOverrides = <Override>[
-    authViewModelProvider.overrideWith(() => _StubAuthViewModel()),
-    createViewModelProvider.overrideWith(() => _StubCreateViewModel()),
-  ];
+  List<Override> buildOverrides({
+    AuthState authState = const AuthState.unauthenticated(),
+    CreateViewModel? createViewModel,
+  }) {
+    return <Override>[
+      authViewModelProvider.overrideWith(() => _StubAuthViewModel(authState)),
+      createViewModelProvider
+          .overrideWith(() => createViewModel ?? _StubCreateViewModel()),
+    ];
+  }
 
   group('CreateScreen', () {
     testWidgets('renders create screen with core UI elements',
         (tester) async {
       await tester.pumpApp(
         const CreateScreen(),
-        overrides: testOverrides,
+        overrides: buildOverrides(),
       );
       await tester.pumpAndSettle();
 
@@ -54,7 +76,7 @@ void main() {
         (tester) async {
       await tester.pumpApp(
         const CreateScreen(),
-        overrides: testOverrides,
+        overrides: buildOverrides(),
       );
       await tester.pumpAndSettle();
 
@@ -69,7 +91,7 @@ void main() {
         (tester) async {
       await tester.pumpApp(
         const CreateScreen(),
-        overrides: testOverrides,
+        overrides: buildOverrides(),
       );
       await tester.pumpAndSettle();
 
@@ -78,6 +100,52 @@ void main() {
         find.text('Prompt must be at least 3 characters'),
         findsNothing,
       );
+      expect(
+        find.text('Prompt must be at most 1000 characters'),
+        findsNothing,
+      );
+    });
+
+    testWidgets('shows login snackbar for unauthenticated generate',
+        (tester) async {
+      await tester.pumpApp(
+        const CreateScreen(),
+        overrides: buildOverrides(),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.enterText(
+        find.byType(TextFormField).first,
+        'Generate this image',
+      );
+      await tester.pumpAndSettle();
+
+      await tester.ensureVisible(find.widgetWithText(FilledButton, 'Generate'));
+      await tester.tap(find.widgetWithText(FilledButton, 'Generate'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Please log in to generate images'), findsOneWidget);
+      expect(find.text('Login'), findsOneWidget);
+    });
+
+    testWidgets('shows failed job feedback snackbar', (tester) async {
+      const authenticatedState = AuthState.authenticated(
+        UserModel(
+          id: 'user-1',
+          email: 'user@example.com',
+        ),
+      );
+
+      await tester.pumpApp(
+        const CreateScreen(),
+        overrides: buildOverrides(
+          authState: authenticatedState,
+          createViewModel: _FailedCreateViewModel(),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Provider failed'), findsOneWidget);
     });
   });
 }

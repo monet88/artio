@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:artio/core/constants/app_constants.dart';
 import 'package:artio/core/design_system/app_spacing.dart';
 import 'package:artio/core/utils/app_exception_mapper.dart';
 import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
@@ -28,13 +29,33 @@ class _CreateScreenState extends ConsumerState<CreateScreen> {
     super.initState();
     _jobErrorSub = ref.listenManual<AsyncValue<GenerationJobModel?>>(
       createViewModelProvider,
+      fireImmediately: true,
       (previous, next) {
+        final failedJob = next.valueOrNull;
+        final previousFailedJob = previous?.valueOrNull;
+        if (failedJob?.status == JobStatus.failed &&
+            previousFailedJob?.status != JobStatus.failed) {
+          final failedMessage =
+              failedJob?.errorMessage?.trim().isNotEmpty == true
+              ? failedJob!.errorMessage!.trim()
+              : 'Generation failed. Please try again.';
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!mounted) return;
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(failedMessage)),
+            );
+          });
+        }
+
         next.whenOrNull(
           error: (error, _) {
             final message = AppExceptionMapper.toUserMessage(error);
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(message)),
-            );
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (!mounted) return;
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(message)),
+              );
+            });
           },
         );
       },
@@ -47,8 +68,13 @@ class _CreateScreenState extends ConsumerState<CreateScreen> {
     super.dispose();
   }
 
-  void _handleGenerate(CreateFormState formState) {
-    final userId = ref.read(authViewModelProvider).maybeMap(
+  void _handleGenerate(CreateFormState formState, {required bool isGenerating}) {
+    if (isGenerating) {
+      return;
+    }
+
+    final authState = ref.read(authViewModelProvider);
+    final userId = authState.maybeMap(
           authenticated: (state) => state.user.id,
           orElse: () => null,
         );
@@ -65,9 +91,15 @@ class _CreateScreenState extends ConsumerState<CreateScreen> {
       return;
     }
 
+    final isPremiumUser = authState.maybeMap(
+          authenticated: (state) => state.user.isPremium,
+          orElse: () => false,
+        );
+
     ref.read(createViewModelProvider.notifier).generate(
           formState: formState,
           userId: userId,
+          isPremiumUser: isPremiumUser,
         );
   }
 
@@ -76,10 +108,14 @@ class _CreateScreenState extends ConsumerState<CreateScreen> {
     final formState = ref.watch(createFormNotifierProvider);
     final formNotifier = ref.read(createFormNotifierProvider.notifier);
     final jobState = ref.watch(createViewModelProvider);
-    final isGenerating = jobState.isLoading ||
-        jobState.valueOrNull?.status == JobStatus.pending ||
-        jobState.valueOrNull?.status == JobStatus.generating ||
-        jobState.valueOrNull?.status == JobStatus.processing;
+    final isGenerating = ref.watch(
+      createViewModelProvider.select((value) {
+        return value.isLoading ||
+            value.valueOrNull?.status == JobStatus.pending ||
+            value.valueOrNull?.status == JobStatus.generating ||
+            value.valueOrNull?.status == JobStatus.processing;
+      }),
+    );
 
     // Wire isPremium from user's actual subscription status
     final isPremium = ref.watch(authViewModelProvider).maybeMap(
@@ -88,8 +124,13 @@ class _CreateScreenState extends ConsumerState<CreateScreen> {
         );
 
     // Only show prompt error after user has interacted with the field
-    final showPromptError =
-        !formState.isValid && formNotifier.hasInteracted;
+    final promptLength = formState.prompt.trim().length;
+    final showPromptError = !formState.isValid && formNotifier.hasInteracted;
+    final promptErrorText = !showPromptError
+        ? null
+        : promptLength < 3
+        ? 'Prompt must be at least 3 characters'
+        : 'Prompt must be at most ${AppConstants.maxPromptLength} characters';
 
     return Scaffold(
       appBar: AppBar(title: const Text('Create')),
@@ -115,9 +156,7 @@ class _CreateScreenState extends ConsumerState<CreateScreen> {
                   hintText: 'Describe the image you want...',
                   value: formState.prompt,
                   onChanged: (value) => formNotifier.setPrompt(value),
-                  errorText: showPromptError
-                      ? 'Prompt must be at least 3 characters'
-                      : null,
+                  errorText: promptErrorText,
                 ),
                 SizedBox(height: AppSpacing.md),
                 PromptInputField(
@@ -140,8 +179,11 @@ class _CreateScreenState extends ConsumerState<CreateScreen> {
                 ),
                 SizedBox(height: AppSpacing.lg),
                 FilledButton(
-                  onPressed: formState.isValid
-                      ? () => _handleGenerate(formState)
+                  onPressed: formState.isValid && !isGenerating
+                      ? () => _handleGenerate(
+                          formState,
+                          isGenerating: isGenerating,
+                        )
                       : null,
                   child: const Text('Generate'),
                 ),

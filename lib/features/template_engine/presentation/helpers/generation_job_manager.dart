@@ -47,6 +47,7 @@ class GenerationJobManager {
       onError: (Object e, StackTrace st) async {
         await captureOnce(e, st);
         onError(e, st);
+        cancel();
       },
     );
   }
@@ -62,6 +63,11 @@ class GenerationJobManager {
   /// Reset all state including error signature.
   void reset() {
     cancel();
+    _lastErrorSignature = null;
+  }
+
+  /// Clear current error dedup signature for a new generation attempt.
+  void resetErrorDedup() {
     _lastErrorSignature = null;
   }
 
