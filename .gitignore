@@ -141,7 +141,7 @@ integration_test/.test_coverage.dart
 # Agents & Tools (AI IDEs)
 .agent/
 .app-template/
-# .claude/ - tracked for project rules & skills
+.claude/
 .codex/
 .cursor/
 .github/
@@ -175,7 +175,6 @@ node_modules/
 package.json
 package-lock.json
 
-# Tracked: project rules, skills, and config for AI tools
-!.claude/
+# Tracked: project semantic index config
 !.serena/
 
