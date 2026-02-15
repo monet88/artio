@@ -1,7 +1,7 @@
+import 'package:artio/core/constants/generation_constants.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'create_form_state.freezed.dart';
-part 'create_form_state.g.dart';
 
 @freezed
 class CreateFormState with _$CreateFormState {
@@ -16,11 +16,15 @@ class CreateFormState with _$CreateFormState {
 
   const CreateFormState._();
 
-  factory CreateFormState.fromJson(Map<String, dynamic> json) =>
-      _$CreateFormStateFromJson(json);
-
   bool get isValid => prompt.trim().length >= 3;
 
+  /// Returns generation parameters for the API call.
+  ///
+  /// Note: Negative prompt is appended with "\n\nNegative: " prefix.
+  /// This is the expected prompt engineering format — the downstream API
+  /// (Kie/Gemini) receives a single prompt string. There is no separate
+  /// `negative_prompt` field in the Edge Function.
+  /// See: supabase/functions/generate-image/index.ts
   ({
     String prompt,
     String aspectRatio,
@@ -37,7 +41,7 @@ class CreateFormState with _$CreateFormState {
       prompt: fullPrompt,
       aspectRatio: aspectRatio,
       imageCount: imageCount,
-      templateId: 'free-text',
+      templateId: kFreeTextTemplateId,
     );
   }
 }

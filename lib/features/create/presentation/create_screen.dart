@@ -74,11 +74,22 @@ class _CreateScreenState extends ConsumerState<CreateScreen> {
   @override
   Widget build(BuildContext context) {
     final formState = ref.watch(createFormNotifierProvider);
+    final formNotifier = ref.read(createFormNotifierProvider.notifier);
     final jobState = ref.watch(createViewModelProvider);
     final isGenerating = jobState.isLoading ||
         jobState.valueOrNull?.status == JobStatus.pending ||
         jobState.valueOrNull?.status == JobStatus.generating ||
         jobState.valueOrNull?.status == JobStatus.processing;
+
+    // Wire isPremium from user's actual subscription status
+    final isPremium = ref.watch(authViewModelProvider).maybeMap(
+          authenticated: (state) => state.user.isPremium,
+          orElse: () => false,
+        );
+
+    // Only show prompt error after user has interacted with the field
+    final showPromptError =
+        !formState.isValid && formNotifier.hasInteracted;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Create')),
@@ -103,34 +114,29 @@ class _CreateScreenState extends ConsumerState<CreateScreen> {
                   label: 'Prompt',
                   hintText: 'Describe the image you want...',
                   value: formState.prompt,
-                  onChanged: (value) => ref
-                      .read(createFormNotifierProvider.notifier)
-                      .setPrompt(value),
-                  errorText: formState.isValid ? null : 'Prompt too short',
+                  onChanged: (value) => formNotifier.setPrompt(value),
+                  errorText: showPromptError
+                      ? 'Prompt must be at least 3 characters'
+                      : null,
                 ),
                 SizedBox(height: AppSpacing.md),
                 PromptInputField(
                   label: 'Negative prompt (optional)',
                   hintText: 'Describe what to avoid...',
                   value: formState.negativePrompt,
-                  onChanged: (value) => ref
-                      .read(createFormNotifierProvider.notifier)
-                      .setNegativePrompt(value),
+                  onChanged: (value) => formNotifier.setNegativePrompt(value),
                 ),
                 SizedBox(height: AppSpacing.lg),
                 AspectRatioSelector(
                   selectedRatio: formState.aspectRatio,
                   selectedModelId: formState.modelId,
-                  onChanged: (ratio) => ref
-                      .read(createFormNotifierProvider.notifier)
-                      .setAspectRatio(ratio),
+                  onChanged: (ratio) => formNotifier.setAspectRatio(ratio),
                 ),
                 SizedBox(height: AppSpacing.md),
                 ModelSelector(
                   selectedModelId: formState.modelId,
-                  onChanged: (modelId) => ref
-                      .read(createFormNotifierProvider.notifier)
-                      .setModel(modelId),
+                  isPremium: isPremium,
+                  onChanged: (modelId) => formNotifier.setModel(modelId),
                 ),
                 SizedBox(height: AppSpacing.lg),
                 FilledButton(
@@ -156,8 +162,38 @@ class _CreateScreenState extends ConsumerState<CreateScreen> {
               ],
             ),
           ),
-          if (isGenerating && jobState.valueOrNull != null)
-            GenerationProgressOverlay(job: jobState.valueOrNull!),
+          if (isGenerating) ...[
+            if (jobState.valueOrNull != null)
+              GenerationProgressOverlay(job: jobState.valueOrNull!)
+            else
+              // Show a simple loading indicator before the first stream event
+              Positioned.fill(
+                child: Container(
+                  color: Theme.of(context)
+                      .colorScheme
+                      .surface
+                      .withValues(alpha: 0.9),
+                  child: Center(
+                    child: Card(
+                      child: Padding(
+                        padding: AppSpacing.cardPadding,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const CircularProgressIndicator(),
+                            SizedBox(height: AppSpacing.md),
+                            Text(
+                              'Starting generation...',
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+          ],
         ],
       ),
     );

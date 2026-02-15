@@ -1,9 +1,10 @@
 import 'dart:async';
 
-import 'package:artio/core/config/sentry_config.dart';
+import 'package:artio/core/constants/generation_constants.dart';
 import 'package:artio/features/create/domain/entities/create_form_state.dart';
 import 'package:artio/features/template_engine/data/repositories/generation_repository.dart';
 import 'package:artio/features/template_engine/domain/entities/generation_job_model.dart';
+import 'package:artio/features/template_engine/presentation/helpers/generation_job_manager.dart';
 import 'package:artio/features/template_engine/presentation/providers/generation_policy_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -11,18 +12,12 @@ part 'create_view_model.g.dart';
 
 @riverpod
 class CreateViewModel extends _$CreateViewModel {
-  StreamSubscription<GenerationJobModel>? _jobSubscription;
-  Timer? _timeoutTimer;
-  String? _lastErrorSignature;
-
-  static const _jobTimeoutMinutes = 5;
+  late final GenerationJobManager _jobManager;
 
   @override
   AsyncValue<GenerationJobModel?> build() {
-    ref.onDispose(() {
-      unawaited(_jobSubscription?.cancel());
-      _timeoutTimer?.cancel();
-    });
+    _jobManager = GenerationJobManager();
+    ref.onDispose(_jobManager.cancel);
     return const AsyncData(null);
   }
 
@@ -44,7 +39,7 @@ class CreateViewModel extends _$CreateViewModel {
       final policy = ref.read(generationPolicyProvider);
       final eligibility = await policy.canGenerate(
         userId: userId,
-        templateId: 'free-text',
+        templateId: kFreeTextTemplateId,
       );
 
       if (eligibility.isDenied) {
@@ -64,53 +59,26 @@ class CreateViewModel extends _$CreateViewModel {
         imageCount: params.imageCount,
       );
 
-      unawaited(_jobSubscription?.cancel());
-      _timeoutTimer?.cancel();
-
-      _timeoutTimer = Timer(
-        const Duration(minutes: _jobTimeoutMinutes),
-        () {
-          unawaited(_jobSubscription?.cancel());
-          state = AsyncError(
-            Exception('Generation timed out after $_jobTimeoutMinutes minutes'),
-            StackTrace.current,
-          );
-        },
-      );
-
-      _jobSubscription = repo.watchJob(jobId).listen(
-        (job) {
-          state = AsyncData(job);
-          if (job.status == JobStatus.completed ||
-              job.status == JobStatus.failed) {
-            unawaited(_jobSubscription?.cancel());
-            _timeoutTimer?.cancel();
-          }
-        },
-        onError: (Object e, StackTrace st) async {
-          await _captureOnce(e, st);
-          state = AsyncError(e, st);
-        },
+      _jobManager.watchJob(
+        jobStream: repo.watchJob(jobId),
+        onData: (job) => state = AsyncData(job),
+        onError: (e, st) => state = AsyncError(e, st),
+        onTimeout: () => state = AsyncError(
+          Exception(
+            'Generation timed out after '
+            '${GenerationJobManager.defaultTimeoutMinutes} minutes',
+          ),
+          StackTrace.current,
+        ),
       );
     } on Exception catch (e, st) {
-      await _captureOnce(e, st);
+      await _jobManager.captureOnce(e, st);
       state = AsyncError(e, st);
     }
   }
 
   void reset() {
-    unawaited(_jobSubscription?.cancel());
-    _timeoutTimer?.cancel();
+    _jobManager.reset();
     state = const AsyncData(null);
-    _lastErrorSignature = null;
-  }
-
-  Future<void> _captureOnce(Object error, StackTrace? stackTrace) async {
-    final signature = '${error.runtimeType}:$error';
-    if (_lastErrorSignature == signature) {
-      return;
-    }
-    _lastErrorSignature = signature;
-    await SentryConfig.captureException(error, stackTrace: stackTrace);
   }
 }

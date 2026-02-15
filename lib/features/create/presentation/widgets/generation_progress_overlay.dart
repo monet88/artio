@@ -31,17 +31,28 @@ class GenerationProgressOverlay extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const CircularProgressIndicator(),
+                  // Show spinner for active states, error icon for failed
+                  if (job.status == JobStatus.failed)
+                    Icon(
+                      Icons.error_outline,
+                      size: 48,
+                      color: theme.colorScheme.error,
+                    )
+                  else
+                    const CircularProgressIndicator(),
                   SizedBox(height: AppSpacing.md),
                   Text(
                     _statusLabel(job.status),
                     style: theme.textTheme.titleMedium,
                   ),
-                  if (job.status == JobStatus.failed && job.errorMessage != null) ...[
+                  if (job.status == JobStatus.failed &&
+                      job.errorMessage != null) ...[
                     SizedBox(height: AppSpacing.sm),
                     Text(
                       job.errorMessage!,
-                      style: theme.textTheme.bodySmall,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.error,
+                      ),
                       textAlign: TextAlign.center,
                     ),
                   ],

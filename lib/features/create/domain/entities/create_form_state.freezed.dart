@@ -15,10 +15,6 @@ final _privateConstructorUsedError = UnsupportedError(
   'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
 );
 
-CreateFormState _$CreateFormStateFromJson(Map<String, dynamic> json) {
-  return _CreateFormState.fromJson(json);
-}
-
 /// @nodoc
 mixin _$CreateFormState {
   String get prompt => throw _privateConstructorUsedError;
@@ -27,9 +23,6 @@ mixin _$CreateFormState {
   int get imageCount => throw _privateConstructorUsedError;
   String get outputFormat => throw _privateConstructorUsedError;
   String get modelId => throw _privateConstructorUsedError;
-
-  /// Serializes this CreateFormState to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
 
   /// Create a copy of CreateFormState
   /// with the given fields replaced by the non-null parameter values.
@@ -181,7 +174,7 @@ class __$$CreateFormStateImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
 class _$CreateFormStateImpl extends _CreateFormState {
   const _$CreateFormStateImpl({
     this.prompt = '',
@@ -191,9 +184,6 @@ class _$CreateFormStateImpl extends _CreateFormState {
     this.outputFormat = 'jpg',
     this.modelId = 'google/imagen4',
   }) : super._();
-
-  factory _$CreateFormStateImpl.fromJson(Map<String, dynamic> json) =>
-      _$$CreateFormStateImplFromJson(json);
 
   @override
   @JsonKey()
@@ -236,7 +226,6 @@ class _$CreateFormStateImpl extends _CreateFormState {
             (identical(other.modelId, modelId) || other.modelId == modelId));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
     runtimeType,
@@ -258,11 +247,6 @@ class _$CreateFormStateImpl extends _CreateFormState {
         this,
         _$identity,
       );
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$CreateFormStateImplToJson(this);
-  }
 }
 
 abstract class _CreateFormState extends CreateFormState {
@@ -275,9 +259,6 @@ abstract class _CreateFormState extends CreateFormState {
     final String modelId,
   }) = _$CreateFormStateImpl;
   const _CreateFormState._() : super._();
-
-  factory _CreateFormState.fromJson(Map<String, dynamic> json) =
-      _$CreateFormStateImpl.fromJson;
 
   @override
   String get prompt;
