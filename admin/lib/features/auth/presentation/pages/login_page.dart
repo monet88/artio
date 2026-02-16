@@ -60,8 +60,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
             end: Alignment.bottomRight,
             colors: [
               AdminColors.background,
-              Color(0xFF151A3A),
-              Color(0xFF1A1F45),
+              AdminColors.gradientMid,
+              AdminColors.gradientEnd,
             ],
           ),
         ),

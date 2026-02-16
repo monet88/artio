@@ -1,35 +1,20 @@
+import 'package:artio_admin/core/utils/retry.dart';
+import 'package:artio_admin/features/dashboard/domain/entities/dashboard_stats.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 part 'dashboard_stats_provider.g.dart';
 
-/// Stats data for the dashboard overview
-class DashboardStats {
-  final int totalTemplates;
-  final int activeTemplates;
-  final int premiumTemplates;
-  final int categoriesCount;
-  final List<Map<String, dynamic>> recentTemplates;
-
-  const DashboardStats({
-    required this.totalTemplates,
-    required this.activeTemplates,
-    required this.premiumTemplates,
-    required this.categoriesCount,
-    required this.recentTemplates,
-  });
-}
-
 @riverpod
 Future<DashboardStats> dashboardStats(Ref ref) async {
   final supabase = Supabase.instance.client;
 
-  // Fetch all templates (admin has full access)
-  final allTemplates = await supabase
+  // Wrap with retry for network resilience
+  final allTemplates = await retry(() => supabase
       .from('templates')
       .select('id, name, category, is_active, is_premium, updated_at, thumbnail_url')
-      .order('updated_at', ascending: false);
+      .order('updated_at', ascending: false));
 
   final list = allTemplates as List;
   final total = list.length;

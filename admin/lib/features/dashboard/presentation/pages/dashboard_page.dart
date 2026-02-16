@@ -1,5 +1,6 @@
 import 'package:artio_admin/core/theme/admin_colors.dart';
 import 'package:artio_admin/features/dashboard/providers/dashboard_stats_provider.dart';
+import 'package:artio_admin/shared/widgets/error_state_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
@@ -21,22 +22,10 @@ class DashboardPage extends ConsumerWidget {
       ),
       body: statsAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, _) => Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.error_outline, size: 48, color: theme.colorScheme.error),
-              const Gap(12),
-              Text('Failed to load stats', style: theme.textTheme.titleMedium),
-              const Gap(4),
-              Text('$err', style: theme.textTheme.bodySmall),
-              const Gap(16),
-              FilledButton.tonal(
-                onPressed: () => ref.invalidate(dashboardStatsProvider),
-                child: const Text('Retry'),
-              ),
-            ],
-          ),
+        error: (err, _) => ErrorStateWidget.fromError(
+          error: err,
+          message: 'Failed to load dashboard stats',
+          onRetry: () => ref.invalidate(dashboardStatsProvider),
         ),
         data: (stats) => SingleChildScrollView(
           padding: const EdgeInsets.all(24),

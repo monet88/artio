@@ -35,6 +35,10 @@ abstract class AdminColors {
   // ── Border ────────────────────────────────────────────────────────────
   static const borderSubtle = Color(0x26FFFFFF); // ~15% white
 
+  // ── Gradients ──────────────────────────────────────────────────────────
+  static const gradientMid = Color(0xFF151A3A);
+  static const gradientEnd = Color(0xFF1A1F45);
+
   // ── Stat Card Colors ──────────────────────────────────────────────────
   static const statBlue = Color(0xFF5B8DEF);
   static const statGreen = Color(0xFF3DD598);
