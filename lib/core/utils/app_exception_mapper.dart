@@ -51,7 +51,7 @@ class AppExceptionMapper {
   static String _authMessage(String message) {
     final lower = message.toLowerCase();
 
-    if (lower.contains('invalid') && lower.contains('credentials') ||
+    if ((lower.contains('invalid') && lower.contains('credentials')) ||
         lower.contains('invalid login credentials')) {
       return 'Invalid email or password.';
     }
@@ -59,7 +59,7 @@ class AppExceptionMapper {
         lower.contains('already registered')) {
       return 'This email is already registered. Try signing in.';
     }
-    if (lower.contains('weak password') || lower.contains('password') && lower.contains('short')) {
+    if (lower.contains('weak password') || (lower.contains('password') && lower.contains('short'))) {
       return 'Password must be at least 6 characters.';
     }
     if (lower.contains('rate limit') || lower.contains('too many')) {

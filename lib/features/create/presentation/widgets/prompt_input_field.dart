@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:artio/core/constants/app_constants.dart';
 import 'package:artio/core/design_system/app_spacing.dart';
 
 class PromptInputField extends StatefulWidget {
@@ -59,7 +60,7 @@ class _PromptInputFieldState extends State<PromptInputField> {
           onChanged: widget.onChanged,
           minLines: 3,
           maxLines: 6,
-          maxLength: 1000,
+          maxLength: AppConstants.maxPromptLength,
           decoration: InputDecoration(
             hintText: widget.hintText,
             errorText: widget.errorText,

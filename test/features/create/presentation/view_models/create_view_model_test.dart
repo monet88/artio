@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:artio/core/constants/app_constants.dart';
 import 'package:artio/core/exceptions/app_exception.dart';
-import 'package:artio/core/exceptions/app_exception.dart' show GenerationException;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';

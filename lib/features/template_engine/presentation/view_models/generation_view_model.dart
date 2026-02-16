@@ -9,7 +9,13 @@ part 'generation_view_model.g.dart';
 
 @riverpod
 class GenerationViewModel extends _$GenerationViewModel {
-  late final GenerationJobManager _jobManager;
+  late GenerationJobManager _jobManager;
+
+  bool get isGenerating =>
+      state.isLoading ||
+      state.valueOrNull?.status == JobStatus.pending ||
+      state.valueOrNull?.status == JobStatus.generating ||
+      state.valueOrNull?.status == JobStatus.processing;
 
   @override
   AsyncValue<GenerationJobModel?> build() {
@@ -25,6 +31,10 @@ class GenerationViewModel extends _$GenerationViewModel {
     String aspectRatio = '1:1',
     int imageCount = 1,
   }) async {
+    if (isGenerating) {
+      return;
+    }
+
     state = const AsyncLoading();
 
     try {

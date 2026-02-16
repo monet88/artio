@@ -49,6 +49,8 @@ class _CreateScreenState extends ConsumerState<CreateScreen> {
 
         next.whenOrNull(
           error: (error, _) {
+            // Skip if we already showed a SnackBar for a failed job above
+            if (next.valueOrNull?.status == JobStatus.failed) return;
             final message = AppExceptionMapper.toUserMessage(error);
             WidgetsBinding.instance.addPostFrameCallback((_) {
               if (!mounted) return;
@@ -109,12 +111,7 @@ class _CreateScreenState extends ConsumerState<CreateScreen> {
     final formNotifier = ref.read(createFormNotifierProvider.notifier);
     final jobState = ref.watch(createViewModelProvider);
     final isGenerating = ref.watch(
-      createViewModelProvider.select((value) {
-        return value.isLoading ||
-            value.valueOrNull?.status == JobStatus.pending ||
-            value.valueOrNull?.status == JobStatus.generating ||
-            value.valueOrNull?.status == JobStatus.processing;
-      }),
+      createViewModelProvider.select(CreateViewModel.isJobActive),
     );
 
     // Wire isPremium from user's actual subscription status

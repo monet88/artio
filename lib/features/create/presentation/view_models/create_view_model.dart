@@ -15,13 +15,19 @@ part 'create_view_model.g.dart';
 
 @riverpod
 class CreateViewModel extends _$CreateViewModel {
-  late final GenerationJobManager _jobManager;
+  late GenerationJobManager _jobManager;
 
-  bool get isGenerating =>
-      state.isLoading ||
-      state.valueOrNull?.status == JobStatus.pending ||
-      state.valueOrNull?.status == JobStatus.generating ||
-      state.valueOrNull?.status == JobStatus.processing;
+  bool get isGenerating => isJobActive(state);
+
+  /// Whether the given [AsyncValue] represents an active generation job.
+  ///
+  /// Shared with the UI so the screen can watch with `.select()` without
+  /// duplicating the status check logic.
+  static bool isJobActive(AsyncValue<GenerationJobModel?> value) =>
+      value.isLoading ||
+      value.valueOrNull?.status == JobStatus.pending ||
+      value.valueOrNull?.status == JobStatus.generating ||
+      value.valueOrNull?.status == JobStatus.processing;
 
   @override
   AsyncValue<GenerationJobModel?> build() {
