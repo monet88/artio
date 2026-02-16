@@ -139,15 +139,11 @@ integration_test/.test_coverage.dart
 /web/.dart_tool/
 
 # Agents & Tools (AI IDEs)
-.agent/
 .app-template/
-.claude/
 .codex/
 .cursor/
 .github/
-.opencode/
 .osgrep/
-.ck/
 opencode.json
 .skillsrc
 .sisyphus/
@@ -175,7 +171,4 @@ repomix-output.md
 node_modules/
 package.json
 package-lock.json
-
-# Tracked: project semantic index config
-!.serena/
 
