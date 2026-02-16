@@ -11,6 +11,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:storage_client/storage_client.dart' as storage_client;
 
 import '../../../../core/providers/supabase_provider.dart';
+import '../../../../core/config/sentry_config.dart';
 import '../../../../core/utils/retry.dart';
 import '../../domain/entities/gallery_item.dart';
 import '../../../../core/exceptions/app_exception.dart';
@@ -157,8 +158,8 @@ class GalleryRepository implements IGalleryRepository {
               .from('generated-images')
               .remove(['$userId/$jobId/$i.png']);
         } on storage_client.StorageException catch (e) {
-          // Log but continue - orphaned files acceptable
-          debugPrint('Storage cleanup failed: ${e.message}');
+          // Report to Sentry for production visibility
+          unawaited(SentryConfig.captureException(e, stackTrace: StackTrace.current));
         }
       }
 
@@ -202,8 +203,8 @@ class GalleryRepository implements IGalleryRepository {
           .update({'status': 'pending', 'error_message': null})
           .eq('id', jobId);
 
-      // Re-trigger Edge Function
-      await _supabase.functions.invoke('generate-image', body: {'jobId': jobId});
+      // Re-trigger Edge Function with retry for network resilience
+      await retry(() => _supabase.functions.invoke('generate-image', body: {'jobId': jobId}));
     } on PostgrestException catch (e) {
       throw AppException.storage(message: e.message);
     } on FunctionException catch (e) {
@@ -293,8 +294,12 @@ class GalleryRepository implements IGalleryRepository {
 
   @override
   Future<void> toggleFavorite(String itemId, bool isFavorite) async {
+    final separatorIndex = itemId.lastIndexOf('_');
+    if (separatorIndex == -1) {
+      throw const AppException.storage(message: 'Invalid item ID format');
+    }
+    final jobId = itemId.substring(0, separatorIndex);
     try {
-      final jobId = itemId.split('_').first;
       await _supabase
           .from('generation_jobs')
           .update({'is_favorite': isFavorite}).eq('id', jobId);

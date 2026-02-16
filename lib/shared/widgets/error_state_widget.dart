@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:artio/core/design_system/app_animations.dart';
 import 'package:artio/core/design_system/app_spacing.dart';
 import 'package:artio/core/design_system/app_typography.dart';
+import 'package:artio/core/exceptions/app_exception.dart';
 import 'package:artio/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
@@ -43,9 +44,22 @@ class ErrorStateWidget extends StatefulWidget {
   }
 
   static ErrorCategory _categorize(Object error) {
+    // Structural matching for AppException types
+    if (error is AppException) {
+      return switch (error) {
+        NetworkException() => ErrorCategory.network,
+        StorageException() => ErrorCategory.server,
+        GenerationException() => ErrorCategory.server,
+        AuthException() => ErrorCategory.unknown,
+        PaymentException() => ErrorCategory.unknown,
+        UnknownException() => ErrorCategory.unknown,
+      };
+    }
+    // Fallback: platform-level type checks
     if (error is SocketException || error is HttpException) {
       return ErrorCategory.network;
     }
+    // Fallback: string matching
     final msg = error.toString().toLowerCase();
     if (msg.contains('socket') ||
         msg.contains('connection') ||

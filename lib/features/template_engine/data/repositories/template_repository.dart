@@ -31,7 +31,7 @@ class TemplateRepository implements ITemplateRepository {
 
         return response.map((json) => TemplateModel.fromJson(json)).toList();
       } on PostgrestException catch (e) {
-        throw AppException.network(message: e.message, statusCode: int.tryParse(e.code ?? ''));
+        throw AppException.network(message: e.message, statusCode: null);
       } catch (e) {
         throw AppException.unknown(message: e.toString(), originalError: e);
       }
@@ -49,7 +49,7 @@ class TemplateRepository implements ITemplateRepository {
 
       return response != null ? TemplateModel.fromJson(response) : null;
     } on PostgrestException catch (e) {
-      throw AppException.network(message: e.message, statusCode: int.tryParse(e.code ?? ''));
+      throw AppException.network(message: e.message, statusCode: null);
     } catch (e) {
       throw AppException.unknown(message: e.toString(), originalError: e);
     }
@@ -67,7 +67,7 @@ class TemplateRepository implements ITemplateRepository {
 
       return response.map((json) => TemplateModel.fromJson(json)).toList();
     } on PostgrestException catch (e) {
-      throw AppException.network(message: e.message, statusCode: int.tryParse(e.code ?? ''));
+      throw AppException.network(message: e.message, statusCode: null);
     } catch (e) {
       throw AppException.unknown(message: e.toString(), originalError: e);
     }

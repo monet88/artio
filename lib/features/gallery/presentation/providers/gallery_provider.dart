@@ -25,35 +25,63 @@ Stream<List<GalleryItem>> galleryStream(Ref ref) {
 /// Notifier for gallery actions (delete, restore, retry)
 @riverpod
 class GalleryActionsNotifier extends _$GalleryActionsNotifier {
+  bool _isProcessing = false;
+
   @override
   FutureOr<void> build() {}
 
   Future<void> softDeleteImage(String jobId) async {
-    state = const AsyncLoading();
-    state = await AsyncValue.guard(() async {
-      final repository = ref.read(galleryRepositoryProvider);
-      await repository.softDeleteImage(jobId);
-    });
+    if (_isProcessing || state.isLoading) return;
+    _isProcessing = true;
+    try {
+      state = const AsyncLoading();
+      state = await AsyncValue.guard(() async {
+        final repository = ref.read(galleryRepositoryProvider);
+        await repository.softDeleteImage(jobId);
+      });
+    } finally {
+      _isProcessing = false;
+    }
   }
 
   Future<void> restoreImage(String jobId) async {
-    state = const AsyncLoading();
-    state = await AsyncValue.guard(() async {
-      final repository = ref.read(galleryRepositoryProvider);
-      await repository.restoreImage(jobId);
-    });
+    if (_isProcessing || state.isLoading) return;
+    _isProcessing = true;
+    try {
+      state = const AsyncLoading();
+      state = await AsyncValue.guard(() async {
+        final repository = ref.read(galleryRepositoryProvider);
+        await repository.restoreImage(jobId);
+      });
+    } finally {
+      _isProcessing = false;
+    }
   }
 
   Future<void> retryGeneration(String jobId) async {
-    state = const AsyncLoading();
-    state = await AsyncValue.guard(() async {
-      final repository = ref.read(galleryRepositoryProvider);
-      await repository.retryGeneration(jobId);
-    });
+    if (_isProcessing || state.isLoading) return;
+    _isProcessing = true;
+    try {
+      state = const AsyncLoading();
+      state = await AsyncValue.guard(() async {
+        final repository = ref.read(galleryRepositoryProvider);
+        await repository.retryGeneration(jobId);
+      });
+    } finally {
+      _isProcessing = false;
+    }
   }
 
   Future<void> toggleFavorite(String itemId, bool isFavorite) async {
-    final repository = ref.read(galleryRepositoryProvider);
-    await repository.toggleFavorite(itemId, isFavorite);
+    if (_isProcessing || state.isLoading) return;
+    _isProcessing = true;
+    try {
+      state = await AsyncValue.guard(() async {
+        final repository = ref.read(galleryRepositoryProvider);
+        await repository.toggleFavorite(itemId, isFavorite);
+      });
+    } finally {
+      _isProcessing = false;
+    }
   }
 }

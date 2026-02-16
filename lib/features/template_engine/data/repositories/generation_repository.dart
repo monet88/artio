@@ -57,7 +57,9 @@ class GenerationRepository implements IGenerationRepository {
         throw AppException.generation(message: errorMsg);
       }
 
-      final data = response.data as Map<String, dynamic>?;
+      final data = response.data is Map<String, dynamic>
+          ? response.data as Map<String, dynamic>
+          : null;
       final jobId = data?['job_id'] ?? data?['jobId'];
       if (jobId is! String || jobId.isEmpty) {
         throw const AppException.generation(message: 'Invalid response from server');
@@ -120,7 +122,7 @@ class GenerationRepository implements IGenerationRepository {
 
       return response.map((json) => GenerationJobModel.fromJson(json)).toList();
     } on PostgrestException catch (e) {
-      throw AppException.network(message: e.message, statusCode: int.tryParse(e.code ?? ''));
+      throw AppException.network(message: e.message, statusCode: null);
     } catch (e) {
       throw AppException.unknown(message: e.toString(), originalError: e);
     }
@@ -137,7 +139,7 @@ class GenerationRepository implements IGenerationRepository {
 
       return response != null ? GenerationJobModel.fromJson(response) : null;
     } on PostgrestException catch (e) {
-      throw AppException.network(message: e.message, statusCode: int.tryParse(e.code ?? ''));
+      throw AppException.network(message: e.message, statusCode: null);
     } catch (e) {
       throw AppException.unknown(message: e.toString(), originalError: e);
     }

@@ -98,10 +98,16 @@ class AuthRepository implements IAuthRepository {
 
   @override
   Future<void> resetPassword(String email) async {
-    await _supabase.auth.resetPasswordForEmail(
-      email,
-      redirectTo: AppConstants.resetPasswordCallback,
-    );
+    try {
+      await _supabase.auth.resetPasswordForEmail(
+        email,
+        redirectTo: AppConstants.resetPasswordCallback,
+      );
+    } on AppException {
+      rethrow;
+    } catch (e) {
+      throw AppException.auth(message: e.toString());
+    }
   }
 
   @override
