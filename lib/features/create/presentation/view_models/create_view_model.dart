@@ -4,6 +4,7 @@ import 'package:artio/core/constants/ai_models.dart';
 import 'package:artio/core/constants/app_constants.dart';
 import 'package:artio/core/constants/generation_constants.dart';
 import 'package:artio/core/exceptions/app_exception.dart';
+import 'package:artio/core/utils/retry.dart';
 import 'package:artio/features/create/domain/entities/create_form_state.dart';
 import 'package:artio/features/template_engine/data/repositories/generation_repository.dart';
 import 'package:artio/features/template_engine/domain/entities/generation_job_model.dart';
@@ -116,14 +117,14 @@ class CreateViewModel extends _$CreateViewModel {
 
       final params = formState.toGenerationParams();
       final repo = ref.read(generationRepositoryProvider);
-      final jobId = await repo.startGeneration(
+      final jobId = await retry(() => repo.startGeneration(
         templateId: params.templateId,
         prompt: params.prompt,
         aspectRatio: params.aspectRatio,
         imageCount: params.imageCount,
         outputFormat: params.outputFormat,
         modelId: params.modelId,
-      );
+      ));
 
       _jobManager.watchJob(
         jobStream: repo.watchJob(jobId),
