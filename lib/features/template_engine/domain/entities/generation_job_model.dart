@@ -24,5 +24,22 @@ class GenerationJobModel with _$GenerationJobModel {
   }) = _GenerationJobModel;
 
   factory GenerationJobModel.fromJson(Map<String, dynamic> json) =>
-      _$GenerationJobModelFromJson(json);
+      _$GenerationJobModelFromJson(_normalizeJson(json));
+
+  static Map<String, dynamic> _normalizeJson(Map<String, dynamic> json) {
+    final normalized = Map<String, dynamic>.from(json);
+
+    normalized['userId'] ??= json['user_id'];
+    normalized['templateId'] ??= json['template_id'];
+    normalized['aspectRatio'] ??= json['aspect_ratio'];
+    normalized['imageCount'] ??= json['image_count'];
+    normalized['providerUsed'] ??= json['provider_used'];
+    normalized['providerTaskId'] ??= json['provider_task_id'];
+    normalized['resultUrls'] ??= json['result_urls'];
+    normalized['errorMessage'] ??= json['error_message'];
+    normalized['createdAt'] ??= json['created_at'];
+    normalized['completedAt'] ??= json['completed_at'];
+
+    return normalized;
+  }
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -8,14 +10,24 @@ import 'package:artio/core/exceptions/app_exception.dart';
 
 import '../../../../core/mocks/mock_supabase_client.dart';
 
+
 void main() {
   late GenerationRepository repository;
   late MockSupabaseClient mockClient;
   late MockFunctionsClient mockFunctions;
+  late MockSupabaseStreamFilterBuilder mockStreamFilterBuilder;
+
+  setUpAll(() {
+    registerFallbackValue(
+      StreamTransformer<List<Map<String, dynamic>>, GenerationJobModel>
+          .fromHandlers(),
+    );
+  });
 
   setUp(() {
     mockClient = MockSupabaseClient();
     mockFunctions = MockFunctionsClient();
+    mockStreamFilterBuilder = MockSupabaseStreamFilterBuilder();
 
     when(() => mockClient.functions).thenReturn(mockFunctions);
 
@@ -48,6 +60,23 @@ void main() {
                 'image_count': 1,
               },
             )).called(1);
+      });
+
+      test('accepts camelCase jobId in response', () async {
+        when(() => mockFunctions.invoke(
+              'generate-image',
+              body: any(named: 'body'),
+            )).thenAnswer((_) async => FunctionResponse(
+              data: {'jobId': 'job-camel'},
+              status: 200,
+            ));
+
+        final result = await repository.startGeneration(
+          templateId: 'template-1',
+          prompt: 'A beautiful sunset',
+        );
+
+        expect(result, equals('job-camel'));
       });
 
       test('throws AppException.generation on 429 rate limit', () async {
@@ -90,7 +119,7 @@ void main() {
         );
       });
 
-      test('throws AppException.generation when job_id missing', () async {
+      test('throws AppException.generation when job id missing', () async {
         when(() => mockFunctions.invoke(
               'generate-image',
               body: any(named: 'body'),
@@ -188,26 +217,115 @@ void main() {
       });
     });
 
-    // Note: fetchJob(), fetchUserJobs(), and watchJob() Postgrest method chains
-    // are tested via integration tests. Below we test the pure logic separately.
+    group('watchJob', () {
+      test('emits job after empty-stream grace period', () async {
+        final controller = StreamController<List<Map<String, dynamic>>>.broadcast();
+
+        final queryBuilder = MockSupabaseQueryBuilder();
+        when(() => mockClient.from('generation_jobs'))
+            .thenAnswer((_) => queryBuilder);
+
+        when(() => queryBuilder.stream(primaryKey: ['id']))
+            .thenAnswer((_) => mockStreamFilterBuilder);
+        when(() => mockStreamFilterBuilder.eq('id', 'job-1'))
+            .thenAnswer((_) => mockStreamFilterBuilder);
+        when(
+          () => mockStreamFilterBuilder
+              .transform<GenerationJobModel>(any()),
+        ).thenAnswer((invocation) {
+          final transformer = invocation.positionalArguments.first
+              as StreamTransformer<List<Map<String, dynamic>>, GenerationJobModel>;
+          return controller.stream.transform(transformer);
+        });
+
+        final emittedJobs = <GenerationJobModel>[];
+        final errors = <Object>[];
+
+        final subscription = repository.watchJob('job-1').listen(
+              emittedJobs.add,
+              onError: errors.add,
+            );
+
+        controller.add([]);
+        controller.add([]);
+        controller.add([
+          {
+            'id': 'job-1',
+            'user_id': 'user-1',
+            'template_id': 'free-text',
+            'prompt': 'A prompt',
+            'status': 'pending',
+          }
+        ]);
+
+        await Future<void>.delayed(const Duration(milliseconds: 20));
+
+        expect(errors, isEmpty);
+        expect(emittedJobs, hasLength(1));
+        expect(emittedJobs.first.id, 'job-1');
+
+        await subscription.cancel();
+        await controller.close();
+      });
+
+      test('throws after max empty events', () async {
+        final controller = StreamController<List<Map<String, dynamic>>>.broadcast();
+
+        final queryBuilder = MockSupabaseQueryBuilder();
+        when(() => mockClient.from('generation_jobs'))
+            .thenAnswer((_) => queryBuilder);
+
+        when(() => queryBuilder.stream(primaryKey: ['id']))
+            .thenAnswer((_) => mockStreamFilterBuilder);
+        when(() => mockStreamFilterBuilder.eq('id', 'job-1'))
+            .thenAnswer((_) => mockStreamFilterBuilder);
+        when(
+          () => mockStreamFilterBuilder
+              .transform<GenerationJobModel>(any()),
+        ).thenAnswer((invocation) {
+          final transformer = invocation.positionalArguments.first
+              as StreamTransformer<List<Map<String, dynamic>>, GenerationJobModel>;
+          return controller.stream.transform(transformer);
+        });
+
+        final errors = <Object>[];
+
+        final subscription = repository.watchJob('job-1').listen(
+              (_) {},
+              onError: errors.add,
+            );
+
+        controller.add([]);
+        controller.add([]);
+        controller.add([]);
+
+        await Future<void>.delayed(const Duration(milliseconds: 20));
+
+        expect(errors, hasLength(1));
+        expect(errors.first, isA<AppException>());
+
+        await subscription.cancel();
+        await controller.close();
+      });
+    });
   });
 
   group('GenerationJobModel JSON parsing', () {
     test('fromJson parses complete job correctly', () {
       final json = {
         'id': 'job-123',
-        'userId': 'user-456',
-        'templateId': 'template-789',
+        'user_id': 'user-456',
+        'template_id': 'template-789',
         'prompt': 'A beautiful sunset',
         'status': 'completed',
-        'aspectRatio': '16:9',
-        'imageCount': 2,
-        'providerUsed': 'gemini',
-        'providerTaskId': 'task-abc',
-        'resultUrls': ['https://example.com/img1.png', 'https://example.com/img2.png'],
-        'errorMessage': null,
-        'createdAt': '2026-01-30T10:00:00.000Z',
-        'completedAt': '2026-01-30T10:05:00.000Z',
+        'aspect_ratio': '16:9',
+        'image_count': 2,
+        'provider_used': 'gemini',
+        'provider_task_id': 'task-abc',
+        'result_urls': ['https://example.com/img1.png', 'https://example.com/img2.png'],
+        'error_message': null,
+        'created_at': '2026-01-30T10:00:00.000Z',
+        'completed_at': '2026-01-30T10:05:00.000Z',
       };
 
       final job = GenerationJobModel.fromJson(json);
@@ -226,8 +344,8 @@ void main() {
     test('fromJson parses pending job with minimal fields', () {
       final json = {
         'id': 'job-pending',
-        'userId': 'user-1',
-        'templateId': 'template-1',
+        'user_id': 'user-1',
+        'template_id': 'template-1',
         'prompt': 'Test prompt',
         'status': 'pending',
       };
@@ -243,11 +361,11 @@ void main() {
     test('fromJson parses failed job with error message', () {
       final json = {
         'id': 'job-failed',
-        'userId': 'user-1',
-        'templateId': 'template-1',
+        'user_id': 'user-1',
+        'template_id': 'template-1',
         'prompt': 'Test',
         'status': 'failed',
-        'errorMessage': 'Provider rate limited',
+        'error_message': 'Provider rate limited',
       };
 
       final job = GenerationJobModel.fromJson(json);
@@ -260,8 +378,8 @@ void main() {
       for (final status in ['pending', 'generating', 'processing', 'completed', 'failed']) {
         final json = {
           'id': 'job-$status',
-          'userId': 'user-1',
-          'templateId': 'template-1',
+          'user_id': 'user-1',
+          'template_id': 'template-1',
           'prompt': 'Test',
           'status': status,
         };

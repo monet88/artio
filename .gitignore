@@ -141,12 +141,10 @@ integration_test/.test_coverage.dart
 /web/.dart_tool/
 
 # Agents & Tools (AI IDEs)
-.agent/
 .app-template/
 .codex/
 .cursor/
 .github/
-.opencode/
 .osgrep/
 opencode.json
 .skillsrc
@@ -179,4 +177,3 @@ package-lock.json
 # Tracked: project rules, skills, and config for AI tools
 !.serena/
 !.claude/
-

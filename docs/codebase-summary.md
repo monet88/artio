@@ -1,9 +1,10 @@
 # Codebase Summary
 
 **Project**: Artio - AI Image Generation SaaS
-**Generated**: 2026-02-10
-**Lines of Code**: ~10,803 (source files only)
-**Total Files**: ~150 files (100 Dart source in lib/, 57 test files)
+**Generated**: 2026-02-16 (repomix v1.11.0)
+**Lines of Code**: Needs verification from repomix summary (latest pack shows 248 files; use repomix stats).
+**Total Files**: 248 files (per latest repomix pack)
+**Repomix Snapshot**: Derived from `repomix-output.xml` (219,485 tokens, 946,802 chars). Top token contributors: `pubspec.lock` (17,894 tokens), `admin/pubspec.lock` (12,674 tokens), `lib/core/exceptions/app_exception.freezed.dart` (8,992 tokens), `lib/features/auth/presentation/state/auth_state.freezed.dart` (5,725 tokens), `supabase/migrations/20260128130000_add_25_templates.sql` (4,102 tokens).
 
 ---
 
@@ -19,27 +20,22 @@ Artio is a Flutter-based cross-platform application implementing clean architect
 
 | Type | Count | Purpose |
 |------|-------|---------|
-| Dart source files | 100 (lib/) | Application logic |
-| Test files | 57 | Unit, widget, integration tests |
-| Generated files (.freezed/.g.dart) | ~40 | Code generation artifacts |
-| Config files | 5 | pubspec, analysis_options, etc. |
+| Dart source files | Needs verification | Application logic |
+| Test files | Needs verification | Unit, widget, integration tests |
+| Generated files (.freezed/.g.dart) | Needs verification | Code generation artifacts |
+| Config files | Needs verification | pubspec, analysis_options, etc. |
 | Documentation | 15+ | Plans, reports, docs |
 
 ### Code Metrics
 
-- **Total Files**: ~150 files
-- **Source LOC**:
-  - lib/core: 1,850 LOC (15 files)
-  - lib/features: 7,960 LOC (72 files)
-  - lib/routing: 485 LOC (5 files)
-  - lib/shared: 508 LOC (8 files)
-  - Total source: ~10,803 LOC
-- **Test LOC**: 6,443 LOC (57 test files)
+- **Total Files**: 248 files (repomix pack)
+- **Source LOC**: Needs verification (repomix pack includes generated + non-source files)
+- **Test LOC**: Needs verification
 - **Largest Files**:
   - `pubspec.lock`: Dependencies lock file
-  - Generated Freezed files: ~20,000 tokens combined
-  - `lib/features/gallery/presentation/pages/image_viewer_page.dart`: 275 LOC
-  - `lib/features/template_engine/presentation/screens/template_detail_screen.dart`: 175 LOC
+  - Generated Freezed files: large token count (see repomix pack)
+  - `lib/features/gallery/presentation/pages/image_viewer_page.dart`: 275 LOC (needs recheck)
+  - `lib/features/template_engine/presentation/screens/template_detail_screen.dart`: 175 LOC (needs recheck)
 
 ---
 
@@ -248,7 +244,8 @@ lib/
 - **Architecture**: 3-layer clean architecture
 - **Capabilities**:
   - Text-to-image prompt input UI
-  - Parameter selection placeholder
+  - Parameter selection layout
+  - Generation flow wiring to repository (backend integration pending)
 
 #### 6. Core Infrastructure
 - **Exception Handling**: Sealed `AppException` class hierarchy
@@ -356,8 +353,8 @@ All domain entities use Freezed for:
 - `/register` → `RegisterScreen` (redirect if authenticated)
 - `/forgot-password` → `ForgotPasswordScreen`
 - `/gallery` → `GalleryPage` (auth required)
-- `/create` → `CreateScreen`
-- `/settings` → `SettingsScreen`
+- `/create` → `CreateScreen` (auth required)
+- `/settings` → `SettingsScreen` (auth required)
 
 **Auth Guards**: Implemented via `AuthViewModel.redirect` callback
 
@@ -416,17 +413,17 @@ class UnknownException extends AppException { ... }
 
 ### Current Coverage
 
-**Overall**: Comprehensive test suite (324 tests passing - widget, unit, integration)
+**Overall**: Coverage and test counts need verification (run `flutter test --coverage`).
 
 ### Required Tests (Target: 80%)
 
-**Completed**:
-- Integration test: `template_e2e_test.dart` (verifies template loading & generation)
-- Repository tests: `auth_repository_test.dart`, `template_repository_test.dart`
-- Widget tests: Template engine components
+**Known Present** (verify in `test/` and `integration_test/`):
+- Integration tests for template flows
+- Repository tests (auth, template)
+- Widget tests for core components
 
-**In Progress**:
-- Expanding repository unit tests
+**In Progress / Pending**:
+- Expand repository unit tests
 - Provider/Notifier tests
 - Widget tests for screens
 - Gallery feature integration tests
@@ -527,8 +524,6 @@ dart run build_runner watch
 | Document | Status | Purpose |
 |----------|--------|---------|
 | `README.md` | ✓ Current | Project overview, getting started |
-| `ROADMAP.md` | ✓ Current | Project progress tracking |
-| `AGENTS.md` | ✓ Current | AI agent guidelines |
 | `CLAUDE.md` | ✓ Current | AI assistant instructions |
 | `development-roadmap.md` | ✓ Current | Detailed development phases |
 | `code-standards.md` | ✓ Current | Coding conventions |
@@ -542,7 +537,7 @@ dart run build_runner watch
 
 ### Immediate Actions
 
-1. Continue expanding test coverage (target 80%)
+1. Verify current test counts/coverage and update docs accordingly
 2. Monitor large file sizes (enforce 200-line guideline)
 3. Run `flutter analyze` regularly to maintain zero errors
 
@@ -550,12 +545,11 @@ dart run build_runner watch
 
 1. Implement Subscription & Credits (Plan 3)
 2. Add repository method dartdocs
-3. Restructure settings/create to 3-layer
+3. Complete text-to-image backend wiring
 
 ### Long-term (1-2 months)
 
-2. Implement Text-to-Image feature
-3. Build Admin app
+1. Build Admin app
 
 ---
 
@@ -568,6 +562,6 @@ dart run build_runner watch
 
 ---
 
-**Generated**: 2026-02-10
-**Analysis Depth**: Comprehensive (150+ files, 10,803 LOC source)
-**Codebase Grade**: A (Excellent architecture, comprehensive test coverage)
+**Generated**: 2026-02-15
+**Analysis Depth**: Comprehensive (repomix pack, 248 files)
+**Codebase Grade**: Not scored (awaiting verified test metrics)
