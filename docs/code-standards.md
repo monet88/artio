@@ -1,8 +1,8 @@
 # Code Standards
 
 **Project**: Artio - AI Image Generation SaaS
-**Updated**: 2026-02-10
-**Version**: 1.2
+**Updated**: 2026-02-16
+**Version**: 1.3
 
 ---
 
@@ -149,7 +149,7 @@ lib/
 | Models | `{Name}Model` | `UserModel` |
 | Repositories (Interface) | `I{Name}Repository` | `IAuthRepository` |
 | Repositories (Impl) | `{Name}Repository` | `AuthRepository` |
-| Notifiers | `{Name}Notifier` | `AuthNotifier` |
+| Notifiers | `{Name}Notifier` | `AuthViewModel` |
 | Providers | `{name}Provider` | `authNotifierProvider` |
 
 ---
@@ -163,7 +163,7 @@ lib/
 ```dart
 // ✓ CORRECT: Generated provider
 @riverpod
-class AuthNotifier extends _$AuthNotifier {
+class AuthViewModel extends _$AuthViewModel {
   @override
   FutureOr<AuthUser?> build() => null;
 
@@ -176,7 +176,7 @@ class AuthNotifier extends _$AuthNotifier {
 }
 
 // ✗ WRONG: Manual provider
-final authProvider = StateNotifierProvider<AuthNotifier, AuthState>(...);
+final authProvider = StateNotifierProvider<AuthViewModel, AuthState>(...);
 ```
 
 ### Dependency Injection
@@ -234,7 +234,7 @@ class UserModel with _$UserModel {
 ### Known Trade-off: DTO Leakage
 
 Domain entities include `fromJson`/`toJson` (impure). Acceptable for MVP:
-- Future refactor: Split to `UserEntity` (Domain) + `UserDto` (Data) + mapper
+- Future refactor: Split to distinct Domain entity + Data DTO + mapper (names TBD)
 - Current benefit: Reduced boilerplate, faster iteration
 
 ---
@@ -415,15 +415,15 @@ class AppConstants {
 
 ### Current Status
 
-- **Coverage:** Comprehensive test suite (324 tests passing)
-- **Target:** ✓ Achieved for production readiness
+- **Coverage:** Needs verification (run `flutter test --coverage`)
+- **Target:** 80%+ for production readiness
 
 ### Recent Improvements
 
-- ✓ Integration test infrastructure established
-- ✓ Repository tests (auth, template, gallery)
-- ✓ Widget tests for core components
-- ✓ E2E test for template generation flow
+- Integration test infrastructure present
+- Repository tests present (auth, template)
+- Widget tests for core components
+- E2E test for template generation flow
 
 ### Required Test Structure
 
@@ -513,7 +513,7 @@ void main() {
 
 | Issue | Description | Priority | Future Action |
 |-------|-------------|----------|---------------|
-| ~~Test Coverage~~ | ~~Gap in coverage~~ | ~~High~~ | ✓ Resolved (324 tests) |
+| Test Coverage | Coverage level needs verification | High | Pending verification |
 | ~~Navigation Type Safety~~ | ~~Raw strings~~ | ~~Medium~~ | ✓ Resolved (TypedGoRoute) |
 | File Size | Some files >200 LOC | Medium | Refactor large files (image_viewer_page) |
 | DTO Leakage | Domain entities have JSON logic | Medium | Split to Entity + DTO + mapper when scaling |

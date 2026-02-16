@@ -13,7 +13,7 @@
 
 ---
 
-## 🎯 Overview
+## Overview
 
 **Artio** ("Art Made Simple") is a cross-platform AI image generation SaaS delivering enterprise-grade image creation through two distinct modes:
 
@@ -35,7 +35,7 @@
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ### Feature-First Clean Architecture
 
@@ -71,7 +71,7 @@ Each feature follows Clean Architecture:
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -84,7 +84,7 @@ Each feature follows Clean Architecture:
 ```bash
 # Clone repository
 git clone <repo-url>
-cd aiart
+cd artio
 
 # Install dependencies
 flutter pub get
@@ -127,30 +127,30 @@ flutter build windows  # Windows
 
 ---
 
-## 📦 Features
+## Features
 
-### ✅ Implemented
-
-| Feature | Description | Status |
-|---------|-------------|--------|
-| **Authentication** | Email/password, Google OAuth, Apple Sign-In, password reset | ✅ Complete |
-| **Template Engine** | Browse templates, dynamic inputs, generation tracking | ✅ Complete |
-| **Gallery** | Masonry grid, image viewer, download/share/delete | ✅ Complete |
-| **Settings** | Theme switcher (light/dark/system) | ✅ Complete |
-| **Realtime Updates** | Job status streaming via Supabase Realtime | ✅ Complete |
-| **Error Handling** | Centralized AppException hierarchy | ✅ Complete |
-
-### 🚧 Planned
+### Implemented
 
 | Feature | Description | Status |
 |---------|-------------|--------|
-| **Subscription & Credits** | Free/Pro tiers, RevenueCat integration | 🚧 Planned |
-| **Rate Limiting** | Daily generation limits, cooldown | 🚧 Planned |
-| **Text-to-Image** | Custom prompt generation | 🚧 Planned |
+| **Authentication** | Email/password, Google OAuth, Apple Sign-In, password reset | Complete |
+| **Template Engine** | Browse templates, dynamic inputs, generation tracking | Complete |
+| **Create (Text-to-Image)** | Create screen UI and generation flow wiring | In progress (backend integration pending) |
+| **Gallery** | Masonry grid, image viewer, download/share/delete | Complete |
+| **Settings** | Theme switcher (light/dark/system) | Complete |
+| **Realtime Updates** | Job status streaming via Supabase Realtime | Complete |
+| **Error Handling** | Centralized AppException hierarchy | Complete |
+
+### Planned / Pending
+
+| Feature | Description | Status |
+|---------|-------------|--------|
+| **Subscription & Credits** | Free/Pro tiers, RevenueCat + Stripe | Planned |
+| **Rate Limiting** | Daily generation limits, cooldown | Planned |
 
 ---
 
-## 📖 Quick Start
+## Quick Start
 
 ### Run the App
 
@@ -163,15 +163,16 @@ flutter run -d windows   # Windows
 ### Basic Workflow
 
 1. **Sign up** → Email/password or Google/Apple OAuth
-2. **Home tab** → Browse 25 AI templates
+2. **Home tab** → Browse templates
 3. **Select template** → Fill inputs → Generate
-4. **Gallery** → View/download/share your creations
+4. **Create tab** → Enter prompt (text-to-image flow)
+5. **Gallery** → View/download/share your creations
 
 See [docs/](docs/) for detailed guides
 
 ---
 
-## 🛠️ Development
+## Development
 
 ### Code Generation
 
@@ -224,7 +225,7 @@ share_plus: ^12.0.1
 
 ---
 
-## 📚 Documentation
+## Documentation
 
 | Document | Description |
 |----------|-------------|
@@ -237,7 +238,7 @@ share_plus: ^12.0.1
 
 ---
 
-## 🧪 Testing
+## Testing
 
 ```bash
 # Run all tests
@@ -253,17 +254,17 @@ flutter test integration_test/template_e2e_test.dart
 flutter test test/features/auth/data/repositories/auth_repository_test.dart
 ```
 
-**Test Suite**: 324 tests (comprehensive coverage)
+**Test Suite**: Coverage and test count need verification (run `flutter test --coverage`).
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)
@@ -273,16 +274,16 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-## 📞 Support
+## Support
 
-For issues, questions, or contributions, please [open an issue](https://github.com/your-repo/issues).
+For issues, questions, or contributions, please open an issue in the project repository.
 
 ---
 
 <div align="center">
 
-**Built with ❤️ using Flutter**
+**Built with Flutter**
 
-**Last Updated**: 2026-02-09
+**Last Updated**: 2026-02-16
 
 </div>

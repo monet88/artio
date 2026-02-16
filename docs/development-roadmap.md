@@ -1,8 +1,8 @@
 # Development Roadmap
 
 **Project**: Artio - AI Image Generation SaaS
-**Updated**: 2026-02-10
-**Status**: Phase 5, 7, 8 (partial) Complete → Phase 6 Next
+**Updated**: 2026-02-16
+**Status**: Phase 5, 7 complete; Phase 8 partial; Phase 6 next
 
 ---
 
@@ -77,7 +77,7 @@
 - Created `template_e2e_test.dart`
 - Configured Windows desktop test runner
 - Repository tests for auth and template features
-- **Test Coverage**: 324 tests passing, 80%+ coverage achieved
+- **Test Coverage**: Needs verification (run `flutter test --coverage`)
 
 **Phase 8: Admin App (Partial)** - *2026-01-28*
 - Created admin web app structure (11 source files)
@@ -198,7 +198,7 @@
 | **User Features** | 100% | ✓ Complete (Phase 5, 7) |
 | **Monetization** | 0% | Pending (Phase 6) |
 | **Admin Tools** | 50% | In Progress (Phase 8) |
-| **Documentation** | 100% | ✓ Standardized |
+| **Documentation** | 100% | ✓ Standardized (content review ongoing) |
 
 **Total Project**: 81% (39.5h / 48.5h total estimated)
 
@@ -260,7 +260,7 @@
 ### Technical
 - [x] `flutter analyze` 0 errors
 - [ ] All phase Success Criteria met
-- [x] 80%+ test coverage on business logic (324 tests passing)
+- [ ] 80%+ test coverage on business logic (needs verification)
 - [ ] <2s cold start time
 - [ ] <500ms template grid load
 

@@ -1,8 +1,8 @@
 # Project Overview & Product Development Requirements
 
 **Project**: Artio - AI Image Generation SaaS
-**Updated**: 2026-02-10
-**Version**: 1.2
+**Updated**: 2026-02-16
+**Version**: 1.3
 
 ---
 
@@ -90,9 +90,9 @@ Democratize AI image generation through intuitive templates and flexible text pr
 **Implementation Status:**
 - ✓ Complete: Phase 4 (Template Engine)
 - ✓ Complete: Phase 4.6 (Architecture Hardening)
-- ✓ Complete: 25 seed templates (5 per category: Portrait, Removal, Art Style, Enhancement, Creative)
+- ✓ Complete: Seed templates via SQL migration (count needs verification)
 - ✓ Complete: TypedGoRoute navigation with route path constants
-- Pending: KIE API integration in Edge Function (Imagen 4/Flux-2/GPT Image/Seedream)
+- Pending: KIE API integration details in Edge Function (Imagen 4/Flux-2/GPT Image/Seedream) — needs verification
 
 ---
 
@@ -106,18 +106,18 @@ Democratize AI image generation through intuitive templates and flexible text pr
 - As a user, I want to save prompts for reuse
 
 **Acceptance Criteria:**
-- [x] Create Screen UI implemented with prompt input placeholder
+- [x] Create screen UI implemented with prompt input
 - [x] Parameter selection UI layout ready
-- [ ] Backend integration (Edge Function Imagen 4/Flux-2/GPT Image/Seedream)
-- [ ] Prompt input with character limit (500 chars)
-- [ ] Parameter controls: style, size, negative prompt
+- [ ] Backend integration (Edge Function Imagen 4/Flux-2/GPT Image/Seedream) — needs verification
+- [ ] Prompt input with character limit (500 chars) — needs verification
+- [ ] Parameter controls: style, size, negative prompt — needs verification
 - [ ] Prompt history (last 10 prompts)
 - [ ] Generation queue (reuse template engine flow)
 
 **Implementation:**
-- `create` feature (UI implemented)
-- Reuses `GenerationRepository` backend
-- Edge Function calls Imagen 4 API instead of Nano Banana
+- `create` feature (UI and flow wiring implemented)
+- Reuses `GenerationRepository` backend (needs verification)
+- Edge Function provider selection for text-to-image needs verification
 
 ---
 
@@ -342,7 +342,7 @@ Democratize AI image generation through intuitive templates and flexible text pr
 
 | Issue | Impact | Mitigation Plan |
 |-------|--------|-----------------|
-| ~~Test coverage gap~~ | ~~Production readiness~~ | ✓ Resolved (324 tests, comprehensive suite) |
+| Test coverage gap | Production readiness | Verify current coverage; expand tests as needed |
 | ~~GoRouter raw strings~~ | ~~Type safety~~ | ✓ Resolved (TypedGoRoute implemented) |
 ### Medium Priority
 
@@ -365,7 +365,7 @@ Democratize AI image generation through intuitive templates and flexible text pr
 ### Technical KPIs
 
 - [x] `flutter analyze` 0 errors (achieved in Phase 4.6)
-- [x] Comprehensive test coverage (324 tests passing)
+- [ ] Comprehensive test coverage (needs verification)
 - [x] TypedGoRoute navigation (type-safe routing)
 - [ ] <2s cold start time (to be measured)
 - [ ] <500ms template grid load (to be measured)
@@ -563,5 +563,5 @@ See: `docs/code-standards.md` for detailed conventions
 ---
 
 **Document Version:** 1.3
-**Last Updated:** 2026-02-10
+**Last Updated:** 2026-02-15
 **Next Review:** Post-Phase 6 (Subscription implementation)

@@ -1,16 +1,16 @@
 # System Architecture
 
 **Project**: Artio - AI Image Generation SaaS
-**Updated**: 2026-02-10
-**Version**: 1.2
+**Updated**: 2026-02-16
+**Version**: 1.3
 
 ---
 
 ## High-Level Overview
 
 Artio is a cross-platform (Android, iOS, Web, Windows) AI image generation SaaS with dual generation modes:
-- **Template Engine** (Home tab): Image-to-image with 25+ preset templates (Portrait, Art Style, Editing, etc.)
-- **Text-to-Image** (Create tab): Custom prompt generation
+- **Template Engine** (Home tab): Image-to-image with curated templates (Portrait, Art Style, Editing, etc.)
+- **Text-to-Image** (Create tab): Custom prompt generation (UI and flow wiring present; backend coverage still in progress)
 
 ### Technology Stack
 
@@ -356,30 +356,25 @@ Router redirects to Home
 ```
 User selects template
       ↓
-TemplateDetailScreen loads template via templateProvider
+Template detail screen loads template data
       ↓
-InputFieldBuilder renders dynamic form (text, image upload, dropdown)
+Dynamic input form renders (text, image upload, dropdown)
       ↓
 User fills inputs, taps "Generate"
       ↓
-GenerationNotifier.startGeneration(templateId, inputData)
-      ↓
-GenerationRepository.startGeneration()
+Generation repository starts a job
   1. Creates generation_jobs row (status: 'pending')
   2. Uploads input images to Storage (if any)
   3. Calls Edge Function: generate_image
       ↓
 Edge Function:
   1. Fetches template config
-  2. Builds KIE API payload (Nano Banana for image-to-image)
+  2. Builds KIE API payload (image-to-image)
   3. Calls KIE API
   4. On response: Downloads result, uploads to Storage
-  5. Updates generation_jobs (status: 'completed', result_url: '...')
+  5. Updates generation_jobs (status: 'completed', result_urls)
       ↓
-Realtime subscription in GenerationRepository.watchJob()
-  - Emits status updates to UI
-      ↓
-GenerationProgressScreen shows:
+Realtime subscription streams job updates to UI
   - Pending → "Queued..."
   - Processing → "Generating..."
   - Completed → Shows result image
@@ -389,14 +384,17 @@ GenerationProgressScreen shows:
 ### Text-to-Image Generation
 
 **Current Status**:
-- CreateScreen UI implemented with prompt input
+- Create screen UI implemented with prompt input
 - Parameter selection UI implemented
-- Backend integration: Edge Function supports multiple AI providers (KIE API, Gemini)
+- Generation flow wiring exists; backend behavior depends on Edge Function support
 
 **Planned Flow**:
 - No image upload required
 - Edge Function calls Imagen 4 (or Flux-2, GPT Image, Seedream)
 - Longer processing time (~30-60s)
+
+**Notes**:
+- Exact request payload fields and model selection logic need verification in Edge Function implementation.
 
 ---
 
@@ -415,7 +413,7 @@ GenerationProgressScreen shows:
 /settings                     → SettingsScreen (auth required)
 ```
 
-**Navigation**: Uses TypedGoRoute with `GoRouteData` classes in `lib/routing/routes/app_routes.dart`
+**Navigation**: Uses TypedGoRoute classes in `lib/routing/routes/app_routes.dart`
 
 ### Auth Guards
 
@@ -493,7 +491,7 @@ MaterialApp.router(
 ```
 
 **Theme Switching:**
-- Stored in `SharedPreferences` (persistent)
+- Stored in persistent preferences (implementation needs verification)
 - Managed by `themeProvider` (Riverpod)
 - Updates `MaterialApp.themeMode` reactively
 
@@ -520,19 +518,19 @@ MaterialApp.router(
 
 **Flow:**
 1. Authenticate request (verify JWT)
-2. Fetch template config from `templates` table
-3. Build KIE API request (Nano Banana or Imagen 4)
+2. Fetch template config from `templates` table (template flows)
+3. Build KIE API request (model varies by mode)
 4. Call KIE API
 5. Download result image
-6. Upload to `generated_images` Storage bucket
-7. Update `generation_jobs` table (status: 'completed', result_url)
+6. Upload to `generated-images` Storage bucket
+7. Update `generation_jobs` table (status: 'completed', result_urls)
 
-**Output:**
+**Output (example shape):**
 ```json
 {
   "job_id": "uuid",
   "status": "completed",
-  "result_url": "https://storage.supabase.co/.../output.png"
+  "result_urls": ["https://storage.supabase.co/.../output.png"]
 }
 ```
 
@@ -653,7 +651,7 @@ ref.listen(generationJobProvider(jobId), (prev, next) {
 
 ---
 
-## Monitoring (Future)
+## Monitoring (Planned)
 
 ### Metrics to Track
 
@@ -662,7 +660,7 @@ ref.listen(generationJobProvider(jobId), (prev, next) {
 - Error rate by exception type
 - User retention (DAU/MAU)
 
-### Tools
+### Tools (not all verified in code)
 
 - Sentry: Error tracking (client + Edge Functions)
 - Supabase Analytics: Database query performance
@@ -675,10 +673,10 @@ ref.listen(generationJobProvider(jobId), (prev, next) {
 
 ### Current Limits (MVP)
 
-- Supabase free tier: 500MB DB, 1GB storage, 2GB bandwidth
-- Kie API: Rate limits (TBD - depends on plan)
-- Gemini API: Rate limits per project tier
-- Edge Functions: 500K invocations/month (free tier)
+- Supabase free tier: needs verification against current plan
+- Kie API: rate limits TBD
+- Gemini API: rate limits per project tier
+- Edge Functions: invocations/month depends on plan tier
 
 ### Future Scaling
 
