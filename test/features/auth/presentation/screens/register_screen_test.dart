@@ -32,7 +32,7 @@ void main() {
     testWidgets('renders Create Account header', (tester) async {
       await tester.pumpApp(const RegisterScreen(), overrides: overrides);
 
-      // "Create Account" appears twice: header + button
+      // "Create Account" appears twice: GradientText header + _GradientButton text
       expect(find.text('Create Account'), findsAtLeastNWidgets(1));
       expect(find.text('Start creating amazing art'), findsOneWidget);
     });
@@ -40,14 +40,19 @@ void main() {
     testWidgets('renders Create Account button', (tester) async {
       await tester.pumpApp(const RegisterScreen(), overrides: overrides);
 
-      expect(find.text('Create Account'), findsNWidgets(2)); // header + button
-      expect(find.byType(FilledButton), findsOneWidget);
+      // GradientText header + _GradientButton label
+      expect(find.text('Create Account'), findsNWidgets(2));
+      // Auth screens use _GradientButton not FilledButton
+      expect(find.byType(InkWell), findsWidgets);
     });
 
     testWidgets('shows error on empty email', (tester) async {
       await tester.pumpApp(const RegisterScreen(), overrides: overrides);
 
-      await tester.tap(find.byType(FilledButton));
+      // Find and tap the Create Account button by text
+      final buttons = find.text('Create Account');
+      // Tap the button instance (last one is the button, first is the header)
+      await tester.tap(buttons.last);
       await tester.pumpAndSettle();
 
       expect(find.text('Please enter your email'), findsOneWidget);
@@ -60,7 +65,7 @@ void main() {
         find.byType(TextFormField).first,
         'invalidemail',
       );
-      await tester.tap(find.byType(FilledButton));
+      await tester.tap(find.text('Create Account').last);
       await tester.pumpAndSettle();
 
       expect(find.text('Please enter a valid email'), findsOneWidget);
@@ -73,7 +78,7 @@ void main() {
         find.byType(TextFormField).first,
         'test@example.com',
       );
-      await tester.tap(find.byType(FilledButton));
+      await tester.tap(find.text('Create Account').last);
       await tester.pumpAndSettle();
 
       expect(find.text('Please enter a password'), findsOneWidget);
@@ -90,7 +95,7 @@ void main() {
         find.byType(TextFormField).at(1),
         '12345',
       );
-      await tester.tap(find.byType(FilledButton));
+      await tester.tap(find.text('Create Account').last);
       await tester.pumpAndSettle();
 
       expect(find.text('Password must be at least 6 characters'), findsOneWidget);
@@ -111,7 +116,7 @@ void main() {
         find.byType(TextFormField).last,
         'differentpassword',
       );
-      await tester.tap(find.byType(FilledButton));
+      await tester.tap(find.text('Create Account').last);
       await tester.pumpAndSettle();
 
       expect(find.text('Passwords do not match'), findsOneWidget);
@@ -128,7 +133,7 @@ void main() {
         find.byType(TextFormField).at(1),
         'password123',
       );
-      await tester.tap(find.byType(FilledButton));
+      await tester.tap(find.text('Create Account').last);
       await tester.pumpAndSettle();
 
       expect(find.text('Please confirm your password'), findsOneWidget);
@@ -144,7 +149,8 @@ void main() {
     testWidgets('renders back button', (tester) async {
       await tester.pumpApp(const RegisterScreen(), overrides: overrides);
 
-      expect(find.byIcon(Icons.arrow_back), findsOneWidget);
+      // Back button icon changed to rounded variant
+      expect(find.byIcon(Icons.arrow_back_rounded), findsOneWidget);
     });
 
     testWidgets('toggles password visibility', (tester) async {

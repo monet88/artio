@@ -9,9 +9,11 @@
 *.tmp
 .DS_Store
 .atom/
+.build/
 .buildlog/
 .history
 .svn/
+.swiftpm/
 migrate_working_dir/
 nul
 
@@ -172,3 +174,6 @@ node_modules/
 package.json
 package-lock.json
 
+# Tracked: project rules, skills, and config for AI tools
+!.serena/
+!.claude/

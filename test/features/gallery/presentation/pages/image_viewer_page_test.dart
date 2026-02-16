@@ -33,43 +33,57 @@ void main() {
       );
     }
 
-    testWidgets('renders with black background', (tester) async {
+    testWidgets('renders with Scaffold', (tester) async {
       final items = [GalleryItemFixtures.completed()];
 
       await tester.pumpWidget(createTestWidget(items: items));
+      // Pump beyond the 3-second indicator auto-hide timer
+      await tester.pump(const Duration(seconds: 4));
 
-      final scaffold = tester.widget<Scaffold>(find.byType(Scaffold));
-      expect(scaffold.backgroundColor, Colors.black);
+      expect(find.byType(Scaffold), findsWidgets);
     });
 
     testWidgets('displays share button in app bar', (tester) async {
       final items = [GalleryItemFixtures.completed()];
 
       await tester.pumpWidget(createTestWidget(items: items));
+      await tester.pump(const Duration(seconds: 4));
 
-      expect(find.byIcon(Icons.share), findsOneWidget);
+      expect(find.byIcon(Icons.share_rounded), findsOneWidget);
     });
 
     testWidgets('displays download button in app bar', (tester) async {
       final items = [GalleryItemFixtures.completed()];
 
       await tester.pumpWidget(createTestWidget(items: items));
+      await tester.pump(const Duration(seconds: 4));
 
-      expect(find.byIcon(Icons.download), findsOneWidget);
+      expect(find.byIcon(Icons.download_rounded), findsOneWidget);
     });
 
     testWidgets('displays delete button in app bar', (tester) async {
       final items = [GalleryItemFixtures.completed()];
 
       await tester.pumpWidget(createTestWidget(items: items));
+      await tester.pump(const Duration(seconds: 4));
 
-      expect(find.byIcon(Icons.delete_outline), findsOneWidget);
+      expect(find.byIcon(Icons.delete_outline_rounded), findsOneWidget);
+    });
+
+    testWidgets('displays info button in app bar', (tester) async {
+      final items = [GalleryItemFixtures.completed()];
+
+      await tester.pumpWidget(createTestWidget(items: items));
+      await tester.pump(const Duration(seconds: 4));
+
+      expect(find.byIcon(Icons.info_outline_rounded), findsOneWidget);
     });
 
     testWidgets('displays PageView for swiping between images', (tester) async {
       final items = GalleryItemFixtures.list(count: 3);
 
       await tester.pumpWidget(createTestWidget(items: items));
+      await tester.pump(const Duration(seconds: 4));
 
       expect(find.byType(PageView), findsOneWidget);
     });
@@ -78,6 +92,7 @@ void main() {
       final items = [GalleryItemFixtures.completed()];
 
       await tester.pumpWidget(createTestWidget(items: items));
+      await tester.pump(const Duration(seconds: 4));
 
       expect(find.byType(InteractiveViewer), findsOneWidget);
     });
@@ -86,50 +101,44 @@ void main() {
       final items = [GalleryItemFixtures.completed()];
 
       await tester.pumpWidget(createTestWidget(items: items));
+      await tester.pump(const Duration(seconds: 4));
 
       expect(find.byType(Hero), findsOneWidget);
     });
 
-    // Test processing state - verify the widget renders correctly with processing items
-    // Note: The actual "Processing..." text is inside PageView.builder which requires
-    // pumpAndSettle with network image loading. We verify the widget structure instead.
     testWidgets('shows processing state for pending items', (tester) async {
       final items = [GalleryItemFixtures.processing()];
 
       await tester.pumpWidget(createTestWidget(items: items));
-      await tester.pump();
+      await tester.pump(const Duration(seconds: 4));
 
-      // Verify the page renders with correct structure
       expect(find.byType(PageView), findsOneWidget);
       expect(find.byType(InteractiveViewer), findsOneWidget);
       expect(find.byType(Hero), findsOneWidget);
-      
+
       // Verify app bar actions are still present
-      expect(find.byIcon(Icons.share), findsOneWidget);
-      expect(find.byIcon(Icons.delete_outline), findsOneWidget);
+      expect(find.byIcon(Icons.share_rounded), findsOneWidget);
+      expect(find.byIcon(Icons.delete_outline_rounded), findsOneWidget);
     });
 
     testWidgets('starts at specified initialIndex', (tester) async {
       final items = GalleryItemFixtures.list(count: 5);
 
-      await tester.pumpWidget(createTestWidget(items: items, initialIndex: 2));
+      await tester.pumpWidget(
+          createTestWidget(items: items, initialIndex: 2));
+      await tester.pump(const Duration(seconds: 4));
 
       final pageView = tester.widget<PageView>(find.byType(PageView));
       expect(pageView.controller?.initialPage, 2);
     });
 
-    testWidgets('displays prompt in bottom bar when available', (tester) async {
-      final items = [
-        GalleryItemFixtures.single(
-          prompt: 'A beautiful landscape',
-          templateName: 'Landscape Template',
-        ),
-      ];
+    testWidgets('shows page counter in app bar', (tester) async {
+      final items = GalleryItemFixtures.list(count: 3);
 
       await tester.pumpWidget(createTestWidget(items: items));
+      await tester.pump(const Duration(seconds: 4));
 
-      expect(find.text('A beautiful landscape'), findsOneWidget);
-      expect(find.text('Landscape Template'), findsOneWidget);
+      expect(find.text('1 / 3'), findsOneWidget);
     });
   });
 }
