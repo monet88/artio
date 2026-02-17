@@ -103,12 +103,14 @@ artio/
 - **Domain entities:** `GalleryItem` (freezed)
 - **Data layer:** `GalleryRepository` (Supabase `generation_jobs` + Storage)
 - **Presentation:** `GalleryPage`, `ImageViewerPage` (full-screen), providers, widgets
+- **Extracted widgets:** `ImageInfoBottomSheet`, `ImageViewerAppBar`, `ImageViewerImagePage`, `ImageViewerPageIndicator`, `ImageViewerSwipeDismiss`
 
 ### 5. Settings Feature (`lib/features/settings/`)
 - **Purpose:** Theme toggle, account management
 - **Architecture:** data/presentation (lightweight)
 - **Data layer:** `SharedPreferences`-based persistence
 - **Presentation:** `SettingsScreen`
+- **Extracted widgets:** `UserProfileCard`, `SettingsSections`, `SettingsHelpers` (6 helper widgets)
 
 ### 6. Core Layer (`lib/core/`)
 - **Config:** `EnvConfig` (dotenv loader, validates SUPABASE_URL/ANON_KEY), `SentryConfig`
@@ -125,7 +127,7 @@ artio/
 - **Transitions:** Custom fade, slide-up, fade-through transitions
 
 ### 8. Shared Widgets (`lib/shared/widgets/`)
-- 11 reusable widgets: `AppSnackbar`, `AspectRatioSelector`, `ErrorPage`, `ErrorStateWidget`, `ImageCountDropdown`, `LoadingStateWidget`, `MainShell`, `ModelSelector`, `OfflineBanner`, `OutputFormatToggle`, `SectionHeader`
+- 12 reusable widgets: `AppSnackbar`, `AspectRatioSelector`, `ErrorPage`, `ErrorStateWidget`, `GradientButton`, `ImageCountDropdown`, `LoadingStateWidget`, `MainShell`, `ModelSelector`, `OfflineBanner`, `OutputFormatToggle`, `SectionHeader`
 
 ### 9. Admin Dashboard (`admin/`)
 - **Purpose:** Separate Flutter web app for managing templates, viewing dashboard stats
@@ -199,6 +201,7 @@ artio/
 - [ ] **Integration tests require real Supabase** — `.env.test` with live credentials needed
 - [ ] **Soft delete not fully propagated** — `deleted_at` on `generation_jobs` but no archive/restore UI
 - [ ] **`public_member_api_docs` disabled** — no public API docs requirement (acceptable for MVP)
+- [ ] **Files over 250-line target** — `template_detail_screen.dart` (320), `gallery_repository.dart` (313), `generation_progress.dart` (307), `error_state_widget.dart` (349), `masonry_image_grid.dart` (274), `empty_gallery_state.dart` (274), `home_screen.dart` (271), `register_screen.dart` (253)
 
 ---
 
@@ -224,6 +227,9 @@ artio/
 - Test fixtures in `test/core/fixtures/`
 - Integration tests in `integration_test/`
 - Lint: `very_good_analysis` (strict)
+
+**File Size:**
+- Target: ≤ 250 lines per file (enforced via refactoring)
 
 **Environment:**
 - Multi-env support: `.env.development`, `.env.staging`, `.env` (production)
