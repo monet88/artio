@@ -177,3 +177,4 @@ package-lock.json
 !.serena/
 !.claude/
 .ck/
+artifacts/
