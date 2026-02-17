@@ -273,6 +273,8 @@ class GalleryRepository implements IGalleryRepository {
         final destPath = '${docsDir.path}/${file.uri.pathSegments.last}';
         await file.rename(destPath);
         return destPath;
+      } on FileSystemException catch (e) {
+        throw AppException.storage(message: 'Failed to save image: ${e.message}');
       } catch (e) {
         if (e is AppException) rethrow;
         throw AppException.network(message: 'Failed to download image');
@@ -285,6 +287,8 @@ class GalleryRepository implements IGalleryRepository {
     try {
       final directory = await getTemporaryDirectory();
       return await _downloadToFile(imageUrl, directory, 'share');
+    } on FileSystemException catch (e) {
+      throw AppException.storage(message: 'Failed to save image: ${e.message}');
     } catch (e) {
       if (e is AppException) rethrow;
       throw AppException.network(message: 'Failed to get image file');
