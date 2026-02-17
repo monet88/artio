@@ -10,12 +10,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 /// All grouped settings sections rendered inside the settings screen ListView.
 class SettingsSections extends ConsumerWidget {
   const SettingsSections({
-    required this.email, required this.isDark, required this.version, required this.onResetPassword, required this.onSignOut, super.key,
+    required this.email, required this.isDark, required this.version, required this.isLoggedIn, required this.onResetPassword, required this.onSignOut, super.key,
   });
 
   final String email;
   final bool isDark;
   final String? version;
+  final bool isLoggedIn;
   final VoidCallback onResetPassword;
   final VoidCallback onSignOut;
 
@@ -25,31 +26,33 @@ class SettingsSections extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         // ── Account Settings ──────────────────────────────────
-        const SettingsSectionLabel(label: 'Account'),
-        const SizedBox(height: AppSpacing.sm),
-        SettingsCard(
-          isDark: isDark,
-          children: [
-            SettingsTile(
-              icon: Icons.email_outlined,
-              iconBgColor: AppColors.info,
-              title: 'Email',
-              subtitle: email,
-              isDark: isDark,
-            ),
-            SettingsDivider(isDark: isDark),
-            SettingsTile(
-              icon: Icons.lock_reset_rounded,
-              iconBgColor: AppColors.warning,
-              title: 'Change Password',
-              trailing: SettingsChevronArrow(isDark: isDark),
-              onTap: onResetPassword,
-              isDark: isDark,
-            ),
-          ],
-        ),
+        if (isLoggedIn) ...[
+          const SettingsSectionLabel(label: 'Account'),
+          const SizedBox(height: AppSpacing.sm),
+          SettingsCard(
+            isDark: isDark,
+            children: [
+              SettingsTile(
+                icon: Icons.email_outlined,
+                iconBgColor: AppColors.info,
+                title: 'Email',
+                subtitle: email,
+                isDark: isDark,
+              ),
+              SettingsDivider(isDark: isDark),
+              SettingsTile(
+                icon: Icons.lock_reset_rounded,
+                iconBgColor: AppColors.warning,
+                title: 'Change Password',
+                trailing: SettingsChevronArrow(isDark: isDark),
+                onTap: onResetPassword,
+                isDark: isDark,
+              ),
+            ],
+          ),
 
-        const SizedBox(height: AppSpacing.lg),
+          const SizedBox(height: AppSpacing.lg),
+        ],
 
         // ── Appearance ─────────────────────────────────────────
         const SettingsSectionLabel(label: 'Appearance'),
@@ -135,22 +138,24 @@ class SettingsSections extends ConsumerWidget {
           ],
         ),
 
-        const SizedBox(height: AppSpacing.lg),
+        if (isLoggedIn) ...[
+          const SizedBox(height: AppSpacing.lg),
 
-        // ── Logout Button ────────────────────────────────────
-        OutlinedButton.icon(
-          onPressed: onSignOut,
-          icon: const Icon(Icons.logout_rounded),
-          label: const Text('Logout'),
-          style: OutlinedButton.styleFrom(
-            foregroundColor: AppColors.error,
-            side: const BorderSide(color: AppColors.error, width: 1.5),
-            minimumSize: const Size(double.infinity, 52),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(14),
+          // ── Logout Button ────────────────────────────────────
+          OutlinedButton.icon(
+            onPressed: onSignOut,
+            icon: const Icon(Icons.logout_rounded),
+            label: const Text('Logout'),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: AppColors.error,
+              side: const BorderSide(color: AppColors.error, width: 1.5),
+              minimumSize: const Size(double.infinity, 52),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
             ),
           ),
-        ),
+        ],
       ],
     );
   }

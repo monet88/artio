@@ -107,7 +107,7 @@ void main() {
       );
     });
 
-    testWidgets('shows login snackbar for unauthenticated generate',
+    testWidgets('shows auth gate bottom sheet for unauthenticated generate',
         (tester) async {
       await tester.pumpApp(
         const CreateScreen(),
@@ -125,8 +125,9 @@ void main() {
       await tester.tap(find.widgetWithText(FilledButton, 'Generate'));
       await tester.pumpAndSettle();
 
-      expect(find.text('Please log in to generate images'), findsOneWidget);
-      expect(find.text('Login'), findsOneWidget);
+      expect(find.text('Sign in to create'), findsOneWidget);
+      expect(find.text('Sign In'), findsOneWidget);
+      expect(find.text('Create Account'), findsOneWidget);
     });
 
     testWidgets('shows failed job feedback snackbar', (tester) async {

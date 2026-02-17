@@ -1,4 +1,5 @@
 import 'package:artio/core/utils/app_exception_mapper.dart';
+import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
 import 'package:artio/features/gallery/presentation/providers/gallery_provider.dart';
 import 'package:artio/features/gallery/presentation/widgets/empty_gallery_state.dart';
 import 'package:artio/features/gallery/presentation/widgets/masonry_image_grid.dart';
@@ -14,6 +15,10 @@ class GalleryPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final galleryAsync = ref.watch(galleryStreamProvider);
+    final isLoggedIn = ref.watch(authViewModelProvider).maybeMap(
+          authenticated: (_) => true,
+          orElse: () => false,
+        );
 
     return Scaffold(
       appBar: AppBar(title: const Text('Gallery')),
@@ -25,7 +30,7 @@ class GalleryPage extends ConsumerWidget {
         ),
         data: (items) {
           if (items.isEmpty) {
-            return const EmptyGalleryState();
+            return EmptyGalleryState(isLoggedIn: isLoggedIn);
           }
 
           return MasonryImageGrid(
