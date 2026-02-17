@@ -19,7 +19,7 @@ Future<void> main() async {
       url: EnvConfig.supabaseUrl,
       anonKey: EnvConfig.supabaseAnonKey,
     );
-  } catch (e) {
+  } on Exception catch (e) {
     runApp(InitErrorApp(error: e.toString()));
     return;
   }

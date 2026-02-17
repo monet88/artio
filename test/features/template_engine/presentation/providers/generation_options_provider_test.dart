@@ -60,17 +60,14 @@ void main() {
     });
 
     test('reset restores default values', () {
-      final notifier = container.read(generationOptionsProvider.notifier);
-
-      // Change all values
-      notifier.updateAspectRatio('16:9');
-      notifier.updateImageCount(4);
-      notifier.updateOutputFormat('png');
-      notifier.updateModel('flux-2/pro-text-to-image');
-      notifier.updateOtherIdeas('Some ideas');
-
-      // Reset
-      notifier.reset();
+      // Change all values, then reset
+      container.read(generationOptionsProvider.notifier)
+        ..updateAspectRatio('16:9')
+        ..updateImageCount(4)
+        ..updateOutputFormat('png')
+        ..updateModel('flux-2/pro-text-to-image')
+        ..updateOtherIdeas('Some ideas')
+        ..reset();
 
       final state = container.read(generationOptionsProvider);
       expect(state.aspectRatio, '1:1');
@@ -81,10 +78,9 @@ void main() {
     });
 
     test('multiple updates preserve other fields', () {
-      final notifier = container.read(generationOptionsProvider.notifier);
-
-      notifier.updateAspectRatio('4:3');
-      notifier.updateImageCount(2);
+      container.read(generationOptionsProvider.notifier)
+        ..updateAspectRatio('4:3')
+        ..updateImageCount(2);
 
       final state = container.read(generationOptionsProvider);
       expect(state.aspectRatio, '4:3');

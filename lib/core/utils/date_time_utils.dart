@@ -5,7 +5,7 @@ DateTime? safeParseDateTime(dynamic value, {DateTime? fallback}) {
   if (value == null) return fallback;
   try {
     return DateTime.parse(value.toString());
-  } catch (_) {
+  } on FormatException catch (_) {
     return fallback;
   }
 }

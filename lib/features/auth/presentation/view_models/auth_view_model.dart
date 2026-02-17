@@ -56,7 +56,7 @@ class AuthViewModel extends _$AuthViewModel implements Listenable {
       } else {
         state = const AuthState.unauthenticated();
       }
-    } catch (e, st) {
+    } on Object catch (e, st) {
       await SentryConfig.captureException(e, stackTrace: st);
       state = const AuthState.unauthenticated();
     }
@@ -72,7 +72,7 @@ class AuthViewModel extends _$AuthViewModel implements Listenable {
       } else {
         state = const AuthState.unauthenticated();
       }
-    } catch (e) {
+    } on Exception catch (e) {
       state = AuthState.error(AppExceptionMapper.toUserMessage(e));
     } finally {
       _notifyRouter();
@@ -87,7 +87,7 @@ class AuthViewModel extends _$AuthViewModel implements Listenable {
       final user = await authRepo.signInWithEmail(email, password);
       state = AuthState.authenticated(user);
       _notifyRouter();
-    } catch (e) {
+    } on Exception catch (e) {
       state = AuthState.error(_parseErrorMessage(e));
     }
   }
@@ -100,7 +100,7 @@ class AuthViewModel extends _$AuthViewModel implements Listenable {
       final user = await authRepo.signUpWithEmail(email, password);
       state = AuthState.authenticated(user);
       _notifyRouter();
-    } catch (e) {
+    } on Exception catch (e) {
       state = AuthState.error(_parseErrorMessage(e));
     }
   }
@@ -111,7 +111,7 @@ class AuthViewModel extends _$AuthViewModel implements Listenable {
     try {
       final authRepo = ref.read(authRepositoryProvider);
       await authRepo.signInWithGoogle();
-    } catch (e) {
+    } on Exception catch (e) {
       state = AuthState.error(_parseErrorMessage(e));
     }
   }
@@ -122,7 +122,7 @@ class AuthViewModel extends _$AuthViewModel implements Listenable {
     try {
       final authRepo = ref.read(authRepositoryProvider);
       await authRepo.signInWithApple();
-    } catch (e) {
+    } on Exception catch (e) {
       state = AuthState.error(_parseErrorMessage(e));
     }
   }
@@ -131,7 +131,7 @@ class AuthViewModel extends _$AuthViewModel implements Listenable {
     try {
       final authRepo = ref.read(authRepositoryProvider);
       await authRepo.signOut();
-    } catch (e, st) {
+    } on Object catch (e, st) {
       // Log error but do not rethrow — local state must be cleared
       // regardless of API success to avoid stuck authenticated state.
       await SentryConfig.captureException(e, stackTrace: st);
@@ -150,7 +150,7 @@ class AuthViewModel extends _$AuthViewModel implements Listenable {
     try {
       final authRepo = ref.read(authRepositoryProvider);
       await authRepo.resetPassword(trimmed);
-    } catch (e) {
+    } on Exception catch (e) {
       if (e is AppException) rethrow;
       throw const AppException.auth(message: 'Failed to send reset email');
     }

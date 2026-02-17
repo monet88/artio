@@ -19,7 +19,7 @@ class NotificationsNotifier extends _$NotificationsNotifier {
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool(_key, value);
-    } catch (e, st) {
+    } on Exception catch (e, st) {
       Log.e('Failed to save notification preference', e, st);
     }
   }
@@ -32,7 +32,7 @@ class NotificationsNotifier extends _$NotificationsNotifier {
       if (value != null && !_hasUserToggled) {
         state = value;
       }
-    } catch (e, st) {
+    } on Exception catch (e, st) {
       Log.e('Failed to load notification preference', e, st);
     }
   }

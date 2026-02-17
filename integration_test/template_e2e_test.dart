@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
@@ -91,10 +92,10 @@ void main() {
             reason: 'Template ${i + 1} should be ${expectedNames[i]}');
       }
 
-      print('✅ All 25 templates verified successfully!');
-      print('✅ 5 categories verified: ${categories.join(", ")}');
-      print('✅ All templates are free (is_premium=false)');
-      print('✅ Order sequence 1-25 correct');
+      debugPrint('✅ All 25 templates verified successfully!');
+      debugPrint('✅ 5 categories verified: ${categories.join(", ")}');
+      debugPrint('✅ All templates are free (is_premium=false)');
+      debugPrint('✅ Order sequence 1-25 correct');
     });
 
     testWidgets('Verify category distribution', (tester) async {
@@ -116,9 +117,9 @@ void main() {
       expect(categoryCounts['Photo Enhancement'], 4);
       expect(categoryCounts['Creative & Fun'], 4);
 
-      print('✅ Category distribution verified:');
+      debugPrint('✅ Category distribution verified:');
       categoryCounts.forEach((cat, count) {
-        print('   - $cat: $count templates');
+        debugPrint('   - $cat: $count templates');
       });
     });
   });

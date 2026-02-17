@@ -73,7 +73,7 @@ class GenerationViewModel extends _$GenerationViewModel {
           StackTrace.current,
         ),
       );
-    } catch (e, st) {
+    } on Object catch (e, st) {
       await _jobManager.captureOnce(e, st);
       state = AsyncError(e, st);
     }

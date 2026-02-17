@@ -207,7 +207,7 @@ class GalleryRepository implements IGalleryRepository {
       throw AppException.storage(message: e.message);
     } on FunctionException catch (e) {
       throw AppException.generation(message: e.details?.toString() ?? 'Retry failed');
-    } catch (e) {
+    } on Exception catch (e) {
       if (e is AppException) rethrow;
       throw AppException.unknown(message: 'Failed to retry generation', originalError: e);
     }
@@ -224,7 +224,7 @@ class GalleryRepository implements IGalleryRepository {
           return ext;
         }
       }
-    } catch (_) {}
+    } on FormatException catch (_) {}
     return '.png';
   }
 
@@ -274,7 +274,7 @@ class GalleryRepository implements IGalleryRepository {
         return destPath;
       } on FileSystemException catch (e) {
         throw AppException.storage(message: 'Failed to save image: ${e.message}');
-      } catch (e) {
+      } on Exception catch (e) {
         if (e is AppException) rethrow;
         throw const AppException.network(message: 'Failed to download image');
       }
@@ -288,7 +288,7 @@ class GalleryRepository implements IGalleryRepository {
       return await _downloadToFile(imageUrl, directory, 'share');
     } on FileSystemException catch (e) {
       throw AppException.storage(message: 'Failed to save image: ${e.message}');
-    } catch (e) {
+    } on Exception catch (e) {
       if (e is AppException) rethrow;
       throw const AppException.network(message: 'Failed to get image file');
     }

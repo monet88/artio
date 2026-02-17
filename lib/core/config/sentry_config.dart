@@ -7,10 +7,11 @@ class SentryConfig {
 
     await SentryFlutter.init(
       (options) {
-        options.dsn = EnvConfig.sentryDsn;
-        options.tracesSampleRate = 0;
-        options.attachStacktrace = true;
-        options.environment = 'production';
+        options
+          ..dsn = EnvConfig.sentryDsn
+          ..tracesSampleRate = 0
+          ..attachStacktrace = true
+          ..environment = 'production';
       },
     );
   }

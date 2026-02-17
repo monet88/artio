@@ -15,10 +15,9 @@ void main() {
     });
 
     test('setModel resets unsupported aspect ratio to first supported value', () {
-      final notifier = container.read(createFormNotifierProvider.notifier);
-
-      notifier.setAspectRatio('16:9');
-      notifier.setModel('gpt-image/1.5-text-to-image');
+      container.read(createFormNotifierProvider.notifier)
+        ..setAspectRatio('16:9')
+        ..setModel('gpt-image/1.5-text-to-image');
 
       final state = container.read(createFormNotifierProvider);
       expect(state.modelId, 'gpt-image/1.5-text-to-image');
@@ -26,10 +25,9 @@ void main() {
     });
 
     test('setModel keeps aspect ratio when it is supported', () {
-      final notifier = container.read(createFormNotifierProvider.notifier);
-
-      notifier.setAspectRatio('2:3');
-      notifier.setModel('gpt-image/1.5-text-to-image');
+      container.read(createFormNotifierProvider.notifier)
+        ..setAspectRatio('2:3')
+        ..setModel('gpt-image/1.5-text-to-image');
 
       final state = container.read(createFormNotifierProvider);
       expect(state.aspectRatio, '2:3');

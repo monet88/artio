@@ -34,7 +34,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   Future<void> _initNotifications() async {
     try {
       await ref.read(notificationsNotifierProvider.notifier).init();
-    } catch (error, stackTrace) {
+    } on Exception catch (error, stackTrace) {
       Log.e('Failed to load notification settings', error, stackTrace);
     }
   }
@@ -47,7 +47,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           _version = '${packageInfo.version} (${packageInfo.buildNumber})';
         });
       }
-    } catch (e) {
+    } on Exception catch (e) {
       if (mounted) {
         setState(() {
           _version = 'Unknown';
@@ -64,7 +64,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           SnackBar(content: Text('Password reset email sent to $email')),
         );
       }
-    } catch (e) {
+    } on Exception catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(AppExceptionMapper.toUserMessage(e))),
@@ -99,7 +99,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       setState(() => _isLoading = true);
       try {
         await ref.read(authViewModelProvider.notifier).signOut();
-      } catch (e) {
+      } on Exception catch (e) {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(AppExceptionMapper.toUserMessage(e))),

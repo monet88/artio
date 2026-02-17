@@ -73,7 +73,7 @@ class SupabaseTestSetup {
         dotenv.testLoad(fileInput: file.readAsStringSync());
         _dotenvLoaded = true;
       }
-    } catch (_) {
+    } on Exception catch (_) {
       // .env.test not found, will use Platform.environment
     }
   }

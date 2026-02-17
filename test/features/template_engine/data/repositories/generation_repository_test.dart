@@ -275,9 +275,10 @@ void main() {
               onError: errors.add,
             );
 
-        controller.add([]);
-        controller.add([]);
-        controller.add([
+        controller
+          ..add([])
+          ..add([])
+          ..add([
           {
             'id': 'job-1',
             'user_id': 'user-1',
@@ -324,9 +325,10 @@ void main() {
               onError: errors.add,
             );
 
-        controller.add([]);
-        controller.add([]);
-        controller.add([]);
+        controller
+          ..add([])
+          ..add([])
+          ..add([]);
 
         await Future<void>.delayed(const Duration(milliseconds: 20));
 

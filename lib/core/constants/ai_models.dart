@@ -162,7 +162,7 @@ class AiModels {
   static AiModelConfig? getById(String id) {
     try {
       return all.firstWhere((m) => m.id == id);
-    } catch (_) {
+    } on StateError catch (_) {
       return null;
     }
   }

@@ -93,8 +93,9 @@ void main() {
 
         final stream = mockRepository.watchUserImages(userId: 'user-123');
 
-        controller.add(initialItems);
-        controller.add(updatedItems);
+        controller
+          ..add(initialItems)
+          ..add(updatedItems);
 
         await expectLater(
           stream,

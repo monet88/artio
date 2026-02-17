@@ -87,7 +87,7 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage>
       if (mounted) {
         AppSnackbar.success(context, 'Saved to $path');
       }
-    } catch (e) {
+    } on Exception catch (e) {
       HapticService.error();
       if (mounted) {
         AppSnackbar.error(context, AppExceptionMapper.toUserMessage(e));
@@ -111,7 +111,7 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage>
           text: 'Created with Artio',
         ),
       );
-    } catch (e) {
+    } on Exception catch (e) {
       if (mounted) {
         AppSnackbar.error(context, AppExceptionMapper.toUserMessage(e));
       }
