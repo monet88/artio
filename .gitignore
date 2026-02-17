@@ -176,3 +176,4 @@ package-lock.json
 # Tracked: project rules, skills, and config for AI tools
 !.serena/
 !.claude/
+.ck/
