@@ -71,13 +71,13 @@ class GalleryActionsNotifier extends _$GalleryActionsNotifier {
     }
   }
 
-  Future<void> toggleFavorite(String itemId, bool isFavorite) async {
+  Future<void> toggleFavorite(String itemId, {required bool isFavorite}) async {
     if (_isProcessing || state.isLoading) return;
     _isProcessing = true;
     try {
       state = await AsyncValue.guard(() async {
         final repository = ref.read(galleryRepositoryProvider);
-        await repository.toggleFavorite(itemId, isFavorite);
+        await repository.toggleFavorite(itemId, isFavorite: isFavorite);
       });
     } finally {
       _isProcessing = false;

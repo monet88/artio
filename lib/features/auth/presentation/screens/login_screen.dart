@@ -175,7 +175,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                     alignment: Alignment.centerRight,
                     child: TextButton(
                       onPressed: () =>
-                          const ForgotPasswordRoute().push(context),
+                          const ForgotPasswordRoute().push<void>(context),
                       child: const Text('Forgot Password?'),
                     ),
                   ),
@@ -205,7 +205,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                         style: AppTypography.bodySecondary(context),
                       ),
                       TextButton(
-                        onPressed: () => const RegisterRoute().push(context),
+                        onPressed: () => const RegisterRoute().push<void>(context),
                         child: const Text('Sign Up'),
                       ),
                     ],

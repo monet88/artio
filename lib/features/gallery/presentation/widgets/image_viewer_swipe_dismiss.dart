@@ -13,7 +13,7 @@ class ImageViewerSwipeDismiss extends StatefulWidget {
   final VoidCallback onDismiss;
 
   /// Called with (dragOffset, dragScale, isDragging).
-  final void Function(double dragOffset, double dragScale, bool isDragging)
+  final void Function(double dragOffset, double dragScale, {required bool isDragging})
       onDragStateChanged;
 
   @override
@@ -33,7 +33,7 @@ class _ImageViewerSwipeDismissState extends State<ImageViewerSwipeDismiss> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onVerticalDragStart: (_) {
-        widget.onDragStateChanged(_dragOffset, _dragScale, true);
+        widget.onDragStateChanged(_dragOffset, _dragScale, isDragging: true);
       },
       onVerticalDragUpdate: (details) {
         setState(() {
@@ -42,7 +42,7 @@ class _ImageViewerSwipeDismissState extends State<ImageViewerSwipeDismiss> {
               (_dragOffset.abs() / _kScaleDivisor)
                   .clamp(0.0, _kMaxScaleReduction);
         });
-        widget.onDragStateChanged(_dragOffset, _dragScale, true);
+        widget.onDragStateChanged(_dragOffset, _dragScale, isDragging: true);
       },
       onVerticalDragEnd: (details) {
         if (_dragOffset.abs() > _kDismissThreshold) {
@@ -52,7 +52,7 @@ class _ImageViewerSwipeDismissState extends State<ImageViewerSwipeDismiss> {
             _dragOffset = 0;
             _dragScale = 1.0;
           });
-          widget.onDragStateChanged(0, 1, false);
+          widget.onDragStateChanged(0, 1, isDragging: false);
         }
       },
       child: Transform.translate(

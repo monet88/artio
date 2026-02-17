@@ -52,8 +52,8 @@ class GenerationRepository implements IGenerationRepository {
       }
 
       if (response.status != 200) {
-        final errorMsg = response.data is Map
-            ? (response.data['error'] as String?) ?? 'Generation failed'
+        final errorMsg = response.data is Map<String, dynamic>
+            ? ((response.data as Map<String, dynamic>)['error'] as String?) ?? 'Generation failed'
             : 'Generation failed';
         throw AppException.generation(message: errorMsg);
       }

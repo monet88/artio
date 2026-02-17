@@ -63,7 +63,7 @@ class _TemplateCardState extends State<TemplateCard>
         onTapDown: _onTapDown,
         onTapUp: _onTapUp,
         onTapCancel: _onTapCancel,
-        onTap: () => TemplateDetailRoute(id: template.id).push(context),
+        onTap: () => TemplateDetailRoute(id: template.id).push<void>(context),
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),

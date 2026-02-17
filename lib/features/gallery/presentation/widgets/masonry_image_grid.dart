@@ -17,7 +17,7 @@ class MasonryImageGrid extends StatefulWidget {
     required this.items, required this.onItemTap, super.key,
   });
   final List<GalleryItem> items;
-  final Function(GalleryItem item, int index) onItemTap;
+  final void Function(GalleryItem item, int index) onItemTap;
 
   @override
   State<MasonryImageGrid> createState() => _MasonryImageGridState();

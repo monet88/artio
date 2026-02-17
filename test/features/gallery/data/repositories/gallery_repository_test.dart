@@ -184,21 +184,21 @@ void main() {
 
     group('toggleFavorite', () {
       test('completes without error when favoriting', () async {
-        when(() => mockRepository.toggleFavorite('item-123', true))
+        when(() => mockRepository.toggleFavorite('item-123', isFavorite: true))
             .thenAnswer((_) async {});
 
         await expectLater(
-          mockRepository.toggleFavorite('item-123', true),
+          mockRepository.toggleFavorite('item-123', isFavorite: true),
           completes,
         );
       });
 
       test('completes without error when unfavoriting', () async {
-        when(() => mockRepository.toggleFavorite('item-123', false))
+        when(() => mockRepository.toggleFavorite('item-123', isFavorite: false))
             .thenAnswer((_) async {});
 
         await expectLater(
-          mockRepository.toggleFavorite('item-123', false),
+          mockRepository.toggleFavorite('item-123', isFavorite: false),
           completes,
         );
       });

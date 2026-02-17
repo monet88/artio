@@ -1,5 +1,3 @@
-import 'package:artio/features/auth/presentation/state/auth_state.dart';
-import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
 import 'package:artio/features/gallery/domain/entities/gallery_item.dart';
 import 'package:artio/features/gallery/presentation/pages/image_viewer_page.dart';
 import 'package:artio/routing/app_router.dart';
@@ -8,13 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
-import '../core/fixtures/user_fixtures.dart';
 import '../core/helpers/riverpod_test_utils.dart';
-
-class _MockAuthViewModel extends AuthViewModel {
-  @override
-  AuthState build() => AuthState.authenticated(UserFixtures.authenticated());
-}
 
 void main() {
   group('TypedGoRoute', () {

@@ -155,7 +155,7 @@ void main() {
               isPremiumUser: false,
             ));
 
-        await Future.delayed(const Duration(milliseconds: 10));
+        await Future<void>.delayed(const Duration(milliseconds: 10));
 
         verify(() => mockPolicy.canGenerate(
           userId: 'user-123',
@@ -193,7 +193,7 @@ void main() {
               isPremiumUser: false,
             ));
 
-        await Future.delayed(const Duration(milliseconds: 10));
+        await Future<void>.delayed(const Duration(milliseconds: 10));
 
         verify(() => mockRepository.startGeneration(
           templateId: 'free-text',
@@ -235,7 +235,7 @@ void main() {
               isPremiumUser: false,
             ));
 
-        await Future.delayed(const Duration(milliseconds: 10));
+        await Future<void>.delayed(const Duration(milliseconds: 10));
 
         verify(() => mockRepository.startGeneration(
           templateId: 'free-text',
@@ -368,9 +368,9 @@ void main() {
               isPremiumUser: false,
             ));
 
-        await Future.delayed(Duration.zero);
+        await Future<void>.delayed(Duration.zero);
         jobStreamController.add(GenerationJobFixtures.processing());
-        await Future.delayed(Duration.zero);
+        await Future<void>.delayed(Duration.zero);
 
         container.read(createViewModelProvider.notifier).reset();
 

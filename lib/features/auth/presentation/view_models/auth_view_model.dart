@@ -10,13 +10,14 @@ import 'package:artio/features/auth/presentation/state/auth_state.dart';
 import 'package:artio/routing/routes/app_routes.dart';
 import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' as supabase show AuthState;
 
 part 'auth_view_model.g.dart';
 
 @riverpod
 class AuthViewModel extends _$AuthViewModel implements Listenable {
   VoidCallback? _routerListener;
-  StreamSubscription? _authSubscription;
+  StreamSubscription<supabase.AuthState>? _authSubscription;
 
   @override
   AuthState build() {

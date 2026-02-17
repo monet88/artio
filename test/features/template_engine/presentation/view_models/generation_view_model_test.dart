@@ -82,7 +82,7 @@ void main() {
           userId: 'user-123',
         ));
 
-        await Future.delayed(const Duration(milliseconds: 10));
+        await Future<void>.delayed(const Duration(milliseconds: 10));
 
         verify(() => mockPolicy.canGenerate(
           userId: 'user-123',
@@ -116,7 +116,7 @@ void main() {
           imageCount: 2,
         ));
 
-        await Future.delayed(const Duration(milliseconds: 10));
+        await Future<void>.delayed(const Duration(milliseconds: 10));
 
         verify(() => mockRepository.startGeneration(
           templateId: 'template-1',
@@ -198,11 +198,11 @@ void main() {
           userId: 'user-123',
         ));
 
-        await Future.delayed(Duration.zero);
+        await Future<void>.delayed(Duration.zero);
         
         // Emit a job
         jobStreamController.add(GenerationJobFixtures.processing());
-        await Future.delayed(Duration.zero);
+        await Future<void>.delayed(Duration.zero);
 
         // Reset
         container.read(generationViewModelProvider.notifier).reset();

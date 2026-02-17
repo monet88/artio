@@ -1,4 +1,6 @@
 @Tags(['integration'])
+library;
+
 import 'package:artio/features/template_engine/domain/entities/template_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -19,7 +21,6 @@ void main() {
     'Removal & Editing',
   ];
   const expectedTotal = 25;
-  const expectedPerCategory = 5;
 
   setUpAll(() async {
     await SupabaseTestSetup.init();

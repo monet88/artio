@@ -108,7 +108,7 @@ class SettingsSections extends ConsumerWidget {
                 value: ref.watch(notificationsNotifierProvider),
                 onChanged: (value) => ref
                     .read(notificationsNotifierProvider.notifier)
-                    .setState(value),
+                    .setState(value: value),
               ),
             ),
           ],

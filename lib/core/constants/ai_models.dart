@@ -160,11 +160,8 @@ class AiModels {
 
   /// Get model by ID
   static AiModelConfig? getById(String id) {
-    try {
-      return all.firstWhere((m) => m.id == id);
-    } on StateError catch (_) {
-      return null;
-    }
+    final matches = all.where((m) => m.id == id);
+    return matches.isEmpty ? null : matches.first;
   }
 
   /// Get default model

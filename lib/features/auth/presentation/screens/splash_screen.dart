@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:artio/core/design_system/app_animations.dart';
 import 'package:artio/core/design_system/app_gradients.dart';
 import 'package:artio/core/design_system/app_typography.dart';
@@ -72,16 +74,16 @@ class _SplashScreenState extends State<SplashScreen>
 
   Future<void> _startAnimations() async {
     // Small delay for screen to settle
-    await Future.delayed(const Duration(milliseconds: 200));
+    await Future<void>.delayed(const Duration(milliseconds: 200));
     if (!mounted) return;
 
     // Logo fades in
-    _logoController.forward();
+    unawaited(_logoController.forward());
 
     // Tagline starts after logo is halfway
-    await Future.delayed(const Duration(milliseconds: 400));
+    await Future<void>.delayed(const Duration(milliseconds: 400));
     if (!mounted) return;
-    _taglineController.forward();
+    unawaited(_taglineController.forward());
   }
 
   @override

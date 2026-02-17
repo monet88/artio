@@ -22,7 +22,7 @@ class HomeScreen extends ConsumerWidget {
           onRefresh: () async {
             ref.invalidate(templatesProvider);
             // Small delay for visual feedback
-            await Future.delayed(const Duration(milliseconds: 500));
+            await Future<void>.delayed(const Duration(milliseconds: 500));
           },
           child: CustomScrollView(
             slivers: [

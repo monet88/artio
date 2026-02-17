@@ -58,8 +58,8 @@ dependencies:
   image_gallery_saver_plus: ^4.0.1
   package_info_plus: ^9.0.0
   flutter_animate: ^4.5.2
-
   storage_client: any
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

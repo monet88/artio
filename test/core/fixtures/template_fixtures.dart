@@ -97,7 +97,7 @@ class TemplateFixtures {
         (i) => TemplateFixtures.basic(
           id: 'template-$i',
           name: 'Template $i',
-          category: i % 2 == 0 ? 'portrait' : 'landscape',
+          category: i.isEven ? 'portrait' : 'landscape',
         ),
       );
 }

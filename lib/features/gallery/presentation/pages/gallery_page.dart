@@ -36,7 +36,7 @@ class GalleryPage extends ConsumerWidget {
                   items: items,
                   initialIndex: index,
                 ),
-              ).push(context);
+              ).push<void>(context);
             },
           );
         },

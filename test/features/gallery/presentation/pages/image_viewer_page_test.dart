@@ -1,4 +1,5 @@
 import 'package:artio/features/gallery/data/repositories/gallery_repository.dart';
+import 'package:artio/features/gallery/domain/entities/gallery_item.dart';
 import 'package:artio/features/gallery/presentation/pages/image_viewer_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,7 +19,7 @@ void main() {
     });
 
     Widget createTestWidget({
-      required List items,
+      required List<GalleryItem> items,
       int initialIndex = 0,
     }) {
       return ProviderScope(

@@ -12,7 +12,7 @@ class NotificationsNotifier extends _$NotificationsNotifier {
   @override
   bool build() => true;
 
-  Future<void> setState(bool value) async {
+  Future<void> setState({required bool value}) async {
     if (state == value) return;
     _hasUserToggled = true;
     state = value;

@@ -32,5 +32,5 @@ abstract class IGalleryRepository {
   Future<File> getImageFile(String imageUrl);
 
   /// Toggle favorite status
-  Future<void> toggleFavorite(String itemId, bool isFavorite);
+  Future<void> toggleFavorite(String itemId, {required bool isFavorite});
 }

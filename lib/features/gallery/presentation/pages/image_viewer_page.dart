@@ -202,10 +202,10 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage>
               HapticService.dragThreshold();
               context.pop();
             },
-            onDragStateChanged: (offset, _, dragging) {
+            onDragStateChanged: (offset, _, {required isDragging}) {
               setState(() {
                 _dragOffset = offset;
-                _isDragging = dragging;
+                _isDragging = isDragging;
               });
             },
             child: PageView.builder(

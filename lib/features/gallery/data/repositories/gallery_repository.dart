@@ -14,8 +14,9 @@ import 'package:http/http.dart' as http;
 import 'package:image_gallery_saver_plus/image_gallery_saver_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
 import 'package:storage_client/storage_client.dart' as storage_client;
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' hide StorageException;
 
 part 'gallery_repository.g.dart';
 
@@ -58,7 +59,7 @@ class GalleryRepository implements IGalleryRepository {
       userId: job['user_id'] as String,
       imageUrl: imageUrl,
       templateId: (job['template_id'] as String?) ?? '',
-      templateName: (job['templates']?['name'] as String?) ?? 'Unknown',
+      templateName: ((job['templates'] as Map<String, dynamic>?)?['name'] as String?) ?? 'Unknown',
       prompt: job['prompt'] as String?,
       createdAt: safeParseDateTime(job['created_at']) ?? DateTime.now(),
       status: _parseStatus(job['status'] as String?),
@@ -260,7 +261,7 @@ class GalleryRepository implements IGalleryRepository {
         if (!kIsWeb &&
             (defaultTargetPlatform == TargetPlatform.android ||
                 defaultTargetPlatform == TargetPlatform.iOS)) {
-          final result = await ImageGallerySaverPlus.saveFile(file.path);
+          final result = await ImageGallerySaverPlus.saveFile(file.path) as Map<String, dynamic>;
           await file.delete().catchError((_) => file);
           if (result['isSuccess'] == true) {
             return 'Photos';
@@ -295,7 +296,7 @@ class GalleryRepository implements IGalleryRepository {
   }
 
   @override
-  Future<void> toggleFavorite(String itemId, bool isFavorite) async {
+  Future<void> toggleFavorite(String itemId, {required bool isFavorite}) async {
     final separatorIndex = itemId.lastIndexOf('_');
     if (separatorIndex == -1) {
       throw const AppException.storage(message: 'Invalid item ID format');

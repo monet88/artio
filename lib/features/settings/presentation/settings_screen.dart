@@ -47,7 +47,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           _version = '${packageInfo.version} (${packageInfo.buildNumber})';
         });
       }
-    } on Exception catch (e) {
+    } on Exception {
       if (mounted) {
         setState(() {
           _version = 'Unknown';
