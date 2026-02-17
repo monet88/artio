@@ -1,13 +1,13 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:artio/routing/app_router.dart';
-import 'package:artio/routing/routes/app_routes.dart';
-import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
 import 'package:artio/features/auth/presentation/state/auth_state.dart';
+import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
 import 'package:artio/features/gallery/domain/entities/gallery_item.dart';
 import 'package:artio/features/gallery/presentation/pages/image_viewer_page.dart';
+import 'package:artio/routing/app_router.dart';
+import 'package:artio/routing/routes/app_routes.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+
 import '../core/fixtures/user_fixtures.dart';
 import '../core/helpers/riverpod_test_utils.dart';
 
@@ -64,7 +64,7 @@ void main() {
     });
 
     test('GalleryImageRoute has correct path', () {
-      final route = GalleryImageRoute(
+      const route = GalleryImageRoute(
         $extra: GalleryImageExtra(items: [], initialIndex: 0),
       );
       expect(route.location, '/gallery/viewer');
@@ -131,8 +131,8 @@ void main() {
     test('redirects when items are empty', () {
       final context = _FakeBuildContext();
       final state = _FakeGoRouterState();
-      final route = GalleryImageRoute(
-        $extra: const GalleryImageExtra(items: [], initialIndex: 0),
+      const route = GalleryImageRoute(
+        $extra: GalleryImageExtra(items: [], initialIndex: 0),
       );
 
       final result = route.redirect(context, state);
@@ -188,7 +188,7 @@ GalleryItem _galleryItem({required String id}) {
     userId: 'user-$id',
     templateId: 'template-$id',
     templateName: 'Template $id',
-    createdAt: DateTime(2024, 1, 1),
+    createdAt: DateTime(2024),
     status: GenerationStatus.completed,
     imageUrl: 'https://example.com/$id.png',
   );

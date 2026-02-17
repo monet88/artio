@@ -1,10 +1,8 @@
-import 'dart:async';
 import 'dart:io';
 
-import 'package:flutter_test/flutter_test.dart';
-
-import 'package:artio/core/utils/retry.dart';
 import 'package:artio/core/exceptions/app_exception.dart';
+import 'package:artio/core/utils/retry.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('retry', () {
@@ -18,7 +16,6 @@ void main() {
           }
           return 'success';
         },
-        maxAttempts: 3,
         initialDelay: const Duration(milliseconds: 1),
       );
 
@@ -39,7 +36,6 @@ void main() {
           }
           return 'ok';
         },
-        maxAttempts: 3,
         initialDelay: const Duration(milliseconds: 1),
       );
 
@@ -55,7 +51,6 @@ void main() {
             callCount++;
             throw const AppException.generation(message: 'Gen failed');
           },
-          maxAttempts: 3,
           initialDelay: const Duration(milliseconds: 1),
         ),
         throwsA(isA<AppException>()),

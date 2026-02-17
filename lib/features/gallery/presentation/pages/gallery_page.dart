@@ -1,13 +1,12 @@
+import 'package:artio/core/utils/app_exception_mapper.dart';
+import 'package:artio/features/gallery/presentation/providers/gallery_provider.dart';
+import 'package:artio/features/gallery/presentation/widgets/empty_gallery_state.dart';
+import 'package:artio/features/gallery/presentation/widgets/masonry_image_grid.dart';
+import 'package:artio/features/gallery/presentation/widgets/shimmer_grid.dart';
+import 'package:artio/routing/routes/app_routes.dart';
+import 'package:artio/shared/widgets/error_state_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../../../core/utils/app_exception_mapper.dart';
-import '../../../../routing/routes/app_routes.dart';
-import '../../../../shared/widgets/error_state_widget.dart';
-import '../providers/gallery_provider.dart';
-import '../widgets/empty_gallery_state.dart';
-import '../widgets/masonry_image_grid.dart';
-import '../widgets/shimmer_grid.dart';
 
 class GalleryPage extends ConsumerWidget {
   const GalleryPage({super.key});

@@ -1,18 +1,17 @@
 import 'dart:async';
 
+import 'package:artio/core/config/sentry_config.dart';
 import 'package:artio/core/design_system/app_animations.dart';
 import 'package:artio/core/design_system/app_spacing.dart';
 import 'package:artio/core/design_system/app_typography.dart';
 import 'package:artio/core/utils/app_exception_mapper.dart';
+import 'package:artio/features/template_engine/domain/entities/template_model.dart';
+import 'package:artio/features/template_engine/presentation/providers/template_provider.dart';
+import 'package:artio/features/template_engine/presentation/widgets/template_card.dart';
+import 'package:artio/shared/widgets/loading_state_widget.dart';
 import 'package:artio/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../../../core/config/sentry_config.dart';
-import '../../../../shared/widgets/loading_state_widget.dart';
-import '../../domain/entities/template_model.dart';
-import '../providers/template_provider.dart';
-import 'template_card.dart';
 
 /// Template grid with staggered appear animation for items.
 /// Returns sliver-compatible widgets — use directly inside a CustomScrollView.
@@ -75,7 +74,7 @@ class _StaggeredGridState extends State<_StaggeredGrid>
   int _previousTemplateCount = 0;
 
   /// Vertical offset (px) for the stagger slide-up entrance animation.
-  static const double _kStaggerSlideOffset = 20.0;
+  static const double _kStaggerSlideOffset = 20;
 
   @override
   void initState() {
@@ -131,7 +130,7 @@ class _StaggeredGridState extends State<_StaggeredGrid>
         itemCount: itemCount,
         itemBuilder: (context, index) {
           // Stagger calculation
-          final maxItems = AppAnimations.maxStaggerItems;
+          const maxItems = AppAnimations.maxStaggerItems;
           final clampedItemCount = templates.length.clamp(0, maxItems);
           final staggerIndex = index.clamp(0, maxItems);
           final totalStaggerTime = AppAnimations.staggerDelay.inMilliseconds *
@@ -147,7 +146,7 @@ class _StaggeredGridState extends State<_StaggeredGrid>
                   AppAnimations.normal.inMilliseconds) /
                   totalDuration;
 
-          final itemAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+          final itemAnimation = Tween<double>(begin: 0, end: 1).animate(
             CurvedAnimation(
               parent: _staggerController,
               curve: Interval(

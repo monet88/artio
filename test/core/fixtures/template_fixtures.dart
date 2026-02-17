@@ -1,5 +1,5 @@
-import 'package:artio/features/template_engine/domain/entities/template_model.dart';
 import 'package:artio/features/template_engine/domain/entities/input_field_model.dart';
+import 'package:artio/features/template_engine/domain/entities/template_model.dart';
 
 /// Test data factories for [TemplateModel] and [InputFieldModel]
 class TemplateFixtures {

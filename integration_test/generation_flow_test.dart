@@ -1,14 +1,14 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:integration_test/integration_test.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mocktail/mocktail.dart';
+import 'package:artio/features/auth/domain/entities/user_model.dart';
+import 'package:artio/features/auth/presentation/state/auth_state.dart';
+import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
+import 'package:artio/features/template_engine/data/repositories/template_repository.dart';
 import 'package:artio/features/template_engine/presentation/screens/home_screen.dart';
 import 'package:artio/features/template_engine/presentation/screens/template_detail_screen.dart';
-import 'package:artio/features/template_engine/data/repositories/template_repository.dart';
-import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
-import 'package:artio/features/auth/presentation/state/auth_state.dart';
-import 'package:artio/features/auth/domain/entities/user_model.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:integration_test/integration_test.dart';
+import 'package:mocktail/mocktail.dart';
 
 class MockTemplateRepository extends Mock implements TemplateRepository {}
 
@@ -36,7 +36,7 @@ void main() {
     Widget createTestWidget({Widget? home}) {
       return ProviderScope(
         overrides: [
-          authViewModelProvider.overrideWith(() => MockAuthViewModel()),
+          authViewModelProvider.overrideWith(MockAuthViewModel.new),
           templateRepositoryProvider.overrideWithValue(mockRepository),
         ],
         child: MaterialApp(

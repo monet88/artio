@@ -1,18 +1,15 @@
 import 'dart:ui';
 
+import 'package:artio/core/design_system/app_animations.dart';
+import 'package:artio/features/gallery/domain/entities/gallery_item.dart';
+import 'package:artio/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
-import '../../../../core/design_system/app_animations.dart';
-import '../../../../theme/app_colors.dart';
-import '../../domain/entities/gallery_item.dart';
 
 /// Glassmorphism info bottom sheet for the image viewer.
 class ImageInfoBottomSheet extends StatelessWidget {
   const ImageInfoBottomSheet({
-    super.key,
-    required this.item,
-    required this.onCopyPrompt,
+    required this.item, required this.onCopyPrompt, super.key,
   });
 
   final GalleryItem item;
@@ -92,7 +89,7 @@ class ImageInfoBottomSheet extends StatelessWidget {
                     ],
 
                     // Prompt with copy button
-                    if (item.prompt?.isNotEmpty == true) ...[
+                    if (item.prompt?.isNotEmpty ?? false) ...[
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -106,7 +103,7 @@ class ImageInfoBottomSheet extends StatelessWidget {
                                     color: AppColors.textHint,
                                     fontSize: 11,
                                     fontWeight: FontWeight.w600,
-                                    letterSpacing: 1.0,
+                                    letterSpacing: 1,
                                   ),
                                 ),
                                 const SizedBox(height: 4),

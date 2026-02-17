@@ -1,6 +1,6 @@
+import 'package:artio/shared/widgets/image_count_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:artio/shared/widgets/image_count_dropdown.dart';
 
 void main() {
   group('ImageCountDropdown', () {
@@ -31,7 +31,7 @@ void main() {
     });
 
     testWidgets('shows singular for 1 image', (tester) async {
-      await tester.pumpWidget(buildWidget(value: 1));
+      await tester.pumpWidget(buildWidget());
 
       expect(find.text('1 image'), findsOneWidget);
     });

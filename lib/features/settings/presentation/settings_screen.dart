@@ -2,15 +2,14 @@ import 'package:artio/core/design_system/app_spacing.dart';
 import 'package:artio/core/utils/app_exception_mapper.dart';
 import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
 import 'package:artio/features/settings/data/notifications_provider.dart';
+import 'package:artio/features/settings/presentation/widgets/settings_sections.dart';
+import 'package:artio/features/settings/presentation/widgets/user_profile_card.dart';
 import 'package:artio/shared/widgets/loading_state_widget.dart';
 import 'package:artio/theme/app_colors.dart';
 import 'package:artio/utils/logger_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-
-import 'widgets/settings_sections.dart';
-import 'widgets/user_profile_card.dart';
 
 /// Redesigned Settings screen with card-based layout, user profile card,
 /// grouped settings, icon backgrounds, chevron arrows, and styled logout.
@@ -96,7 +95,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       ),
     );
 
-    if (confirmed == true) {
+    if (confirmed ?? false) {
       setState(() => _isLoading = true);
       try {
         await ref.read(authViewModelProvider.notifier).signOut();

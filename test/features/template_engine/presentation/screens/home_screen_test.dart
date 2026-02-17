@@ -1,11 +1,12 @@
+import 'package:artio/features/auth/presentation/state/auth_state.dart';
+import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
+import 'package:artio/features/template_engine/data/repositories/template_repository.dart';
+import 'package:artio/features/template_engine/presentation/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
-import 'package:artio/features/auth/presentation/state/auth_state.dart';
-import 'package:artio/features/template_engine/presentation/screens/home_screen.dart';
-import 'package:artio/features/template_engine/data/repositories/template_repository.dart';
 import 'package:mocktail/mocktail.dart';
+
 import '../../../../core/fixtures/fixtures.dart';
 
 // Mock classes
@@ -28,7 +29,7 @@ void main() {
     Widget createTestWidget({List<Override>? overrides}) {
       return ProviderScope(
         overrides: [
-          authViewModelProvider.overrideWith(() => MockAuthViewModel()),
+          authViewModelProvider.overrideWith(MockAuthViewModel.new),
           templateRepositoryProvider.overrideWithValue(mockTemplateRepository),
           ...?overrides,
         ],

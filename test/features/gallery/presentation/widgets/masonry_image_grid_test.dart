@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:artio/features/gallery/presentation/widgets/masonry_image_grid.dart';
 import 'package:artio/features/gallery/domain/entities/gallery_item.dart';
+import 'package:artio/features/gallery/presentation/widgets/masonry_image_grid.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 import '../../../../core/fixtures/gallery_item_fixtures.dart';
 

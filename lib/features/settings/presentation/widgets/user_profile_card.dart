@@ -1,12 +1,11 @@
+import 'package:artio/core/design_system/app_spacing.dart';
+import 'package:artio/core/design_system/app_typography.dart';
+import 'package:artio/theme/app_colors.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../core/design_system/app_spacing.dart';
-import '../../../../core/design_system/app_typography.dart';
-import '../../../../theme/app_colors.dart';
 
 /// User profile card showing avatar, email, and plan badge.
 class UserProfileCard extends StatelessWidget {
-  const UserProfileCard({super.key, required this.email, required this.isDark});
+  const UserProfileCard({required this.email, required this.isDark, super.key});
 
   final String email;
   final bool isDark;

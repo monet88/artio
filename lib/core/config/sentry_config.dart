@@ -1,6 +1,5 @@
+import 'package:artio/core/config/env_config.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
-
-import 'env_config.dart';
 
 class SentryConfig {
   static Future<void> init() async {

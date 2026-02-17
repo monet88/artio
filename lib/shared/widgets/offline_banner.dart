@@ -1,10 +1,9 @@
 import 'package:artio/core/design_system/app_animations.dart';
 import 'package:artio/core/design_system/app_spacing.dart';
+import 'package:artio/core/providers/connectivity_provider.dart';
 import 'package:artio/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../core/providers/connectivity_provider.dart';
 
 /// Animated offline banner that slides down when connection is lost
 /// and slides back up with a "Back online" flash when reconnected.
@@ -111,13 +110,11 @@ class _OfflineBannerState extends ConsumerState<OfflineBanner>
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // ── Animated Icon ─────────────────────────────────
-              _showReconnected
-                  ? const Icon(
+              if (_showReconnected) const Icon(
                       Icons.wifi_rounded,
                       size: 18,
                       color: Colors.white,
-                    )
-                  : const _PulsingWifiIcon(),
+                    ) else const _PulsingWifiIcon(),
 
               const SizedBox(width: 8),
 

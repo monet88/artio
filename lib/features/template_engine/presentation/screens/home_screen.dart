@@ -1,11 +1,10 @@
 import 'package:artio/core/design_system/app_spacing.dart';
 import 'package:artio/core/design_system/app_typography.dart';
+import 'package:artio/features/template_engine/presentation/providers/template_provider.dart';
+import 'package:artio/features/template_engine/presentation/widgets/template_grid.dart';
 import 'package:artio/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../providers/template_provider.dart';
-import '../widgets/template_grid.dart';
 
 /// Redesigned Home Screen with greeting header, search bar (UI),
 /// category filter chips, and pull-to-refresh.
@@ -122,7 +121,7 @@ class HomeScreen extends ConsumerWidget {
                   ),
                   child: Row(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.star_rounded,
                         size: 18,
                         color: AppColors.primaryCta,
@@ -176,7 +175,7 @@ class _TemplateCountBadge extends ConsumerWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
+            const Icon(
               Icons.dashboard_rounded,
               size: 14,
               color: AppColors.primaryCta,

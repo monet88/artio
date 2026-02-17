@@ -1,10 +1,10 @@
+import 'package:artio/features/auth/presentation/state/auth_state.dart';
+import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
+import 'package:artio/features/gallery/data/repositories/gallery_repository.dart';
+import 'package:artio/features/gallery/presentation/providers/gallery_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:artio/features/gallery/presentation/providers/gallery_provider.dart';
-import 'package:artio/features/gallery/data/repositories/gallery_repository.dart';
-import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
-import 'package:artio/features/auth/presentation/state/auth_state.dart';
 
 // Mock the concrete GalleryRepository class
 class MockGalleryRepository extends Mock implements GalleryRepository {}
@@ -88,7 +88,7 @@ void main() {
         container = ProviderContainer(
           overrides: [
             galleryRepositoryProvider.overrideWithValue(mockRepository),
-            authViewModelProvider.overrideWith(() => _MockAuthNotifier()),
+            authViewModelProvider.overrideWith(_MockAuthNotifier.new),
           ],
         );
 

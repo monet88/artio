@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import '../entities/gallery_item.dart';
+import 'package:artio/features/gallery/domain/entities/gallery_item.dart';
 
 abstract class IGalleryRepository {
   /// Fetch gallery items with pagination

@@ -57,7 +57,7 @@ class CreateViewModel extends _$CreateViewModel {
 
     if (trimmedPrompt.length > AppConstants.maxPromptLength) {
       state = AsyncError(
-        AppException.generation(
+        const AppException.generation(
           message: 'Prompt must be at most ${AppConstants.maxPromptLength} characters',
         ),
         StackTrace.current,
@@ -131,7 +131,7 @@ class CreateViewModel extends _$CreateViewModel {
         onData: (job) => state = AsyncData(job),
         onError: (e, st) => state = AsyncError(e, st),
         onTimeout: () => state = AsyncError(
-          AppException.generation(
+          const AppException.generation(
             message: 'Generation timed out after '
                 '${GenerationJobManager.defaultTimeoutMinutes} minutes',
           ),

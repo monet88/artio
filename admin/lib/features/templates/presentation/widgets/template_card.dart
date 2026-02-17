@@ -42,12 +42,12 @@ class TemplateCard extends StatelessWidget {
                       ? CachedNetworkImage(
                           imageUrl: thumbnailUrl,
                           fit: BoxFit.cover,
-                          placeholder: (_, __) => Container(
+                          placeholder: (_, _) => Container(
                             color: isDark
                                 ? AdminColors.surfaceElevated
                                 : Colors.grey.shade200,
                           ),
-                          errorWidget: (_, __, ___) => Container(
+                          errorWidget: (_, _, _) => Container(
                             color: isDark
                                 ? AdminColors.surfaceElevated
                                 : Colors.grey.shade200,

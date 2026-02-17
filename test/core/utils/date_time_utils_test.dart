@@ -1,6 +1,5 @@
-import 'package:flutter_test/flutter_test.dart';
-
 import 'package:artio/core/utils/date_time_utils.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('safeParseDateTime', () {
@@ -13,7 +12,7 @@ void main() {
     });
 
     test('returns fallback on invalid string', () {
-      final fallback = DateTime(2000, 1, 1);
+      final fallback = DateTime(2000);
       final result = safeParseDateTime('not-a-date', fallback: fallback);
       expect(result, equals(fallback));
     });
@@ -24,13 +23,13 @@ void main() {
     });
 
     test('returns fallback on null input', () {
-      final fallback = DateTime(2000, 1, 1);
+      final fallback = DateTime(2000);
       final result = safeParseDateTime(null, fallback: fallback);
       expect(result, equals(fallback));
     });
 
     test('returns fallback on empty string', () {
-      final fallback = DateTime(2000, 1, 1);
+      final fallback = DateTime(2000);
       final result = safeParseDateTime('', fallback: fallback);
       expect(result, equals(fallback));
     });

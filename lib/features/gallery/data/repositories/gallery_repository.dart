@@ -1,22 +1,21 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:artio/core/config/sentry_config.dart';
+import 'package:artio/core/exceptions/app_exception.dart';
+import 'package:artio/core/providers/supabase_provider.dart';
+import 'package:artio/core/utils/date_time_utils.dart';
+import 'package:artio/core/utils/retry.dart';
+import 'package:artio/features/gallery/domain/entities/gallery_item.dart';
+import 'package:artio/features/gallery/domain/repositories/i_gallery_repository.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_gallery_saver_plus/image_gallery_saver_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:storage_client/storage_client.dart' as storage_client;
-
-import '../../../../core/providers/supabase_provider.dart';
-import '../../../../core/config/sentry_config.dart';
-import '../../../../core/utils/date_time_utils.dart';
-import '../../../../core/utils/retry.dart';
-import '../../domain/entities/gallery_item.dart';
-import '../../../../core/exceptions/app_exception.dart';
-import '../../domain/repositories/i_gallery_repository.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 part 'gallery_repository.g.dart';
 
@@ -26,9 +25,9 @@ GalleryRepository galleryRepository(Ref ref) {
 }
 
 class GalleryRepository implements IGalleryRepository {
-  final SupabaseClient _supabase;
 
   const GalleryRepository(this._supabase);
+  final SupabaseClient _supabase;
 
   /// Convert job status string to enum
   GenerationStatus _parseStatus(String? status) {
@@ -98,7 +97,7 @@ class GalleryRepository implements IGalleryRepository {
           if (urls.isEmpty && job['status'] != 'completed') {
             items.add(_parseJob(job, 0));
           } else {
-            for (int i = 0; i < urls.length; i++) {
+            for (var i = 0; i < urls.length; i++) {
               items.add(_parseJob(job, i));
             }
           }
@@ -122,14 +121,14 @@ class GalleryRepository implements IGalleryRepository {
         .map((data) {
           final items = <GalleryItem>[];
           for (final row in data) {
-            final job = row as Map<String, dynamic>;
+            final job = row;
             if (job['deleted_at'] != null) continue;
 
             final urls = (job['result_urls'] as List?) ?? [];
             if (urls.isEmpty) {
               items.add(_parseJob(job, 0));
             } else {
-              for (int i = 0; i < urls.length; i++) {
+              for (var i = 0; i < urls.length; i++) {
                 items.add(_parseJob(job, i));
               }
             }
@@ -151,7 +150,7 @@ class GalleryRepository implements IGalleryRepository {
       final userId = job['user_id'] as String;
       final urls = (job['result_urls'] as List?) ?? [];
 
-      for (int i = 0; i < urls.length; i++) {
+      for (var i = 0; i < urls.length; i++) {
         try {
           await _supabase.storage
               .from('generated-images')
@@ -277,7 +276,7 @@ class GalleryRepository implements IGalleryRepository {
         throw AppException.storage(message: 'Failed to save image: ${e.message}');
       } catch (e) {
         if (e is AppException) rethrow;
-        throw AppException.network(message: 'Failed to download image');
+        throw const AppException.network(message: 'Failed to download image');
       }
     });
   }
@@ -291,7 +290,7 @@ class GalleryRepository implements IGalleryRepository {
       throw AppException.storage(message: 'Failed to save image: ${e.message}');
     } catch (e) {
       if (e is AppException) rethrow;
-      throw AppException.network(message: 'Failed to get image file');
+      throw const AppException.network(message: 'Failed to get image file');
     }
   }
 

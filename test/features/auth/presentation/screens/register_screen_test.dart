@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:artio/features/auth/presentation/screens/register_screen.dart';
-import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
 import 'package:artio/features/auth/presentation/state/auth_state.dart';
+import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 import '../../../../core/helpers/pump_app.dart';
 
@@ -15,7 +15,7 @@ class MockAuthViewModel extends AuthViewModel {
 
 void main() {
   final overrides = <Override>[
-    authViewModelProvider.overrideWith(() => MockAuthViewModel()),
+    authViewModelProvider.overrideWith(MockAuthViewModel.new),
   ];
 
   group('RegisterScreen', () {

@@ -1,31 +1,31 @@
 import 'dart:async';
 
+import 'package:artio/core/config/sentry_config.dart';
+import 'package:artio/core/design_system/app_dimensions.dart';
+import 'package:artio/core/design_system/app_spacing.dart';
+import 'package:artio/core/utils/app_exception_mapper.dart';
+import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
+import 'package:artio/features/template_engine/domain/entities/generation_job_model.dart';
+import 'package:artio/features/template_engine/domain/entities/input_field_model.dart';
+import 'package:artio/features/template_engine/domain/entities/template_model.dart';
+import 'package:artio/features/template_engine/presentation/providers/generation_options_provider.dart';
+import 'package:artio/features/template_engine/presentation/providers/template_provider.dart';
+import 'package:artio/features/template_engine/presentation/view_models/generation_view_model.dart';
+import 'package:artio/features/template_engine/presentation/widgets/generation_progress.dart';
+import 'package:artio/features/template_engine/presentation/widgets/input_field_builder.dart';
+import 'package:artio/shared/widgets/aspect_ratio_selector.dart';
+import 'package:artio/shared/widgets/image_count_dropdown.dart';
+import 'package:artio/shared/widgets/loading_state_widget.dart';
+import 'package:artio/shared/widgets/model_selector.dart';
+import 'package:artio/shared/widgets/output_format_toggle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../../auth/presentation/view_models/auth_view_model.dart';
-import '../../../../core/config/sentry_config.dart';
-import '../../../../core/design_system/app_spacing.dart';
-import '../../../../core/design_system/app_dimensions.dart';
-import '../../../../core/utils/app_exception_mapper.dart';
-import '../../../../shared/widgets/aspect_ratio_selector.dart';
-import '../../../../shared/widgets/image_count_dropdown.dart';
-import '../../../../shared/widgets/loading_state_widget.dart';
-import '../../../../shared/widgets/model_selector.dart';
-import '../../../../shared/widgets/output_format_toggle.dart';
-import '../../domain/entities/generation_job_model.dart';
-import '../../domain/entities/input_field_model.dart';
-import '../../domain/entities/template_model.dart';
-import '../providers/generation_options_provider.dart';
-import '../providers/template_provider.dart';
-import '../view_models/generation_view_model.dart';
-import '../widgets/generation_progress.dart';
-import '../widgets/input_field_builder.dart';
 
 class TemplateDetailScreen extends ConsumerStatefulWidget {
-  final String templateId;
 
-  const TemplateDetailScreen({super.key, required this.templateId});
+  const TemplateDetailScreen({required this.templateId, super.key});
+  final String templateId;
 
   @override
   ConsumerState<TemplateDetailScreen> createState() => _TemplateDetailScreenState();
@@ -100,7 +100,7 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
   }
 
   void _captureOnce(Object error, StackTrace? stackTrace) {
-    final signature = '${error.runtimeType}:${error.toString()}';
+    final signature = '${error.runtimeType}:$error';
     if (_reportedErrors.add(signature)) {
       unawaited(SentryConfig.captureException(error, stackTrace: stackTrace));
     }
@@ -170,28 +170,28 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) => GestureDetector(
                         onTap: () => setState(() {}), // Force rebuild to retry
-                        child: SizedBox(
+                        child: const SizedBox(
                           height: 200,
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Icon(Icons.broken_image, size: AppDimensions.iconXl),
-                              const SizedBox(height: 8),
-                              const Text('Tap to retry', style: TextStyle(fontSize: 12)),
+                              SizedBox(height: 8),
+                              Text('Tap to retry', style: TextStyle(fontSize: 12)),
                             ],
                           ),
                         ),
                       ),
                     ),
                   ),
-                  SizedBox(height: AppSpacing.md),
+                  const SizedBox(height: AppSpacing.md),
                 ],
 
                 // Template info
                 Text(template.name, style: Theme.of(context).textTheme.headlineSmall),
-                SizedBox(height: AppSpacing.sm),
+                const SizedBox(height: AppSpacing.sm),
                 Text(template.description),
-                SizedBox(height: AppSpacing.lg),
+                const SizedBox(height: AppSpacing.lg),
 
                 // Template input fields
                 Form(
@@ -203,7 +203,7 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
                           field: field,
                           onChanged: (value) => _inputValues[field.name] = value,
                         ),
-                        SizedBox(height: AppSpacing.md),
+                        const SizedBox(height: AppSpacing.md),
                       ],
                     ],
                   ),
@@ -219,7 +219,7 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
                   ),
                   onChanged: (value) => _inputValues['otherIdeas'] = value,
                 ),
-                SizedBox(height: AppSpacing.lg),
+                const SizedBox(height: AppSpacing.lg),
 
                 // Generation Options Section
                 Text(
@@ -228,7 +228,7 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(height: AppSpacing.md),
+                const SizedBox(height: AppSpacing.md),
 
                 // Aspect Ratio Selector
                 AspectRatioSelector(
@@ -236,14 +236,14 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
                   selectedModelId: options.modelId,
                   onChanged: (ratio) => ref.read(generationOptionsProvider.notifier).updateAspectRatio(ratio),
                 ),
-                SizedBox(height: AppSpacing.md),
+                const SizedBox(height: AppSpacing.md),
 
                 // Image Count Dropdown
                 ImageCountDropdown(
                   value: options.imageCount,
                   onChanged: (count) => ref.read(generationOptionsProvider.notifier).updateImageCount(count),
                 ),
-                SizedBox(height: AppSpacing.md),
+                const SizedBox(height: AppSpacing.md),
 
                 // Output Format Toggle
                 OutputFormatToggle(
@@ -251,7 +251,7 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
                   isPremium: _isPremium,
                   onChanged: (format) => ref.read(generationOptionsProvider.notifier).updateOutputFormat(format),
                 ),
-                SizedBox(height: AppSpacing.md),
+                const SizedBox(height: AppSpacing.md),
 
                 // Model Selector
                 ModelSelector(
@@ -260,7 +260,7 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
                   onChanged: (modelId) => ref.read(generationOptionsProvider.notifier).updateModel(modelId),
                   filterByType: 'text-to-image',
                 ),
-                SizedBox(height: AppSpacing.lg),
+                const SizedBox(height: AppSpacing.lg),
 
                 // Generation State (button/progress)
                 _buildGenerationState(jobAsync, template),
@@ -283,7 +283,7 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
              AppExceptionMapper.toUserMessage(error),
              style: TextStyle(color: Theme.of(context).colorScheme.error),
            ),
-          SizedBox(height: AppSpacing.sm),
+          const SizedBox(height: AppSpacing.sm),
           FilledButton(
             onPressed: isGenerating
                 ? null
@@ -306,7 +306,7 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
         return Column(
           children: [
             GenerationProgress(job: job),
-            SizedBox(height: AppSpacing.md),
+            const SizedBox(height: AppSpacing.md),
             if (job.status == JobStatus.completed)
               FilledButton(
                 onPressed: () => ref.read(generationViewModelProvider.notifier).reset(),

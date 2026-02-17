@@ -1,14 +1,10 @@
-import 'package:flutter/material.dart';
 import 'package:artio/core/constants/app_constants.dart';
 import 'package:artio/core/design_system/app_spacing.dart';
+import 'package:flutter/material.dart';
 
 class PromptInputField extends StatefulWidget {
   const PromptInputField({
-    super.key,
-    required this.label,
-    required this.hintText,
-    required this.value,
-    required this.onChanged,
+    required this.label, required this.hintText, required this.value, required this.onChanged, super.key,
     this.errorText,
   });
 
@@ -54,7 +50,7 @@ class _PromptInputFieldState extends State<PromptInputField> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(widget.label, style: Theme.of(context).textTheme.titleSmall),
-        SizedBox(height: AppSpacing.sm),
+        const SizedBox(height: AppSpacing.sm),
         TextFormField(
           controller: _controller,
           onChanged: widget.onChanged,

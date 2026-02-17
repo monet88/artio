@@ -1,12 +1,13 @@
 import 'package:artio/features/auth/domain/entities/user_model.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_test/flutter_test.dart';
 import 'package:artio/features/auth/presentation/state/auth_state.dart';
 import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
 import 'package:artio/features/create/presentation/create_screen.dart';
-import 'package:artio/features/template_engine/domain/entities/generation_job_model.dart';
 import 'package:artio/features/create/presentation/view_models/create_view_model.dart';
+import 'package:artio/features/template_engine/domain/entities/generation_job_model.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+
 import '../../../../core/helpers/helpers.dart';
 
 /// Stub AuthViewModel configurable auth state without touching Supabase.
@@ -28,7 +29,7 @@ class _StubCreateViewModel extends CreateViewModel {
 class _FailedCreateViewModel extends CreateViewModel {
   @override
   AsyncValue<GenerationJobModel?> build() =>
-      AsyncData(GenerationJobModel(
+      const AsyncData(GenerationJobModel(
         id: 'job-failed',
         userId: 'user-1',
         templateId: 'free-text',

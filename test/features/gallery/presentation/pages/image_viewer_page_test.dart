@@ -1,9 +1,10 @@
+import 'package:artio/features/gallery/data/repositories/gallery_repository.dart';
+import 'package:artio/features/gallery/presentation/pages/image_viewer_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:artio/features/gallery/presentation/pages/image_viewer_page.dart';
-import 'package:artio/features/gallery/data/repositories/gallery_repository.dart';
+
 import '../../../../core/fixtures/fixtures.dart';
 
 class MockGalleryRepository extends Mock implements GalleryRepository {}

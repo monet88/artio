@@ -1,17 +1,15 @@
+import 'package:artio/core/design_system/app_dimensions.dart';
+import 'package:artio/core/design_system/app_spacing.dart';
+import 'package:artio/features/gallery/presentation/providers/gallery_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../core/design_system/app_dimensions.dart';
-import '../../../../core/design_system/app_spacing.dart';
-import '../providers/gallery_provider.dart';
-
 class FailedImageCard extends ConsumerWidget {
-  final String jobId;
 
   const FailedImageCard({
-    super.key,
-    required this.jobId,
+    required this.jobId, super.key,
   });
+  final String jobId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -29,7 +27,7 @@ class FailedImageCard extends ConsumerWidget {
             color: Theme.of(context).colorScheme.error,
             size: AppDimensions.iconLg,
           ),
-          SizedBox(height: AppSpacing.sm),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             'Generation Failed',
             textAlign: TextAlign.center,
@@ -38,7 +36,7 @@ class FailedImageCard extends ConsumerWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: AppSpacing.sm),
+          const SizedBox(height: AppSpacing.sm),
           TextButton.icon(
             onPressed: () {
               ref

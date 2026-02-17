@@ -1,12 +1,5 @@
 /// AI Model configurations for image generation
 class AiModelConfig {
-  final String id;
-  final String displayName;
-  final bool isPremium;
-  final List<String> supportedAspectRatios;
-  final int creditCost;
-  final String type; // text-to-image, image-to-image, image-editing
-  final bool isNew;
 
   const AiModelConfig({
     required this.id,
@@ -17,6 +10,13 @@ class AiModelConfig {
     required this.type,
     this.isNew = false,
   });
+  final String id;
+  final String displayName;
+  final bool isPremium;
+  final List<String> supportedAspectRatios;
+  final int creditCost;
+  final String type; // text-to-image, image-to-image, image-editing
+  final bool isNew;
 }
 
 /// All available AI models from KIE API

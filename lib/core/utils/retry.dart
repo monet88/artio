@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import '../exceptions/app_exception.dart';
+import 'package:artio/core/exceptions/app_exception.dart';
 
 /// Retries [action] with exponential backoff on transient errors.
 ///

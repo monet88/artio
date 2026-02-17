@@ -12,13 +12,11 @@ abstract class AppShadows {
       color: Color(0x1A000000),
       blurRadius: 12,
       offset: Offset(0, 4),
-      spreadRadius: 0,
     ),
     BoxShadow(
       color: Color(0x0D000000),
       blurRadius: 4,
       offset: Offset(0, 1),
-      spreadRadius: 0,
     ),
   ];
 
@@ -34,7 +32,6 @@ abstract class AppShadows {
       color: Color(0x40000000),
       blurRadius: 8,
       offset: Offset(0, 2),
-      spreadRadius: 0,
     ),
   ];
 
@@ -82,7 +79,6 @@ abstract class AppShadows {
       color: Color(0x1A000000),
       blurRadius: 20,
       offset: Offset(0, -4),
-      spreadRadius: 0,
     ),
   ];
 
@@ -92,7 +88,6 @@ abstract class AppShadows {
       color: Color(0x40000000),
       blurRadius: 24,
       offset: Offset(0, -6),
-      spreadRadius: 0,
     ),
   ];
 
@@ -109,7 +104,6 @@ abstract class AppShadows {
       color: Color(0x0D000000),
       blurRadius: 8,
       offset: Offset(0, 2),
-      spreadRadius: 0,
     ),
   ];
 

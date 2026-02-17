@@ -5,7 +5,7 @@
 
 library;
 
-export 'user_fixtures.dart';
-export 'template_fixtures.dart';
-export 'generation_job_fixtures.dart';
 export 'gallery_item_fixtures.dart';
+export 'generation_job_fixtures.dart';
+export 'template_fixtures.dart';
+export 'user_fixtures.dart';

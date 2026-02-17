@@ -1,12 +1,12 @@
 import 'dart:async';
 
+import 'package:artio/core/exceptions/app_exception.dart';
+import 'package:artio/core/providers/supabase_provider.dart';
+import 'package:artio/features/template_engine/domain/entities/generation_job_model.dart';
+import 'package:artio/features/template_engine/domain/repositories/i_generation_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../../../../core/providers/supabase_provider.dart';
-import '../../../../core/exceptions/app_exception.dart';
-import '../../domain/entities/generation_job_model.dart';
-import '../../domain/repositories/i_generation_repository.dart';
 
 part 'generation_repository.g.dart';
 
@@ -16,11 +16,11 @@ GenerationRepository generationRepository(Ref ref) {
 }
 
 class GenerationRepository implements IGenerationRepository {
+
+  const GenerationRepository(this._supabase);
   final SupabaseClient _supabase;
 
   static const _maxEmptyWatchEvents = 3;
-
-  const GenerationRepository(this._supabase);
 
   @override
   Future<String> startGeneration({
@@ -127,9 +127,9 @@ class GenerationRepository implements IGenerationRepository {
           .order('created_at', ascending: false)
           .range(offset, offset + limit - 1);
 
-      return response.map((json) => GenerationJobModel.fromJson(json)).toList();
+      return response.map(GenerationJobModel.fromJson).toList();
     } on PostgrestException catch (e) {
-      throw AppException.network(message: e.message, statusCode: null);
+      throw AppException.network(message: e.message);
     } catch (e) {
       throw AppException.unknown(message: e.toString(), originalError: e);
     }
@@ -146,7 +146,7 @@ class GenerationRepository implements IGenerationRepository {
 
       return response != null ? GenerationJobModel.fromJson(response) : null;
     } on PostgrestException catch (e) {
-      throw AppException.network(message: e.message, statusCode: null);
+      throw AppException.network(message: e.message);
     } catch (e) {
       throw AppException.unknown(message: e.toString(), originalError: e);
     }

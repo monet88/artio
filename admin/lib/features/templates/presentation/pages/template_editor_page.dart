@@ -519,7 +519,7 @@ class _TemplateEditorPageState extends ConsumerState<TemplateEditorPage>
                     child: Image.network(
                       _thumbnailUrlController.text,
                       fit: BoxFit.contain,
-                      errorBuilder: (_, __, ___) => const Padding(
+                      errorBuilder: (_, _, _) => const Padding(
                         padding: EdgeInsets.all(32),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
@@ -547,7 +547,6 @@ class _TemplateEditorPageState extends ConsumerState<TemplateEditorPage>
                       color: isDark
                           ? AdminColors.borderSubtle
                           : Colors.grey.shade300,
-                      style: BorderStyle.solid,
                     ),
                   ),
                   child: Column(

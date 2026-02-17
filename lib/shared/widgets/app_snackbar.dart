@@ -1,10 +1,9 @@
 import 'dart:ui';
 
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-
 import 'package:artio/core/design_system/app_animations.dart';
 import 'package:artio/theme/app_colors.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 /// Themed snackbar variants — glassmorphism style with slide-in animation.
 ///
@@ -79,7 +78,7 @@ class AppSnackbar {
 
   /// Convenience — info variant
   static void info(BuildContext context, String message) {
-    show(context, message: message, type: AppSnackbarType.info);
+    show(context, message: message);
   }
 
   /// Convenience — warning variant
@@ -209,8 +208,6 @@ class _AppSnackbarContent extends StatelessWidget {
 
 /// Configuration per snackbar type.
 class _SnackbarConfig {
-  final Color color;
-  final IconData icon;
 
   const _SnackbarConfig({required this.color, required this.icon});
 
@@ -234,4 +231,6 @@ class _SnackbarConfig {
         ),
     };
   }
+  final Color color;
+  final IconData icon;
 }

@@ -1,21 +1,10 @@
+import 'package:artio/theme/app_colors.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../theme/app_colors.dart';
 
 /// App bar for the image viewer with share, download, info, and delete actions.
 class ImageViewerAppBar extends StatelessWidget implements PreferredSizeWidget {
   const ImageViewerAppBar({
-    super.key,
-    required this.currentIndex,
-    required this.totalCount,
-    required this.showInfo,
-    required this.isSharing,
-    required this.isDownloading,
-    required this.hasImageUrl,
-    required this.onToggleInfo,
-    required this.onShare,
-    required this.onDownload,
-    required this.onDelete,
+    required this.currentIndex, required this.totalCount, required this.showInfo, required this.isSharing, required this.isDownloading, required this.hasImageUrl, required this.onToggleInfo, required this.onShare, required this.onDownload, required this.onDelete, super.key,
   });
 
   final int currentIndex;

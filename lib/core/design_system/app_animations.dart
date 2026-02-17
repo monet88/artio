@@ -102,10 +102,10 @@ abstract class AppAnimations {
     return FadeTransition(
       opacity: CurvedAnimation(
         parent: animation,
-        curve: const Interval(0.0, 0.5, curve: Curves.easeOut),
+        curve: const Interval(0, 0.5, curve: Curves.easeOut),
       ),
       child: ScaleTransition(
-        scale: Tween<double>(begin: 0.92, end: 1.0).animate(
+        scale: Tween<double>(begin: 0.92, end: 1).animate(
           CurvedAnimation(
             parent: animation,
             curve: defaultCurve,
@@ -124,7 +124,7 @@ abstract class AppAnimations {
     Widget child,
   ) {
     return ScaleTransition(
-      scale: Tween<double>(begin: 0.85, end: 1.0).animate(
+      scale: Tween<double>(begin: 0.85, end: 1).animate(
         CurvedAnimation(
           parent: animation,
           curve: bounceCurve,

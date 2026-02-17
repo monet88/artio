@@ -1,13 +1,14 @@
 import 'dart:async';
 
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
-import 'package:artio/features/template_engine/presentation/view_models/generation_view_model.dart';
-import 'package:artio/features/template_engine/presentation/providers/generation_policy_provider.dart';
 import 'package:artio/features/template_engine/data/repositories/generation_repository.dart';
 import 'package:artio/features/template_engine/domain/entities/generation_job_model.dart';
 import 'package:artio/features/template_engine/domain/policies/generation_policy.dart';
+import 'package:artio/features/template_engine/presentation/providers/generation_policy_provider.dart';
+import 'package:artio/features/template_engine/presentation/view_models/generation_view_model.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
+
 import '../../../../core/fixtures/fixtures.dart';
 
 // Mock classes

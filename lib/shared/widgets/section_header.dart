@@ -1,11 +1,9 @@
-import 'package:flutter/material.dart';
-
 import 'package:artio/core/design_system/app_spacing.dart';
+import 'package:flutter/material.dart';
 
 class SectionHeader extends StatelessWidget {
   const SectionHeader({
-    super.key,
-    required this.title,
+    required this.title, super.key,
     this.action,
   });
 

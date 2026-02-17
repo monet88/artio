@@ -2,15 +2,16 @@ import 'dart:async';
 
 import 'package:artio/core/constants/app_constants.dart';
 import 'package:artio/core/exceptions/app_exception.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
 import 'package:artio/features/create/domain/entities/create_form_state.dart';
 import 'package:artio/features/create/presentation/view_models/create_view_model.dart';
-import 'package:artio/features/template_engine/presentation/providers/generation_policy_provider.dart';
 import 'package:artio/features/template_engine/data/repositories/generation_repository.dart';
 import 'package:artio/features/template_engine/domain/entities/generation_job_model.dart';
 import 'package:artio/features/template_engine/domain/policies/generation_policy.dart';
+import 'package:artio/features/template_engine/presentation/providers/generation_policy_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
+
 import '../../../../core/fixtures/fixtures.dart';
 
 class MockGenerationRepository extends Mock implements GenerationRepository {}
@@ -239,8 +240,6 @@ void main() {
         verify(() => mockRepository.startGeneration(
           templateId: 'free-text',
           prompt: 'A beautiful landscape',
-          aspectRatio: '1:1',
-          imageCount: 1,
           outputFormat: 'png',
           modelId: 'flux-2/flex-text-to-image',
         )).called(1);

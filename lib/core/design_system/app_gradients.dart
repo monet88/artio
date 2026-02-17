@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
-
 import 'package:artio/theme/app_colors.dart';
+import 'package:flutter/material.dart';
 
 /// Artio Design System — Gradient Definitions
 ///
@@ -18,8 +17,6 @@ abstract class AppGradients {
   /// Horizontal variant for wider elements (pills, tabs)
   static const primaryHorizontal = LinearGradient(
     colors: [AppColors.gradientStart, AppColors.gradientEnd],
-    begin: Alignment.centerLeft,
-    end: Alignment.centerRight,
   );
 
   // ── Card Overlay Gradient ────────────────────────────────────────────
@@ -62,7 +59,6 @@ abstract class AppGradients {
       Color(0x209B87F5), // Accent with lower opacity
       Color(0x000D1025), // Transparent background
     ],
-    center: Alignment.center,
     radius: 0.8,
     stops: [0.0, 0.4, 1.0],
   );
@@ -76,8 +72,8 @@ abstract class AppGradients {
       AppColors.shimmerBase,
     ],
     stops: [0.0, 0.5, 1.0],
-    begin: Alignment(-1.0, -0.3),
-    end: Alignment(1.0, 0.3),
+    begin: Alignment(-1, -0.3),
+    end: Alignment(1, 0.3),
   );
 
   /// Light mode shimmer variant
@@ -88,8 +84,8 @@ abstract class AppGradients {
       Color(0xFFE8EAF0),
     ],
     stops: [0.0, 0.5, 1.0],
-    begin: Alignment(-1.0, -0.3),
-    end: Alignment(1.0, 0.3),
+    begin: Alignment(-1, -0.3),
+    end: Alignment(1, 0.3),
   );
 
   // ── Glass / Frosted Gradient ─────────────────────────────────────────

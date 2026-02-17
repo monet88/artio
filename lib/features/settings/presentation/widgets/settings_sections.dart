@@ -1,22 +1,16 @@
 import 'package:artio/core/design_system/app_spacing.dart';
 import 'package:artio/core/design_system/app_typography.dart';
 import 'package:artio/features/settings/data/notifications_provider.dart';
+import 'package:artio/features/settings/presentation/widgets/settings_helpers.dart';
 import 'package:artio/features/settings/presentation/widgets/theme_switcher.dart';
 import 'package:artio/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'settings_helpers.dart';
-
 /// All grouped settings sections rendered inside the settings screen ListView.
 class SettingsSections extends ConsumerWidget {
   const SettingsSections({
-    super.key,
-    required this.email,
-    required this.isDark,
-    required this.version,
-    required this.onResetPassword,
-    required this.onSignOut,
+    required this.email, required this.isDark, required this.version, required this.onResetPassword, required this.onSignOut, super.key,
   });
 
   final String email;
@@ -31,7 +25,7 @@ class SettingsSections extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         // ── Account Settings ──────────────────────────────────
-        SettingsSectionLabel(label: 'Account'),
+        const SettingsSectionLabel(label: 'Account'),
         const SizedBox(height: AppSpacing.sm),
         SettingsCard(
           isDark: isDark,
@@ -58,7 +52,7 @@ class SettingsSections extends ConsumerWidget {
         const SizedBox(height: AppSpacing.lg),
 
         // ── Appearance ─────────────────────────────────────────
-        SettingsSectionLabel(label: 'Appearance'),
+        const SettingsSectionLabel(label: 'Appearance'),
         const SizedBox(height: AppSpacing.sm),
         SettingsCard(
           isDark: isDark,
@@ -73,7 +67,7 @@ class SettingsSections extends ConsumerWidget {
                 children: [
                   Row(
                     children: [
-                      SettingsIconBg(
+                      const SettingsIconBg(
                         icon: Icons.palette_outlined,
                         color: AppColors.accent,
                       ),
@@ -85,7 +79,7 @@ class SettingsSections extends ConsumerWidget {
                     ],
                   ),
                   const SizedBox(height: AppSpacing.sm),
-                  ThemeSwitcher(),
+                  const ThemeSwitcher(),
                 ],
               ),
             ),
@@ -95,7 +89,7 @@ class SettingsSections extends ConsumerWidget {
         const SizedBox(height: AppSpacing.lg),
 
         // ── Notifications ──────────────────────────────────────
-        SettingsSectionLabel(label: 'Notifications'),
+        const SettingsSectionLabel(label: 'Notifications'),
         const SizedBox(height: AppSpacing.sm),
         SettingsCard(
           isDark: isDark,
@@ -103,7 +97,7 @@ class SettingsSections extends ConsumerWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: SwitchListTile(
-                secondary: SettingsIconBg(
+                secondary: const SettingsIconBg(
                   icon: Icons.notifications_outlined,
                   color: AppColors.primaryCta,
                 ),
@@ -123,7 +117,7 @@ class SettingsSections extends ConsumerWidget {
         const SizedBox(height: AppSpacing.lg),
 
         // ── About ───────────────────────────────────────────────
-        SettingsSectionLabel(label: 'About'),
+        const SettingsSectionLabel(label: 'About'),
         const SizedBox(height: AppSpacing.sm),
         SettingsCard(
           isDark: isDark,

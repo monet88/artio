@@ -1,4 +1,4 @@
-import '../entities/template_model.dart';
+import 'package:artio/features/template_engine/domain/entities/template_model.dart';
 
 abstract class ITemplateRepository {
   Future<List<TemplateModel>> fetchTemplates();

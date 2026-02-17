@@ -1,13 +1,12 @@
+import 'package:artio/core/config/env_config.dart';
+import 'package:artio/core/config/sentry_config.dart';
+import 'package:artio/routing/app_router.dart';
+import 'package:artio/theme/app_theme.dart';
+import 'package:artio/theme/theme_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
-import 'core/config/env_config.dart';
-import 'core/config/sentry_config.dart';
-import 'routing/app_router.dart';
-import 'theme/app_theme.dart';
-import 'theme/theme_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,8 +29,8 @@ Future<void> main() async {
 }
 
 class InitErrorApp extends StatelessWidget {
+  const InitErrorApp({required this.error, super.key});
   final String error;
-  const InitErrorApp({super.key, required this.error});
 
   @override
   Widget build(BuildContext context) {

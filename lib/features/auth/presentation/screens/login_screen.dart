@@ -1,15 +1,14 @@
 import 'package:artio/core/design_system/app_gradients.dart';
 import 'package:artio/core/design_system/app_spacing.dart';
 import 'package:artio/core/design_system/app_typography.dart';
+import 'package:artio/features/auth/presentation/state/auth_state.dart';
+import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
+import 'package:artio/features/auth/presentation/widgets/social_login_buttons.dart';
+import 'package:artio/routing/routes/app_routes.dart';
+import 'package:artio/shared/widgets/gradient_button.dart';
 import 'package:artio/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../../../routing/routes/app_routes.dart';
-import '../../../../shared/widgets/gradient_button.dart';
-import '../state/auth_state.dart';
-import '../view_models/auth_view_model.dart';
-import '../widgets/social_login_buttons.dart';
 
 /// Login screen with animated gradient background, branded logo,
 /// styled form fields, and social login section.
@@ -109,7 +108,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                   const SizedBox(height: AppSpacing.lg),
 
                   // Title
-                  GradientText(
+                  const GradientText(
                     'Welcome to Artio',
                     style: AppTypography.displayMedium,
                     textAlign: TextAlign.center,

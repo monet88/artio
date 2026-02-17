@@ -1,10 +1,9 @@
 import 'dart:async';
 
+import 'package:artio/features/gallery/domain/entities/gallery_item.dart';
+import 'package:artio/features/gallery/domain/repositories/i_gallery_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-
-import 'package:artio/features/gallery/domain/repositories/i_gallery_repository.dart';
-import 'package:artio/features/gallery/domain/entities/gallery_item.dart';
 
 import '../../../../core/fixtures/gallery_item_fixtures.dart';
 

@@ -6,10 +6,7 @@ import 'package:flutter/material.dart';
 /// when the drag exceeds the threshold, or snaps back on release.
 class ImageViewerSwipeDismiss extends StatefulWidget {
   const ImageViewerSwipeDismiss({
-    super.key,
-    required this.child,
-    required this.onDismiss,
-    required this.onDragStateChanged,
+    required this.child, required this.onDismiss, required this.onDragStateChanged, super.key,
   });
 
   final Widget child;
@@ -26,10 +23,10 @@ class ImageViewerSwipeDismiss extends StatefulWidget {
 
 class _ImageViewerSwipeDismissState extends State<ImageViewerSwipeDismiss> {
   double _dragOffset = 0;
-  double _dragScale = 1.0;
+  double _dragScale = 1;
 
-  static const double _kDismissThreshold = 150.0;
-  static const double _kScaleDivisor = 1500.0;
+  static const double _kDismissThreshold = 150;
+  static const double _kScaleDivisor = 1500;
   static const double _kMaxScaleReduction = 0.15;
 
   @override
@@ -55,7 +52,7 @@ class _ImageViewerSwipeDismissState extends State<ImageViewerSwipeDismiss> {
             _dragOffset = 0;
             _dragScale = 1.0;
           });
-          widget.onDragStateChanged(0, 1.0, false);
+          widget.onDragStateChanged(0, 1, false);
         }
       },
       child: Transform.translate(

@@ -1,10 +1,9 @@
+import 'package:artio/core/design_system/app_dimensions.dart';
+import 'package:artio/core/design_system/app_spacing.dart';
 import 'package:artio/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:shimmer/shimmer.dart';
-
-import '../../../../core/design_system/app_dimensions.dart';
-import '../../../../core/design_system/app_spacing.dart';
 
 /// Branded shimmer grid skeleton loader matching the gallery masonry layout.
 class ShimmerGrid extends StatelessWidget {

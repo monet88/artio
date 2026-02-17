@@ -1,11 +1,10 @@
+import 'package:artio/core/design_system/app_typography.dart';
+import 'package:artio/theme/app_colors.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../core/design_system/app_typography.dart';
-import '../../../../theme/app_colors.dart';
 
 /// Section label for settings groups.
 class SettingsSectionLabel extends StatelessWidget {
-  const SettingsSectionLabel({super.key, required this.label});
+  const SettingsSectionLabel({required this.label, super.key});
   final String label;
 
   @override
@@ -18,7 +17,7 @@ class SettingsSectionLabel extends StatelessWidget {
           color: Theme.of(context).brightness == Brightness.dark
               ? AppColors.textMuted
               : AppColors.textMutedLight,
-          letterSpacing: 1.0,
+          letterSpacing: 1,
         ),
       ),
     );
@@ -27,7 +26,7 @@ class SettingsSectionLabel extends StatelessWidget {
 
 /// Card container for a group of settings tiles.
 class SettingsCard extends StatelessWidget {
-  const SettingsCard({super.key, required this.children, required this.isDark});
+  const SettingsCard({required this.children, required this.isDark, super.key});
   final List<Widget> children;
   final bool isDark;
 
@@ -60,14 +59,10 @@ class SettingsCard extends StatelessWidget {
 /// Individual settings row with icon, title, and optional trailing widget.
 class SettingsTile extends StatelessWidget {
   const SettingsTile({
-    super.key,
-    required this.icon,
-    required this.iconBgColor,
-    required this.title,
+    required this.icon, required this.iconBgColor, required this.title, required this.isDark, super.key,
     this.subtitle,
     this.trailing,
     this.onTap,
-    required this.isDark,
   });
 
   final IconData icon;
@@ -92,7 +87,7 @@ class SettingsTile extends StatelessWidget {
 
 /// Divider between settings tiles.
 class SettingsDivider extends StatelessWidget {
-  const SettingsDivider({super.key, required this.isDark});
+  const SettingsDivider({required this.isDark, super.key});
   final bool isDark;
 
   @override
@@ -107,7 +102,7 @@ class SettingsDivider extends StatelessWidget {
 
 /// Rounded icon background for settings tiles.
 class SettingsIconBg extends StatelessWidget {
-  const SettingsIconBg({super.key, required this.icon, required this.color});
+  const SettingsIconBg({required this.icon, required this.color, super.key});
   final IconData icon;
   final Color color;
 
@@ -127,7 +122,7 @@ class SettingsIconBg extends StatelessWidget {
 
 /// Chevron arrow trailing icon for settings tiles.
 class SettingsChevronArrow extends StatelessWidget {
-  const SettingsChevronArrow({super.key, required this.isDark});
+  const SettingsChevronArrow({required this.isDark, super.key});
   final bool isDark;
 
   @override

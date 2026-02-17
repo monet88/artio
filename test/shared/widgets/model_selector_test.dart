@@ -36,7 +36,7 @@ void main() {
     });
 
     testWidgets('shows selected model name', (tester) async {
-      await tester.pumpWidget(buildWidget(selectedModelId: 'google/imagen4'));
+      await tester.pumpWidget(buildWidget());
 
       expect(find.text('Imagen 4'), findsOneWidget);
     });
@@ -49,7 +49,7 @@ void main() {
     });
 
     testWidgets('shows credit cost', (tester) async {
-      await tester.pumpWidget(buildWidget(selectedModelId: 'google/imagen4'));
+      await tester.pumpWidget(buildWidget());
 
       // Imagen 4 costs 6 credits
       expect(find.text('6'), findsOneWidget);
@@ -86,7 +86,7 @@ void main() {
     });
 
     testWidgets('premium models are disabled for non-premium users', (tester) async {
-      await tester.pumpWidget(buildWidget(isPremium: false));
+      await tester.pumpWidget(buildWidget());
 
       await tester.tap(find.byType(DropdownButtonFormField<String>));
       await tester.pumpAndSettle();

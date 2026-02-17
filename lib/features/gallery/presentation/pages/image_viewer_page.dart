@@ -1,32 +1,29 @@
+import 'package:artio/core/design_system/app_animations.dart';
+import 'package:artio/core/services/haptic_service.dart';
+import 'package:artio/core/utils/app_exception_mapper.dart';
+import 'package:artio/features/gallery/data/repositories/gallery_repository.dart';
+import 'package:artio/features/gallery/domain/entities/gallery_item.dart';
+import 'package:artio/features/gallery/presentation/providers/gallery_provider.dart';
+import 'package:artio/features/gallery/presentation/widgets/image_info_bottom_sheet.dart';
+import 'package:artio/features/gallery/presentation/widgets/image_viewer_app_bar.dart';
+import 'package:artio/features/gallery/presentation/widgets/image_viewer_image_page.dart';
+import 'package:artio/features/gallery/presentation/widgets/image_viewer_page_indicator.dart';
+import 'package:artio/features/gallery/presentation/widgets/image_viewer_swipe_dismiss.dart';
+import 'package:artio/shared/widgets/app_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
 
-import '../../../../core/design_system/app_animations.dart';
-import '../../../../core/services/haptic_service.dart';
-import '../../../../core/utils/app_exception_mapper.dart';
-import '../../../../shared/widgets/app_snackbar.dart';
-import '../../data/repositories/gallery_repository.dart';
-import '../../domain/entities/gallery_item.dart';
-import '../providers/gallery_provider.dart';
-import '../widgets/image_info_bottom_sheet.dart';
-import '../widgets/image_viewer_app_bar.dart';
-import '../widgets/image_viewer_image_page.dart';
-import '../widgets/image_viewer_page_indicator.dart';
-import '../widgets/image_viewer_swipe_dismiss.dart';
-
 /// Image viewer with swipe-to-dismiss, haptic feedback, and info sheet.
 class ImageViewerPage extends ConsumerStatefulWidget {
-  final List<GalleryItem> items;
-  final int initialIndex;
 
   const ImageViewerPage({
-    super.key,
-    required this.items,
-    required this.initialIndex,
+    required this.items, required this.initialIndex, super.key,
   });
+  final List<GalleryItem> items;
+  final int initialIndex;
 
   @override
   ConsumerState<ImageViewerPage> createState() => _ImageViewerPageState();
@@ -55,7 +52,7 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage>
       vsync: this,
       duration: AppAnimations.normal,
     );
-    _indicatorOpacity = Tween<double>(begin: 1.0, end: 0.0).animate(
+    _indicatorOpacity = Tween<double>(begin: 1, end: 0).animate(
       CurvedAnimation(parent: _indicatorController, curve: Curves.easeOut),
     );
     _resetIndicatorTimer();
@@ -146,7 +143,6 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage>
     AppSnackbar.show(
       context,
       message: 'Image deleted',
-      type: AppSnackbarType.info,
       actionLabel: 'Undo',
       onAction: () {
         HapticService.buttonTap();

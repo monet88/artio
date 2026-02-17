@@ -2,26 +2,24 @@ import 'package:artio/core/design_system/app_animations.dart';
 import 'package:artio/core/design_system/app_gradients.dart';
 import 'package:artio/core/design_system/app_shadows.dart';
 import 'package:artio/core/design_system/app_typography.dart';
+import 'package:artio/features/template_engine/domain/entities/template_model.dart';
+import 'package:artio/routing/routes/app_routes.dart';
 import 'package:artio/theme/app_colors.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
-import '../../domain/entities/template_model.dart';
-import '../../../../routing/routes/app_routes.dart';
-
 /// Redesigned template card with gradient overlay on thumbnail,
 /// text on overlay, PRO badge as gradient chip with crown icon,
 /// category tag, subtle shadow, CachedNetworkImage, and tap animation.
 class TemplateCard extends StatefulWidget {
-  final TemplateModel template;
-  final int index;
 
   const TemplateCard({
-    super.key,
-    required this.template,
+    required this.template, super.key,
     this.index = 0,
   });
+  final TemplateModel template;
+  final int index;
 
   @override
   State<TemplateCard> createState() => _TemplateCardState();
@@ -39,7 +37,7 @@ class _TemplateCardState extends State<TemplateCard>
       vsync: this,
       duration: AppAnimations.fast,
     );
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
+    _scaleAnimation = Tween<double>(begin: 1, end: 0.95).animate(
       CurvedAnimation(parent: _tapController, curve: AppAnimations.defaultCurve),
     );
   }
@@ -89,7 +87,7 @@ class _TemplateCardState extends State<TemplateCard>
                         : const Color(0xFFF3F4F8),
                     child: Container(color: Colors.white),
                   ),
-                  errorWidget: (context, url, error) => Container(
+                  errorWidget: (context, url, error) => ColoredBox(
                     color: isDark
                         ? AppColors.darkSurface2
                         : AppColors.lightSurface2,

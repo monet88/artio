@@ -2,10 +2,9 @@ import 'package:artio/core/design_system/app_animations.dart';
 import 'package:artio/core/design_system/app_gradients.dart';
 import 'package:artio/core/design_system/app_spacing.dart';
 import 'package:artio/core/design_system/app_typography.dart';
+import 'package:artio/routing/routes/app_routes.dart';
 import 'package:artio/theme/app_colors.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../routing/routes/app_routes.dart';
 
 /// Animated empty gallery state with floating illustration,
 /// contextual messaging, and gradient CTA button.
@@ -54,7 +53,7 @@ class _EmptyGalleryStateState extends State<EmptyGalleryState>
       curve: AppAnimations.defaultCurve,
     );
 
-    _scaleAnimation = Tween<double>(begin: 0.9, end: 1.0).animate(
+    _scaleAnimation = Tween<double>(begin: 0.9, end: 1).animate(
       CurvedAnimation(
         parent: _fadeController,
         curve: AppAnimations.defaultCurve,
@@ -150,7 +149,7 @@ class _EmptyIllustration extends StatelessWidget {
               gradient: RadialGradient(
                 colors: [
                   AppColors.primaryCta.withValues(alpha: 0.12),
-                  AppColors.primaryCta.withValues(alpha: 0.0),
+                  AppColors.primaryCta.withValues(alpha: 0),
                 ],
               ),
             ),

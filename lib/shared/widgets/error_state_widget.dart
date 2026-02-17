@@ -18,21 +18,14 @@ enum ErrorCategory {
 /// friendly messaging, and animated retry button.
 class ErrorStateWidget extends StatefulWidget {
   const ErrorStateWidget({
-    super.key,
-    required this.message,
+    required this.message, super.key,
     this.onRetry,
     this.category = ErrorCategory.unknown,
   });
 
-  final String message;
-  final VoidCallback? onRetry;
-  final ErrorCategory category;
-
   /// Factory to auto-detect error category from exception
   factory ErrorStateWidget.fromError({
-    Key? key,
-    required Object error,
-    required String message,
+    required Object error, required String message, Key? key,
     VoidCallback? onRetry,
   }) {
     return ErrorStateWidget(
@@ -42,6 +35,10 @@ class ErrorStateWidget extends StatefulWidget {
       category: _categorize(error),
     );
   }
+
+  final String message;
+  final VoidCallback? onRetry;
+  final ErrorCategory category;
 
   static ErrorCategory _categorize(Object error) {
     // Structural matching for AppException types
@@ -98,7 +95,7 @@ class _ErrorStateWidgetState extends State<ErrorStateWidget>
       parent: _controller,
       curve: AppAnimations.defaultCurve,
     );
-    _scaleAnimation = Tween<double>(begin: 0.9, end: 1.0).animate(
+    _scaleAnimation = Tween<double>(begin: 0.9, end: 1).animate(
       CurvedAnimation(
         parent: _controller,
         curve: AppAnimations.defaultCurve,
@@ -182,10 +179,6 @@ class _ErrorConfig {
     required this.title,
   });
 
-  final IconData icon;
-  final Color color;
-  final String title;
-
   factory _ErrorConfig.from(ErrorCategory category) {
     switch (category) {
       case ErrorCategory.network:
@@ -208,6 +201,10 @@ class _ErrorConfig {
         );
     }
   }
+
+  final IconData icon;
+  final Color color;
+  final String title;
 }
 
 // ── Error Illustration ────────────────────────────────────────────────────
@@ -240,7 +237,7 @@ class _ErrorIllustration extends StatelessWidget {
               gradient: RadialGradient(
                 colors: [
                   color.withValues(alpha: 0.12),
-                  color.withValues(alpha: 0.0),
+                  color.withValues(alpha: 0),
                 ],
               ),
             ),

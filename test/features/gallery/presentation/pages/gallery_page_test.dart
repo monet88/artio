@@ -1,11 +1,12 @@
+import 'package:artio/features/auth/presentation/state/auth_state.dart';
+import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
+import 'package:artio/features/gallery/data/repositories/gallery_repository.dart';
+import 'package:artio/features/gallery/presentation/pages/gallery_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:artio/features/gallery/presentation/pages/gallery_page.dart';
-import 'package:artio/features/gallery/data/repositories/gallery_repository.dart';
-import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
-import 'package:artio/features/auth/presentation/state/auth_state.dart';
+
 import '../../../../core/fixtures/fixtures.dart';
 
 class MockGalleryRepository extends Mock implements GalleryRepository {}
@@ -30,7 +31,7 @@ void main() {
     Widget createTestWidget({List<Override>? overrides}) {
       return ProviderScope(
         overrides: [
-          authViewModelProvider.overrideWith(() => MockAuthViewModel()),
+          authViewModelProvider.overrideWith(MockAuthViewModel.new),
           galleryRepositoryProvider.overrideWithValue(mockRepository),
           ...?overrides,
         ],

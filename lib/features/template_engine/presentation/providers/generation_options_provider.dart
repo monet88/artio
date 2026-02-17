@@ -1,5 +1,5 @@
+import 'package:artio/features/template_engine/domain/entities/generation_options_model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import '../../domain/entities/generation_options_model.dart';
 
 part 'generation_options_provider.g.dart';
 

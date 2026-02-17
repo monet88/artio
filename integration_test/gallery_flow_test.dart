@@ -1,15 +1,15 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:integration_test/integration_test.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mocktail/mocktail.dart';
-import 'package:artio/features/gallery/presentation/pages/gallery_page.dart';
-import 'package:artio/features/gallery/presentation/pages/image_viewer_page.dart';
+import 'package:artio/features/auth/domain/entities/user_model.dart';
+import 'package:artio/features/auth/presentation/state/auth_state.dart';
+import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
 import 'package:artio/features/gallery/data/repositories/gallery_repository.dart';
 import 'package:artio/features/gallery/domain/entities/gallery_item.dart';
-import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
-import 'package:artio/features/auth/presentation/state/auth_state.dart';
-import 'package:artio/features/auth/domain/entities/user_model.dart';
+import 'package:artio/features/gallery/presentation/pages/gallery_page.dart';
+import 'package:artio/features/gallery/presentation/pages/image_viewer_page.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:integration_test/integration_test.dart';
+import 'package:mocktail/mocktail.dart';
 
 class MockGalleryRepository extends Mock implements GalleryRepository {}
 
@@ -41,7 +41,7 @@ void main() {
     Widget createTestWidget({Widget? home}) {
       return ProviderScope(
         overrides: [
-          authViewModelProvider.overrideWith(() => MockAuthViewModel()),
+          authViewModelProvider.overrideWith(MockAuthViewModel.new),
           galleryRepositoryProvider.overrideWithValue(mockRepository),
         ],
         child: MaterialApp(

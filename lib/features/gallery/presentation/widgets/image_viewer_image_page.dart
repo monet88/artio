@@ -1,13 +1,12 @@
+import 'package:artio/core/design_system/app_gradients.dart';
+import 'package:artio/core/design_system/app_spacing.dart';
+import 'package:artio/features/gallery/domain/entities/gallery_item.dart';
+import 'package:artio/theme/app_colors.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../core/design_system/app_gradients.dart';
-import '../../../../core/design_system/app_spacing.dart';
-import '../../../../theme/app_colors.dart';
-import '../../domain/entities/gallery_item.dart';
 
 /// Single image page in the image viewer's PageView.
 class ImageViewerImagePage extends StatelessWidget {
-  const ImageViewerImagePage({super.key, required this.item});
+  const ImageViewerImagePage({required this.item, super.key});
 
   final GalleryItem item;
 
@@ -87,7 +86,7 @@ class ImageViewerImagePage extends StatelessWidget {
               : Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       width: 48,
                       height: 48,
                       child: CircularProgressIndicator(

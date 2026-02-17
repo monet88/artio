@@ -1,15 +1,12 @@
+import 'package:artio/core/design_system/app_gradients.dart';
+import 'package:artio/core/design_system/app_typography.dart';
+import 'package:artio/theme/app_colors.dart';
 import 'package:flutter/material.dart';
-
-import '../../core/design_system/app_gradients.dart';
-import '../../core/design_system/app_typography.dart';
-import '../../theme/app_colors.dart';
 
 /// Gradient CTA button used in auth screens.
 class GradientButton extends StatelessWidget {
   const GradientButton({
-    super.key,
-    required this.onPressed,
-    required this.label,
+    required this.onPressed, required this.label, super.key,
     this.isLoading = false,
   });
 

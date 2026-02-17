@@ -1,14 +1,11 @@
+import 'package:artio/core/design_system/app_animations.dart';
+import 'package:artio/theme/app_colors.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../core/design_system/app_animations.dart';
-import '../../../../theme/app_colors.dart';
 
 /// Animated dot-style page indicator for the image viewer.
 class ImageViewerPageIndicator extends StatelessWidget {
   const ImageViewerPageIndicator({
-    super.key,
-    required this.itemCount,
-    required this.currentIndex,
+    required this.itemCount, required this.currentIndex, super.key,
   });
 
   final int itemCount;

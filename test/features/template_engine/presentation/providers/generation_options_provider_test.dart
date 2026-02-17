@@ -1,7 +1,6 @@
-import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:artio/features/template_engine/presentation/providers/generation_options_provider.dart';
-import 'package:artio/features/template_engine/domain/entities/generation_options_model.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('GenerationOptionsProvider', () {

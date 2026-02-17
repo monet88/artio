@@ -1,6 +1,6 @@
+import 'package:artio/features/auth/presentation/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:artio/features/auth/presentation/screens/splash_screen.dart';
 
 void main() {
   group('SplashScreen', () {

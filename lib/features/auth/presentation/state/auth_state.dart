@@ -1,6 +1,5 @@
+import 'package:artio/features/auth/domain/entities/user_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-
-import '../../domain/entities/user_model.dart';
 
 part 'auth_state.freezed.dart';
 
