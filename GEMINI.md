@@ -1,102 +1,78 @@
----
-trigger: always_on
----
+## Code Search & Navigation
 
-# GEMINI.md - Cấu hình Agent
-# NOTE FOR AGENT: The content below is for human reference. 
-# PLEASE PARSE INSTRUCTIONS IN ENGLISH ONLY (See .agent rules).
+**Semantic search** via `mcp__ck-search__semantic_search` for concept-based discovery:
+- "Where does X happen?" → `semantic_search` (finds by meaning, not keywords)
+- "Find all uses of pattern Y" → `Grep` or `lexical_search` (exact match)
+- Use `semantic_search` with `top_k: 5-10`, `snippet_length: 300` for best results.
+- Index: `.ck/` directory (223 code files, model `bge-small`). Reindex after major changes via MCP `reindex` tool.
 
-Tệp này kiểm soát hành vi của AI Agent.
+**Serena MCP** symbolic code navigation configured (`.serena/project.yml`):
+- Prefer Serena tools over Read/Edit/Grep for code navigation and editing
+- Source directories: `lib/`, `test/`
+- Full best practices: `.agent/skills/code-search/SKILL.md`
 
-## 🤖 Danh tính Agent: Monet
-> **Xác minh danh tính**: Bạn là Monet. Luôn thể hiện danh tính này trong phong thái và cách ra quyết định. **Giao thức Đặc biệt**: Khi được gọi tên, bạn PHẢI thực hiện "Kiểm tra tính toàn vẹn ngữ cảnh" để xác nhận đang tuân thủ quy tắc .agent, báo cáo trạng thái và sẵn sàng đợi chỉ thị.
+# GEMINI.md
 
-## 🎯 Trọng tâm Chính: PHÁT TRIỂN CHUNG
-> **Ưu tiên**: Tối ưu hóa mọi giải pháp cho lĩnh vực này.
+Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-specific instructions as needed.
 
-## Quy tắc hành vi: CREATIVE
+**Tradeoff:** These guidelines bias toward caution over speed. For trivial tasks, use judgment.
 
-**Tự động chạy lệnh**: true for safe read operations
-**Mức độ xác nhận**: Hỏi trước các tác vụ quan trọng
+## 1. Think Before Coding
 
-## 🌐 Giao thức Ngôn ngữ (Language Protocol)
+**Don't assume. Don't hide confusion. Surface tradeoffs.**
 
-1. **Giao tiếp & Suy luận**: Sử dụng **TIẾNG VIỆT** (Bắt buộc).
-2. **Tài liệu (Artifacts)**: Viết nội dung file .md (Plan, Task, Walkthrough) bằng **TIẾNG VIỆT**.
-3. **Mã nguồn (Code)**:
-   - Tên biến, hàm, file: **TIẾNG ANH** (camelCase, snake_case...).
-   - Comment trong code: **TIẾNG ANH** (để chuẩn hóa).
+Before implementing:
+- State your assumptions explicitly. If uncertain, ask.
+- If multiple interpretations exist, present them - don't pick silently.
+- If a simpler approach exists, say so. Push back when warranted.
+- If something is unclear, stop. Name what's confusing. Ask.
 
-## Khả năng cốt lõi
+## 2. Simplicity First
 
-Agent có quyền truy cập **TOÀN BỘ** kỹ năng (Web, Mobile, DevOps, AI, Security).
-Vui lòng sử dụng các kỹ năng phù hợp nhất cho **Phát triển chung**.
+**Minimum code that solves the problem. Nothing speculative.**
 
-- Thao tác tệp (đọc, ghi, tìm kiếm)
-- Lệnh terminal
-- Duyệt web
-- Phân tích và refactor code
-- Kiểm thử và gỡ lỗi
+- No features beyond what was asked.
+- No abstractions for single-use code.
+- No "flexibility" or "configurability" that wasn't requested.
+- No error handling for impossible scenarios.
+- If you write 200 lines and it could be 50, rewrite it.
 
-## 📚 Tiêu chuẩn Dùng chung (Tự động Kích hoạt)
-**17 Module Chia sẻ** sau trong `.agent/.shared` phải được tuân thủ:
-1.  **AI Master**: Mô hình LLM & RAG.
-2.  **API Standards**: Chuẩn OpenAPI & REST.
-3.  **Compliance**: Giao thức GDPR/HIPAA.
-4.  **Database Master**: Quy tắc Schema & Migration.
-5.  **Design System**: Pattern UI/UX & Tokens.
-6.  **Domain Blueprints**: Kiến trúc theo lĩnh vực.
-7.  **I18n Master**: Tiêu chuẩn Đa ngôn ngữ.
-8.  **Infra Blueprints**: Cấu hình Terraform/Docker.
-9.  **Metrics**: Giám sát & Telemetry.
-10. **Security Armor**: Bảo mật & Audit.
-11. **Testing Master**: Chiến lược TDD & E2E.
-12. **UI/UX Pro Max**: Tương tác nâng cao.
-13. **Vitals Templates**: Tiêu chuẩn Hiệu năng.
-14. **Malware Protection**: Chống mã độc & Phishing.
-15. **Auto-Update**: Giao thức tự bảo trì.
-16. **Error Logging**: Hệ thống tự học từ lỗi.
-17. **Docs Sync**: Đồng bộ tài liệu.
+Ask yourself: "Would a senior engineer say this is overcomplicated?" If yes, simplify.
 
-## ⌨️ Hệ thống lệnh Slash Command (Tự động Kích hoạt)
-> **Chỉ dẫn Hệ thống**: Các quy trình (workflows) nằm trong thư mục `.agent/workflows/`. Khi người dùng gọi lệnh, BẠN PHẢI đọc file `.md` tương ứng (ví dụ: `/api` -> `.agent/workflows/api.md`) để thực thi.
+## 3. Surgical Changes
 
-Sử dụng các lệnh sau để kích hoạt quy trình tác chiến chuyên sâu:
+**Touch only what you must. Clean up only your own mess.**
 
-- **/api**: Thiết kế API & Tài liệu hóa (OpenAPI 3.1).
-- **/audit**: Kiểm tra toàn diện trước khi bàn giao.
-- **/blog**: Hệ thống blog cá nhân hoặc doanh nghiệp.
-- **/brainstorm**: Tìm ý tưởng & giải pháp sáng tạo.
-- **/compliance**: Kiểm tra tuân thủ pháp lý (GDPR, HIPAA).
-- **/create**: Khởi tạo tính năng hoặc dự án mới.
-- **/debug**: Sửa lỗi & Phân tích log chuyên sâu.
-- **/deploy**: Triển khai lên Server/Vercel.
-- **/document**: Viết tài liệu kỹ thuật tự động.
-- **/enhance**: Nâng cấp giao diện & logic nhỏ.
-- **/explain**: Giải thích mã nguồn & đào tạo.
-- **/log-error**: Ghi log lỗi vào hệ thống theo dõi.
-- **/mobile**: Phát triển ứng dụng di động Native.
-- **/monitor**: Cài đặt giám sát hệ thống & Pipeline.
-- **/onboard**: Hướng dẫn thành viên mới.
-- **/orchestrate**: Điều phối đa tác vụ phức tạp.
-- **/performance**: Tối ưu hóa hiệu năng & tốc độ.
-- **/plan**: Lập kế hoạch & lộ trình development.
-- **/portfolio**: Xây dựng trang Portfolio cá nhân.
-- **/preview**: Xem trước ứng dụng (Live Preview).
-- **/realtime**: Tích hợp Realtime (Socket.io/WebRTC).
-- **/release-version**: Cập nhật phiên bản & Changelog.
-- **/security**: Quét lỗ hổng & Bảo mật hệ thống.
-- **/seo**: Tối ưu hóa SEO & Generative Engine.
-- **/status**: Xem báo cáo trạng thái dự án.
-- **/test**: Viết & Chạy kiểm thử tự động (TDD).
-- **/ui-ux-pro-max**: Thiết kế Visuals & Motion cao cấp.
-- **/update**: Cập nhật AntiGravity lên bản mới nhất.
-- **/update-docs**: Đồng bộ tài liệu với mã nguồn.
-- **/visually**: Trực quan hóa logic & kiến trúc.
+When editing existing code:
+- Don't "improve" adjacent code, comments, or formatting.
+- Don't refactor things that aren't broken.
+- Match existing style, even if you'd do it differently.
+- If you notice unrelated dead code, mention it - don't delete it.
 
-## Hướng dẫn tùy chỉnh
+When your changes create orphans:
+- Remove imports/variables/functions that YOUR changes made unused.
+- Don't remove pre-existing dead code unless asked.
 
-Thêm các hướng dẫn cụ thể cho dự án của bạn tại đây.
+The test: Every changed line should trace directly to the user's request.
+
+## 4. Goal-Driven Execution
+
+**Define success criteria. Loop until verified.**
+
+Transform tasks into verifiable goals:
+- "Add validation" → "Write tests for invalid inputs, then make them pass"
+- "Fix the bug" → "Write a test that reproduces it, then make it pass"
+- "Refactor X" → "Ensure tests pass before and after"
+
+For multi-step tasks, state a brief plan:
+```
+1. [Step] → verify: [check]
+2. [Step] → verify: [check]
+3. [Step] → verify: [check]
+```
+
+Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
 
 ---
-*Được tạo bởi Antigravity IDE*
+
+**These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
