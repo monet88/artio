@@ -6,7 +6,7 @@
 ## Phase 1: Edge Case Fixes
 **Priority:** Critical — user-facing bugs (crashes, race conditions, infinite loading)
 **Source:** `plans/260217-1648-fix-edge-cases/` (with corrections from brainstorm)
-**Status:** PLANNED
+**Status:** ✅ Complete
 
 Fixes:
 1. DateTime parsing crash (`gallery_repository.dart:63,67`)

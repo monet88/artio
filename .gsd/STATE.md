@@ -1,37 +1,34 @@
 # GSD State
 
-## Last Session Summary
-Plans created from verified brainstorm (2026-02-17).
-- 2 phases, 9 atomic plans, 3 execution waves
-- All corrections from brainstorm verification applied
-- Discovery Level: 0 (all internal fixes, no new dependencies)
-
 ## Current Position
-- **Phase**: 1 (Edge Case Fixes)
-- **Task**: Planning complete
-- **Status**: Ready for execution
+- **Phase**: 1 (completed)
+- **Task**: All tasks complete
+- **Status**: Verified
 
-## Phase 1: Edge Case Fixes
-- 5 plans, 3 waves
-- Wave 1: Plans 1.1, 1.2, 1.3 (parallel — independent files)
-- Wave 2: Plan 1.4 (storage safety)
-- Wave 3: Plan 1.5 (testing all fixes)
+## Last Session Summary
+Phase 1 executed successfully. 5 plans, 8 tasks completed across 3 waves.
 
-## Phase 2: Codebase Improvement
-- 4 plans, 3 waves
-- Wave 1: Plans 2.1, 2.2 (parallel — CORS + architecture)
-- Wave 2: Plan 2.3 (widget extraction)
-- Wave 3: Plan 2.4 (testing)
+### Wave 1 (Plans 1.1, 1.2, 1.3):
+- Created `safeParseDateTime` utility, replaced raw `DateTime.parse` in gallery_repository
+- Added 4 authenticating guards to auth sign-in methods
+- Added 23505 race condition handling in `_createUserProfile`
+- Fixed `_notifyRouter` to use `finally` block in `_handleSignedIn`
+- Changed both 429 exception types from `AppException.generation` to `AppException.network`
+- Added 90s timeout on `functions.invoke`
+- Added `HandshakeException` to retry transient errors
+
+### Wave 2 (Plan 1.4):
+- Added `FileSystemException` catch in `downloadImage` and `getImageFile`
+- Correctly classified as `AppException.storage`
+
+### Wave 3 (Plan 1.5):
+- Created `date_time_utils_test.dart` (6 tests)
+- Created `retry_test.dart` (4 tests)
+- Updated `generation_repository_test.dart` (429 → network, added timeout test)
+- All 453 tests pass
 
 ## Current Branch
-`feature/admin-dashboard-ui`
-
-## Documentation Generated
-- `.gsd/ARCHITECTURE.md` — Full system architecture
-- `.gsd/STACK.md` — Technology inventory
-- `.gsd/ROADMAP.md` — Phase roadmap with corrections
-- `.gsd/phases/1/` — 5 edge case fix plans
-- `.gsd/phases/2/` — 4 codebase improvement plans
+`fix/edge-case-fixes`
 
 ## Next Steps
-1. `/execute 1` — Run Phase 1 (Edge Case Fixes)
+1. `/execute 2` — Run Phase 2 (Codebase Improvement)
