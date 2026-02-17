@@ -61,14 +61,14 @@ dependencies:
   riverpod_annotation: ^2.3.0
   # Navigation
   go_router: ^14.0.0
-  # Networking
-  dio: ^5.4.0
+  # Backend
+  supabase_flutter: ^2.8.0
   # Code Generation
   freezed_annotation: ^2.4.0
   json_annotation: ^4.8.0
-  # Storage
-  shared_preferences: ^2.2.0
-  hive_flutter: ^1.1.0
+  # Config & Monitoring
+  flutter_dotenv: ^5.2.1
+  sentry_flutter: ^8.12.0
 
 dev_dependencies:
   flutter_test:
@@ -78,6 +78,7 @@ dev_dependencies:
   freezed: ^2.5.0
   json_serializable: ^6.8.0
   flutter_lints: ^4.0.0
+  mocktail: ^1.0.4
 ```
 
 ## Feature Layer Responsibilities
@@ -95,7 +96,7 @@ dev_dependencies:
 // main.dart
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Hive.initFlutter();
+  // Initialize services (dotenv, Supabase, Sentry, etc.)
   runApp(const ProviderScope(child: MyApp()));
 }
 

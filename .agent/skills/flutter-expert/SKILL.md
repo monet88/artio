@@ -62,7 +62,7 @@ Load detailed guidance based on context:
 - Test widgets with flutter_test
 
 ### MUST NOT DO
-- Build widgets inside build() method
+- Do expensive work inside build() (network calls, heavy computation, creating controllers)
 - Mutate state directly (always create new instances)
 - Use setState for app-wide state
 - Skip const on static widgets
