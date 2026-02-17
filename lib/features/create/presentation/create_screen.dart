@@ -81,15 +81,7 @@ class _CreateScreenState extends ConsumerState<CreateScreen> {
           orElse: () => null,
         );
     if (userId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Please log in to generate images'),
-          action: SnackBarAction(
-            label: 'Login',
-            onPressed: () => context.go('/login'),
-          ),
-        ),
-      );
+      _showAuthGateBottomSheet();
       return;
     }
 
@@ -103,6 +95,59 @@ class _CreateScreenState extends ConsumerState<CreateScreen> {
           userId: userId,
           isPremiumUser: isPremiumUser,
         );
+  }
+
+  void _showAuthGateBottomSheet() {
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (context) => Padding(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.lock_outline,
+              size: 48,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Text(
+              'Sign in to create',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              'Create an account or sign in to start generating AI art',
+              style: Theme.of(context).textTheme.bodyMedium,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  this.context.go('/login');
+                },
+                child: const Text('Sign In'),
+              ),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  this.context.go('/register');
+                },
+                child: const Text('Create Account'),
+              ),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
