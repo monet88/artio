@@ -70,14 +70,18 @@ class AuthViewModel extends _$AuthViewModel implements Listenable {
       final user = await authRepo.getCurrentUserWithProfile();
       if (user != null) {
         state = AuthState.authenticated(user);
-        _notifyRouter();
+      } else {
+        state = const AuthState.unauthenticated();
       }
     } catch (e) {
       state = AuthState.error(AppExceptionMapper.toUserMessage(e));
+    } finally {
+      _notifyRouter();
     }
   }
 
   Future<void> signInWithEmail(String email, String password) async {
+    if (state is AuthStateAuthenticating) return;
     state = const AuthState.authenticating();
     try {
       final authRepo = ref.read(authRepositoryProvider);
@@ -90,6 +94,7 @@ class AuthViewModel extends _$AuthViewModel implements Listenable {
   }
 
   Future<void> signUpWithEmail(String email, String password) async {
+    if (state is AuthStateAuthenticating) return;
     state = const AuthState.authenticating();
     try {
       final authRepo = ref.read(authRepositoryProvider);
@@ -102,6 +107,7 @@ class AuthViewModel extends _$AuthViewModel implements Listenable {
   }
 
   Future<void> signInWithGoogle() async {
+    if (state is AuthStateAuthenticating) return;
     state = const AuthState.authenticating();
     try {
       final authRepo = ref.read(authRepositoryProvider);
@@ -112,6 +118,7 @@ class AuthViewModel extends _$AuthViewModel implements Listenable {
   }
 
   Future<void> signInWithApple() async {
+    if (state is AuthStateAuthenticating) return;
     state = const AuthState.authenticating();
     try {
       final authRepo = ref.read(authRepositoryProvider);

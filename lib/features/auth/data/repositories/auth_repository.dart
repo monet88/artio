@@ -148,12 +148,17 @@ class AuthRepository implements IAuthRepository {
   }
 
   Future<void> _createUserProfile(String userId, String email) async {
-    await _supabase.from('profiles').insert({
-      'id': userId,
-      'email': email,
-      'credits': AppConstants.defaultCredits,
-      'is_premium': false,
-      'created_at': DateTime.now().toIso8601String(),
-    });
+    try {
+      await _supabase.from('profiles').insert({
+        'id': userId,
+        'email': email,
+        'credits': AppConstants.defaultCredits,
+        'is_premium': false,
+        'created_at': DateTime.now().toIso8601String(),
+      });
+    } on PostgrestException catch (e) {
+      if (e.code == '23505') return; // unique_violation — profile already exists
+      rethrow;
+    }
   }
 }

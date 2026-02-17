@@ -12,6 +12,7 @@ import 'package:storage_client/storage_client.dart' as storage_client;
 
 import '../../../../core/providers/supabase_provider.dart';
 import '../../../../core/config/sentry_config.dart';
+import '../../../../core/utils/date_time_utils.dart';
 import '../../../../core/utils/retry.dart';
 import '../../domain/entities/gallery_item.dart';
 import '../../../../core/exceptions/app_exception.dart';
@@ -60,12 +61,10 @@ class GalleryRepository implements IGalleryRepository {
       templateId: (job['template_id'] as String?) ?? '',
       templateName: (job['templates']?['name'] as String?) ?? 'Unknown',
       prompt: job['prompt'] as String?,
-      createdAt: DateTime.parse(job['created_at'] as String),
+      createdAt: safeParseDateTime(job['created_at']) ?? DateTime.now(),
       status: _parseStatus(job['status'] as String?),
       resultPaths: urls.cast<String>(),
-      deletedAt: job['deleted_at'] != null 
-          ? DateTime.parse(job['deleted_at'] as String) 
-          : null,
+      deletedAt: safeParseDateTime(job['deleted_at']),
       isFavorite: (job['is_favorite'] as bool?) ?? false,
     );
   }

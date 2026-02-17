@@ -42,11 +42,12 @@ class GenerationRepository implements IGenerationRepository {
           if (outputFormat != null) 'outputFormat': outputFormat,
           if (modelId != null) 'model': modelId,
         },
-      );
+      ).timeout(const Duration(seconds: 90));
 
       if (response.status == 429) {
-        throw const AppException.generation(
+        throw const AppException.network(
           message: 'Too many requests. Please wait a moment and try again.',
+          statusCode: 429,
         );
       }
 
@@ -68,11 +69,17 @@ class GenerationRepository implements IGenerationRepository {
       return jobId;
     } on FunctionException catch (e) {
       if (e.status == 429) {
-        throw const AppException.generation(
+        throw const AppException.network(
           message: 'Too many requests. Please wait a moment and try again.',
+          statusCode: 429,
         );
       }
       throw AppException.generation(message: e.reasonPhrase ?? 'Generation failed');
+    } on TimeoutException {
+      throw const AppException.network(
+        message: 'Image generation timed out. Please try again.',
+        statusCode: 408,
+      );
     } on AppException {
       rethrow;
     } catch (e) {
