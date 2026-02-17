@@ -1,26 +1,24 @@
-# GSD State
+# STATE.md
 
 ## Current Position
 - **Milestone**: Freemium Monetization
-- **Phase**: Not started
-- **Status**: Milestone planned, SPEC finalized
+- **Phase**: 1 — Remove Login Wall & Auth Gate
+- **Task**: Planning complete
+- **Status**: Ready for execution
+
+## Plans Created
+- `.gsd/phases/1/1-PLAN.md` — Remove Login Wall (Router Redirect) — Wave 1
+- `.gsd/phases/1/2-PLAN.md` — Auth Gate at Generate + UI Adjustments — Wave 2
 
 ## Last Session Summary
-Created SPEC.md and ROADMAP.md for Freemium Monetization milestone.
+Phase 1 planning completed. 2 plans across 2 waves.
+- Plan 1.1 (Wave 1): Modify `AuthViewModel.redirect()`, add `isLoggedIn` getter, update redirect tests
+- Plan 1.2 (Wave 2): Auth gate bottom sheet in CreateScreen, Settings/Gallery UI for unauthenticated users
 
-### Milestone scope:
-- Remove login wall (anonymous auth)
-- Credit-based economy (all generation costs credits)
-- Rewarded ads (AdMob) for free users to earn credits
-- Subscription tiers (Pro $9.99, Ultra $19.99) via RevenueCat
-- Premium model gate + watermark on free tier
-
-### Previous milestone (Edge Case Fixes):
-- Phase 1 completed: 5 plans, 8 tasks, 453 tests passing
-- Phase 2 (Codebase Improvement): deferred
-
-## Current Branch
-`master`
+## Key Decisions (this phase)
+- ADR-003: No anonymous auth — login required for generation
+- SnackBar auth prompt → upgraded to bottom sheet with Sign In / Create Account
+- Gallery: login prompt empty state (not hidden tab) to avoid NavigationBar index issues
 
 ## Next Steps
-1. `/plan 1` — Create Phase 1 execution plans (Anonymous Auth & Remove Login Wall)
+1. `/execute 1` — run all plans
