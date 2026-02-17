@@ -42,3 +42,47 @@
 **Consequences**:
 - Web users cannot subscribe (for now)
 - Future milestone needed for web payments
+
+---
+
+## ADR-003: No Anonymous Auth — Login Required for Generation
+**Date**: 2026-02-17
+**Status**: Accepted
+
+**Context**: Discussed whether to use Supabase Anonymous Auth to let users generate without login.
+
+**Decision**: No anonymous auth. Users browse freely without login, but must create an account (email/social) before generating images.
+
+**Rationale**:
+- Simplifies architecture — no anonymous-to-authenticated migration needed
+- Edge Function already requires JWT — no changes needed
+- RLS policies remain unchanged
+- Credit tracking tied to real accounts from the start
+- Reduces Supabase anonymous user cleanup overhead
+
+**Consequences**:
+- Phase 1 scope reduced significantly (no `signInAnonymously()`, no `AuthState.anonymous`)
+- Auth gate needed at Generate button (intercept before Edge Function call)
+- Gallery tab hidden or shows "Login to view" for unauthenticated users
+- Settings shows "Login" button for unauthenticated users
+
+---
+
+## Phase 1 Decisions
+
+**Date:** 2026-02-17
+
+### Scope
+- Remove login wall from router — allow Home, template detail, Settings without auth
+- Auth gate at Generate action — prompt login/register when tapping Generate
+- Gallery: hidden or "Login to view" for unauthenticated users
+- Settings: theme toggle works without login, show "Login" button
+
+### Approach
+- Chose: Simple router redirect removal + auth gate at action point
+- Reason: No Supabase Anonymous Auth needed — drastically simpler, Edge Function unchanged
+
+### Constraints
+- Generation still requires JWT (Edge Function) — users MUST login before generating
+- Phase 1 does NOT include credit system — generation works as-is after login (credits in Phase 2)
+- Welcome bonus (20 credits) deferred to Phase 2 (credit system)

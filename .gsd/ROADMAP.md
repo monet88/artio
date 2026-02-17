@@ -36,15 +36,17 @@
 
 ## Phases
 
-### Phase 1: Anonymous Auth & Remove Login Wall
+### Phase 1: Remove Login Wall & Auth Gate
 **Status**: ⬜ Not Started
-**Objective**: Enable anonymous Supabase auth, remove router login redirect, let users enter directly to Home screen
+**Objective**: Remove router login redirect, let unauthenticated users browse freely, add auth gate at generation action
 **Key Changes**:
-- Add anonymous auth (Supabase anonymous sign-in)
-- Modify `AuthViewModel.redirect()` — remove login wall for main routes
-- Keep auth screens accessible but not mandatory
-- Update `SplashScreen` flow → go to Home directly
-- Refactor `AuthState` to support anonymous user state
+- Modify `AuthViewModel.redirect()` — allow Home, template detail, Settings without login
+- Update `SplashScreen` flow → go to Home directly (skip login)
+- Auth gate: when tapping "Generate" → check login → if not logged in → show login/register
+- Gallery tab: hidden or "Login to view" for unauthenticated users
+- Settings: theme toggle works, show "Login" button when not authenticated
+- No Supabase Anonymous Auth (ADR-003)
+- Generation still works normally after login (credit system in Phase 2)
 
 ### Phase 2: Credit System (Database + Backend)
 **Status**: ⬜ Not Started

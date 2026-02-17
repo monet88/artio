@@ -25,20 +25,23 @@ Artio is a freemium AI art generation app. Users open the app and immediately st
 
 ## Users
 
-### Anonymous User (Free Tier)
-- Opens app, lands on Home screen immediately
+### Unauthenticated Visitor
+- Opens app, lands on Home screen immediately (no login wall)
 - Browses templates, views template details
-- Receives **20 welcome credits** on first launch
+- Theme toggle in Settings works
+- **Cannot generate images** — tapping "Generate" prompts login/register
+- Gallery tab hidden or shows "Login to view"
+
+### Free User (Authenticated)
+- Must register/login before generating
+- Receives **20 welcome credits** on account creation
 - Watches **rewarded ads** (max 10/day) to earn **5 credits per ad** (max 50 credits/day)
 - Can only use **free models** (`isPremium: false`)
 - Generated images have a **small watermark**
-- Prompted to login/subscribe when:
+- Full Gallery access (synced via Supabase)
+- Prompted to subscribe when:
   - Selecting a premium model
   - Running out of credits (with option to watch ad or subscribe)
-
-### Authenticated Free User
-- Same as anonymous but credits tied to account (persists across devices)
-- Gallery synced via Supabase
 
 ### Subscriber (Pro / Ultra)
 - Monthly credit allocation
@@ -81,19 +84,19 @@ All generation costs from existing `AiModelConfig.creditCost` (4-20 credits per 
 - **Payment provider**: RevenueCat only (iOS + Android in-app purchases)
 - **Ad provider**: Google AdMob (already in pubspec: `google_mobile_ads: ^6.0.0`)
 - **Backend**: Supabase (existing) — needs new tables for credits, subscriptions, ad tracking
-- **Edge Function**: Currently requires JWT — must support anonymous Supabase auth for free users
+- **Edge Function**: Requires JWT — users must login before generating (no anonymous auth)
 - **Existing architecture**: Clean Architecture per feature must be maintained
 - **State management**: Riverpod with codegen (existing pattern)
-- **Anonymous tracking**: Device UUID stored in `SharedPreferences` until account creation
 
 ## Success Criteria
 
 - [ ] App opens directly to Home screen — no login required
-- [ ] Anonymous user can browse all templates and view details
-- [ ] Anonymous user receives 20 welcome credits on first launch
-- [ ] Anonymous user can generate images with free models using credits
+- [ ] Unauthenticated users can browse all templates and view details
+- [ ] Tapping "Generate" when not logged in prompts login/register
+- [ ] After login, user receives 20 welcome credits
+- [ ] Free users can generate images with free models using credits
 - [ ] Rewarded ad flow works: watch ad → receive 5 credits (max 10 ads/day)
-- [ ] Premium model selection triggers login + subscription prompt
+- [ ] Premium model selection triggers subscription prompt
 - [ ] Credit deduction happens before generation starts
 - [ ] Insufficient credits shows "Watch Ad" or "Subscribe" options
 - [ ] Pro subscription ($9.99/month, $79.99/year) grants 200 credits + premium access
@@ -101,5 +104,6 @@ All generation costs from existing `AiModelConfig.creditCost` (4-20 credits per 
 - [ ] Subscribers see no ads and images have no watermark
 - [ ] Free tier images have small, non-intrusive watermark
 - [ ] RevenueCat integration handles subscription lifecycle (purchase, renewal, cancellation, restore)
-- [ ] Credits persist across app restarts (local for anonymous, Supabase for authenticated)
+- [ ] Credits persist in Supabase (tied to authenticated user)
 - [ ] Monthly credit allocation auto-replenishes for active subscribers
+- [ ] Gallery tab hidden or shows "Login" prompt for unauthenticated users
