@@ -13,7 +13,7 @@ void main() {
           GoRoute(
             path: '/gallery',
             builder: (context, state) => const Scaffold(
-              body: EmptyGalleryState(),
+              body: EmptyGalleryState(isLoggedIn: true),
             ),
           ),
           GoRoute(
