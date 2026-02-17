@@ -1,6 +1,6 @@
 import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
-import 'package:artio/features/gallery/data/repositories/gallery_repository.dart';
 import 'package:artio/features/gallery/domain/entities/gallery_item.dart';
+import 'package:artio/features/gallery/domain/providers/gallery_repository_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

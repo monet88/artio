@@ -1,8 +1,8 @@
 import 'package:artio/core/design_system/app_animations.dart';
 import 'package:artio/core/services/haptic_service.dart';
 import 'package:artio/core/utils/app_exception_mapper.dart';
-import 'package:artio/features/gallery/data/repositories/gallery_repository.dart';
 import 'package:artio/features/gallery/domain/entities/gallery_item.dart';
+import 'package:artio/features/gallery/domain/providers/gallery_repository_provider.dart';
 import 'package:artio/features/gallery/presentation/providers/gallery_provider.dart';
 import 'package:artio/features/gallery/presentation/widgets/image_info_bottom_sheet.dart';
 import 'package:artio/features/gallery/presentation/widgets/image_viewer_app_bar.dart';
