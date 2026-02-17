@@ -1,4 +1,4 @@
-import '../exceptions/app_exception.dart';
+import 'package:artio/core/exceptions/app_exception.dart';
 
 /// Maps [AppException] variants to user-friendly messages.
 ///
@@ -41,9 +41,9 @@ class AppExceptionMapper {
     return switch (statusCode) {
       404 => 'The requested resource was not found.',
       401 => 'Your session has expired. Please sign in again.',
-      403 => 'You don\'t have permission for this action.',
+      403 => "You don't have permission for this action.",
       429 => 'Too many requests. Please wait a moment.',
-      int status when status >= 500 && status < 600 => 'Server error. Please try again later.',
+      final int status when status >= 500 && status < 600 => 'Server error. Please try again later.',
       _ => 'Connection error. Check your internet and try again.',
     };
   }

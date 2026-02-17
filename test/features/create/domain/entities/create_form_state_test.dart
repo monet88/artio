@@ -1,6 +1,6 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:artio/core/constants/app_constants.dart';
 import 'package:artio/features/create/domain/entities/create_form_state.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('CreateFormState', () {

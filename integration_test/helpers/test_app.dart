@@ -1,6 +1,6 @@
+import 'package:artio/features/auth/presentation/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:artio/features/auth/presentation/screens/login_screen.dart';
 
 /// Creates a test app widget for integration testing
 ///

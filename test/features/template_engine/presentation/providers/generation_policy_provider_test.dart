@@ -1,8 +1,8 @@
+import 'package:artio/features/template_engine/data/policies/free_beta_policy.dart';
+import 'package:artio/features/template_engine/domain/policies/generation_policy.dart';
+import 'package:artio/features/template_engine/presentation/providers/generation_policy_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:artio/features/template_engine/presentation/providers/generation_policy_provider.dart';
-import 'package:artio/features/template_engine/domain/policies/generation_policy.dart';
-import 'package:artio/features/template_engine/data/policies/free_beta_policy.dart';
 
 void main() {
   group('GenerationPolicyProvider', () {

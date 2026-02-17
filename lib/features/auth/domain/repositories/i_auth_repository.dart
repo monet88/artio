@@ -1,5 +1,5 @@
-import 'package:supabase_flutter/supabase_flutter.dart' show AuthState, User, Session;
-import '../entities/user_model.dart';
+import 'package:artio/features/auth/domain/entities/user_model.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' show AuthState, Session, User;
 
 abstract class IAuthRepository {
   Stream<AuthState> get onAuthStateChange;

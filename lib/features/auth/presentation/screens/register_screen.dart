@@ -1,15 +1,15 @@
 import 'package:artio/core/design_system/app_gradients.dart';
 import 'package:artio/core/design_system/app_spacing.dart';
 import 'package:artio/core/design_system/app_typography.dart';
+import 'package:artio/features/auth/presentation/state/auth_state.dart';
+import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
+import 'package:artio/features/auth/presentation/widgets/social_login_buttons.dart';
+import 'package:artio/routing/routes/app_routes.dart';
+import 'package:artio/shared/widgets/gradient_button.dart';
 import 'package:artio/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../routing/routes/app_routes.dart';
-import '../state/auth_state.dart';
-import '../view_models/auth_view_model.dart';
-import '../widgets/social_login_buttons.dart';
 
 /// Register screen with animated gradient background, branded logo,
 /// styled form fields, and social login section.
@@ -120,7 +120,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   const SizedBox(height: AppSpacing.lg),
 
                   // Title
-                  GradientText(
+                  const GradientText(
                     'Create Account',
                     style: AppTypography.displayMedium,
                     textAlign: TextAlign.center,
@@ -214,7 +214,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   const SizedBox(height: AppSpacing.lg),
 
                   // ── Create Account Button ───────────────────────────
-                  _GradientButton(
+                  GradientButton(
                     onPressed: isLoading ? null : _handleRegister,
                     isLoading: isLoading,
                     label: 'Create Account',
@@ -244,67 +244,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 ],
               ),
             ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// Gradient CTA button used in auth screens
-class _GradientButton extends StatelessWidget {
-  const _GradientButton({
-    required this.onPressed,
-    required this.label,
-    this.isLoading = false,
-  });
-
-  final VoidCallback? onPressed;
-  final String label;
-  final bool isLoading;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 52,
-      decoration: BoxDecoration(
-        gradient: onPressed != null
-            ? AppGradients.primaryGradient
-            : null,
-        color: onPressed == null ? AppColors.textMuted : null,
-        borderRadius: BorderRadius.circular(14),
-        boxShadow: onPressed != null
-            ? const [
-                BoxShadow(
-                  color: Color(0x339B87F5),
-                  blurRadius: 16,
-                  offset: Offset(0, 6),
-                ),
-              ]
-            : null,
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onPressed,
-          borderRadius: BorderRadius.circular(14),
-          child: Center(
-            child: isLoading
-                ? const SizedBox(
-                    height: 20,
-                    width: 20,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      valueColor:
-                          AlwaysStoppedAnimation<Color>(Colors.white),
-                    ),
-                  )
-                : Text(
-                    label,
-                    style: AppTypography.buttonLarge.copyWith(
-                      color: Colors.white,
-                    ),
-                  ),
           ),
         ),
       ),

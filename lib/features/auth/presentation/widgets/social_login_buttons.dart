@@ -2,11 +2,10 @@ import 'dart:io' show Platform;
 
 import 'package:artio/core/design_system/app_dimensions.dart';
 import 'package:artio/core/design_system/app_spacing.dart';
+import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../view_models/auth_view_model.dart';
 
 class SocialLoginButtons extends ConsumerWidget {
   const SocialLoginButtons({super.key});

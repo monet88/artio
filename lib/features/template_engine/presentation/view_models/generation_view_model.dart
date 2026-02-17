@@ -1,9 +1,10 @@
 import 'dart:async';
+
+import 'package:artio/features/template_engine/data/repositories/generation_repository.dart';
+import 'package:artio/features/template_engine/domain/entities/generation_job_model.dart';
+import 'package:artio/features/template_engine/presentation/helpers/generation_job_manager.dart';
+import 'package:artio/features/template_engine/presentation/providers/generation_policy_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import '../../domain/entities/generation_job_model.dart';
-import '../../data/repositories/generation_repository.dart';
-import '../providers/generation_policy_provider.dart';
-import '../helpers/generation_job_manager.dart';
 
 part 'generation_view_model.g.dart';
 
@@ -72,7 +73,7 @@ class GenerationViewModel extends _$GenerationViewModel {
           StackTrace.current,
         ),
       );
-    } catch (e, st) {
+    } on Object catch (e, st) {
       await _jobManager.captureOnce(e, st);
       state = AsyncError(e, st);
     }

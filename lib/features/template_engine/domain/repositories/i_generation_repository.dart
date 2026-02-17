@@ -1,4 +1,4 @@
-import '../entities/generation_job_model.dart';
+import 'package:artio/features/template_engine/domain/entities/generation_job_model.dart';
 
 abstract class IGenerationRepository {
   Future<String> startGeneration({

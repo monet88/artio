@@ -1,12 +1,12 @@
+import 'package:artio/features/auth/presentation/state/auth_state.dart';
+import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
+import 'package:artio/features/settings/data/notifications_provider.dart';
+import 'package:artio/features/settings/presentation/settings_screen.dart';
+import 'package:artio/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
-import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
-import 'package:artio/features/auth/presentation/state/auth_state.dart';
-import 'package:artio/features/settings/data/notifications_provider.dart';
-import 'package:artio/features/settings/presentation/settings_screen.dart';
-import 'package:artio/theme/theme_provider.dart';
 import '../../../../core/fixtures/fixtures.dart';
 import '../../../../core/helpers/pump_app.dart';
 
@@ -23,10 +23,10 @@ void main() {
 
   group('SettingsScreen', () {
     final overrides = [
-      authViewModelProvider.overrideWith(() => _FakeAuthViewModel()),
+      authViewModelProvider.overrideWith(_FakeAuthViewModel.new),
       notificationsNotifierProvider
-          .overrideWith(() => _FakeNotificationsNotifier()),
-      themeModeNotifierProvider.overrideWith(() => _FakeThemeModeNotifier()),
+          .overrideWith(_FakeNotificationsNotifier.new),
+      themeModeNotifierProvider.overrideWith(_FakeThemeModeNotifier.new),
     ];
 
     testWidgets('renders app bar with Settings title', (tester) async {
@@ -84,7 +84,7 @@ void main() {
       // Logout button is at the bottom, may need to scroll
       await tester.scrollUntilVisible(
         find.text('Logout'),
-        200.0,
+        200,
       );
 
       expect(find.text('Logout'), findsOneWidget);
@@ -111,7 +111,7 @@ void main() {
       // Scroll to find the Version text
       await tester.scrollUntilVisible(
         find.text('Version'),
-        200.0,
+        200,
       );
 
       expect(find.text('About'), findsOneWidget);

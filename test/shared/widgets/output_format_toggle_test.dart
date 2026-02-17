@@ -1,6 +1,6 @@
+import 'package:artio/shared/widgets/output_format_toggle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:artio/shared/widgets/output_format_toggle.dart';
 
 void main() {
   group('OutputFormatToggle', () {
@@ -40,7 +40,7 @@ void main() {
     });
 
     testWidgets('JPG is selected by default', (tester) async {
-      await tester.pumpWidget(buildWidget(value: 'jpg'));
+      await tester.pumpWidget(buildWidget());
 
       final button = tester.widget<SegmentedButton<String>>(
         find.byType(SegmentedButton<String>),
@@ -49,7 +49,7 @@ void main() {
     });
 
     testWidgets('shows crown emoji for PNG when not premium', (tester) async {
-      await tester.pumpWidget(buildWidget(isPremium: false));
+      await tester.pumpWidget(buildWidget());
 
       // Crown emoji Unicode
       expect(find.text('\u{1F451}'), findsOneWidget);
@@ -62,7 +62,7 @@ void main() {
     });
 
     testWidgets('shows premium hint when not premium and JPG selected', (tester) async {
-      await tester.pumpWidget(buildWidget(isPremium: false, value: 'jpg'));
+      await tester.pumpWidget(buildWidget());
 
       expect(find.text('PNG format requires premium'), findsOneWidget);
     });
@@ -84,7 +84,6 @@ void main() {
     testWidgets('calls onChanged when PNG tapped (premium user)', (tester) async {
       String? selectedFormat;
       await tester.pumpWidget(buildWidget(
-        value: 'jpg',
         isPremium: true,
         onChanged: (format) => selectedFormat = format,
       ));
@@ -98,8 +97,6 @@ void main() {
     testWidgets('does NOT call onChanged when PNG tapped (non-premium user)', (tester) async {
       String? selectedFormat;
       await tester.pumpWidget(buildWidget(
-        value: 'jpg',
-        isPremium: false,
         onChanged: (format) => selectedFormat = format,
       ));
 

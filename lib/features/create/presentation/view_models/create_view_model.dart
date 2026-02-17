@@ -6,8 +6,8 @@ import 'package:artio/core/constants/generation_constants.dart';
 import 'package:artio/core/exceptions/app_exception.dart';
 import 'package:artio/core/utils/retry.dart';
 import 'package:artio/features/create/domain/entities/create_form_state.dart';
-import 'package:artio/features/template_engine/data/repositories/generation_repository.dart';
 import 'package:artio/features/template_engine/domain/entities/generation_job_model.dart';
+import 'package:artio/features/template_engine/domain/providers/generation_repository_provider.dart';
 import 'package:artio/features/template_engine/presentation/helpers/generation_job_manager.dart';
 import 'package:artio/features/template_engine/presentation/providers/generation_policy_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -57,7 +57,7 @@ class CreateViewModel extends _$CreateViewModel {
 
     if (trimmedPrompt.length > AppConstants.maxPromptLength) {
       state = AsyncError(
-        AppException.generation(
+        const AppException.generation(
           message: 'Prompt must be at most ${AppConstants.maxPromptLength} characters',
         ),
         StackTrace.current,
@@ -131,7 +131,7 @@ class CreateViewModel extends _$CreateViewModel {
         onData: (job) => state = AsyncData(job),
         onError: (e, st) => state = AsyncError(e, st),
         onTimeout: () => state = AsyncError(
-          AppException.generation(
+          const AppException.generation(
             message: 'Generation timed out after '
                 '${GenerationJobManager.defaultTimeoutMinutes} minutes',
           ),

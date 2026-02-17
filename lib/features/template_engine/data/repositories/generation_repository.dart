@@ -1,12 +1,12 @@
 import 'dart:async';
 
+import 'package:artio/core/exceptions/app_exception.dart';
+import 'package:artio/core/providers/supabase_provider.dart';
+import 'package:artio/features/template_engine/domain/entities/generation_job_model.dart';
+import 'package:artio/features/template_engine/domain/repositories/i_generation_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../../../../core/providers/supabase_provider.dart';
-import '../../../../core/exceptions/app_exception.dart';
-import '../../domain/entities/generation_job_model.dart';
-import '../../domain/repositories/i_generation_repository.dart';
 
 part 'generation_repository.g.dart';
 
@@ -16,11 +16,11 @@ GenerationRepository generationRepository(Ref ref) {
 }
 
 class GenerationRepository implements IGenerationRepository {
+
+  const GenerationRepository(this._supabase);
   final SupabaseClient _supabase;
 
   static const _maxEmptyWatchEvents = 3;
-
-  const GenerationRepository(this._supabase);
 
   @override
   Future<String> startGeneration({
@@ -42,17 +42,18 @@ class GenerationRepository implements IGenerationRepository {
           if (outputFormat != null) 'outputFormat': outputFormat,
           if (modelId != null) 'model': modelId,
         },
-      );
+      ).timeout(const Duration(seconds: 90));
 
       if (response.status == 429) {
-        throw const AppException.generation(
+        throw const AppException.network(
           message: 'Too many requests. Please wait a moment and try again.',
+          statusCode: 429,
         );
       }
 
       if (response.status != 200) {
-        final errorMsg = response.data is Map
-            ? (response.data['error'] as String?) ?? 'Generation failed'
+        final errorMsg = response.data is Map<String, dynamic>
+            ? ((response.data as Map<String, dynamic>)['error'] as String?) ?? 'Generation failed'
             : 'Generation failed';
         throw AppException.generation(message: errorMsg);
       }
@@ -68,11 +69,17 @@ class GenerationRepository implements IGenerationRepository {
       return jobId;
     } on FunctionException catch (e) {
       if (e.status == 429) {
-        throw const AppException.generation(
+        throw const AppException.network(
           message: 'Too many requests. Please wait a moment and try again.',
+          statusCode: 429,
         );
       }
       throw AppException.generation(message: e.reasonPhrase ?? 'Generation failed');
+    } on TimeoutException {
+      throw const AppException.network(
+        message: 'Image generation timed out. Please try again.',
+        statusCode: 408,
+      );
     } on AppException {
       rethrow;
     } catch (e) {
@@ -120,9 +127,9 @@ class GenerationRepository implements IGenerationRepository {
           .order('created_at', ascending: false)
           .range(offset, offset + limit - 1);
 
-      return response.map((json) => GenerationJobModel.fromJson(json)).toList();
+      return response.map(GenerationJobModel.fromJson).toList();
     } on PostgrestException catch (e) {
-      throw AppException.network(message: e.message, statusCode: null);
+      throw AppException.network(message: e.message);
     } catch (e) {
       throw AppException.unknown(message: e.toString(), originalError: e);
     }
@@ -139,7 +146,7 @@ class GenerationRepository implements IGenerationRepository {
 
       return response != null ? GenerationJobModel.fromJson(response) : null;
     } on PostgrestException catch (e) {
-      throw AppException.network(message: e.message, statusCode: null);
+      throw AppException.network(message: e.message);
     } catch (e) {
       throw AppException.unknown(message: e.toString(), originalError: e);
     }

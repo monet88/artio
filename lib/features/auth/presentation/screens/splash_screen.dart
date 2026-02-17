@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:artio/core/design_system/app_animations.dart';
 import 'package:artio/core/design_system/app_gradients.dart';
 import 'package:artio/core/design_system/app_typography.dart';
@@ -36,7 +38,7 @@ class _SplashScreenState extends State<SplashScreen>
       parent: _logoController,
       curve: AppAnimations.defaultCurve,
     );
-    _logoScale = Tween<double>(begin: 0.8, end: 1.0).animate(
+    _logoScale = Tween<double>(begin: 0.8, end: 1).animate(
       CurvedAnimation(
         parent: _logoController,
         curve: AppAnimations.defaultCurve,
@@ -72,16 +74,16 @@ class _SplashScreenState extends State<SplashScreen>
 
   Future<void> _startAnimations() async {
     // Small delay for screen to settle
-    await Future.delayed(const Duration(milliseconds: 200));
+    await Future<void>.delayed(const Duration(milliseconds: 200));
     if (!mounted) return;
 
     // Logo fades in
-    _logoController.forward();
+    unawaited(_logoController.forward());
 
     // Tagline starts after logo is halfway
-    await Future.delayed(const Duration(milliseconds: 400));
+    await Future<void>.delayed(const Duration(milliseconds: 400));
     if (!mounted) return;
-    _taglineController.forward();
+    unawaited(_taglineController.forward());
   }
 
   @override
@@ -128,9 +130,8 @@ class _SplashScreenState extends State<SplashScreen>
                           fontSize: 56,
                           fontWeight: FontWeight.w800,
                           letterSpacing: -1.5,
-                          height: 1.0,
+                          height: 1,
                         ),
-                        gradient: AppGradients.primaryGradient,
                       ),
                     ),
                   ),
@@ -142,13 +143,13 @@ class _SplashScreenState extends State<SplashScreen>
                     position: _taglineSlide,
                     child: FadeTransition(
                       opacity: _taglineOpacity,
-                      child: Text(
+                      child: const Text(
                         'Art Made Simple',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w400,
                           color: AppColors.textSecondary,
-                          letterSpacing: 2.0,
+                          letterSpacing: 2,
                         ),
                       ),
                     ),

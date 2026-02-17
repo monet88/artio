@@ -1,296 +1,178 @@
 ---
-description: Plan and implement UI
+description: Plan and implement UI using Stitch MCP with enhance-prompt and design-md skills
 ---
 
----
-description: AI-powered design intelligence with 50+ styles, 95+ color palettes, and automated design system generation
----
+# UI/UX Pro Max — Stitch MCP Workflow
 
-# ui-ux-pro-max
-
-Comprehensive design guide for web and mobile applications. Contains 50+ styles, 97 color palettes, 57 font pairings, 99 UX guidelines, and 25 chart types across 9 technology stacks. Searchable database with priority-based recommendations.
+Design, generate, and iterate on UI screens using Stitch MCP server with design system consistency.
 
 ## Prerequisites
 
-Check if Python is installed:
-
-```bash
-python3 --version || python --version
-```
-
-If Python is not installed, install it based on user's OS:
-
-**macOS:**
-```bash
-brew install python3
-```
-
-**Ubuntu/Debian:**
-```bash
-sudo apt update && sudo apt install python3
-```
-
-**Windows:**
-```powershell
-winget install Python.Python.3.12
-```
+- Stitch MCP server connected (verify: `mcp_stitch_list_projects`)
+- Skills loaded: `enhance-prompt`, `design-md`
 
 ---
 
-## How to Use This Workflow
+## Phase 1: Setup & Context
 
-When user requests UI/UX work (design, build, create, implement, review, fix, improve), follow this workflow:
+1. **Understand the request** — What screens/pages does the user need?
 
-### Step 1: Analyze User Requirements
+2. **Check for existing Stitch project:**
+   ```
+   mcp_stitch_list_projects
+   ```
+   - If project exists → get project ID, list screens
+   - If no project → create one in Phase 2
 
-Extract key information from user request:
-- **Product type**: SaaS, e-commerce, portfolio, dashboard, landing page, etc.
-- **Style keywords**: minimal, playful, professional, elegant, dark mode, etc.
-- **Industry**: healthcare, fintech, gaming, education, etc.
-- **Stack**: React, Vue, Next.js, or default to `html-tailwind`
+3. **Check for DESIGN.md** in the project root:
+   - If exists → read it for design system context
+   - If not → will create in Phase 3 after first screen
 
-### Step 2: Generate Design System (REQUIRED)
-
-**Always start with `--design-system`** to get comprehensive recommendations with reasoning:
-
-```bash
-python3 .agent/.shared/ui-ux-pro-max/scripts/search.py "<product_type> <industry> <keywords>" --design-system [-p "Project Name"]
-```
-
-This command:
-1. Searches 5 domains in parallel (product, style, color, landing, typography)
-2. Applies reasoning rules from `ui-reasoning.csv` to select best matches
-3. Returns complete design system: pattern, style, colors, typography, effects
-4. Includes anti-patterns to avoid
-
-**Example:**
-```bash
-python3 .agent/.shared/ui-ux-pro-max/scripts/search.py "beauty spa wellness service" --design-system -p "Serenity Spa"
-```
-
-### Step 2b: Persist Design System (Master + Overrides Pattern)
-
-To save the design system for hierarchical retrieval across sessions, add `--persist`:
-
-```bash
-python3 .agent/.shared/ui-ux-pro-max/scripts/search.py "<query>" --design-system --persist -p "Project Name"
-```
-
-This creates:
-- `design-system/MASTER.md` — Global Source of Truth with all design rules
-- `design-system/pages/` — Folder for page-specific overrides
-
-**With page-specific override:**
-```bash
-python3 .agent/.shared/ui-ux-pro-max/scripts/search.py "<query>" --design-system --persist -p "Project Name" --page "dashboard"
-```
-
-This also creates:
-- `design-system/pages/dashboard.md` — Page-specific deviations from Master
-
-**How hierarchical retrieval works:**
-1. When building a specific page (e.g., "Checkout"), first check `design-system/pages/checkout.md`
-2. If the page file exists, its rules **override** the Master file
-3. If not, use `design-system/MASTER.md` exclusively
-
-### Step 3: Supplement with Detailed Searches (as needed)
-
-After getting the design system, use domain searches to get additional details:
-
-```bash
-python3 .agent/.shared/ui-ux-pro-max/scripts/search.py "<keyword>" --domain <domain> [-n <max_results>]
-```
-
-**When to use detailed searches:**
-
-| Need | Domain | Example |
-|------|--------|---------|
-| More style options | `style` | `--domain style "glassmorphism dark"` |
-| Chart recommendations | `chart` | `--domain chart "real-time dashboard"` |
-| UX best practices | `ux` | `--domain ux "animation accessibility"` |
-| Alternative fonts | `typography` | `--domain typography "elegant luxury"` |
-| Landing structure | `landing` | `--domain landing "hero social-proof"` |
-
-### Step 4: Stack Guidelines (Default: html-tailwind)
-
-Get implementation-specific best practices. If user doesn't specify a stack, **default to `html-tailwind`**.
-
-```bash
-python3 .agent/.shared/ui-ux-pro-max/scripts/search.py "<keyword>" --stack html-tailwind
-```
-
-Available stacks: `html-tailwind`, `react`, `nextjs`, `vue`, `svelte`, `swiftui`, `react-native`, `flutter`, `shadcn`, `jetpack-compose`
-, `jetpack-compose`
----
-
-## Search Reference
-
-### Available Domains
-
-| Domain | Use For | Example Keywords |
-|--------|---------|------------------|
-| `product` | Product type recommendations | SaaS, e-commerce, portfolio, healthcare, beauty, service |
-| `style` | UI styles, colors, effects | glassmorphism, minimalism, dark mode, brutalism |
-| `typography` | Font pairings, Google Fonts | elegant, playful, professional, modern |
-| `color` | Color palettes by product type | saas, ecommerce, healthcare, beauty, fintech, service |
-| `landing` | Page structure, CTA strategies | hero, hero-centric, testimonial, pricing, social-proof |
-| `chart` | Chart types, library recommendations | trend, comparison, timeline, funnel, pie |
-| `ux` | Best practices, anti-patterns | animation, accessibility, z-index, loading |
-| `react` | React/Next.js performance | waterfall, bundle, suspense, memo, rerender, cache |
-| `web` | Web interface guidelines | aria, focus, keyboard, semantic, virtualize |
-| `prompt` | AI prompts, CSS keywords | (style name) |
-
-### Available Stacks
-
-| Stack | Focus |
-|-------|-------|
-| `html-tailwind` | Tailwind utilities, responsive, a11y (DEFAULT) |
-| `react` | State, hooks, performance, patterns |
-| `nextjs` | SSR, routing, images, API routes |
-| `vue` | Composition API, Pinia, Vue Router |
-| `svelte` | Runes, stores, SvelteKit |
-| `swiftui` | Views, State, Navigation, Animation |
-| `react-native` | Components, Navigation, Lists |
-| `flutter` | Widgets, State, Layout, Theming |
-| `shadcn` | shadcn/ui components, theming, forms, patterns |
-| `jetpack-compose` | Composables, Modifiers, State Hoisting, Recomposition |
+4. **Read the Stitch prompting guide** for latest best practices:
+   ```
+   read_url_content: https://stitch.withgoogle.com/docs/learn/prompting/
+   ```
 
 ---
 
-## Example Workflow
+## Phase 2: Project Setup (if needed)
 
-**User request:** "Làm landing page cho dịch vụ chăm sóc da chuyên nghiệp"
+// turbo
+1. **Create Stitch project:**
+   ```
+   mcp_stitch_create_project(title: "<project name>")
+   ```
 
-### Step 1: Analyze Requirements
-- Product type: Beauty/Spa service
-- Style keywords: elegant, professional, soft
-- Industry: Beauty/Wellness
-- Stack: html-tailwind (default)
-
-### Step 2: Generate Design System (REQUIRED)
-
-```bash
-python3 .agent/.shared/ui-ux-pro-max/scripts/search.py "beauty spa wellness service elegant" --design-system -p "Serenity Spa"
-```
-
-**Output:** Complete design system with pattern, style, colors, typography, effects, and anti-patterns.
-
-### Step 3: Supplement with Detailed Searches (as needed)
-
-```bash
-# Get UX guidelines for animation and accessibility
-python3 .agent/.shared/ui-ux-pro-max/scripts/search.py "animation accessibility" --domain ux
-
-# Get alternative typography options if needed
-python3 .agent/.shared/ui-ux-pro-max/scripts/search.py "elegant luxury serif" --domain typography
-```
-
-### Step 4: Stack Guidelines
-
-```bash
-python3 .agent/.shared/ui-ux-pro-max/scripts/search.py "layout responsive form" --stack html-tailwind
-```
-
-**Then:** Synthesize design system + detailed searches and implement the design.
+2. Note the project ID from the response for all subsequent calls.
 
 ---
 
-## Output Formats
+## Phase 3: Design System (first time only)
 
-The `--design-system` flag supports two output formats:
+If no DESIGN.md exists yet:
 
-```bash
-# ASCII box (default) - best for terminal display
-python3 .agent/.shared/ui-ux-pro-max/scripts/search.py "fintech crypto" --design-system
+1. **Generate first screen** to establish visual direction (Phase 4)
 
-# Markdown - best for documentation
-python3 .agent/.shared/ui-ux-pro-max/scripts/search.py "fintech crypto" --design-system -f markdown
-```
+2. **Extract design system** using `design-md` skill:
+   - Read the SKILL.md: `.agent/skills/design-md/SKILL.md`
+   - Get screen details:
+     ```
+     mcp_stitch_get_screen(projectId, screenId)
+     ```
+   - Download HTML from `htmlCode.downloadUrl`
+   - Get project theme from `mcp_stitch_get_project`
+   - Analyze colors, typography, components, layout
+   - Write `DESIGN.md` to project root
 
----
-
-## Tips for Better Results
-
-1. **Be specific with keywords** - "healthcare SaaS dashboard" > "app"
-2. **Search multiple times** - Different keywords reveal different insights
-3. **Combine domains** - Style + Typography + Color = Complete design system
-4. **Always check UX** - Search "animation", "z-index", "accessibility" for common issues
-5. **Use stack flag** - Get implementation-specific best practices
-6. **Iterate** - If first search doesn't match, try different keywords
+3. Use `DESIGN.md` for all future screen generation prompts.
 
 ---
 
-## Common Rules for Professional UI
+## Phase 4: Generate Screens
 
-These are frequently overlooked issues that make UI look unprofessional:
+For each screen the user needs:
 
-### Icons & Visual Elements
+1. **Enhance the prompt** using `enhance-prompt` skill:
+   - Read skill: `.agent/skills/enhance-prompt/SKILL.md`
+   - Read `references/KEYWORDS.md` for UI/UX vocabulary
+   - Take user's description → enhance with:
+     - Platform specification (mobile/desktop)
+     - Page structure (numbered sections)
+     - UI/UX keywords (specific component names)
+     - Design system from DESIGN.md (if exists)
+     - Color values with hex codes and roles
+     - Visual style descriptors
 
-| Rule | Do | Don't |
-|------|----|----- |
-| **No emoji icons** | Use SVG icons (Heroicons, Lucide, Simple Icons) | Use emojis like 🎨 🚀 ⚙️ as UI icons |
-| **Stable hover states** | Use color/opacity transitions on hover | Use scale transforms that shift layout |
-| **Correct brand logos** | Research official SVG from Simple Icons | Guess or use incorrect logo paths |
-| **Consistent icon sizing** | Use fixed viewBox (24x24) with w-6 h-6 | Mix different icon sizes randomly |
+2. **Present enhanced prompt** to user for approval/tweaks.
 
-### Interaction & Cursor
+3. **Generate the screen:**
+   ```
+   mcp_stitch_generate_screen_from_text(
+     projectId: "<id>",
+     prompt: "<enhanced prompt>",
+     deviceType: "MOBILE"  // or DESKTOP, TABLET
+   )
+   ```
+   ⚠️ This can take a few minutes. DO NOT RETRY.
 
-| Rule | Do | Don't |
-|------|----|----- |
-| **Cursor pointer** | Add `cursor-pointer` to all clickable/hoverable cards | Leave default cursor on interactive elements |
-| **Hover feedback** | Provide visual feedback (color, shadow, border) | No indication element is interactive |
-| **Smooth transitions** | Use `transition-colors duration-200` | Instant state changes or too slow (>500ms) |
-
-### Light/Dark Mode Contrast
-
-| Rule | Do | Don't |
-|------|----|----- |
-| **Glass card light mode** | Use `bg-white/80` or higher opacity | Use `bg-white/10` (too transparent) |
-| **Text contrast light** | Use `#0F172A` (slate-900) for text | Use `#94A3B8` (slate-400) for body text |
-| **Muted text light** | Use `#475569` (slate-600) minimum | Use gray-400 or lighter |
-| **Border visibility** | Use `border-gray-200` in light mode | Use `border-white/10` (invisible) |
-
-### Layout & Spacing
-
-| Rule | Do | Don't |
-|------|----|----- |
-| **Floating navbar** | Add `top-4 left-4 right-4` spacing | Stick navbar to `top-0 left-0 right-0` |
-| **Content padding** | Account for fixed navbar height | Let content hide behind fixed elements |
-| **Consistent max-width** | Use same `max-w-6xl` or `max-w-7xl` | Mix different container widths |
+4. **Review output_components** from the response:
+   - If contains suggestions → present to user
+   - If user accepts a suggestion → call generate again with that suggestion as prompt
 
 ---
 
-## Pre-Delivery Checklist
+## Phase 5: Iterate & Refine
 
-Before delivering UI code, verify these items:
+If the user wants changes to existing screens:
 
-### Visual Quality
-- [ ] No emojis used as icons (use SVG instead)
-- [ ] All icons from consistent icon set (Heroicons/Lucide)
-- [ ] Brand logos are correct (verified from Simple Icons)
-- [ ] Hover states don't cause layout shift
-- [ ] Use theme colors directly (bg-primary) not var() wrapper
+1. **List current screens:**
+   ```
+   mcp_stitch_list_screens(projectId: "<id>")
+   ```
 
-### Interaction
-- [ ] All clickable elements have `cursor-pointer`
-- [ ] Hover states provide clear visual feedback
-- [ ] Transitions are smooth (150-300ms)
-- [ ] Focus states visible for keyboard navigation
+2. **For edits** (modify existing screen):
+   ```
+   mcp_stitch_edit_screens(
+     projectId: "<id>",
+     selectedScreenIds: ["<screen_id>"],
+     prompt: "<what to change>"
+   )
+   ```
 
-### Light/Dark Mode
-- [ ] Light mode text has sufficient contrast (4.5:1 minimum)
-- [ ] Glass/transparent elements visible in light mode
-- [ ] Borders visible in both modes
-- [ ] Test both modes before delivery
+3. **For variants** (explore alternatives):
+   ```
+   mcp_stitch_generate_variants(
+     projectId: "<id>",
+     selectedScreenIds: ["<screen_id>"],
+     prompt: "<variation direction>",
+     variantOptions: { "numVariants": 3 }
+   )
+   ```
 
-### Layout
-- [ ] Floating elements have proper spacing from edges
-- [ ] No content hidden behind fixed navbars
-- [ ] Responsive at 375px, 768px, 1024px, 1440px
-- [ ] No horizontal scroll on mobile
+4. **Get screen details** to review:
+   ```
+   mcp_stitch_get_screen(projectId, screenId)
+   ```
 
-### Accessibility
-- [ ] All images have alt text
-- [ ] Form inputs have labels
-- [ ] Color is not the only indicator
-- [ ] `prefers-reduced-motion` respected
+---
+
+## Phase 6: Export & Integrate
+
+Once designs are approved:
+
+1. **Get final screen HTML:**
+   ```
+   mcp_stitch_get_screen → download htmlCode.downloadUrl
+   ```
+
+2. **For Flutter (Artio):**
+   - Use the Stitch output as visual reference
+   - Implement the design in Flutter widgets following project patterns
+   - Match colors, spacing, typography from DESIGN.md
+   - Follow `.gsd/ARCHITECTURE.md` for component placement
+
+3. **Update DESIGN.md** if new patterns were established.
+
+---
+
+## Quick Reference
+
+| Action | Tool |
+|--------|------|
+| List projects | `mcp_stitch_list_projects` |
+| Create project | `mcp_stitch_create_project` |
+| List screens | `mcp_stitch_list_screens` |
+| Get screen details | `mcp_stitch_get_screen` |
+| Generate new screen | `mcp_stitch_generate_screen_from_text` |
+| Edit existing screen | `mcp_stitch_edit_screens` |
+| Generate variants | `mcp_stitch_generate_variants` |
+| Get project info | `mcp_stitch_get_project` |
+
+## Tips
+
+- Always enhance prompts before generating — better input = better output
+- Include hex color codes in prompts for precise color matching
+- Use numbered page structure for complex layouts
+- Generate one screen at a time for better control
+- Create DESIGN.md early to maintain consistency across screens
+- For Artio: mobile-first (390px width), dark mode preferred

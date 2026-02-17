@@ -9,7 +9,7 @@ import 'package:go_router/go_router.dart';
 /// Main shell with branded NavigationBar — pill indicator, selected/unselected
 /// icons, sparkle badge on Create, and subtle shadow separation.
 class MainShell extends ConsumerWidget {
-  const MainShell({super.key, required this.child});
+  const MainShell({required this.child, super.key});
 
   final Widget child;
 
@@ -76,7 +76,7 @@ class MainShell extends ConsumerWidget {
 
   int _calculateSelectedIndex(BuildContext context) {
     final location = GoRouterState.of(context).matchedLocation;
-    for (int i = 0; i < _routes.length; i++) {
+    for (var i = 0; i < _routes.length; i++) {
       if (location.startsWith(_routes[i])) return i;
     }
     return 0;

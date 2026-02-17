@@ -281,9 +281,11 @@ async function updateJobStatus(
 }
 
 Deno.serve(async (req) => {
+  const allowedOrigin = Deno.env.get('CORS_ALLOWED_ORIGIN') ?? 'https://artio.app';
   const corsHeaders = {
-    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Origin": allowedOrigin,
     "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
   };
 
   if (req.method === "OPTIONS") {

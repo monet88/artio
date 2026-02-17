@@ -1,13 +1,12 @@
+import 'package:artio/core/constants/app_constants.dart';
+import 'package:artio/core/exceptions/app_exception.dart';
+import 'package:artio/core/providers/supabase_provider.dart';
+import 'package:artio/features/auth/domain/entities/user_model.dart';
+import 'package:artio/features/auth/domain/repositories/i_auth_repository.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' hide AuthException;
-
-import '../../../../core/constants/app_constants.dart';
-import '../../../../core/providers/supabase_provider.dart';
-import '../../../../core/exceptions/app_exception.dart';
-import '../../domain/entities/user_model.dart';
-import '../../domain/repositories/i_auth_repository.dart';
 
 part 'auth_repository.g.dart';
 
@@ -17,9 +16,9 @@ AuthRepository authRepository(Ref ref) {
 }
 
 class AuthRepository implements IAuthRepository {
-  final SupabaseClient _supabase;
 
   const AuthRepository(this._supabase);
+  final SupabaseClient _supabase;
 
   @override
   Stream<AuthState> get onAuthStateChange => _supabase.auth.onAuthStateChange;
@@ -148,12 +147,17 @@ class AuthRepository implements IAuthRepository {
   }
 
   Future<void> _createUserProfile(String userId, String email) async {
-    await _supabase.from('profiles').insert({
-      'id': userId,
-      'email': email,
-      'credits': AppConstants.defaultCredits,
-      'is_premium': false,
-      'created_at': DateTime.now().toIso8601String(),
-    });
+    try {
+      await _supabase.from('profiles').insert({
+        'id': userId,
+        'email': email,
+        'credits': AppConstants.defaultCredits,
+        'is_premium': false,
+        'created_at': DateTime.now().toIso8601String(),
+      });
+    } on PostgrestException catch (e) {
+      if (e.code == '23505') return; // unique_violation — profile already exists
+      rethrow;
+    }
   }
 }

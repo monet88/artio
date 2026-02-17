@@ -1,26 +1,23 @@
 import 'package:artio/core/design_system/app_animations.dart';
 import 'package:artio/core/design_system/app_dimensions.dart';
 import 'package:artio/core/design_system/app_spacing.dart';
+import 'package:artio/features/gallery/domain/entities/gallery_item.dart';
+import 'package:artio/features/gallery/presentation/widgets/failed_image_card.dart';
 import 'package:artio/theme/app_colors.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:shimmer/shimmer.dart';
 
-import '../../domain/entities/gallery_item.dart';
-import 'failed_image_card.dart';
-
 /// Masonry image grid with staggered appear animations,
 /// shimmer placeholders, and long-press scale effect.
 class MasonryImageGrid extends StatefulWidget {
-  final List<GalleryItem> items;
-  final Function(GalleryItem item, int index) onItemTap;
 
   const MasonryImageGrid({
-    super.key,
-    required this.items,
-    required this.onItemTap,
+    required this.items, required this.onItemTap, super.key,
   });
+  final List<GalleryItem> items;
+  final void Function(GalleryItem item, int index) onItemTap;
 
   @override
   State<MasonryImageGrid> createState() => _MasonryImageGridState();
@@ -71,7 +68,7 @@ class _MasonryImageGridState extends State<MasonryImageGrid>
         final item = widget.items[index];
 
         // Stagger animation
-        final maxItems = AppAnimations.maxStaggerItems;
+        const maxItems = AppAnimations.maxStaggerItems;
         final clampedItemCount = widget.items.length.clamp(0, maxItems);
         final staggerIndex = index.clamp(0, maxItems);
         final totalStaggerTime =
@@ -86,7 +83,7 @@ class _MasonryImageGridState extends State<MasonryImageGrid>
                     AppAnimations.normal.inMilliseconds) /
                 totalDuration;
 
-        final itemAnim = Tween<double>(begin: 0.0, end: 1.0).animate(
+        final itemAnim = Tween<double>(begin: 0, end: 1).animate(
           CurvedAnimation(
             parent: _staggerController,
             curve: Interval(
@@ -143,7 +140,7 @@ class _InteractiveGalleryItemState extends State<_InteractiveGalleryItem>
       vsync: this,
       duration: AppAnimations.fast,
     );
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
+    _scaleAnimation = Tween<double>(begin: 1, end: 0.95).animate(
       CurvedAnimation(
         parent: _pressController,
         curve: AppAnimations.defaultCurve,
@@ -250,7 +247,7 @@ class _InteractiveGalleryItemState extends State<_InteractiveGalleryItem>
             ),
             errorWidget: (context, url, error) => AspectRatio(
               aspectRatio: 1,
-              child: Container(
+              child: ColoredBox(
                 color: isDark
                     ? AppColors.darkSurface2
                     : AppColors.lightSurface2,

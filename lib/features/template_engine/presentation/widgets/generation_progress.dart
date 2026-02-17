@@ -1,20 +1,19 @@
 import 'package:artio/core/design_system/app_animations.dart';
+import 'package:artio/core/design_system/app_dimensions.dart';
 import 'package:artio/core/design_system/app_gradients.dart';
 import 'package:artio/core/design_system/app_spacing.dart';
-import 'package:artio/core/design_system/app_dimensions.dart';
 import 'package:artio/core/design_system/app_typography.dart';
+import 'package:artio/features/template_engine/domain/entities/generation_job_model.dart';
 import 'package:artio/shared/widgets/loading_state_widget.dart';
 import 'package:artio/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
-import '../../domain/entities/generation_job_model.dart';
-
 /// Redesigned generation progress widget with animated progress bar (gradient),
 /// pulsing glow, bounce-in checkmark, shake error, and status text transitions.
 class GenerationProgress extends StatefulWidget {
-  final GenerationJobModel job;
 
-  const GenerationProgress({super.key, required this.job});
+  const GenerationProgress({required this.job, super.key});
+  final GenerationJobModel job;
 
   @override
   State<GenerationProgress> createState() => _GenerationProgressState();
@@ -44,7 +43,7 @@ class _GenerationProgressState extends State<GenerationProgress>
       vsync: this,
       duration: AppAnimations.slow,
     );
-    _bounceScale = Tween<double>(begin: 0.0, end: 1.0).animate(
+    _bounceScale = Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(
         parent: _completionController,
         curve: AppAnimations.bounceCurve,
@@ -56,7 +55,7 @@ class _GenerationProgressState extends State<GenerationProgress>
       vsync: this,
       duration: AppAnimations.normal,
     );
-    _shakeOffset = Tween<double>(begin: 0.0, end: 1.0).animate(
+    _shakeOffset = Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(
         parent: _shakeController,
         curve: Curves.elasticIn,
@@ -200,7 +199,7 @@ class _GenerationProgressState extends State<GenerationProgress>
                   },
                   child: CircleAvatar(
                     backgroundColor: AppColors.primaryCta.withValues(alpha: 0.15),
-                    child: Icon(
+                    child: const Icon(
                       Icons.auto_awesome,
                       color: AppColors.primaryCta,
                       size: 22,
@@ -225,10 +224,10 @@ class _GenerationProgressState extends State<GenerationProgress>
                   child: Container(
                     width: 56,
                     height: 56,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       gradient: AppGradients.primaryGradient,
                       shape: BoxShape.circle,
-                      boxShadow: const [
+                      boxShadow: [
                         BoxShadow(
                           color: Color(0x403DD598),
                           blurRadius: 16,

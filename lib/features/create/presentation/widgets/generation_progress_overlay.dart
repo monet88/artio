@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:artio/core/design_system/app_spacing.dart';
 import 'package:artio/features/template_engine/domain/entities/generation_job_model.dart';
+import 'package:flutter/material.dart';
 
 class GenerationProgressOverlay extends StatelessWidget {
-  const GenerationProgressOverlay({super.key, required this.job});
+  const GenerationProgressOverlay({required this.job, super.key});
 
   final GenerationJobModel job;
 
@@ -22,7 +22,7 @@ class GenerationProgressOverlay extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Positioned.fill(
-      child: Container(
+      child: ColoredBox(
         color: theme.colorScheme.surface.withValues(alpha: 0.9),
         child: Center(
           child: Card(
@@ -40,14 +40,14 @@ class GenerationProgressOverlay extends StatelessWidget {
                     )
                   else
                     const CircularProgressIndicator(),
-                  SizedBox(height: AppSpacing.md),
+                  const SizedBox(height: AppSpacing.md),
                   Text(
                     _statusLabel(job.status),
                     style: theme.textTheme.titleMedium,
                   ),
                   if (job.status == JobStatus.failed &&
                       job.errorMessage != null) ...[
-                    SizedBox(height: AppSpacing.sm),
+                    const SizedBox(height: AppSpacing.sm),
                     Text(
                       job.errorMessage!,
                       style: theme.textTheme.bodySmall?.copyWith(

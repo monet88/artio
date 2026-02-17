@@ -1,6 +1,3 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:artio/core/constants/app_constants.dart';
 import 'package:artio/core/design_system/app_spacing.dart';
 import 'package:artio/core/utils/app_exception_mapper.dart';
@@ -13,6 +10,9 @@ import 'package:artio/features/create/presentation/widgets/generation_progress_o
 import 'package:artio/features/create/presentation/widgets/model_selector.dart';
 import 'package:artio/features/create/presentation/widgets/prompt_input_field.dart';
 import 'package:artio/features/template_engine/domain/entities/generation_job_model.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class CreateScreen extends ConsumerStatefulWidget {
   const CreateScreen({super.key});
@@ -36,7 +36,7 @@ class _CreateScreenState extends ConsumerState<CreateScreen> {
         if (failedJob?.status == JobStatus.failed &&
             previousFailedJob?.status != JobStatus.failed) {
           final failedMessage =
-              failedJob?.errorMessage?.trim().isNotEmpty == true
+              failedJob?.errorMessage?.trim().isNotEmpty ?? false
               ? failedJob!.errorMessage!.trim()
               : 'Generation failed. Please try again.';
           WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -142,39 +142,39 @@ class _CreateScreenState extends ConsumerState<CreateScreen> {
                   'Text to Image',
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
-                SizedBox(height: AppSpacing.sm),
+                const SizedBox(height: AppSpacing.sm),
                 Text(
                   'Create high quality images from your prompt',
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
-                SizedBox(height: AppSpacing.lg),
+                const SizedBox(height: AppSpacing.lg),
                 PromptInputField(
                   label: 'Prompt',
                   hintText: 'Describe the image you want...',
                   value: formState.prompt,
-                  onChanged: (value) => formNotifier.setPrompt(value),
+                  onChanged: formNotifier.setPrompt,
                   errorText: promptErrorText,
                 ),
-                SizedBox(height: AppSpacing.md),
+                const SizedBox(height: AppSpacing.md),
                 PromptInputField(
                   label: 'Negative prompt (optional)',
                   hintText: 'Describe what to avoid...',
                   value: formState.negativePrompt,
-                  onChanged: (value) => formNotifier.setNegativePrompt(value),
+                  onChanged: formNotifier.setNegativePrompt,
                 ),
-                SizedBox(height: AppSpacing.lg),
+                const SizedBox(height: AppSpacing.lg),
                 AspectRatioSelector(
                   selectedRatio: formState.aspectRatio,
                   selectedModelId: formState.modelId,
-                  onChanged: (ratio) => formNotifier.setAspectRatio(ratio),
+                  onChanged: formNotifier.setAspectRatio,
                 ),
-                SizedBox(height: AppSpacing.md),
+                const SizedBox(height: AppSpacing.md),
                 ModelSelector(
                   selectedModelId: formState.modelId,
                   isPremium: isPremium,
-                  onChanged: (modelId) => formNotifier.setModel(modelId),
+                  onChanged: formNotifier.setModel,
                 ),
-                SizedBox(height: AppSpacing.lg),
+                const SizedBox(height: AppSpacing.lg),
                 FilledButton(
                   onPressed: formState.isValid && !isGenerating
                       ? () => _handleGenerate(
@@ -184,13 +184,13 @@ class _CreateScreenState extends ConsumerState<CreateScreen> {
                       : null,
                   child: const Text('Generate'),
                 ),
-                SizedBox(height: AppSpacing.lg),
+                const SizedBox(height: AppSpacing.lg),
                 if (jobState.valueOrNull?.status == JobStatus.completed) ...[
                   Text(
                     'Generation completed. Check Gallery for results.',
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
-                  SizedBox(height: AppSpacing.sm),
+                  const SizedBox(height: AppSpacing.sm),
                   FilledButton(
                     onPressed: () => ref
                         .read(createViewModelProvider.notifier)
@@ -207,7 +207,7 @@ class _CreateScreenState extends ConsumerState<CreateScreen> {
             else
               // Show a simple loading indicator before the first stream event
               Positioned.fill(
-                child: Container(
+                child: ColoredBox(
                   color: Theme.of(context)
                       .colorScheme
                       .surface
@@ -220,7 +220,7 @@ class _CreateScreenState extends ConsumerState<CreateScreen> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             const CircularProgressIndicator(),
-                            SizedBox(height: AppSpacing.md),
+                            const SizedBox(height: AppSpacing.md),
                             Text(
                               'Starting generation...',
                               style: Theme.of(context).textTheme.titleMedium,

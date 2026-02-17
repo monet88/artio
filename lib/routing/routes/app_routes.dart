@@ -1,18 +1,17 @@
+import 'package:artio/features/auth/presentation/screens/forgot_password_screen.dart';
+import 'package:artio/features/auth/presentation/screens/login_screen.dart';
+import 'package:artio/features/auth/presentation/screens/register_screen.dart';
+import 'package:artio/features/auth/presentation/screens/splash_screen.dart';
+import 'package:artio/features/create/presentation/create_screen.dart';
+import 'package:artio/features/gallery/domain/entities/gallery_item.dart';
+import 'package:artio/features/gallery/presentation/pages/gallery_page.dart';
+import 'package:artio/features/gallery/presentation/pages/image_viewer_page.dart';
+import 'package:artio/features/settings/presentation/settings_screen.dart';
+import 'package:artio/features/template_engine/presentation/screens/home_screen.dart';
+import 'package:artio/features/template_engine/presentation/screens/template_detail_screen.dart';
+import 'package:artio/shared/widgets/main_shell.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../features/auth/presentation/screens/forgot_password_screen.dart';
-import '../../features/auth/presentation/screens/login_screen.dart';
-import '../../features/auth/presentation/screens/register_screen.dart';
-import '../../features/auth/presentation/screens/splash_screen.dart';
-import '../../features/create/presentation/create_screen.dart';
-import '../../features/gallery/domain/entities/gallery_item.dart';
-import '../../features/gallery/presentation/pages/gallery_page.dart';
-import '../../features/gallery/presentation/pages/image_viewer_page.dart';
-import '../../features/settings/presentation/settings_screen.dart';
-import '../../features/template_engine/presentation/screens/home_screen.dart';
-import '../../features/template_engine/presentation/screens/template_detail_screen.dart';
-import '../../shared/widgets/main_shell.dart';
 
 part 'app_routes.g.dart';
 

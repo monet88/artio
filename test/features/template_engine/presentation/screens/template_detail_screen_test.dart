@@ -1,14 +1,13 @@
 import 'dart:async';
 
+import 'package:artio/features/auth/presentation/state/auth_state.dart';
+import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
+import 'package:artio/features/template_engine/domain/entities/template_model.dart';
+import 'package:artio/features/template_engine/presentation/providers/template_provider.dart';
+import 'package:artio/features/template_engine/presentation/screens/template_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:artio/features/template_engine/presentation/screens/template_detail_screen.dart';
-import 'package:artio/features/template_engine/presentation/providers/template_provider.dart';
-import 'package:artio/features/template_engine/domain/entities/template_model.dart';
-import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
-import 'package:artio/features/auth/presentation/state/auth_state.dart';
 
 import '../../../../core/fixtures/template_fixtures.dart';
 import '../../../../core/fixtures/user_fixtures.dart';
@@ -27,16 +26,16 @@ void main() {
     }) {
       return ProviderScope(
         overrides: [
-          authViewModelProvider.overrideWith(() => MockAuthViewModel()),
+          authViewModelProvider.overrideWith(MockAuthViewModel.new),
           if (templateState != null)
             templateByIdProvider(templateId).overrideWith(
               (ref) => templateState.when(
-                data: (data) => Future.value(data),
+                data: Future.value,
                 loading: () {
                   final completer = Completer<TemplateModel?>();
                   return completer.future; // Never completes = stays loading
                 },
-                error: (e, s) => Future.error(e, s),
+                error: Future.error,
               ),
             ),
         ],

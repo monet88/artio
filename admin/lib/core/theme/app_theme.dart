@@ -10,7 +10,6 @@ class AppTheme {
       colorScheme: const ColorScheme.light(
         primary: AdminColors.primary,
         secondary: AdminColors.accent,
-        surface: AdminColors.lightSurface,
         error: AdminColors.error,
       ),
       scaffoldBackgroundColor: AdminColors.lightBackground,

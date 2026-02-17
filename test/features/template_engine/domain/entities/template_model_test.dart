@@ -1,6 +1,7 @@
-import 'package:flutter_test/flutter_test.dart';
-import 'package:artio/features/template_engine/domain/entities/template_model.dart';
 import 'package:artio/features/template_engine/domain/entities/input_field_model.dart';
+import 'package:artio/features/template_engine/domain/entities/template_model.dart';
+import 'package:flutter_test/flutter_test.dart';
+
 import '../../../../core/fixtures/fixtures.dart';
 
 void main() {

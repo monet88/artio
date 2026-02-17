@@ -1,8 +1,9 @@
+import 'package:artio/features/template_engine/data/repositories/template_repository.dart';
+import 'package:artio/features/template_engine/presentation/providers/template_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:artio/features/template_engine/presentation/providers/template_provider.dart';
-import 'package:artio/features/template_engine/data/repositories/template_repository.dart';
+
 import '../../../../core/fixtures/fixtures.dart';
 
 // Mock the concrete TemplateRepository class

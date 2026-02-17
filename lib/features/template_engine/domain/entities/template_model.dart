@@ -1,5 +1,6 @@
+// ignore_for_file: invalid_annotation_target — @JsonKey on Freezed constructor params is the recommended pattern
+import 'package:artio/features/template_engine/domain/entities/input_field_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'input_field_model.dart';
 
 part 'template_model.freezed.dart';
 part 'template_model.g.dart';

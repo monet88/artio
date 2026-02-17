@@ -1,13 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:artio/core/design_system/app_spacing.dart';
 import 'package:artio/core/constants/ai_models.dart';
+import 'package:artio/core/design_system/app_spacing.dart';
+import 'package:flutter/material.dart';
 
 class AspectRatioSelector extends StatelessWidget {
   const AspectRatioSelector({
-    super.key,
-    required this.selectedRatio,
-    required this.selectedModelId,
-    required this.onChanged,
+    required this.selectedRatio, required this.selectedModelId, required this.onChanged, super.key,
   });
 
   final String selectedRatio;
@@ -27,7 +24,7 @@ class AspectRatioSelector extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('Aspect Ratio', style: theme.textTheme.titleSmall),
-        SizedBox(height: AppSpacing.sm),
+        const SizedBox(height: AppSpacing.sm),
         Wrap(
           spacing: AppSpacing.sm,
           runSpacing: AppSpacing.sm,

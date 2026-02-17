@@ -1,10 +1,9 @@
 import 'dart:async';
 
+import 'package:artio/features/gallery/domain/entities/gallery_item.dart';
+import 'package:artio/features/gallery/domain/repositories/i_gallery_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-
-import 'package:artio/features/gallery/domain/repositories/i_gallery_repository.dart';
-import 'package:artio/features/gallery/domain/entities/gallery_item.dart';
 
 import '../../../../core/fixtures/gallery_item_fixtures.dart';
 
@@ -94,8 +93,9 @@ void main() {
 
         final stream = mockRepository.watchUserImages(userId: 'user-123');
 
-        controller.add(initialItems);
-        controller.add(updatedItems);
+        controller
+          ..add(initialItems)
+          ..add(updatedItems);
 
         await expectLater(
           stream,
@@ -184,21 +184,21 @@ void main() {
 
     group('toggleFavorite', () {
       test('completes without error when favoriting', () async {
-        when(() => mockRepository.toggleFavorite('item-123', true))
+        when(() => mockRepository.toggleFavorite('item-123', isFavorite: true))
             .thenAnswer((_) async {});
 
         await expectLater(
-          mockRepository.toggleFavorite('item-123', true),
+          mockRepository.toggleFavorite('item-123', isFavorite: true),
           completes,
         );
       });
 
       test('completes without error when unfavoriting', () async {
-        when(() => mockRepository.toggleFavorite('item-123', false))
+        when(() => mockRepository.toggleFavorite('item-123', isFavorite: false))
             .thenAnswer((_) async {});
 
         await expectLater(
-          mockRepository.toggleFavorite('item-123', false),
+          mockRepository.toggleFavorite('item-123', isFavorite: false),
           completes,
         );
       });

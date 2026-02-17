@@ -1,13 +1,12 @@
 import 'package:artio/core/design_system/app_animations.dart';
 import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
+import 'package:artio/routing/routes/app_routes.dart';
 import 'package:artio/shared/widgets/error_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-import 'routes/app_routes.dart';
 
 part 'app_router.g.dart';
 
@@ -37,7 +36,6 @@ CustomTransitionPage<T> fadeTransitionPage<T>({
   return CustomTransitionPage<T>(
     key: state.pageKey,
     child: child,
-    transitionDuration: AppAnimations.normal,
     reverseTransitionDuration: AppAnimations.fast,
     transitionsBuilder: AppAnimations.fadeTransitionBuilder,
   );
@@ -51,8 +49,6 @@ CustomTransitionPage<T> slideUpTransitionPage<T>({
   return CustomTransitionPage<T>(
     key: state.pageKey,
     child: child,
-    transitionDuration: AppAnimations.normal,
-    reverseTransitionDuration: AppAnimations.normal,
     transitionsBuilder: AppAnimations.slideUpTransitionBuilder,
   );
 }
@@ -65,7 +61,6 @@ CustomTransitionPage<T> fadeThroughTransitionPage<T>({
   return CustomTransitionPage<T>(
     key: state.pageKey,
     child: child,
-    transitionDuration: AppAnimations.normal,
     reverseTransitionDuration: AppAnimations.fast,
     transitionsBuilder: AppAnimations.fadeThroughTransitionBuilder,
   );

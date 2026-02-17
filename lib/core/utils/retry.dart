@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import '../exceptions/app_exception.dart';
+import 'package:artio/core/exceptions/app_exception.dart';
 
 /// Retries [action] with exponential backoff on transient errors.
 ///
@@ -26,7 +26,7 @@ Future<T> retry<T>(
 }
 
 bool _isTransient(Object error) {
-  if (error is SocketException || error is TimeoutException) return true;
+  if (error is SocketException || error is TimeoutException || error is HandshakeException) return true;
   if (error is AppException) {
     return error.mapOrNull(
           network: (e) {

@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:artio/core/config/sentry_config.dart';
+import 'package:artio/features/create/presentation/view_models/create_view_model.dart' show CreateViewModel;
 import 'package:artio/features/template_engine/domain/entities/generation_job_model.dart';
+import 'package:artio/features/template_engine/presentation/view_models/generation_view_model.dart' show GenerationViewModel;
 
 /// Manages generation job subscriptions, timeouts, and error capture.
 ///

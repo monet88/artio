@@ -4,6 +4,8 @@ import 'package:artio/core/design_system/app_animations.dart';
 import 'package:artio/core/design_system/app_spacing.dart';
 import 'package:artio/core/design_system/app_typography.dart';
 import 'package:artio/core/exceptions/app_exception.dart';
+import 'package:artio/shared/widgets/animated_retry_button.dart';
+import 'package:artio/shared/widgets/error_illustration.dart';
 import 'package:artio/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
@@ -18,21 +20,14 @@ enum ErrorCategory {
 /// friendly messaging, and animated retry button.
 class ErrorStateWidget extends StatefulWidget {
   const ErrorStateWidget({
-    super.key,
-    required this.message,
+    required this.message, super.key,
     this.onRetry,
     this.category = ErrorCategory.unknown,
   });
 
-  final String message;
-  final VoidCallback? onRetry;
-  final ErrorCategory category;
-
   /// Factory to auto-detect error category from exception
   factory ErrorStateWidget.fromError({
-    Key? key,
-    required Object error,
-    required String message,
+    required Object error, required String message, Key? key,
     VoidCallback? onRetry,
   }) {
     return ErrorStateWidget(
@@ -42,6 +37,10 @@ class ErrorStateWidget extends StatefulWidget {
       category: _categorize(error),
     );
   }
+
+  final String message;
+  final VoidCallback? onRetry;
+  final ErrorCategory category;
 
   static ErrorCategory _categorize(Object error) {
     // Structural matching for AppException types
@@ -98,7 +97,7 @@ class _ErrorStateWidgetState extends State<ErrorStateWidget>
       parent: _controller,
       curve: AppAnimations.defaultCurve,
     );
-    _scaleAnimation = Tween<double>(begin: 0.9, end: 1.0).animate(
+    _scaleAnimation = Tween<double>(begin: 0.9, end: 1).animate(
       CurvedAnimation(
         parent: _controller,
         curve: AppAnimations.defaultCurve,
@@ -128,7 +127,7 @@ class _ErrorStateWidgetState extends State<ErrorStateWidget>
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 // ── Illustration ──────────────────────────────────
-                _ErrorIllustration(
+                ErrorIllustration(
                   icon: config.icon,
                   color: config.color,
                   isDark: isDark,
@@ -160,7 +159,7 @@ class _ErrorStateWidgetState extends State<ErrorStateWidget>
 
                 // ── Retry Button ──────────────────────────────────
                 if (widget.onRetry != null)
-                  _AnimatedRetryButton(
+                  AnimatedRetryButton(
                     onPressed: widget.onRetry!,
                     color: config.color,
                   ),
@@ -181,10 +180,6 @@ class _ErrorConfig {
     required this.color,
     required this.title,
   });
-
-  final IconData icon;
-  final Color color;
-  final String title;
 
   factory _ErrorConfig.from(ErrorCategory category) {
     switch (category) {
@@ -208,142 +203,8 @@ class _ErrorConfig {
         );
     }
   }
-}
-
-// ── Error Illustration ────────────────────────────────────────────────────
-
-class _ErrorIllustration extends StatelessWidget {
-  const _ErrorIllustration({
-    required this.icon,
-    required this.color,
-    required this.isDark,
-  });
 
   final IconData icon;
   final Color color;
-  final bool isDark;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 120,
-      height: 120,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          // Glow ring
-          Container(
-            width: 120,
-            height: 120,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: RadialGradient(
-                colors: [
-                  color.withValues(alpha: 0.12),
-                  color.withValues(alpha: 0.0),
-                ],
-              ),
-            ),
-          ),
-
-          // Main circle
-          Container(
-            width: 80,
-            height: 80,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: color.withValues(alpha: 0.12),
-              border: isDark
-                  ? Border.all(color: color.withValues(alpha: 0.2), width: 0.5)
-                  : null,
-            ),
-            child: Icon(icon, size: 36, color: color),
-          ),
-
-          // Accent dot
-          Positioned(
-            top: 12,
-            right: 16,
-            child: Container(
-              width: 8,
-              height: 8,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: color.withValues(alpha: 0.4),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ── Animated Retry Button ─────────────────────────────────────────────────
-
-class _AnimatedRetryButton extends StatefulWidget {
-  const _AnimatedRetryButton({
-    required this.onPressed,
-    required this.color,
-  });
-
-  final VoidCallback onPressed;
-  final Color color;
-
-  @override
-  State<_AnimatedRetryButton> createState() => _AnimatedRetryButtonState();
-}
-
-class _AnimatedRetryButtonState extends State<_AnimatedRetryButton>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _spinController;
-  bool _isRetrying = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _spinController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 800),
-    );
-  }
-
-  @override
-  void dispose() {
-    _spinController.dispose();
-    super.dispose();
-  }
-
-  void _handleRetry() {
-    if (_isRetrying) return;
-    setState(() => _isRetrying = true);
-
-    // Spin the icon once then trigger retry
-    _spinController.forward(from: 0).then((_) {
-      if (mounted) {
-        setState(() => _isRetrying = false);
-        widget.onPressed();
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return OutlinedButton.icon(
-      onPressed: _handleRetry,
-      icon: RotationTransition(
-        turns: _spinController,
-        child: const Icon(Icons.refresh_rounded, size: 20),
-      ),
-      label: Text(_isRetrying ? 'Retrying...' : 'Try Again'),
-      style: OutlinedButton.styleFrom(
-        foregroundColor: widget.color,
-        side: BorderSide(color: widget.color.withValues(alpha: 0.5), width: 1.5),
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-      ),
-    );
-  }
+  final String title;
 }

@@ -1,7 +1,8 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:artio/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../../../../core/helpers/helpers.dart';
 
 void main() {

@@ -1,7 +1,6 @@
-import 'package:flutter/material.dart';
-
 import 'package:artio/core/design_system/app_gradients.dart';
 import 'package:artio/theme/app_colors.dart';
+import 'package:flutter/material.dart';
 
 /// Artio Design System — Typography Extensions
 ///
@@ -67,7 +66,7 @@ abstract class AppTypography {
     fontSize: 10,
     fontWeight: FontWeight.w700,
     letterSpacing: 1.2,
-    height: 1.0,
+    height: 1,
   );
 
   /// Badge text — medium size for larger badges
@@ -75,7 +74,7 @@ abstract class AppTypography {
     fontSize: 12,
     fontWeight: FontWeight.w600,
     letterSpacing: 0.8,
-    height: 1.0,
+    height: 1,
   );
 
   /// Category tag — small chips on cards
@@ -83,7 +82,7 @@ abstract class AppTypography {
     fontSize: 11,
     fontWeight: FontWeight.w500,
     letterSpacing: 0.3,
-    height: 1.0,
+    height: 1,
   );
 
   // ── Caption Extensions ───────────────────────────────────────────────
@@ -115,7 +114,7 @@ abstract class AppTypography {
     fontSize: 16,
     fontWeight: FontWeight.w600,
     letterSpacing: 0.5,
-    height: 1.0,
+    height: 1,
   );
 
   /// Small button text
@@ -123,7 +122,7 @@ abstract class AppTypography {
     fontSize: 13,
     fontWeight: FontWeight.w600,
     letterSpacing: 0.3,
-    height: 1.0,
+    height: 1,
   );
 }
 

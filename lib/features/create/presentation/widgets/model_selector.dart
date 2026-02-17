@@ -1,11 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:artio/shared/widgets/model_selector.dart' as shared;
+import 'package:flutter/material.dart';
 
 class ModelSelector extends StatelessWidget {
   const ModelSelector({
-    super.key,
-    required this.selectedModelId,
-    required this.onChanged,
+    required this.selectedModelId, required this.onChanged, super.key,
     this.isPremium = false,
   });
 

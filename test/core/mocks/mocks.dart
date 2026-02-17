@@ -5,5 +5,5 @@
 
 library;
 
-export 'mock_supabase_client.dart';
 export 'mock_repositories.dart';
+export 'mock_supabase_client.dart';

@@ -1,23 +1,23 @@
 import 'dart:async';
 
+import 'package:artio/core/config/sentry_config.dart';
+import 'package:artio/core/exceptions/app_exception.dart';
+import 'package:artio/core/state/user_scoped_providers.dart';
+import 'package:artio/core/utils/app_exception_mapper.dart';
+import 'package:artio/features/auth/data/repositories/auth_repository.dart';
+import 'package:artio/features/auth/domain/entities/user_model.dart';
+import 'package:artio/features/auth/presentation/state/auth_state.dart';
+import 'package:artio/routing/routes/app_routes.dart';
 import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-import '../../../../core/config/sentry_config.dart';
-import '../../../../core/exceptions/app_exception.dart';
-import '../../../../core/state/user_scoped_providers.dart';
-import '../../../../core/utils/app_exception_mapper.dart';
-import '../../../../routing/routes/app_routes.dart';
-import '../../domain/entities/user_model.dart';
-import '../../data/repositories/auth_repository.dart';
-import '../state/auth_state.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' as supabase show AuthState;
 
 part 'auth_view_model.g.dart';
 
 @riverpod
 class AuthViewModel extends _$AuthViewModel implements Listenable {
   VoidCallback? _routerListener;
-  StreamSubscription? _authSubscription;
+  StreamSubscription<supabase.AuthState>? _authSubscription;
 
   @override
   AuthState build() {
@@ -57,7 +57,7 @@ class AuthViewModel extends _$AuthViewModel implements Listenable {
       } else {
         state = const AuthState.unauthenticated();
       }
-    } catch (e, st) {
+    } on Object catch (e, st) {
       await SentryConfig.captureException(e, stackTrace: st);
       state = const AuthState.unauthenticated();
     }
@@ -70,53 +70,60 @@ class AuthViewModel extends _$AuthViewModel implements Listenable {
       final user = await authRepo.getCurrentUserWithProfile();
       if (user != null) {
         state = AuthState.authenticated(user);
-        _notifyRouter();
+      } else {
+        state = const AuthState.unauthenticated();
       }
-    } catch (e) {
+    } on Exception catch (e) {
       state = AuthState.error(AppExceptionMapper.toUserMessage(e));
+    } finally {
+      _notifyRouter();
     }
   }
 
   Future<void> signInWithEmail(String email, String password) async {
+    if (state is AuthStateAuthenticating) return;
     state = const AuthState.authenticating();
     try {
       final authRepo = ref.read(authRepositoryProvider);
       final user = await authRepo.signInWithEmail(email, password);
       state = AuthState.authenticated(user);
       _notifyRouter();
-    } catch (e) {
+    } on Exception catch (e) {
       state = AuthState.error(_parseErrorMessage(e));
     }
   }
 
   Future<void> signUpWithEmail(String email, String password) async {
+    if (state is AuthStateAuthenticating) return;
     state = const AuthState.authenticating();
     try {
       final authRepo = ref.read(authRepositoryProvider);
       final user = await authRepo.signUpWithEmail(email, password);
       state = AuthState.authenticated(user);
       _notifyRouter();
-    } catch (e) {
+    } on Exception catch (e) {
       state = AuthState.error(_parseErrorMessage(e));
     }
   }
 
   Future<void> signInWithGoogle() async {
+    if (state is AuthStateAuthenticating) return;
     state = const AuthState.authenticating();
     try {
       final authRepo = ref.read(authRepositoryProvider);
       await authRepo.signInWithGoogle();
-    } catch (e) {
+    } on Exception catch (e) {
       state = AuthState.error(_parseErrorMessage(e));
     }
   }
 
   Future<void> signInWithApple() async {
+    if (state is AuthStateAuthenticating) return;
     state = const AuthState.authenticating();
     try {
       final authRepo = ref.read(authRepositoryProvider);
       await authRepo.signInWithApple();
-    } catch (e) {
+    } on Exception catch (e) {
       state = AuthState.error(_parseErrorMessage(e));
     }
   }
@@ -125,7 +132,7 @@ class AuthViewModel extends _$AuthViewModel implements Listenable {
     try {
       final authRepo = ref.read(authRepositoryProvider);
       await authRepo.signOut();
-    } catch (e, st) {
+    } on Object catch (e, st) {
       // Log error but do not rethrow — local state must be cleared
       // regardless of API success to avoid stuck authenticated state.
       await SentryConfig.captureException(e, stackTrace: st);
@@ -144,7 +151,7 @@ class AuthViewModel extends _$AuthViewModel implements Listenable {
     try {
       final authRepo = ref.read(authRepositoryProvider);
       await authRepo.resetPassword(trimmed);
-    } catch (e) {
+    } on Exception catch (e) {
       if (e is AppException) rethrow;
       throw const AppException.auth(message: 'Failed to send reset email');
     }

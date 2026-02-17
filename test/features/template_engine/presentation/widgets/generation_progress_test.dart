@@ -1,7 +1,7 @@
+import 'package:artio/features/template_engine/domain/entities/generation_job_model.dart';
+import 'package:artio/features/template_engine/presentation/widgets/generation_progress.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:artio/features/template_engine/presentation/widgets/generation_progress.dart';
-import 'package:artio/features/template_engine/domain/entities/generation_job_model.dart';
 
 import '../../../../core/fixtures/generation_job_fixtures.dart';
 

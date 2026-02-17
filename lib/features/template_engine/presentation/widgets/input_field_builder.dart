@@ -1,15 +1,13 @@
+import 'package:artio/features/template_engine/domain/entities/input_field_model.dart';
 import 'package:flutter/material.dart';
-import '../../domain/entities/input_field_model.dart';
 
 class InputFieldBuilder extends StatefulWidget {
-  final InputFieldModel field;
-  final ValueChanged<String> onChanged;
 
   const InputFieldBuilder({
-    super.key,
-    required this.field,
-    required this.onChanged,
+    required this.field, required this.onChanged, super.key,
   });
+  final InputFieldModel field;
+  final ValueChanged<String> onChanged;
 
   @override
   State<InputFieldBuilder> createState() => _InputFieldBuilderState();

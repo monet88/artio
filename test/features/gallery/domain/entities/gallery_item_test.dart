@@ -1,5 +1,6 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:artio/features/gallery/domain/entities/gallery_item.dart';
+import 'package:flutter_test/flutter_test.dart';
+
 import '../../../../core/fixtures/fixtures.dart';
 
 void main() {

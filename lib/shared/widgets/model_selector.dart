@@ -1,21 +1,18 @@
-import 'package:flutter/material.dart';
+import 'package:artio/core/constants/ai_models.dart';
 import 'package:artio/core/design_system/app_spacing.dart';
-import '../../core/constants/ai_models.dart';
+import 'package:flutter/material.dart';
 
 /// Dropdown selector for AI models with premium badges and credit costs
-class ModelSelector extends StatefulWidget {
+class ModelSelector extends StatefulWidget { // text-to-image, image-to-image, image-editing
+
+  const ModelSelector({
+    required this.selectedModelId, required this.isPremium, required this.onChanged, super.key,
+    this.filterByType,
+  });
   final String selectedModelId;
   final bool isPremium;
   final ValueChanged<String> onChanged;
-  final String? filterByType; // text-to-image, image-to-image, image-editing
-
-  const ModelSelector({
-    super.key,
-    required this.selectedModelId,
-    required this.isPremium,
-    required this.onChanged,
-    this.filterByType,
-  });
+  final String? filterByType;
 
   @override
   State<ModelSelector> createState() => _ModelSelectorState();
@@ -70,9 +67,9 @@ class _ModelSelectorState extends State<ModelSelector> {
             ),
           ],
         ),
-        SizedBox(height: AppSpacing.sm),
+        const SizedBox(height: AppSpacing.sm),
         DropdownButtonFormField<String>(
-          value: _effectiveValue,
+          initialValue: _effectiveValue,
           isExpanded: true,
           decoration: const InputDecoration(
             border: OutlineInputBorder(),
@@ -83,7 +80,7 @@ class _ModelSelectorState extends State<ModelSelector> {
               return Row(
                 children: [
                   Expanded(child: Text(model.displayName)),
-                  SizedBox(width: AppSpacing.sm),
+                  const SizedBox(width: AppSpacing.sm),
                   const Text('\u{1F48E}', style: TextStyle(fontSize: 12)), // Diamond
                   const SizedBox(width: 2),
                   Text(
@@ -112,7 +109,7 @@ class _ModelSelectorState extends State<ModelSelector> {
                             : null,
                       ),
                     ),
-                    SizedBox(width: AppSpacing.sm),
+                    const SizedBox(width: AppSpacing.sm),
                     const Text('\u{1F48E}', style: TextStyle(fontSize: 12)), // Diamond
                     const SizedBox(width: 2),
                     Text(
@@ -120,7 +117,7 @@ class _ModelSelectorState extends State<ModelSelector> {
                       style: theme.textTheme.bodySmall,
                     ),
                     if (model.isNew) ...[
-                      SizedBox(width: AppSpacing.sm),
+                      const SizedBox(width: AppSpacing.sm),
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
@@ -137,11 +134,11 @@ class _ModelSelectorState extends State<ModelSelector> {
                       ),
                     ],
                     if (model.isPremium) ...[
-                      SizedBox(width: AppSpacing.sm),
+                      const SizedBox(width: AppSpacing.sm),
                       const Text('\u{1F451}', style: TextStyle(fontSize: 12)), // Crown
                     ],
                     if (widget.selectedModelId == model.id) ...[
-                      SizedBox(width: AppSpacing.sm),
+                      const SizedBox(width: AppSpacing.sm),
                       Icon(
                         Icons.check,
                         size: 16,

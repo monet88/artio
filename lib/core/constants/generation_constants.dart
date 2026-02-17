@@ -1,4 +1,5 @@
 /// Constants related to image generation.
+library;
 
 /// Template ID sentinel for non-template (free-text) generations.
 ///

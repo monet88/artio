@@ -1,11 +1,11 @@
+import 'package:artio/core/exceptions/app_exception.dart';
+import 'package:artio/core/providers/supabase_provider.dart';
+import 'package:artio/core/utils/retry.dart';
+import 'package:artio/features/template_engine/domain/entities/template_model.dart';
+import 'package:artio/features/template_engine/domain/repositories/i_template_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../../../../core/providers/supabase_provider.dart';
-import '../../../../core/exceptions/app_exception.dart';
-import '../../../../core/utils/retry.dart';
-import '../../domain/entities/template_model.dart';
-import '../../domain/repositories/i_template_repository.dart';
 
 part 'template_repository.g.dart';
 
@@ -15,9 +15,9 @@ TemplateRepository templateRepository(Ref ref) {
 }
 
 class TemplateRepository implements ITemplateRepository {
-  final SupabaseClient _supabase;
 
   const TemplateRepository(this._supabase);
+  final SupabaseClient _supabase;
 
   @override
   Future<List<TemplateModel>> fetchTemplates() async {
@@ -29,9 +29,9 @@ class TemplateRepository implements ITemplateRepository {
             .eq('is_active', true)
             .order('order', ascending: true);
 
-        return response.map((json) => TemplateModel.fromJson(json)).toList();
+        return response.map(TemplateModel.fromJson).toList();
       } on PostgrestException catch (e) {
-        throw AppException.network(message: e.message, statusCode: null);
+        throw AppException.network(message: e.message);
       } catch (e) {
         throw AppException.unknown(message: e.toString(), originalError: e);
       }
@@ -49,7 +49,7 @@ class TemplateRepository implements ITemplateRepository {
 
       return response != null ? TemplateModel.fromJson(response) : null;
     } on PostgrestException catch (e) {
-      throw AppException.network(message: e.message, statusCode: null);
+      throw AppException.network(message: e.message);
     } catch (e) {
       throw AppException.unknown(message: e.toString(), originalError: e);
     }
@@ -65,9 +65,9 @@ class TemplateRepository implements ITemplateRepository {
           .eq('is_active', true)
           .order('order', ascending: true);
 
-      return response.map((json) => TemplateModel.fromJson(json)).toList();
+      return response.map(TemplateModel.fromJson).toList();
     } on PostgrestException catch (e) {
-      throw AppException.network(message: e.message, statusCode: null);
+      throw AppException.network(message: e.message);
     } catch (e) {
       throw AppException.unknown(message: e.toString(), originalError: e);
     }
@@ -79,6 +79,6 @@ class TemplateRepository implements ITemplateRepository {
         .from('templates')
         .stream(primaryKey: ['id'])
         .order('order', ascending: true)
-        .map((data) => data.map((e) => TemplateModel.fromJson(e)).toList());
+        .map((data) => data.map(TemplateModel.fromJson).toList());
   }
 }

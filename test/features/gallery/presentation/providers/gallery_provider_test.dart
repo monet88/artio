@@ -1,10 +1,11 @@
+import 'package:artio/features/auth/presentation/state/auth_state.dart';
+import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
+import 'package:artio/features/gallery/data/repositories/gallery_repository.dart';
+import 'package:artio/features/gallery/domain/entities/gallery_item.dart';
+import 'package:artio/features/gallery/presentation/providers/gallery_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:artio/features/gallery/presentation/providers/gallery_provider.dart';
-import 'package:artio/features/gallery/data/repositories/gallery_repository.dart';
-import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
-import 'package:artio/features/auth/presentation/state/auth_state.dart';
 
 // Mock the concrete GalleryRepository class
 class MockGalleryRepository extends Mock implements GalleryRepository {}
@@ -62,13 +63,13 @@ void main() {
       });
 
       test('toggleFavorite calls repository with correct params', () async {
-        when(() => mockRepository.toggleFavorite('item-123', true))
+        when(() => mockRepository.toggleFavorite('item-123', isFavorite: true))
             .thenAnswer((_) async {});
 
         container = createContainer();
-        await container.read(galleryActionsNotifierProvider.notifier).toggleFavorite('item-123', true);
+        await container.read(galleryActionsNotifierProvider.notifier).toggleFavorite('item-123', isFavorite: true);
 
-        verify(() => mockRepository.toggleFavorite('item-123', true)).called(1);
+        verify(() => mockRepository.toggleFavorite('item-123', isFavorite: true)).called(1);
       });
 
       test('softDeleteImage handles error gracefully', () async {
@@ -88,14 +89,14 @@ void main() {
         container = ProviderContainer(
           overrides: [
             galleryRepositoryProvider.overrideWithValue(mockRepository),
-            authViewModelProvider.overrideWith(() => _MockAuthNotifier()),
+            authViewModelProvider.overrideWith(_MockAuthNotifier.new),
           ],
         );
 
         // The stream should return empty when no authenticated user
         final stream = container.read(galleryStreamProvider);
         // Stream provider returns AsyncValue
-        expect(stream, isA<AsyncValue>());
+        expect(stream, isA<AsyncValue<List<GalleryItem>>>());
       });
     });
   });

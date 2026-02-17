@@ -1,16 +1,14 @@
-import 'package:flutter/material.dart';
 import 'package:artio/core/design_system/app_spacing.dart';
+import 'package:flutter/material.dart';
 
 /// Dropdown for selecting image count (1-4)
 class ImageCountDropdown extends StatelessWidget {
-  final int value;
-  final ValueChanged<int> onChanged;
 
   const ImageCountDropdown({
-    super.key,
-    required this.value,
-    required this.onChanged,
+    required this.value, required this.onChanged, super.key,
   });
+  final int value;
+  final ValueChanged<int> onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +18,7 @@ class ImageCountDropdown extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('Image Count', style: theme.textTheme.titleSmall),
-        SizedBox(height: AppSpacing.sm),
+        const SizedBox(height: AppSpacing.sm),
         DropdownButtonFormField<int>(
           initialValue: value,
           decoration: const InputDecoration(

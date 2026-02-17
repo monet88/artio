@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import '../entities/gallery_item.dart';
+import 'package:artio/features/gallery/domain/entities/gallery_item.dart';
 
 abstract class IGalleryRepository {
   /// Fetch gallery items with pagination
@@ -32,5 +32,5 @@ abstract class IGalleryRepository {
   Future<File> getImageFile(String imageUrl);
 
   /// Toggle favorite status
-  Future<void> toggleFavorite(String itemId, bool isFavorite);
+  Future<void> toggleFavorite(String itemId, {required bool isFavorite});
 }

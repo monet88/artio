@@ -1,6 +1,6 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:artio/core/exceptions/app_exception.dart';
 import 'package:artio/core/utils/app_exception_mapper.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('AppExceptionMapper', () {
@@ -69,7 +69,7 @@ void main() {
 
         final message = AppExceptionMapper.toUserMessage(error);
 
-        expect(message, 'You don\'t have permission for this action.');
+        expect(message, "You don't have permission for this action.");
       });
 
       test('maps 429 to "rate limit" message', () {

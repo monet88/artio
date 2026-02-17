@@ -1,11 +1,11 @@
 import 'dart:async';
 
+import 'package:artio/features/template_engine/domain/entities/template_model.dart';
+import 'package:artio/features/template_engine/presentation/providers/template_provider.dart';
+import 'package:artio/features/template_engine/presentation/widgets/template_grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:artio/features/template_engine/presentation/widgets/template_grid.dart';
-import 'package:artio/features/template_engine/presentation/providers/template_provider.dart';
-import 'package:artio/features/template_engine/domain/entities/template_model.dart';
 
 import '../../../../core/fixtures/template_fixtures.dart';
 

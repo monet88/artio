@@ -1,13 +1,14 @@
 import 'dart:async';
 
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
-import 'package:artio/features/template_engine/presentation/view_models/generation_view_model.dart';
-import 'package:artio/features/template_engine/presentation/providers/generation_policy_provider.dart';
 import 'package:artio/features/template_engine/data/repositories/generation_repository.dart';
 import 'package:artio/features/template_engine/domain/entities/generation_job_model.dart';
 import 'package:artio/features/template_engine/domain/policies/generation_policy.dart';
+import 'package:artio/features/template_engine/presentation/providers/generation_policy_provider.dart';
+import 'package:artio/features/template_engine/presentation/view_models/generation_view_model.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
+
 import '../../../../core/fixtures/fixtures.dart';
 
 // Mock classes
@@ -81,7 +82,7 @@ void main() {
           userId: 'user-123',
         ));
 
-        await Future.delayed(const Duration(milliseconds: 10));
+        await Future<void>.delayed(const Duration(milliseconds: 10));
 
         verify(() => mockPolicy.canGenerate(
           userId: 'user-123',
@@ -115,7 +116,7 @@ void main() {
           imageCount: 2,
         ));
 
-        await Future.delayed(const Duration(milliseconds: 10));
+        await Future<void>.delayed(const Duration(milliseconds: 10));
 
         verify(() => mockRepository.startGeneration(
           templateId: 'template-1',
@@ -197,11 +198,11 @@ void main() {
           userId: 'user-123',
         ));
 
-        await Future.delayed(Duration.zero);
+        await Future<void>.delayed(Duration.zero);
         
         // Emit a job
         jobStreamController.add(GenerationJobFixtures.processing());
-        await Future.delayed(Duration.zero);
+        await Future<void>.delayed(Duration.zero);
 
         // Reset
         container.read(generationViewModelProvider.notifier).reset();
