@@ -15,8 +15,11 @@ def main() -> int:
     parser.add_argument("--path", required=True, help="Repo-relative path to write, e.g. artifacts/superpowers/brainstorm.md")
     args = parser.parse_args()
 
-    repo_root = find_repo_root(Path.cwd())
+    repo_root = find_repo_root(Path.cwd()).resolve()
     out_path = (repo_root / args.path).resolve()
+    if not str(out_path).startswith(str(repo_root) + "/") and out_path != repo_root:
+        print(f"Error: resolved path {out_path} is outside repo root {repo_root}", file=sys.stderr)
+        return 1
     out_path.parent.mkdir(parents=True, exist_ok=True)
 
     content = sys.stdin.read()

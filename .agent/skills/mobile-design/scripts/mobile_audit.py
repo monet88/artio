@@ -90,7 +90,7 @@ class MobileAuditor:
 
         # Detect framework
         is_react_native = bool(re.search(r'react-native|@react-navigation|React\.Native', content))
-        is_flutter = bool(re.search(r'import \'package:flutter|MaterialApp|Widget\.build', content))
+        is_flutter = bool(re.search(r"import\s+['\"]package:flutter|MaterialApp|Widget\.build", content))
 
         if not (is_react_native or is_flutter):
             return  # Skip non-mobile files
@@ -99,7 +99,7 @@ class MobileAuditor:
 
         # 1.1 Touch Target Size Check
         # Look for small touch targets
-        small_sizes = re.findall(r'(?:width|height|size):\s*([0-3]\d)', content)
+        small_sizes = re.findall(r'(?:width|height|size):\s*(\d{1,2})(?!\d)', content)
         for size in small_sizes:
             if int(size) < 44:
                 self.issues.append(f"[Touch Target] {filename}: Touch target size {size}px < 44px minimum (iOS: 44pt, Android: 48dp)")

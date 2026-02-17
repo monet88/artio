@@ -75,11 +75,13 @@ def check_accessibility(file_path: Path) -> list:
             if 'skip' not in content.lower() and '#main' not in content.lower():
                 issues.append("Consider adding skip-to-main-content link")
         
-        # Check for click handlers without keyboard support
-        onclick_count = content.lower().count('onclick=')
-        onkeydown_count = content.lower().count('onkeydown=') + content.lower().count('onkeyup=')
-        if onclick_count > 0 and onkeydown_count == 0:
-            issues.append("onClick without keyboard handler (onKeyDown)")
+        # Check for click handlers without keyboard support (per-element)
+        onclick_elements = re.finditer(r'<[^>]*onclick=[^>]*>', content, re.IGNORECASE)
+        for match in onclick_elements:
+            tag = match.group(0).lower()
+            if 'onkeydown=' not in tag and 'onkeyup=' not in tag and 'onkeypress=' not in tag:
+                issues.append("onClick without keyboard handler (onKeyDown)")
+                break
         
         # Check for tabIndex misuse
         if 'tabindex=' in content.lower():
