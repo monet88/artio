@@ -162,6 +162,8 @@ class AuthViewModel extends _$AuthViewModel implements Listenable {
         _ => null,
       };
 
+  bool get isLoggedIn => state is AuthStateAuthenticated;
+
   String? redirect({required String currentPath}) {
     final isAuthenticating = switch (state) {
       AuthStateInitial() || AuthStateAuthenticating() => true,
@@ -169,27 +171,21 @@ class AuthViewModel extends _$AuthViewModel implements Listenable {
     };
     if (isAuthenticating) return null;
 
-    final isLoggedIn = switch (state) {
-      AuthStateAuthenticated() => true,
-      _ => false,
-    };
-
     final isAuthRoute = currentPath == const LoginRoute().location ||
         currentPath == const RegisterRoute().location ||
         currentPath.startsWith('/forgot-password');
 
-    if (!isLoggedIn && !isAuthRoute && currentPath != const SplashRoute().location) {
-      return const LoginRoute().location;
+    // Splash always goes to Home
+    if (currentPath == const SplashRoute().location) {
+      return const HomeRoute().location;
     }
 
+    // Logged-in users shouldn't see auth screens
     if (isLoggedIn && isAuthRoute) {
       return const HomeRoute().location;
     }
 
-    if (currentPath == const SplashRoute().location) {
-      return isLoggedIn ? const HomeRoute().location : const LoginRoute().location;
-    }
-
+    // No forced login redirect — allow unauthenticated users everywhere
     return null;
   }
 
