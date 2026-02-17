@@ -167,7 +167,6 @@ repomix-output.txt
 repomix-output.md
 
 # Gemini CLI settings (contains user-specific config)
-.gemini/
 
 # Node.js (tooling only, not a Node project)
 node_modules/
@@ -177,3 +176,5 @@ package-lock.json
 # Tracked: project rules, skills, and config for AI tools
 !.serena/
 !.claude/
+.ck/
+artifacts/

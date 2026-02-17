@@ -1,10 +1,11 @@
 import 'dart:convert';
+import 'package:artio_admin/core/constants/app_constants.dart';
+import 'package:artio_admin/core/theme/admin_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:artio_admin/core/constants/app_constants.dart';
 
 class TemplateEditorPage extends ConsumerStatefulWidget {
   final String? templateId;
@@ -15,10 +16,12 @@ class TemplateEditorPage extends ConsumerStatefulWidget {
   ConsumerState<TemplateEditorPage> createState() => _TemplateEditorPageState();
 }
 
-class _TemplateEditorPageState extends ConsumerState<TemplateEditorPage> {
+class _TemplateEditorPageState extends ConsumerState<TemplateEditorPage>
+    with SingleTickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
   bool _isInit = true;
+  late final TabController _tabController;
 
   // Controllers
   final _nameController = TextEditingController();
@@ -35,13 +38,13 @@ class _TemplateEditorPageState extends ConsumerState<TemplateEditorPage> {
   bool _isPremium = false;
   bool _isActive = true;
 
-  static const _aspectRatios = [
-    '1:1',
-    '16:9',
-    '9:16',
-    '4:3',
-    '3:4',
-  ];
+  static const _aspectRatios = ['1:1', '16:9', '9:16', '4:3', '3:4'];
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 3, vsync: this);
+  }
 
   @override
   void didChangeDependencies() {
@@ -54,7 +57,6 @@ class _TemplateEditorPageState extends ConsumerState<TemplateEditorPage> {
 
   Future<void> _loadData() async {
     if (widget.templateId == null) {
-      // Default JSON for new template
       _inputFieldsController.text = const JsonEncoder.withIndent('  ').convert([
         {
           "id": "style",
@@ -80,15 +82,10 @@ class _TemplateEditorPageState extends ConsumerState<TemplateEditorPage> {
       _descriptionController.text = data['description'] ?? '';
       _promptTemplateController.text = data['prompt_template'] ?? '';
       _thumbnailUrlController.text = data['thumbnail_url'] ?? '';
-      
-      // Set dropdowns
+
       final category = data['category'] as String?;
-      if (category != null && AppConstants.templateCategories.contains(category)) {
-        _selectedCategory = category;
-      } else {
-        _selectedCategory = category; // Allow custom values if they exist in DB
-      }
-      
+      _selectedCategory = category;
+
       final ratio = data['default_aspect_ratio'] as String?;
       if (ratio != null && _aspectRatios.contains(ratio)) {
         _selectedAspectRatio = ratio;
@@ -108,16 +105,17 @@ class _TemplateEditorPageState extends ConsumerState<TemplateEditorPage> {
         );
       }
     } finally {
-      if (mounted) {
-        setState(() => _isLoading = false);
-      }
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
   Future<void> _save() async {
-    if (!_formKey.currentState!.validate()) return;
+    if (!_formKey.currentState!.validate()) {
+      // Switch to the tab with invalid fields
+      // Basic info fields are on tab 0
+      return;
+    }
 
-    // Validate JSON
     dynamic inputFieldsJson;
     try {
       inputFieldsJson = jsonDecode(_inputFieldsController.text);
@@ -125,6 +123,7 @@ class _TemplateEditorPageState extends ConsumerState<TemplateEditorPage> {
         throw const FormatException('Input fields must be a JSON list');
       }
     } catch (e) {
+      _tabController.animateTo(1); // Switch to Config tab
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Invalid JSON in Input Fields: $e')),
       );
@@ -155,14 +154,13 @@ class _TemplateEditorPageState extends ConsumerState<TemplateEditorPage> {
             .update(updates)
             .eq('id', widget.templateId!);
       } else {
-        // Get max order to append at end
         final maxOrderRes = await Supabase.instance.client
             .from('templates')
             .select('order')
             .order('order', ascending: false)
             .limit(1)
             .maybeSingle();
-        
+
         final nextOrder = (maxOrderRes?['order'] as int? ?? 0) + 1;
 
         await Supabase.instance.client.from('templates').insert({
@@ -172,7 +170,7 @@ class _TemplateEditorPageState extends ConsumerState<TemplateEditorPage> {
       }
 
       if (mounted) {
-        context.pop();
+        context.go('/templates');
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Template saved successfully')),
         );
@@ -184,14 +182,13 @@ class _TemplateEditorPageState extends ConsumerState<TemplateEditorPage> {
         );
       }
     } finally {
-      if (mounted) {
-        setState(() => _isLoading = false);
-      }
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
   @override
   void dispose() {
+    _tabController.dispose();
     _nameController.dispose();
     _descriptionController.dispose();
     _promptTemplateController.dispose();
@@ -202,184 +199,383 @@ class _TemplateEditorPageState extends ConsumerState<TemplateEditorPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.templateId != null ? 'Edit Template' : 'New Template'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => context.go('/templates'),
+        ),
+        title: Text(
+            widget.templateId != null ? 'Edit Template' : 'New Template'),
+        bottom: TabBar(
+          controller: _tabController,
+          tabs: const [
+            Tab(icon: Icon(Icons.info_outline), text: 'Basic'),
+            Tab(icon: Icon(Icons.tune), text: 'Config'),
+            Tab(icon: Icon(Icons.image_outlined), text: 'Media'),
+          ],
+        ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.save),
+          // Status chips
+          if (widget.templateId != null) ...[
+            ChoiceChip(
+              label: Text(_isActive ? 'Active' : 'Inactive'),
+              selected: _isActive,
+              selectedColor: AdminColors.success.withValues(alpha: 0.2),
+              side: BorderSide(
+                color: _isActive ? AdminColors.success : Colors.grey,
+              ),
+              onSelected: (v) => setState(() => _isActive = v),
+            ),
+            const Gap(8),
+            ChoiceChip(
+              label: const Text('Premium'),
+              selected: _isPremium,
+              selectedColor: AdminColors.statAmber.withValues(alpha: 0.2),
+              side: BorderSide(
+                color: _isPremium ? AdminColors.statAmber : Colors.grey,
+              ),
+              onSelected: (v) => setState(() => _isPremium = v),
+            ),
+            const Gap(16),
+          ],
+          FilledButton.icon(
             onPressed: _isLoading ? null : _save,
+            icon: _isLoading
+                ? const SizedBox(
+                    width: 16,
+                    height: 16,
+                    child:
+                        CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                  )
+                : const Icon(Icons.save, size: 18),
+            label: const Text('Save'),
           ),
+          const Gap(16),
         ],
       ),
-      body: _isLoading
+      body: _isLoading && _isInit
           ? const Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              padding: const EdgeInsets.all(24),
-              child: Center(
-                child: Container(
-                  constraints: const BoxConstraints(maxWidth: 800),
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildSectionHeader('Basic Info'),
-                        const Gap(16),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              flex: 2,
-                              child: TextFormField(
-                                controller: _nameController,
-                                decoration: const InputDecoration(labelText: 'Name'),
-                                validator: (v) => v?.isEmpty == true ? 'Required' : null,
-                              ),
-                            ),
-                            const Gap(16),
-                            Expanded(
-                              child: DropdownButtonFormField<String>(
-                                initialValue: _selectedCategory,
-                                decoration: const InputDecoration(labelText: 'Category'),
-                                items: AppConstants.templateCategories.map((c) {
-                                  return DropdownMenuItem(value: c, child: Text(c));
-                                }).toList(),
-                                onChanged: (v) => setState(() => _selectedCategory = v),
-                                validator: (v) => v == null ? 'Required' : null,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const Gap(16),
-                        TextFormField(
-                          controller: _descriptionController,
-                          decoration: const InputDecoration(labelText: 'Description'),
-                          maxLines: 2,
-                        ),
-                        const Gap(24),
-
-                        _buildSectionHeader('Configuration'),
-                        const Gap(16),
-                        TextFormField(
-                          controller: _promptTemplateController,
-                          decoration: const InputDecoration(
-                            labelText: 'Prompt Template',
-                            helperText: 'Use {{field_id}} to insert input values',
-                          ),
-                          maxLines: 3,
-                          validator: (v) => v?.isEmpty == true ? 'Required' : null,
-                        ),
-                        const Gap(16),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: DropdownButtonFormField<String>(
-                                initialValue: _selectedAspectRatio,
-                                decoration: const InputDecoration(
-                                  labelText: 'Default Aspect Ratio',
-                                ),
-                                items: _aspectRatios.map((r) {
-                                  return DropdownMenuItem(value: r, child: Text(r));
-                                }).toList(),
-                                onChanged: (v) {
-                                  if (v != null) {
-                                    setState(() => _selectedAspectRatio = v);
-                                  }
-                                },
-                              ),
-                            ),
-                            const Gap(16),
-                            Expanded(
-                              child: SwitchListTile(
-                                title: const Text('Premium Template'),
-                                value: _isPremium,
-                                onChanged: (v) => setState(() => _isPremium = v),
-                              ),
-                            ),
-                            Expanded(
-                              child: SwitchListTile(
-                                title: const Text('Active'),
-                                value: _isActive,
-                                onChanged: (v) => setState(() => _isActive = v),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const Gap(24),
-
-                        _buildSectionHeader('Input Fields (JSON)'),
-                        const Gap(8),
-                        const Text(
-                          'Define fields as a JSON array. Each object must have "id", "label", "type".',
-                          style: TextStyle(color: Colors.grey, fontSize: 12),
-                        ),
-                        const Gap(8),
-                        TextFormField(
-                          controller: _inputFieldsController,
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            filled: true,
-                            contentPadding: EdgeInsets.all(16),
-                          ),
-                          style: const TextStyle(fontFamily: 'monospace', fontSize: 13),
-                          maxLines: 15,
-                          validator: (v) {
-                            if (v == null || v.isEmpty) return 'Required';
-                            try {
-                              jsonDecode(v);
-                              return null;
-                            } catch (e) {
-                              return 'Invalid JSON';
-                            }
-                          },
-                        ),
-                        const Gap(24),
-
-                        _buildSectionHeader('Media'),
-                        const Gap(16),
-                        TextFormField(
-                          controller: _thumbnailUrlController,
-                          decoration: const InputDecoration(labelText: 'Thumbnail URL'),
-                          onChanged: (_) => setState(() {}),
-                        ),
-                        if (_thumbnailUrlController.text.isNotEmpty) ...[
-                          const Gap(16),
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: Image.network(
-                              _thumbnailUrlController.text,
-                              height: 200,
-                              fit: BoxFit.cover,
-                              errorBuilder: (_, __, ___) => const SizedBox(
-                                height: 50,
-                                child: Center(child: Text('Invalid URL')),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
-                  ),
-                ),
+          : Form(
+              key: _formKey,
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  _buildBasicTab(theme, isDark),
+                  _buildConfigTab(theme, isDark),
+                  _buildMediaTab(theme, isDark),
+                ],
               ),
             ),
     );
   }
 
-  Widget _buildSectionHeader(String title) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).primaryColor,
+  // ── Tab 1: Basic Info ──────────────────────────────────────────────────
+
+  Widget _buildBasicTab(ThemeData theme, bool isDark) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(24),
+      child: Center(
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 800),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Template Details',
+                  style: theme.textTheme.titleMedium
+                      ?.copyWith(fontWeight: FontWeight.bold)),
+              const Gap(16),
+              TextFormField(
+                controller: _nameController,
+                decoration: const InputDecoration(
+                  labelText: 'Name',
+                  hintText: 'e.g. Fantasy Portrait',
+                ),
+                validator: (v) => v?.isEmpty == true ? 'Required' : null,
               ),
+              const Gap(16),
+              DropdownButtonFormField<String>(
+                initialValue: _selectedCategory,
+                decoration: const InputDecoration(labelText: 'Category'),
+                items: AppConstants.templateCategories.map((c) {
+                  return DropdownMenuItem(value: c, child: Text(c));
+                }).toList(),
+                onChanged: (v) => setState(() => _selectedCategory = v),
+                validator: (v) => v == null ? 'Required' : null,
+              ),
+              const Gap(16),
+              TextFormField(
+                controller: _descriptionController,
+                decoration: const InputDecoration(
+                  labelText: 'Description',
+                  hintText: 'Describe what this template creates...',
+                ),
+                maxLines: 3,
+              ),
+              const Gap(24),
+
+              // Settings row
+              Text('Settings',
+                  style: theme.textTheme.titleMedium
+                      ?.copyWith(fontWeight: FontWeight.bold)),
+              const Gap(16),
+              Row(
+                children: [
+                  Expanded(
+                    child: DropdownButtonFormField<String>(
+                      initialValue: _selectedAspectRatio,
+                      decoration: const InputDecoration(
+                          labelText: 'Default Aspect Ratio'),
+                      items: _aspectRatios.map((r) {
+                        return DropdownMenuItem(value: r, child: Text(r));
+                      }).toList(),
+                      onChanged: (v) {
+                        if (v != null) {
+                          setState(() => _selectedAspectRatio = v);
+                        }
+                      },
+                    ),
+                  ),
+                  const Gap(16),
+                  Expanded(
+                    child: SwitchListTile(
+                      title: const Text('Premium'),
+                      subtitle: Text(
+                        _isPremium ? 'Pro users only' : 'Free for all',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: isDark
+                              ? AdminColors.textMuted
+                              : Colors.grey,
+                        ),
+                      ),
+                      value: _isPremium,
+                      onChanged: (v) => setState(() => _isPremium = v),
+                    ),
+                  ),
+                  Expanded(
+                    child: SwitchListTile(
+                      title: const Text('Active'),
+                      subtitle: Text(
+                        _isActive ? 'Visible to users' : 'Hidden',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: isDark
+                              ? AdminColors.textMuted
+                              : Colors.grey,
+                        ),
+                      ),
+                      value: _isActive,
+                      onChanged: (v) => setState(() => _isActive = v),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
-        const Divider(),
-      ],
+      ),
+    );
+  }
+
+  // ── Tab 2: Configuration ───────────────────────────────────────────────
+
+  Widget _buildConfigTab(ThemeData theme, bool isDark) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(24),
+      child: Center(
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 800),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Prompt Template',
+                  style: theme.textTheme.titleMedium
+                      ?.copyWith(fontWeight: FontWeight.bold)),
+              const Gap(8),
+              Text(
+                'Use {{field_id}} to insert values from input fields',
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: isDark ? AdminColors.textMuted : Colors.grey.shade600,
+                ),
+              ),
+              const Gap(12),
+              TextFormField(
+                controller: _promptTemplateController,
+                decoration: const InputDecoration(
+                  hintText:
+                      'A {{style}} portrait of a person, high quality, 4k...',
+                  border: OutlineInputBorder(),
+                ),
+                maxLines: 5,
+                validator: (v) => v?.isEmpty == true ? 'Required' : null,
+              ),
+              const Gap(32),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Input Fields',
+                      style: theme.textTheme.titleMedium
+                          ?.copyWith(fontWeight: FontWeight.bold)),
+                  TextButton.icon(
+                    onPressed: () {
+                      // Format JSON
+                      try {
+                        final parsed =
+                            jsonDecode(_inputFieldsController.text);
+                        _inputFieldsController.text =
+                            const JsonEncoder.withIndent('  ')
+                                .convert(parsed);
+                      } catch (_) {
+                        // If invalid, don't crash
+                      }
+                    },
+                    icon: const Icon(Icons.code, size: 16),
+                    label: const Text('Format JSON'),
+                  ),
+                ],
+              ),
+              const Gap(8),
+              Text(
+                'Define fields as a JSON array. Each object must have "id", "label", "type".',
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: isDark ? AdminColors.textMuted : Colors.grey.shade600,
+                ),
+              ),
+              const Gap(8),
+              TextFormField(
+                controller: _inputFieldsController,
+                decoration: InputDecoration(
+                  border: const OutlineInputBorder(),
+                  filled: true,
+                  fillColor: isDark
+                      ? AdminColors.background
+                      : Colors.grey.shade50,
+                  contentPadding: const EdgeInsets.all(16),
+                ),
+                style: TextStyle(
+                  fontFamily: 'monospace',
+                  fontSize: 13,
+                  color:
+                      isDark ? AdminColors.textPrimary : Colors.grey.shade900,
+                ),
+                maxLines: 15,
+                validator: (v) {
+                  if (v == null || v.isEmpty) return 'Required';
+                  try {
+                    jsonDecode(v);
+                    return null;
+                  } catch (e) {
+                    return 'Invalid JSON';
+                  }
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ── Tab 3: Media ───────────────────────────────────────────────────────
+
+  Widget _buildMediaTab(ThemeData theme, bool isDark) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(24),
+      child: Center(
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 800),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Thumbnail',
+                  style: theme.textTheme.titleMedium
+                      ?.copyWith(fontWeight: FontWeight.bold)),
+              const Gap(16),
+              TextFormField(
+                controller: _thumbnailUrlController,
+                decoration: const InputDecoration(
+                  labelText: 'Thumbnail URL',
+                  hintText: 'https://example.com/image.png',
+                  prefixIcon: Icon(Icons.link),
+                ),
+                onChanged: (_) => setState(() {}),
+              ),
+              const Gap(24),
+              if (_thumbnailUrlController.text.isNotEmpty) ...[
+                Text('Preview',
+                    style: theme.textTheme.titleSmall
+                        ?.copyWith(fontWeight: FontWeight.w500)),
+                const Gap(12),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Container(
+                    constraints: const BoxConstraints(maxHeight: 300),
+                    width: double.infinity,
+                    color: isDark
+                        ? AdminColors.surfaceContainer
+                        : Colors.grey.shade100,
+                    child: Image.network(
+                      _thumbnailUrlController.text,
+                      fit: BoxFit.contain,
+                      errorBuilder: (_, __, ___) => const Padding(
+                        padding: EdgeInsets.all(32),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.broken_image, size: 48),
+                            Gap(8),
+                            Text('Invalid or unreachable URL'),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ] else
+                Container(
+                  width: double.infinity,
+                  height: 200,
+                  decoration: BoxDecoration(
+                    color: isDark
+                        ? AdminColors.surfaceContainer
+                        : Colors.grey.shade100,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: isDark
+                          ? AdminColors.borderSubtle
+                          : Colors.grey.shade300,
+                      style: BorderStyle.solid,
+                    ),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.add_photo_alternate_outlined,
+                        size: 48,
+                        color: isDark
+                            ? AdminColors.textHint
+                            : Colors.grey.shade400,
+                      ),
+                      const Gap(8),
+                      Text(
+                        'Add a thumbnail URL above',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: isDark
+                              ? AdminColors.textMuted
+                              : Colors.grey.shade500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

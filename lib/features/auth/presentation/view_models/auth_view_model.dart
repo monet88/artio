@@ -23,7 +23,9 @@ class AuthViewModel extends _$AuthViewModel implements Listenable {
   AuthState build() {
     final authRepo = ref.watch(authRepositoryProvider);
 
-    _authSubscription?.cancel();
+    // Fix subscription race: create new subscription before canceling old one
+    // to avoid missing auth events during the swap.
+    final oldSub = _authSubscription;
     _authSubscription = authRepo.onAuthStateChange.listen(
       (data) {
         if (data.session != null) {
@@ -37,6 +39,7 @@ class AuthViewModel extends _$AuthViewModel implements Listenable {
         await SentryConfig.captureException(e, stackTrace: st);
       },
     );
+    oldSub?.cancel();
 
     ref.onDispose(() => _authSubscription?.cancel());
 
@@ -123,6 +126,8 @@ class AuthViewModel extends _$AuthViewModel implements Listenable {
       final authRepo = ref.read(authRepositoryProvider);
       await authRepo.signOut();
     } catch (e, st) {
+      // Log error but do not rethrow — local state must be cleared
+      // regardless of API success to avoid stuck authenticated state.
       await SentryConfig.captureException(e, stackTrace: st);
     } finally {
       invalidateUserScopedProviders(ref);
@@ -132,11 +137,16 @@ class AuthViewModel extends _$AuthViewModel implements Listenable {
   }
 
   Future<void> resetPassword(String email) async {
+    final trimmed = email.trim();
+    if (trimmed.isEmpty || !RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(trimmed)) {
+      throw const AppException.auth(message: 'Please enter a valid email address');
+    }
     try {
       final authRepo = ref.read(authRepositoryProvider);
-      await authRepo.resetPassword(email);
+      await authRepo.resetPassword(trimmed);
     } catch (e) {
-      throw AppException.auth(message: 'Failed to send reset email');
+      if (e is AppException) rethrow;
+      throw const AppException.auth(message: 'Failed to send reset email');
     }
   }
 
@@ -179,17 +189,7 @@ class AuthViewModel extends _$AuthViewModel implements Listenable {
   void _notifyRouter() => _routerListener?.call();
 
   String _parseErrorMessage(Object e) {
-    final msg = e.toString();
-    if (msg.contains('Invalid login credentials')) {
-      return 'Invalid email or password';
-    }
-    if (msg.contains('User already registered')) {
-      return 'An account with this email already exists';
-    }
-    if (msg.contains('Email not confirmed')) {
-      return 'Please verify your email before signing in';
-    }
-    return msg.replaceAll('Exception: ', '');
+    return AppExceptionMapper.toUserMessage(e);
   }
 
   @override

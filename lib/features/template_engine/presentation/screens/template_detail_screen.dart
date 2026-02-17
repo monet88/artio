@@ -34,6 +34,7 @@ class TemplateDetailScreen extends ConsumerStatefulWidget {
 class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
   final Map<String, String> _inputValues = {};
   final Set<String> _reportedErrors = <String>{};
+  final _formKey = GlobalKey<FormState>();
   ProviderSubscription<AsyncValue<TemplateModel?>>? _templateErrorSub;
   ProviderSubscription<AsyncValue<GenerationJobModel?>>? _jobErrorSub;
 
@@ -76,6 +77,18 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
 
     final options = ref.read(generationOptionsProvider);
     final prompt = _buildPrompt(template);
+
+    // Validate form inputs
+    if (!(_formKey.currentState?.validate() ?? false)) return;
+
+    // Check for unreplaced placeholders
+    final unresolved = RegExp(r'\{[a-zA-Z_]+\}').allMatches(prompt);
+    if (unresolved.isNotEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill in all required fields')),
+      );
+      return;
+    }
     
     ref.read(generationViewModelProvider.notifier).generate(
           templateId: template.id,
@@ -155,8 +168,20 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
                       template.thumbnailUrl,
                       height: 200,
                       fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) =>
-                          SizedBox(height: 200, child: Icon(Icons.broken_image, size: AppDimensions.iconXl)),
+                      errorBuilder: (context, error, stackTrace) => GestureDetector(
+                        onTap: () => setState(() {}), // Force rebuild to retry
+                        child: SizedBox(
+                          height: 200,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.broken_image, size: AppDimensions.iconXl),
+                              const SizedBox(height: 8),
+                              const Text('Tap to retry', style: TextStyle(fontSize: 12)),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                   SizedBox(height: AppSpacing.md),
@@ -169,13 +194,20 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
                 SizedBox(height: AppSpacing.lg),
 
                 // Template input fields
-                for (final field in template.inputFields) ...[
-                  InputFieldBuilder(
-                    field: field,
-                    onChanged: (value) => _inputValues[field.name] = value,
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      for (final field in template.inputFields) ...[
+                        InputFieldBuilder(
+                          field: field,
+                          onChanged: (value) => _inputValues[field.name] = value,
+                        ),
+                        SizedBox(height: AppSpacing.md),
+                      ],
+                    ],
                   ),
-                  SizedBox(height: AppSpacing.md),
-                ],
+                ),
 
                 // Other Ideas input (optional)
                 InputFieldBuilder(
@@ -241,6 +273,8 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
   }
 
   Widget _buildGenerationState(AsyncValue<GenerationJobModel?> jobAsync, TemplateModel template) {
+    final isGenerating = ref.read(generationViewModelProvider.notifier).isGenerating;
+
     return jobAsync.when(
       loading: () => const LoadingStateWidget(),
        error: (error, _) => Column(
@@ -251,10 +285,12 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
            ),
           SizedBox(height: AppSpacing.sm),
           FilledButton(
-            onPressed: () {
-              ref.read(generationViewModelProvider.notifier).reset();
-              _handleGenerate(template);
-            },
+            onPressed: isGenerating
+                ? null
+                : () {
+                    ref.read(generationViewModelProvider.notifier).reset();
+                    _handleGenerate(template);
+                  },
             child: const Text('Retry'),
           ),
         ],
@@ -262,7 +298,7 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
       data: (job) {
         if (job == null) {
           return FilledButton(
-            onPressed: () => _handleGenerate(template),
+            onPressed: isGenerating ? null : () => _handleGenerate(template),
             child: const Text('Generate'),
           );
         }
