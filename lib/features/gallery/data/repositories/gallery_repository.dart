@@ -261,9 +261,9 @@ class GalleryRepository implements IGalleryRepository {
         if (!kIsWeb &&
             (defaultTargetPlatform == TargetPlatform.android ||
                 defaultTargetPlatform == TargetPlatform.iOS)) {
-          final result = await ImageGallerySaverPlus.saveFile(file.path) as Map<String, dynamic>;
+          final result = await ImageGallerySaverPlus.saveFile(file.path);
           await file.delete().catchError((_) => file);
-          if (result['isSuccess'] == true) {
+          if (result is Map && result['isSuccess'] == true) {
             return 'Photos';
           }
         }

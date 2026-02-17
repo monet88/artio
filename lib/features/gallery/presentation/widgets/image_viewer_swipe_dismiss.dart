@@ -55,6 +55,13 @@ class _ImageViewerSwipeDismissState extends State<ImageViewerSwipeDismiss> {
           widget.onDragStateChanged(0, 1, isDragging: false);
         }
       },
+      onVerticalDragCancel: () {
+        setState(() {
+          _dragOffset = 0;
+          _dragScale = 1.0;
+        });
+        widget.onDragStateChanged(0, 1, isDragging: false);
+      },
       child: Transform.translate(
         offset: Offset(0, _dragOffset),
         child: Transform.scale(
