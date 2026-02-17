@@ -79,7 +79,7 @@ void main() {
         expect(result, equals('job-camel'));
       });
 
-      test('throws AppException.generation on 429 rate limit', () async {
+      test('throws AppException.network on 429 rate limit', () async {
         when(() => mockFunctions.invoke(
               'generate-image',
               body: any(named: 'body'),
@@ -93,10 +93,10 @@ void main() {
             templateId: 'template-1',
             prompt: 'test',
           ),
-          throwsA(isA<AppException>().having(
-            (e) => e.message,
-            'message',
-            contains('Too many requests'),
+          throwsA(isA<NetworkException>().having(
+            (e) => e.statusCode,
+            'statusCode',
+            429,
           )),
         );
       });
@@ -141,7 +141,7 @@ void main() {
         );
       });
 
-      test('throws AppException.generation on FunctionException with 429',
+      test('throws AppException.network on FunctionException with 429',
           () async {
         when(() => mockFunctions.invoke(
               'generate-image',
@@ -156,10 +156,40 @@ void main() {
             templateId: 'template-1',
             prompt: 'test',
           ),
-          throwsA(isA<AppException>().having(
-            (e) => e.message,
-            'message',
-            contains('Too many requests'),
+          throwsA(isA<NetworkException>().having(
+            (e) => e.statusCode,
+            'statusCode',
+            429,
+          )),
+        );
+      });
+
+      test('throws AppException.network on timeout', () async {
+        when(() => mockFunctions.invoke(
+              'generate-image',
+              body: any(named: 'body'),
+            )).thenAnswer((_) async {
+          await Future<void>.delayed(const Duration(seconds: 120));
+          return FunctionResponse(data: {'job_id': 'late'}, status: 200);
+        });
+
+        // The actual production code uses .timeout(Duration(seconds: 90)),
+        // but in tests mocking the FunctionException is more reliable.
+        // Instead, test that TimeoutException is caught correctly:
+        when(() => mockFunctions.invoke(
+              'generate-image',
+              body: any(named: 'body'),
+            )).thenThrow(TimeoutException('Timeout'));
+
+        expect(
+          () => repository.startGeneration(
+            templateId: 'template-1',
+            prompt: 'test',
+          ),
+          throwsA(isA<NetworkException>().having(
+            (e) => e.statusCode,
+            'statusCode',
+            408,
           )),
         );
       });
