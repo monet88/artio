@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:artio/core/design_system/app_animations.dart';
 import 'package:artio/core/services/haptic_service.dart';
 import 'package:artio/core/utils/app_exception_mapper.dart';
+import 'package:artio/core/utils/watermark_util.dart';
 import 'package:artio/features/gallery/domain/entities/gallery_item.dart';
 import 'package:artio/features/gallery/domain/providers/gallery_repository_provider.dart';
 import 'package:artio/features/gallery/presentation/providers/gallery_provider.dart';
@@ -15,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_gallery_saver_plus/image_gallery_saver_plus.dart';
 import 'package:share_plus/share_plus.dart';
 
 /// Image viewer with swipe-to-dismiss, haptic feedback, and info sheet.
@@ -76,6 +80,12 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage>
   }
   GalleryItem get _currentItem => _items[_currentIndex];
 
+  bool get _isFreeUser =>
+      ref.read(subscriptionNotifierProvider).maybeWhen(
+            data: (status) => status.isFree,
+            orElse: () => true,
+          );
+
   Future<void> _download() async {
     final imageUrl = _currentItem.imageUrl;
     if (imageUrl == null) return;
@@ -83,10 +93,24 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage>
     setState(() => _isDownloading = true);
     try {
       final repo = ref.read(galleryRepositoryProvider);
-      final path = await repo.downloadImage(imageUrl);
-      HapticService.downloadComplete();
-      if (mounted) {
-        AppSnackbar.success(context, 'Saved to $path');
+      if (_isFreeUser) {
+        // Download to temp, watermark, then save directly to gallery.
+        final file = await repo.getImageFile(imageUrl);
+        final bytes = await file.readAsBytes();
+        final watermarked = await WatermarkUtil.applyWatermark(bytes);
+        await file.writeAsBytes(watermarked);
+        await ImageGallerySaverPlus.saveFile(file.path);
+        await file.delete().catchError((_) => file);
+        HapticService.downloadComplete();
+        if (mounted) {
+          AppSnackbar.success(context, 'Saved to Photos');
+        }
+      } else {
+        final path = await repo.downloadImage(imageUrl);
+        HapticService.downloadComplete();
+        if (mounted) {
+          AppSnackbar.success(context, 'Saved to $path');
+        }
       }
     } on Exception catch (e) {
       HapticService.error();
@@ -106,12 +130,25 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage>
     try {
       final repo = ref.read(galleryRepositoryProvider);
       final file = await repo.getImageFile(imageUrl);
-      await SharePlus.instance.share(
-        ShareParams(
-          files: [XFile(file.path)],
-          text: 'Created with Artio',
-        ),
-      );
+      if (_isFreeUser) {
+        final bytes = await file.readAsBytes();
+        final watermarked = await WatermarkUtil.applyWatermark(bytes);
+        final watermarkedFile = File('${file.parent.path}/watermarked_${file.uri.pathSegments.last}');
+        await watermarkedFile.writeAsBytes(watermarked);
+        await SharePlus.instance.share(
+          ShareParams(
+            files: [XFile(watermarkedFile.path)],
+            text: 'Created with Artio',
+          ),
+        );
+      } else {
+        await SharePlus.instance.share(
+          ShareParams(
+            files: [XFile(file.path)],
+            text: 'Created with Artio',
+          ),
+        );
+      }
     } on Exception catch (e) {
       if (mounted) {
         AppSnackbar.error(context, AppExceptionMapper.toUserMessage(e));
