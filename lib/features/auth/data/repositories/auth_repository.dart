@@ -177,6 +177,10 @@ class AuthRepository implements IAuthRepository {
     }
     try {
       await Purchases.logIn(userId);
+      await _supabase
+          .from('profiles')
+          .update({'revenuecat_app_user_id': userId})
+          .eq('id', userId);
     } on Object catch (e) {
       Log.w('RevenueCat logIn failed (non-blocking): $e');
     }
