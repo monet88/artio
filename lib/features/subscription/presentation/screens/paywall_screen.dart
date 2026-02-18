@@ -175,7 +175,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
         );
         context.pop();
       }
-    } on Object catch (_) {
+    } on Exception catch (_) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Purchase failed. Please try again.')),
@@ -188,36 +188,26 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
 
   Future<void> _handleRestore() async {
     setState(() => _isPurchasing = true);
-    try {
-      await ref.read(subscriptionNotifierProvider.notifier).restore();
-      if (mounted) {
-        final subscriptionState = ref.read(subscriptionNotifierProvider);
-        if (subscriptionState.hasError) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Restore failed. Please try again.')),
-          );
-        } else {
-          final status = subscriptionState.valueOrNull;
-          if (status != null && status.isActive) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Purchases restored!')),
-            );
-            context.pop();
-          } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('No previous purchases found.')),
-            );
-          }
-        }
-      }
-    } on Object catch (_) {
-      if (mounted) {
+    await ref.read(subscriptionNotifierProvider.notifier).restore();
+    if (!mounted) return;
+    final subscriptionState = ref.read(subscriptionNotifierProvider);
+    if (subscriptionState.hasError) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Restore failed. Please try again.')),
+      );
+    } else {
+      final status = subscriptionState.valueOrNull;
+      if (status != null && status.isActive) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Restore failed. Please try again.')),
+          const SnackBar(content: Text('Purchases restored!')),
+        );
+        context.pop();
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('No previous purchases found.')),
         );
       }
-    } finally {
-      if (mounted) setState(() => _isPurchasing = false);
     }
+    if (mounted) setState(() => _isPurchasing = false);
   }
 }
