@@ -1,5 +1,7 @@
 import 'package:artio/features/auth/presentation/state/auth_state.dart';
 import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
+import 'package:artio/features/credits/domain/entities/credit_balance.dart';
+import 'package:artio/features/credits/presentation/providers/credit_balance_provider.dart';
 import 'package:artio/features/settings/data/notifications_provider.dart';
 import 'package:artio/features/settings/presentation/settings_screen.dart';
 import 'package:artio/features/subscription/domain/entities/subscription_status.dart';
@@ -31,6 +33,8 @@ void main() {
       themeModeNotifierProvider.overrideWith(_FakeThemeModeNotifier.new),
       subscriptionNotifierProvider
           .overrideWith(_FakeSubscriptionNotifier.new),
+      creditBalanceNotifierProvider
+          .overrideWith(_FakeCreditBalanceNotifier.new),
     ];
 
     testWidgets('renders app bar with Settings title', (tester) async {
@@ -121,6 +125,43 @@ void main() {
       expect(find.text('About'), findsOneWidget);
       expect(find.text('Version'), findsOneWidget);
     });
+
+    testWidgets('shows credit balance for free users', (tester) async {
+      await tester.pumpApp(
+        const SettingsScreen(),
+        overrides: overrides,
+      );
+      await tester.pump();
+
+      expect(find.textContaining('42 credits'), findsOneWidget);
+    });
+
+    testWidgets('shows credit balance and monthly allocation for subscribers',
+        (tester) async {
+      await tester.pumpApp(
+        const SettingsScreen(),
+        overrides: [
+          authViewModelProvider.overrideWith(_FakeAuthViewModel.new),
+          notificationsNotifierProvider
+              .overrideWith(_FakeNotificationsNotifier.new),
+          themeModeNotifierProvider.overrideWith(_FakeThemeModeNotifier.new),
+          subscriptionNotifierProvider
+              .overrideWith(_FakeProSubscriptionNotifier.new),
+          creditBalanceNotifierProvider
+              .overrideWith(_FakeCreditBalanceNotifier.new),
+        ],
+      );
+      await tester.pump();
+
+      expect(
+        find.textContaining('42 credits remaining'),
+        findsOneWidget,
+      );
+      expect(
+        find.textContaining('200/mo'),
+        findsOneWidget,
+      );
+    });
   });
 }
 
@@ -152,5 +193,30 @@ class _FakeSubscriptionNotifier extends SubscriptionNotifier {
   @override
   Future<SubscriptionStatus> build() async {
     return const SubscriptionStatus();
+  }
+}
+
+class _FakeProSubscriptionNotifier extends SubscriptionNotifier {
+  @override
+  Future<SubscriptionStatus> build() async {
+    return const SubscriptionStatus(
+      tier: 'pro',
+      isActive: true,
+      willRenew: true,
+      expiresAt: null,
+    );
+  }
+}
+
+class _FakeCreditBalanceNotifier extends CreditBalanceNotifier {
+  @override
+  Stream<CreditBalance> build() {
+    return Stream.value(
+      CreditBalance(
+        userId: 'test-user-id',
+        balance: 42,
+        updatedAt: DateTime(2024),
+      ),
+    );
   }
 }
