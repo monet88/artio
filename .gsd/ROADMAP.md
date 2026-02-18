@@ -37,7 +37,7 @@
 ## Phases
 
 ### Phase 1: Remove Login Wall & Auth Gate
-**Status**: ⬜ Not Started
+**Status**: ✅ Complete
 **Objective**: Remove router login redirect, let unauthenticated users browse freely, add auth gate at generation action
 **Key Changes**:
 - Modify `AuthViewModel.redirect()` — allow Home, template detail, Settings without login
