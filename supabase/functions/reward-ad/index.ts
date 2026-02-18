@@ -1,5 +1,6 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
+import { corsHeaders, handleCorsIfPreflight } from "../_shared/cors.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -11,18 +12,10 @@ function getSupabaseClient() {
 }
 
 Deno.serve(async (req) => {
-    const allowedOrigin =
-        Deno.env.get("CORS_ALLOWED_ORIGIN") ?? "https://artio.app";
-    const corsHeaders = {
-        "Access-Control-Allow-Origin": allowedOrigin,
-        "Access-Control-Allow-Headers":
-            "authorization, x-client-info, apikey, content-type",
-        "Access-Control-Allow-Methods": "POST, OPTIONS",
-    };
+    const preflight = handleCorsIfPreflight(req);
+    if (preflight) return preflight;
 
-    if (req.method === "OPTIONS") {
-        return new Response("ok", { headers: corsHeaders });
-    }
+    const headers = corsHeaders();
 
     try {
         // Authenticate user via JWT
@@ -32,7 +25,7 @@ Deno.serve(async (req) => {
                 JSON.stringify({ error: "Missing authorization header" }),
                 {
                     status: 401,
-                    headers: { ...corsHeaders, "Content-Type": "application/json" },
+                    headers: { ...headers, "Content-Type": "application/json" },
                 }
             );
         }
@@ -49,7 +42,7 @@ Deno.serve(async (req) => {
                 JSON.stringify({ error: "Invalid or expired token" }),
                 {
                     status: 401,
-                    headers: { ...corsHeaders, "Content-Type": "application/json" },
+                    headers: { ...headers, "Content-Type": "application/json" },
                 }
             );
         }
@@ -65,7 +58,7 @@ Deno.serve(async (req) => {
                 JSON.stringify({ error: "Failed to process ad reward" }),
                 {
                     status: 500,
-                    headers: { ...corsHeaders, "Content-Type": "application/json" },
+                    headers: { ...headers, "Content-Type": "application/json" },
                 }
             );
         }
@@ -75,7 +68,7 @@ Deno.serve(async (req) => {
             const statusCode = data.error === "daily_limit_reached" ? 429 : 400;
             return new Response(JSON.stringify(data), {
                 status: statusCode,
-                headers: { ...corsHeaders, "Content-Type": "application/json" },
+                headers: { ...headers, "Content-Type": "application/json" },
             });
         }
 
@@ -86,7 +79,7 @@ Deno.serve(async (req) => {
 
         return new Response(JSON.stringify(data), {
             status: 200,
-            headers: { ...corsHeaders, "Content-Type": "application/json" },
+            headers: { ...headers, "Content-Type": "application/json" },
         });
     } catch (error) {
         console.error("[reward-ad] Unexpected error:", error);
@@ -96,7 +89,7 @@ Deno.serve(async (req) => {
             }),
             {
                 status: 500,
-                headers: { ...corsHeaders, "Content-Type": "application/json" },
+                headers: { ...headers, "Content-Type": "application/json" },
             }
         );
     }
