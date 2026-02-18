@@ -525,7 +525,7 @@ void main() {
 
 - Migration `supabase/migrations/20260218000000_create_credit_system.sql` adds `user_credits`, `ad_views`, tighter `credit_transactions` constraints, and the `deduct_credits`/`refund_credits` RPCs.
 - The `handle_new_user` trigger now seeds `user_credits` with a 20-credit welcome bonus and logs a `welcome_bonus` transaction.
-- All RPCs are `SECURITY DEFINER` with grants to `authenticated`, allowing Edge Functions and clients to call them while honoring RLS policies.
+- All RPCs are `SECURITY DEFINER` with execute **revoked** from `authenticated` — only the Edge Function (via `service_role` key) can call them. This prevents direct RPC manipulation from clients.
 
 ---
 

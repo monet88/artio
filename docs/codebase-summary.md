@@ -33,7 +33,7 @@ Artio is a Flutter-based cross-platform application implementing clean architect
 
 ### Code Metrics
 
-- **Total Files**: 248 files (repomix pack)
+- **Total Files**: 510 files (repomix pack)
 - **Source LOC**: Needs verification (repomix pack includes generated + non-source files)
 - **Test LOC**: Needs verification
 - **Largest Files**:
@@ -568,5 +568,5 @@ dart run build_runner watch
 ---
 
 **Generated**: 2026-02-15
-**Analysis Depth**: Comprehensive (repomix pack, 248 files)
+**Analysis Depth**: Comprehensive (repomix pack, 510 files)
 **Codebase Grade**: Not scored (awaiting verified test metrics)
