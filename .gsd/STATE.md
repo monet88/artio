@@ -3,7 +3,7 @@
 ## Current Position
 - **Milestone**: Freemium Monetization
 - **Phase**: 7 — PR #13 Review Fixes
-- **Status**: ⬜ Not Started
+- **Status**: ✅ Planning complete — ready for execution
 
 ## Phases
 - Phase 1: Remove Login Wall & Auth Gate — ✅ COMPLETE (merged)
@@ -13,7 +13,7 @@
 - Phase 5: RevenueCat Subscription Integration — ✅ COMPLETE (PR #13)
 - Phase 6: Watermark, Polish & Testing — ✅ VERIFIED (13/13, PR #13)
 - PR Fixes: Watermark Safety & UX Cleanup — ✅ COMPLETE
-- Phase 7: PR #13 Review Fixes — ⬜ NOT STARTED
+- Phase 7: PR #13 Review Fixes — 📋 PLANNED (3 plans, 1 wave)
 
 ## Evidence
 - 519 tests passing, 0 failures
@@ -21,6 +21,4 @@
 - Verification report: `.gsd/phases/6/VERIFICATION.md`
 
 ## Next Steps
-1. Run `/plan 7` to create execution plans for Phase 7
-2. Run `/execute 7` to fix all 9 review issues
-3. Merge PR #13 after fixes verified
+1. `/execute 7` — run all 3 plans to fix 9 review issues
