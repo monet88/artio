@@ -1,22 +1,18 @@
 # STATE.md
 
 ## Current Position
-- **Milestone**: Freemium Monetization
-- **Phase**: 5 — RevenueCat Subscription Integration (planned)
-- **Task**: Planning complete
-- **Status**: Ready for execution
+- **Milestone**: Codebase Improvement
+- **Phase**: Not started — needs `/plan`
+- **Status**: 🆕 New milestone
 
-## Plans
-- `5-1` — Database + Webhook Edge Function (wave 1)
-- `5-2` — RevenueCat SDK Init & Subscription Service (wave 1)
-- `5-3` — Paywall Screen & UI Wiring (wave 2)
-- `5-4` — Hide Ads for Subscribers, Settings & Tests (wave 2)
+## Phases
+_To be planned_
 
-## Previous Phases
-- Phase 1: Remove Login Wall & Auth Gate — ✅ COMPLETE (merged)
-- Phase 2: Credit System (Database + Backend) — ✅ COMPLETE (merged)
-- Phase 3: Free Quota & Premium Gate UI — ✅ COMPLETE (merged)
-- Phase 4: Google AdMob Rewarded Ads — ✅ COMPLETE (merged)
+## Evidence
+- 530 tests passing (from Freemium Monetization)
+- PR #13 merged to master
 
 ## Next Steps
-1. `/execute 5`
+1. `/map` — re-analyze codebase after Freemium Monetization changes
+2. `/plan` — decompose Codebase Improvement into phases
+3. `/execute` — implement fixes
