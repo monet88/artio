@@ -20,15 +20,25 @@
 
 ## Current Milestone: Codebase Improvement
 
-### Objectives
-- [ ] CORS fix (Supabase Edge Functions)
-- [ ] Widget extraction (break down large widgets)
-- [ ] Architecture violations (fix layer boundary leaks)
-- [ ] Test coverage improvement (target 80%+)
+### Phase 1: CORS & Edge Function DRY
+Extract duplicated CORS logic into `_shared/cors.ts`. Refactor `generate-image` and `reward-ad` to use it.
+- **Plans:** 1.1
+- **Discovery:** Level 0 (internal cleanup)
 
-### Phases
+### Phase 2: Widget Extraction
+Break 11 oversized files (>250 lines) into focused, single-responsibility components.
+- **Plans:** 2.1 (theme), 2.2 (screens), 2.3 (gallery & misc)
+- **Discovery:** Level 0 (pure refactoring)
 
-_To be planned with `/plan`_
+### Phase 3: Architecture Violations
+Fix 7 presentation→data layer violations and reduce cross-feature coupling.
+- **Plans:** 3.1 (domain interfaces), 3.2 (shared providers)
+- **Discovery:** Level 0 (internal refactoring)
+
+### Phase 4: Test Coverage
+Close test gaps in credits, subscription, settings, and core modules.
+- **Plans:** 4.1 (credits & subscription), 4.2 (core & settings)
+- **Discovery:** Level 0 (internal)
 
 ---
 

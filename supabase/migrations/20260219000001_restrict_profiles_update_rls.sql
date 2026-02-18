@@ -14,7 +14,8 @@ BEGIN
     NEW.is_premium = OLD.is_premium;
     NEW.premium_expires_at = OLD.premium_expires_at;
     NEW.subscription_tier = OLD.subscription_tier;
-    NEW.revenuecat_app_user_id = OLD.revenuecat_app_user_id;
+    -- NOTE: revenuecat_app_user_id is intentionally NOT protected here.
+    -- The client writes it during login so the webhook can look up profiles.
     NEW.role = OLD.role;
   END IF;
   RETURN NEW;
