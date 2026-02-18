@@ -444,73 +444,85 @@ Deno.serve(async (req) => {
 
     console.log(`[${jobId}] Deducted ${creditCost} credits`);
 
-    const provider = getProvider(model);
+    // Inner try ensures credits are refunded if any post-deduction step throws
+    try {
+      const provider = getProvider(model);
 
-    await updateJobStatus(supabase, jobId, { status: "processing", provider_task_id: null });
+      await updateJobStatus(supabase, jobId, { status: "processing", provider_task_id: null });
 
-    let storagePaths: string[] = [];
+      let storagePaths: string[] = [];
 
-    if (provider === "kie") {
-      console.log(`[${jobId}] Kie.ai generation: ${model}, count: ${imageCount}, format: ${outputFormat}`);
+      if (provider === "kie") {
+        console.log(`[${jobId}] Kie.ai generation: ${model}, count: ${imageCount}, format: ${outputFormat}`);
 
-      const createResult = await createKieTask(prompt, model, aspectRatio, imageCount, imageInputs);
+        const createResult = await createKieTask(prompt, model, aspectRatio, imageCount, imageInputs);
 
-      if ("error" in createResult) {
-        await refundCreditsOnFailure(supabase, userId, creditCost, jobId);
-        await updateJobStatus(supabase, jobId, { status: "failed", error_message: createResult.error });
-        return new Response(JSON.stringify({ error: createResult.error }), {
-          status: 500,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+        if ("error" in createResult) {
+          await refundCreditsOnFailure(supabase, userId, creditCost, jobId);
+          await updateJobStatus(supabase, jobId, { status: "failed", error_message: createResult.error });
+          return new Response(JSON.stringify({ error: createResult.error }), {
+            status: 500,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+
+        await updateJobStatus(supabase, jobId, { provider_task_id: createResult.taskId });
+        console.log(`[${jobId}] Kie task: ${createResult.taskId}`);
+
+        const pollResult = await pollKieTask(createResult.taskId);
+
+        if ("error" in pollResult) {
+          await refundCreditsOnFailure(supabase, userId, creditCost, jobId);
+          await updateJobStatus(supabase, jobId, { status: "failed", error_message: pollResult.error });
+          return new Response(JSON.stringify({ error: pollResult.error }), {
+            status: 500,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+
+        console.log(`[${jobId}] Mirroring ${pollResult.images.length} images`);
+        storagePaths = await mirrorUrlsToStorage(supabase, userId, jobId, pollResult.images, outputFormat);
+
+      } else {
+        console.log(`[${jobId}] Gemini generation: ${model}, format: ${outputFormat}`);
+
+        const geminiResult = await generateViaGemini(prompt, model, aspectRatio);
+
+        if ("error" in geminiResult) {
+          await refundCreditsOnFailure(supabase, userId, creditCost, jobId);
+          await updateJobStatus(supabase, jobId, { status: "failed", error_message: geminiResult.error });
+          return new Response(JSON.stringify({ error: geminiResult.error }), {
+            status: 500,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+
+        console.log(`[${jobId}] Mirroring ${geminiResult.base64Images.length} images`);
+        storagePaths = await mirrorBase64ToStorage(supabase, userId, jobId, geminiResult.base64Images, outputFormat);
       }
 
-      await updateJobStatus(supabase, jobId, { provider_task_id: createResult.taskId });
-      console.log(`[${jobId}] Kie task: ${createResult.taskId}`);
+      await updateJobStatus(supabase, jobId, {
+        status: "completed",
+        result_urls: storagePaths,
+        completed_at: new Date().toISOString(),
+      });
 
-      const pollResult = await pollKieTask(createResult.taskId);
+      console.log(`[${jobId}] Completed: ${storagePaths.length} images`);
 
-      if ("error" in pollResult) {
-        await refundCreditsOnFailure(supabase, userId, creditCost, jobId);
-        await updateJobStatus(supabase, jobId, { status: "failed", error_message: pollResult.error });
-        return new Response(JSON.stringify({ error: pollResult.error }), {
-          status: 500,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
-
-      console.log(`[${jobId}] Mirroring ${pollResult.images.length} images`);
-      storagePaths = await mirrorUrlsToStorage(supabase, userId, jobId, pollResult.images, outputFormat);
-
-    } else {
-      console.log(`[${jobId}] Gemini generation: ${model}, format: ${outputFormat}`);
-
-      const geminiResult = await generateViaGemini(prompt, model, aspectRatio);
-
-      if ("error" in geminiResult) {
-        await refundCreditsOnFailure(supabase, userId, creditCost, jobId);
-        await updateJobStatus(supabase, jobId, { status: "failed", error_message: geminiResult.error });
-        return new Response(JSON.stringify({ error: geminiResult.error }), {
-          status: 500,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
-
-      console.log(`[${jobId}] Mirroring ${geminiResult.base64Images.length} images`);
-      storagePaths = await mirrorBase64ToStorage(supabase, userId, jobId, geminiResult.base64Images, outputFormat);
+      return new Response(
+        JSON.stringify({ success: true, jobId, storagePaths }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    } catch (postDeductionError) {
+      // Refund credits if any step after deduction fails (e.g. mirroring)
+      await refundCreditsOnFailure(supabase, userId, creditCost, jobId);
+      const errorMsg = postDeductionError instanceof Error ? postDeductionError.message : "Unknown error";
+      await updateJobStatus(supabase, jobId, { status: "failed", error_message: errorMsg });
+      return new Response(
+        JSON.stringify({ error: errorMsg }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
-
-    await updateJobStatus(supabase, jobId, {
-      status: "completed",
-      result_urls: storagePaths,
-      completed_at: new Date().toISOString(),
-    });
-
-    console.log(`[${jobId}] Completed: ${storagePaths.length} images`);
-
-    return new Response(
-      JSON.stringify({ success: true, jobId, storagePaths }),
-      { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
   } catch (error) {
     console.error("Edge function error:", error);
     return new Response(

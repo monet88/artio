@@ -5,7 +5,6 @@ import 'package:artio/core/design_system/app_typography.dart';
 import 'package:artio/routing/routes/app_routes.dart';
 import 'package:artio/theme/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 /// Animated empty gallery state with floating illustration,
 /// contextual messaging, and gradient CTA button.
@@ -127,7 +126,7 @@ class _EmptyGalleryStateState extends State<EmptyGalleryState>
                   )
                 else
                   FilledButton(
-                    onPressed: () => context.go('/login'),
+                    onPressed: () => const LoginRoute().go(context),
                     child: const Text('Sign In'),
                   ),
               ],

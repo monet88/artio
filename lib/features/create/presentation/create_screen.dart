@@ -15,9 +15,9 @@ import 'package:artio/features/credits/presentation/providers/credit_balance_pro
 import 'package:artio/features/credits/presentation/widgets/insufficient_credits_sheet.dart';
 import 'package:artio/features/credits/presentation/widgets/premium_model_sheet.dart';
 import 'package:artio/features/template_engine/domain/entities/generation_job_model.dart';
+import 'package:artio/routing/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 class CreateScreen extends ConsumerStatefulWidget {
   const CreateScreen({super.key});
@@ -145,7 +145,7 @@ class _CreateScreenState extends ConsumerState<CreateScreen> {
               child: FilledButton(
                 onPressed: () {
                   Navigator.pop(context);
-                  this.context.go('/login');
+                  const LoginRoute().go(this.context);
                 },
                 child: const Text('Sign In'),
               ),
@@ -156,7 +156,7 @@ class _CreateScreenState extends ConsumerState<CreateScreen> {
               child: OutlinedButton(
                 onPressed: () {
                   Navigator.pop(context);
-                  this.context.go('/register');
+                  const RegisterRoute().go(this.context);
                 },
                 child: const Text('Create Account'),
               ),

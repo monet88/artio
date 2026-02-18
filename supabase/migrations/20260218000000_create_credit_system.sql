@@ -138,3 +138,11 @@ BEGIN
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- =============================================================================
+-- 6. Backfill existing users with 0 credits (no welcome bonus)
+-- =============================================================================
+
+INSERT INTO user_credits (user_id, balance)
+SELECT id, 0 FROM auth.users
+ON CONFLICT (user_id) DO NOTHING;
