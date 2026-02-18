@@ -94,6 +94,34 @@
 - Update settings screen for subscription status display
 - Update existing tests for new auth flow
 
+### Phase 7: PR #13 Review Fixes
+**Status**: ⬜ Not Started
+**Objective**: Fix all critical, important, and minor issues from the PR #13 code review
+**Depends on**: Phase 6
+
+**Tasks**:
+
+**P1 — Critical**:
+- [ ] Populate `revenuecat_app_user_id` in profiles during auth flow (`auth_repository.dart`)
+- [ ] Fix RLS trigger: replace `current_setting('role')` with `current_setting('request.jwt.claim.role', true)` (`20260219000001_restrict_profiles_update_rls.sql`)
+- [ ] Use `profile.id` from DB lookup instead of raw `appUserId` in webhook RPC calls; early-return when no profile found (`revenuecat-webhook/index.ts`)
+
+**P2 — Important**:
+- [ ] Early-return with 200 when webhook profile lookup fails (instead of proceeding silently)
+- [ ] Abstract `Package` SDK type out of domain interface (`i_subscription_repository.dart`)
+- [ ] Capture `_isFreeUser` once at start of `_download()`/`_share()` methods (`image_viewer_page.dart`)
+
+**P3 — Minor**:
+- [ ] Narrow `_handlePurchase` catch from `on Object` to `on Exception` (`paywall_screen.dart`)
+- [ ] Simplify redundant error handling in `_handleRestore` (`paywall_screen.dart`)
+- [ ] Use constant-time comparison for webhook auth header (`revenuecat-webhook/index.ts`)
+
+**Verification**:
+- `dart analyze` clean
+- All existing tests still pass
+- New test: subscription repository data layer
+- Manual: verify RLS trigger allows service_role updates
+
 ---
 
 ## Dependencies
@@ -105,6 +133,7 @@ Phase 1 (Anonymous Auth)
             ──► Phase 4 (AdMob)
             ──► Phase 5 (RevenueCat)
                 ──► Phase 6 (Polish)
+                    ──► Phase 7 (PR Review Fixes)
 ```
 
 Phase 4 and Phase 5 can run in parallel after Phase 3.
