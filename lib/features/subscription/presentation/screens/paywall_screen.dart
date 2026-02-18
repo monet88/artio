@@ -191,16 +191,23 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
     try {
       await ref.read(subscriptionNotifierProvider.notifier).restore();
       if (mounted) {
-        final status = ref.read(subscriptionNotifierProvider).valueOrNull;
-        if (status != null && status.isActive) {
+        final subscriptionState = ref.read(subscriptionNotifierProvider);
+        if (subscriptionState.hasError) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Purchases restored!')),
+            const SnackBar(content: Text('Restore failed. Please try again.')),
           );
-          context.pop();
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('No previous purchases found.')),
-          );
+          final status = subscriptionState.valueOrNull;
+          if (status != null && status.isActive) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Purchases restored!')),
+            );
+            context.pop();
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('No previous purchases found.')),
+            );
+          }
         }
       }
     } on Object catch (_) {
