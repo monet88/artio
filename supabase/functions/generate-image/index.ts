@@ -22,6 +22,26 @@ const GEMINI_MODELS = [
   "gemini-2.5-flash-image",
 ] as const;
 
+// Server-side authoritative model costs (matches ai_models.dart)
+const MODEL_CREDIT_COSTS: Record<string, number> = {
+  "google/imagen4": 6,
+  "google/imagen4-fast": 4,
+  "google/imagen4-ultra": 12,
+  "google/nano-banana-edit": 10,
+  "nano-banana-pro": 10,
+  "google/pro-image-to-image": 15,
+  "flux-2/flex-text-to-image": 8,
+  "flux-2/flex-image-to-image": 10,
+  "flux-2/pro-text-to-image": 16,
+  "flux-2/pro-image-to-image": 20,
+  "gpt-image/1.5-text-to-image": 15,
+  "gpt-image/1.5-image-to-image": 18,
+  "seedream/4.5-text-to-image": 8,
+  "seedream/4.5-edit": 10,
+  "gemini-3-pro-image-preview": 15,
+  "gemini-2.5-flash-image": 8,
+};
+
 interface GenerationRequest {
   jobId: string;
   prompt: string;
@@ -59,6 +79,56 @@ function getProvider(model: string): "kie" | "gemini" {
   if (KIE_MODELS.includes(model as typeof KIE_MODELS[number])) return "kie";
   if (GEMINI_MODELS.includes(model as typeof GEMINI_MODELS[number])) return "gemini";
   return "kie";
+}
+
+async function checkAndDeductCredits(
+  supabase: ReturnType<typeof getSupabaseClient>,
+  userId: string,
+  amount: number,
+  jobId: string
+): Promise<{ success: boolean; error?: string }> {
+  const { data, error } = await supabase.rpc("deduct_credits", {
+    p_user_id: userId,
+    p_amount: amount,
+    p_description: "Image generation",
+    p_reference_id: jobId,
+  });
+
+  if (error) {
+    console.error(`[${jobId}] Credit deduction RPC error:`, error);
+    return { success: false, error: "Credit check failed" };
+  }
+
+  // deduct_credits returns boolean: true = success, false = insufficient
+  if (data === false) {
+    return { success: false, error: "Insufficient credits" };
+  }
+
+  return { success: true };
+}
+
+async function refundCreditsOnFailure(
+  supabase: ReturnType<typeof getSupabaseClient>,
+  userId: string,
+  amount: number,
+  jobId: string
+): Promise<void> {
+  try {
+    const { error } = await supabase.rpc("refund_credits", {
+      p_user_id: userId,
+      p_amount: amount,
+      p_description: "Generation failed — refund",
+      p_reference_id: jobId,
+    });
+    if (error) {
+      console.error(`[${jobId}] Credit refund RPC error:`, error);
+    } else {
+      console.log(`[${jobId}] Refunded ${amount} credits`);
+    }
+  } catch (err) {
+    // Best-effort refund — log but don't block error response
+    console.error(`[${jobId}] Credit refund exception:`, err);
+  }
 }
 
 async function createKieTask(
@@ -353,6 +423,27 @@ Deno.serve(async (req) => {
         { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
+    // Resolve credit cost from server-side map
+    const creditCost = MODEL_CREDIT_COSTS[model];
+    if (creditCost === undefined) {
+      return new Response(
+        JSON.stringify({ error: `Unknown model: ${model}` }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Deduct credits before generation
+    const creditResult = await checkAndDeductCredits(supabase, userId, creditCost, jobId);
+    if (!creditResult.success) {
+      console.log(`[${jobId}] Insufficient credits: need ${creditCost}`);
+      return new Response(
+        JSON.stringify({ error: creditResult.error, required: creditCost, model }),
+        { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    console.log(`[${jobId}] Deducted ${creditCost} credits`);
+
     const provider = getProvider(model);
 
     await updateJobStatus(supabase, jobId, { status: "processing", provider_task_id: null });
@@ -365,6 +456,7 @@ Deno.serve(async (req) => {
       const createResult = await createKieTask(prompt, model, aspectRatio, imageCount, imageInputs);
 
       if ("error" in createResult) {
+        await refundCreditsOnFailure(supabase, userId, creditCost, jobId);
         await updateJobStatus(supabase, jobId, { status: "failed", error_message: createResult.error });
         return new Response(JSON.stringify({ error: createResult.error }), {
           status: 500,
@@ -378,6 +470,7 @@ Deno.serve(async (req) => {
       const pollResult = await pollKieTask(createResult.taskId);
 
       if ("error" in pollResult) {
+        await refundCreditsOnFailure(supabase, userId, creditCost, jobId);
         await updateJobStatus(supabase, jobId, { status: "failed", error_message: pollResult.error });
         return new Response(JSON.stringify({ error: pollResult.error }), {
           status: 500,
@@ -394,6 +487,7 @@ Deno.serve(async (req) => {
       const geminiResult = await generateViaGemini(prompt, model, aspectRatio);
 
       if ("error" in geminiResult) {
+        await refundCreditsOnFailure(supabase, userId, creditCost, jobId);
         await updateJobStatus(supabase, jobId, { status: "failed", error_message: geminiResult.error });
         return new Response(JSON.stringify({ error: geminiResult.error }), {
           status: 500,
