@@ -3,6 +3,7 @@ import 'package:artio/core/design_system/app_dimensions.dart';
 import 'package:artio/core/design_system/app_spacing.dart';
 import 'package:artio/features/gallery/domain/entities/gallery_item.dart';
 import 'package:artio/features/gallery/presentation/widgets/failed_image_card.dart';
+import 'package:artio/shared/widgets/watermark_overlay.dart';
 import 'package:artio/theme/app_colors.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -14,10 +15,11 @@ import 'package:shimmer/shimmer.dart';
 class MasonryImageGrid extends StatefulWidget {
 
   const MasonryImageGrid({
-    required this.items, required this.onItemTap, super.key,
+    required this.items, required this.onItemTap, this.showWatermark = false, super.key,
   });
   final List<GalleryItem> items;
   final void Function(GalleryItem item, int index) onItemTap;
+  final bool showWatermark;
 
   @override
   State<MasonryImageGrid> createState() => _MasonryImageGridState();
@@ -106,6 +108,7 @@ class _MasonryImageGridState extends State<MasonryImageGrid>
           child: _InteractiveGalleryItem(
             item: item,
             onTap: () => widget.onItemTap(item, index),
+            showWatermark: widget.showWatermark,
           ),
         );
       },
@@ -118,10 +121,12 @@ class _InteractiveGalleryItem extends StatefulWidget {
   const _InteractiveGalleryItem({
     required this.item,
     required this.onTap,
+    this.showWatermark = false,
   });
 
   final GalleryItem item;
   final VoidCallback onTap;
+  final bool showWatermark;
 
   @override
   State<_InteractiveGalleryItem> createState() =>
@@ -227,39 +232,42 @@ class _InteractiveGalleryItemState extends State<_InteractiveGalleryItem>
 
     // Handle Completed Status with Image
     if (item.imageUrl != null) {
-      return Hero(
-        tag: 'gallery-image-${item.id}',
-        child: ClipRRect(
-          borderRadius: AppDimensions.cardRadius,
-          child: CachedNetworkImage(
-            imageUrl: item.imageUrl!,
-            placeholder: (context, url) => AspectRatio(
-              aspectRatio: 1,
-              child: Shimmer.fromColors(
-                baseColor: isDark
-                    ? AppColors.shimmerBase
-                    : const Color(0xFFE8EAF0),
-                highlightColor: isDark
-                    ? AppColors.shimmerHighlight
-                    : const Color(0xFFF3F4F8),
-                child: Container(color: Colors.white),
-              ),
-            ),
-            errorWidget: (context, url, error) => AspectRatio(
-              aspectRatio: 1,
-              child: ColoredBox(
-                color: isDark
-                    ? AppColors.darkSurface2
-                    : AppColors.lightSurface2,
-                child: Icon(
-                  Icons.broken_image_rounded,
-                  color: isDark
-                      ? AppColors.textMuted
-                      : AppColors.textMutedLight,
+      return WatermarkOverlay(
+        showWatermark: widget.showWatermark,
+        child: Hero(
+          tag: 'gallery-image-${item.id}',
+          child: ClipRRect(
+            borderRadius: AppDimensions.cardRadius,
+            child: CachedNetworkImage(
+              imageUrl: item.imageUrl!,
+              placeholder: (context, url) => AspectRatio(
+                aspectRatio: 1,
+                child: Shimmer.fromColors(
+                  baseColor: isDark
+                      ? AppColors.shimmerBase
+                      : const Color(0xFFE8EAF0),
+                  highlightColor: isDark
+                      ? AppColors.shimmerHighlight
+                      : const Color(0xFFF3F4F8),
+                  child: Container(color: Colors.white),
                 ),
               ),
+              errorWidget: (context, url, error) => AspectRatio(
+                aspectRatio: 1,
+                child: ColoredBox(
+                  color: isDark
+                      ? AppColors.darkSurface2
+                      : AppColors.lightSurface2,
+                  child: Icon(
+                    Icons.broken_image_rounded,
+                    color: isDark
+                        ? AppColors.textMuted
+                        : AppColors.textMutedLight,
+                  ),
+                ),
+              ),
+              fit: BoxFit.cover,
             ),
-            fit: BoxFit.cover,
           ),
         ),
       );

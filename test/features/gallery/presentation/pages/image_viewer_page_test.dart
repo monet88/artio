@@ -1,6 +1,9 @@
 import 'package:artio/features/gallery/data/repositories/gallery_repository.dart';
 import 'package:artio/features/gallery/domain/entities/gallery_item.dart';
 import 'package:artio/features/gallery/presentation/pages/image_viewer_page.dart';
+import 'package:artio/features/subscription/data/repositories/subscription_repository.dart';
+import 'package:artio/features/subscription/domain/entities/subscription_status.dart';
+import 'package:artio/shared/widgets/watermark_overlay.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -9,22 +12,33 @@ import 'package:mocktail/mocktail.dart';
 import '../../../../core/fixtures/fixtures.dart';
 
 class MockGalleryRepository extends Mock implements GalleryRepository {}
+class MockSubscriptionRepository extends Mock implements SubscriptionRepository {}
 
 void main() {
   group('ImageViewerPage', () {
     late MockGalleryRepository mockRepository;
+    late MockSubscriptionRepository mockSubscriptionRepository;
 
     setUp(() {
       mockRepository = MockGalleryRepository();
+      mockSubscriptionRepository = MockSubscriptionRepository();
     });
 
     Widget createTestWidget({
       required List<GalleryItem> items,
       int initialIndex = 0,
+      SubscriptionStatus? subscriptionStatus,
     }) {
+      final status = subscriptionStatus ?? const SubscriptionStatus();
+      when(() => mockSubscriptionRepository.getStatus())
+          .thenAnswer((_) async => status);
+      when(() => mockSubscriptionRepository.getOfferings())
+          .thenAnswer((_) async => []);
       return ProviderScope(
         overrides: [
           galleryRepositoryProvider.overrideWithValue(mockRepository),
+          subscriptionRepositoryProvider
+              .overrideWithValue(mockSubscriptionRepository),
         ],
         child: MaterialApp(
           home: ImageViewerPage(
@@ -141,6 +155,45 @@ void main() {
       await tester.pump(const Duration(seconds: 4));
 
       expect(find.text('1 / 3'), findsOneWidget);
+    });
+
+    group('watermark overlay', () {
+      testWidgets('shows watermark text for free users', (tester) async {
+        final items = [GalleryItemFixtures.completed()];
+
+        await tester.pumpWidget(
+          createTestWidget(
+            items: items,
+            subscriptionStatus: const SubscriptionStatus(
+              isActive: false,
+            ),
+          ),
+        );
+        // pump() resolves the async subscriptionNotifierProvider
+        await tester.pump();
+        // drain the 3-second timer from _resetIndicatorTimer in initState
+        await tester.pump(const Duration(seconds: 3));
+
+        expect(find.text('artio'), findsOneWidget);
+      });
+
+      testWidgets('hides watermark text for paid users', (tester) async {
+        final items = [GalleryItemFixtures.completed()];
+
+        await tester.pumpWidget(
+          createTestWidget(
+            items: items,
+            subscriptionStatus: const SubscriptionStatus(
+              isActive: true,
+              tier: 'pro',
+            ),
+          ),
+        );
+        await tester.pump();
+        await tester.pump(const Duration(seconds: 3));
+
+        expect(find.text('artio'), findsNothing);
+      });
     });
   });
 }

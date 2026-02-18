@@ -14,6 +14,7 @@ List<RouteBase> get $appRoutes => [
   $mainShellRoute,
   $templateDetailRoute,
   $galleryImageRoute,
+  $paywallRoute,
 ];
 
 RouteBase get $splashRoute =>
@@ -230,4 +231,25 @@ extension $GalleryImageRouteExtension on GalleryImageRoute {
 
   void replace(BuildContext context) =>
       context.replace(location, extra: $extra);
+}
+
+RouteBase get $paywallRoute => GoRouteData.$route(
+  path: '/paywall',
+
+  factory: $PaywallRouteExtension._fromState,
+);
+
+extension $PaywallRouteExtension on PaywallRoute {
+  static PaywallRoute _fromState(GoRouterState state) => const PaywallRoute();
+
+  String get location => GoRouteData.$location('/paywall');
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
 }

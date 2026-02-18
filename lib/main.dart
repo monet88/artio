@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:artio/core/config/env_config.dart';
 import 'package:artio/core/config/sentry_config.dart';
 import 'package:artio/routing/app_router.dart';
@@ -7,6 +9,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 Future<void> main() async {
@@ -27,6 +30,17 @@ Future<void> main() async {
 
   await SentryConfig.init();
   await MobileAds.instance.initialize();
+
+  // Initialize RevenueCat SDK (skip if keys not configured or running on web)
+  if (!kIsWeb) {
+    final rcKey = Platform.isIOS
+        ? EnvConfig.revenuecatAppleKey
+        : EnvConfig.revenuecatGoogleKey;
+    if (rcKey.isNotEmpty) {
+      await Purchases.configure(PurchasesConfiguration(rcKey));
+    }
+  }
+
   runApp(const ProviderScope(child: ArtioApp()));
 }
 

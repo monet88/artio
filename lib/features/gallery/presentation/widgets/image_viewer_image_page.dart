@@ -1,25 +1,33 @@
 import 'package:artio/core/design_system/app_gradients.dart';
 import 'package:artio/core/design_system/app_spacing.dart';
 import 'package:artio/features/gallery/domain/entities/gallery_item.dart';
+import 'package:artio/shared/widgets/watermark_overlay.dart';
 import 'package:artio/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 /// Single image page in the image viewer's PageView.
 class ImageViewerImagePage extends StatelessWidget {
-  const ImageViewerImagePage({required this.item, super.key});
+  const ImageViewerImagePage({
+    required this.item,
+    this.showWatermark = false,
+    super.key,
+  });
 
   final GalleryItem item;
+  final bool showWatermark;
 
   @override
   Widget build(BuildContext context) {
     final imageUrl = item.imageUrl;
 
-    return InteractiveViewer(
-      child: Center(
-        child: Hero(
-          tag: 'gallery-image-${item.id}',
-          child: imageUrl != null
-              ? Image.network(
+    return WatermarkOverlay(
+      showWatermark: showWatermark,
+      child: InteractiveViewer(
+        child: Center(
+          child: Hero(
+            tag: 'gallery-image-${item.id}',
+            child: imageUrl != null
+                ? Image.network(
                   imageUrl,
                   fit: BoxFit.contain,
                   loadingBuilder: (context, child, loadingProgress) {
@@ -107,6 +115,7 @@ class ImageViewerImagePage extends StatelessWidget {
                     ),
                   ],
                 ),
+          ),
         ),
       ),
     );

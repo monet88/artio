@@ -1,10 +1,13 @@
+import 'package:artio/core/config/env_config.dart';
 import 'package:artio/core/constants/app_constants.dart';
 import 'package:artio/core/exceptions/app_exception.dart';
 import 'package:artio/core/providers/supabase_provider.dart';
 import 'package:artio/features/auth/domain/entities/user_model.dart';
 import 'package:artio/features/auth/domain/repositories/i_auth_repository.dart';
+import 'package:artio/utils/logger_service.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' hide AuthException;
 
@@ -38,6 +41,7 @@ class AuthRepository implements IAuthRepository {
       if (response.user == null) {
         throw const AppException.auth(message: 'Sign in failed');
       }
+      await _revenuecatLogIn(response.user!.id);
       final profile = await _fetchUserProfile(response.user!.id);
       return UserModel.fromSupabaseUser(response.user!, profile: profile);
     } on AppException {
@@ -57,6 +61,7 @@ class AuthRepository implements IAuthRepository {
       if (response.user == null) {
         throw const AppException.auth(message: 'Sign up failed');
       }
+      await _revenuecatLogIn(response.user!.id);
       await _createUserProfile(response.user!.id, email);
       return UserModel.fromSupabaseUser(response.user!);
     } on AppException {
@@ -92,6 +97,7 @@ class AuthRepository implements IAuthRepository {
 
   @override
   Future<void> signOut() async {
+    await _revenuecatLogOut();
     await _supabase.auth.signOut();
   }
 
@@ -138,6 +144,7 @@ class AuthRepository implements IAuthRepository {
 
   @override
   Future<Map<String, dynamic>?> fetchOrCreateProfile(User user) async {
+    await _revenuecatLogIn(user.id);
     var profile = await _fetchUserProfile(user.id);
     if (profile == null) {
       await _createUserProfile(user.id, user.email ?? '');
@@ -158,6 +165,37 @@ class AuthRepository implements IAuthRepository {
     } on PostgrestException catch (e) {
       if (e.code == '23505') return; // unique_violation — profile already exists
       rethrow;
+    }
+  }
+
+  /// Link RevenueCat user identity to Supabase user ID.
+  /// Errors are logged but never block the auth flow.
+  Future<void> _revenuecatLogIn(String userId) async {
+    if (EnvConfig.revenuecatAppleKey.isEmpty &&
+        EnvConfig.revenuecatGoogleKey.isEmpty) {
+      return;
+    }
+    try {
+      await Purchases.logIn(userId);
+      await _supabase
+          .from('profiles')
+          .update({'revenuecat_app_user_id': userId})
+          .eq('id', userId);
+    } on Object catch (e) {
+      Log.w('RevenueCat logIn failed (non-blocking): $e');
+    }
+  }
+
+  /// Clear RevenueCat user identity on logout.
+  Future<void> _revenuecatLogOut() async {
+    if (EnvConfig.revenuecatAppleKey.isEmpty &&
+        EnvConfig.revenuecatGoogleKey.isEmpty) {
+      return;
+    }
+    try {
+      await Purchases.logOut();
+    } on Object catch (e) {
+      Log.w('RevenueCat logOut failed (non-blocking): $e');
     }
   }
 }

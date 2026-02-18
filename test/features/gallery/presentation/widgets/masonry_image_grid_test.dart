@@ -1,5 +1,6 @@
 import 'package:artio/features/gallery/domain/entities/gallery_item.dart';
 import 'package:artio/features/gallery/presentation/widgets/masonry_image_grid.dart';
+import 'package:artio/shared/widgets/watermark_overlay.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -16,11 +17,12 @@ void main() {
       testItems = GalleryItemFixtures.list(count: 5);
     });
 
-    Widget buildWidget(List<GalleryItem> items) {
+    Widget buildWidget(List<GalleryItem> items, {bool showWatermark = false}) {
       return MaterialApp(
         home: Scaffold(
           body: MasonryImageGrid(
             items: items,
+            showWatermark: showWatermark,
             onItemTap: (item, index) {
               tappedItem = item;
               tappedIndex = index;
@@ -80,6 +82,25 @@ void main() {
       await tester.pumpWidget(buildWidget(completedItems));
 
       expect(find.byType(ClipRRect), findsOneWidget);
+    });
+
+    testWidgets('shows watermark overlay when showWatermark is true',
+        (tester) async {
+      final completedItems = [GalleryItemFixtures.completed()];
+
+      await tester.pumpWidget(buildWidget(completedItems, showWatermark: true));
+
+      expect(find.byType(WatermarkOverlay), findsOneWidget);
+      expect(find.text('artio'), findsOneWidget);
+    });
+
+    testWidgets('hides watermark text when showWatermark is false',
+        (tester) async {
+      final completedItems = [GalleryItemFixtures.completed()];
+
+      await tester.pumpWidget(buildWidget(completedItems));
+
+      expect(find.text('artio'), findsNothing);
     });
   });
 }

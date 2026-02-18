@@ -20,12 +20,12 @@
 ## Current Milestone: Freemium Monetization
 
 ### Must-Haves (from SPEC)
-- [ ] Remove login wall — app opens directly to Home
-- [ ] Credit system — all generation costs credits
-- [ ] Rewarded ads — free users watch ads to earn credits
-- [ ] Subscription tiers — Pro ($9.99) and Ultra ($19.99) via RevenueCat
-- [ ] Premium gate — prompt login + subscribe when selecting premium model or out of credits
-- [ ] Watermark on free tier images
+- [x] Remove login wall — app opens directly to Home
+- [x] Credit system — all generation costs credits
+- [x] Rewarded ads — free users watch ads to earn credits
+- [x] Subscription tiers — Pro ($9.99) and Ultra ($19.99) via RevenueCat
+- [x] Premium gate — prompt login + subscribe when selecting premium model or out of credits
+- [x] Watermark on free tier images
 
 ### Nice-to-Haves
 - [ ] Priority generation queue for subscribers
@@ -80,18 +80,11 @@
 - "Watch Ad" button in credit-insufficient dialog and dedicated earn-credits section
 
 ### Phase 5: RevenueCat Subscription Integration
-**Status**: ⬜ Not Started
+**Status**: ✅ Complete
 **Objective**: Wire up RevenueCat for in-app purchases (Pro/Ultra subscriptions)
-**Key Changes**:
-- Configure RevenueCat (products, offerings, entitlements)
-- Subscription service: purchase, restore, check entitlement
-- On subscription: grant monthly credits (200 Pro / 500 Ultra)
-- Hide ads for subscribers
-- Paywall UI (subscription comparison screen)
-- Handle subscription lifecycle (renewal, cancellation, grace period)
 
 ### Phase 6: Watermark, Polish & Testing
-**Status**: ⬜ Not Started
+**Status**: ✅ Complete (verified)
 **Objective**: Add watermark for free tier, polish flows, comprehensive testing
 **Key Changes**:
 - Watermark overlay on generated images for free users
@@ -100,6 +93,34 @@
 - Credit edge cases (concurrent generation, insufficient credits race)
 - Update settings screen for subscription status display
 - Update existing tests for new auth flow
+
+### Phase 7: PR #13 Review Fixes
+**Status**: ✅ Complete
+**Objective**: Fix all critical, important, and minor issues from the PR #13 code review
+**Depends on**: Phase 6
+
+**Tasks**:
+
+**P1 — Critical**:
+- [x] Populate `revenuecat_app_user_id` in profiles during auth flow (`auth_repository.dart`)
+- [x] Fix RLS trigger: replace `current_setting('role')` with `current_setting('request.jwt.claim.role', true)` (`20260219000001_restrict_profiles_update_rls.sql`)
+- [x] Use `profile.id` from DB lookup instead of raw `appUserId` in webhook RPC calls; early-return when no profile found (`revenuecat-webhook/index.ts`)
+
+**P2 — Important**:
+- [x] Early-return with 200 when webhook profile lookup fails (instead of proceeding silently)
+- [x] Abstract `Package` SDK type out of domain interface (`i_subscription_repository.dart`)
+- [x] Capture `_isFreeUser` once at start of `_download()`/`_share()` methods (`image_viewer_page.dart`)
+
+**P3 — Minor**:
+- [x] Narrow `_handlePurchase` catch from `on Object` to `on Exception` (`paywall_screen.dart`)
+- [x] Simplify redundant error handling in `_handleRestore` (`paywall_screen.dart`)
+- [x] Use constant-time comparison for webhook auth header (`revenuecat-webhook/index.ts`)
+
+**Verification**:
+- `dart analyze` clean
+- All existing tests still pass
+- New test: subscription repository data layer
+- Manual: verify RLS trigger allows service_role updates
 
 ---
 
@@ -112,6 +133,7 @@ Phase 1 (Anonymous Auth)
             ──► Phase 4 (AdMob)
             ──► Phase 5 (RevenueCat)
                 ──► Phase 6 (Polish)
+                    ──► Phase 7 (PR Review Fixes)
 ```
 
 Phase 4 and Phase 5 can run in parallel after Phase 3.

@@ -2,27 +2,23 @@
 
 ## Current Position
 - **Milestone**: Freemium Monetization
-- **Phase**: 4 — Google AdMob Rewarded Ads (verified)
-- **Task**: All tasks complete
-- **Status**: ✅ Complete and verified
+- **Phase**: 7 — PR #13 Review Fixes
+- **Status**: ✅ COMPLETE — all 9 review issues fixed
 
-## Executed Plans
-- `4-1` — Platform Config & Rewarded Ad Service ✅
-- `4-2` — Server-Side Ad Reward Logic ✅
-- `4-3` — Wire Ad Rewards into Credit UI ✅
-- `4-4` — Ad Reward Tests ✅
-
-## Previous Phases
+## Phases
 - Phase 1: Remove Login Wall & Auth Gate — ✅ COMPLETE (merged)
 - Phase 2: Credit System (Database + Backend) — ✅ COMPLETE (merged)
 - Phase 3: Free Quota & Premium Gate UI — ✅ COMPLETE (merged)
+- Phase 4: Google AdMob Rewarded Ads — ✅ COMPLETE (merged)
+- Phase 5: RevenueCat Subscription Integration — ✅ COMPLETE (PR #13)
+- Phase 6: Watermark, Polish & Testing — ✅ VERIFIED (13/13, PR #13)
+- PR Fixes: Watermark Safety & UX Cleanup — ✅ COMPLETE
+- Phase 7: PR #13 Review Fixes — ✅ COMPLETE
 
-## Commits
-- `9ea4b42` — feat(4-1): add AdMob platform config and RewardedAdService
-- `d797657` — feat(4-2): add reward_ad_credits SQL function and reward-ad Edge Function
-- `cec78ed` — feat(4-3): wire ad rewards into credit UI — AdRewardNotifier + InsufficientCreditsSheet
-- `80ec69b` — feat(4-4): add ad reward tests — repository + provider + service
+## Evidence
+- 530 tests passing, 0 failures
+- dart analyze: 0 errors, 0 new warnings
+- All 9 review issues resolved (3 P1, 3 P2, 3 P3)
 
 ## Next Steps
-1. Create PR for Phase 4
-2. `/plan 5` — Plan RevenueCat Subscription Integration
+1. Merge PR #13
