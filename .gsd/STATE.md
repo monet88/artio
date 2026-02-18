@@ -2,26 +2,25 @@
 
 ## Current Position
 - **Milestone**: Codebase Improvement
-- **Phase**: Not started — needs `/plan`
-- **Status**: 🆕 New milestone
-
-## Last Session Summary
-Codebase mapping complete (2026-02-19).
-- 7 features identified (auth, template_engine, create, credits, subscription, gallery, settings)
-- 32 production dependencies, 9 dev dependencies analyzed
-- 3 Edge Functions (generate-image, reward-ad, revenuecat-webhook)
-- 9 database migrations, 7 SECURITY DEFINER functions
-- 122 source files (~12,500 LoC), 61 test files, 5 integration tests
-- 17 technical debt items found (14 files over 250-line target)
+- **Phase**: All 4 phases planned
+- **Status**: ✅ Ready for execution
 
 ## Phases
-_To be planned_
+
+| Phase | Name | Plans | Status |
+|-------|------|-------|--------|
+| 1 | CORS & Edge Function DRY | 1.1 | 🔲 Ready |
+| 2 | Widget Extraction | 2.1, 2.2, 2.3 | 🔲 Ready |
+| 3 | Architecture Violations | 3.1, 3.2 | 🔲 Ready |
+| 4 | Test Coverage | 4.1, 4.2 | 🔲 Ready |
 
 ## Evidence
 - 530 tests passing (from Freemium Monetization)
-- PR #13 merged to master
 - ARCHITECTURE.md and STACK.md updated 2026-02-19
+- 8 plans created across 4 phases
 
 ## Next Steps
-1. `/plan` — decompose Codebase Improvement into phases
-2. `/execute` — implement fixes
+1. `/execute 1` — CORS & Edge Function DRY (quick win, 1 plan)
+2. `/execute 2` — Widget Extraction (3 plans, 2 waves)
+3. `/execute 3` — Architecture Violations (2 plans, 2 waves)
+4. `/execute 4` — Test Coverage (2 plans, 2 waves)

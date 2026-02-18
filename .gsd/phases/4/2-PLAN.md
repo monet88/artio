@@ -1,146 +1,91 @@
 ---
 phase: 4
 plan: 2
-wave: 1
+wave: 2
 ---
 
-# Plan 4.2: Server-Side Ad Reward Logic
+# Plan 4.2: Core & Settings Test Coverage
 
 ## Objective
-Create server-side logic that securely awards credits after a rewarded ad view: a Supabase RPC function that atomically validates the daily ad limit, increments the ad view count, awards 5 credits, and logs the transaction. Then create a lightweight `reward-ad` Edge Function that authenticates the user and calls this RPC. After this plan, there's a secure endpoint for awarding ad credits.
+Close test gaps in core utilities and the settings feature:
+- **core**: 22 source files, 6 test files (27% file coverage)
+- **settings**: 6 source files, 2 test files (33% file coverage)
+
+Priority: untested core utilities that are used across multiple features,
+and settings data/domain layers.
 
 ## Context
-- `.gsd/SPEC.md` — 5 credits per ad, max 10 ads/day, max 50 credits/day
-- `supabase/migrations/20260218000000_create_credit_system.sql` — `ad_views` table (user_id, view_date, view_count CHECK ≤10), `user_credits`, `credit_transactions`
-- `supabase/functions/generate-image/index.ts` — Existing Edge Function pattern (JWT auth, service_role client, CORS)
+- lib/core/ (22 source files)
+- lib/features/settings/ (6 source files)
+- test/core/ (6 existing tests)
+- test/features/settings/ (2 existing tests)
+
+**Existing core tests:**
+- `ai_models_test.dart`, `watermark_util_test.dart`, `app_exception_mapper_test.dart`,
+  `retry_test.dart`, `date_time_utils_test.dart`, `subagent_smoke_codegen_test.dart`
+
+**High-priority untested core files:**
+- `core/exceptions/app_exception.dart` (sealed class — test all variants)
+- `core/services/rewarded_ad_service.dart` (AdMob service)
+- `core/state/user_scoped_providers.dart` (shared providers)
+- `core/utils/connectivity_monitor.dart` (network connectivity)
+- `core/utils/extensions.dart` (extension methods)
+
+**Settings gaps:**
+- `settings/data/notifications_provider.dart`
+- `settings/presentation/widgets/settings_sections.dart`
 
 ## Tasks
 
 <task type="auto">
-  <name>Create reward_ad_credits SQL function</name>
+  <name>Write core module tests</name>
   <files>
-    supabase/migrations/20260218100000_create_reward_ad_function.sql (CREATE)
+    test/core/exceptions/app_exception_test.dart (new)
+    test/core/services/rewarded_ad_service_test.dart (new)
+    test/core/utils/connectivity_monitor_test.dart (new)
+    test/core/utils/extensions_test.dart (new)
   </files>
   <action>
-    1. Create a new migration file with a `reward_ad_credits` SECURITY DEFINER function:
-       ```sql
-       CREATE OR REPLACE FUNCTION reward_ad_credits(p_user_id UUID)
-       RETURNS JSON AS $$
-       DECLARE
-         v_today DATE := CURRENT_DATE;
-         v_current_count INTEGER;
-         v_new_balance INTEGER;
-       BEGIN
-         -- Upsert ad_views for today, incrementing count
-         INSERT INTO ad_views (user_id, view_date, view_count)
-         VALUES (p_user_id, v_today, 1)
-         ON CONFLICT (user_id, view_date)
-         DO UPDATE SET view_count = ad_views.view_count + 1
-         WHERE ad_views.view_count < 10
-         RETURNING view_count INTO v_current_count;
+    1. **app_exception_test:** Test all sealed class variants (network, auth, storage, payment,
+       generation, unknown), verify `message` and `code` fields, test `when/maybeWhen` pattern matching
+    2. **rewarded_ad_service_test:** Mock Google Mobile Ads SDK. Test ad loading, showing,
+       reward callback, error handling, and daily limit tracking
+    3. **connectivity_monitor_test:** Mock connectivity_plus. Test online/offline state transitions
+    4. **extensions_test:** Test all extension methods (string, context, etc.)
 
-         -- If no row returned, daily limit reached
-         IF v_current_count IS NULL THEN
-           RETURN json_build_object(
-             'success', false,
-             'error', 'daily_limit_reached',
-             'message', 'Maximum 10 ads per day'
-           );
-         END IF;
+    Use mocktail for mocking. Keep tests focused and fast.
 
-         -- Award 5 credits
-         UPDATE user_credits
-         SET balance = balance + 5
-         WHERE user_id = p_user_id
-         RETURNING balance INTO v_new_balance;
-
-         -- Log transaction
-         INSERT INTO credit_transactions (user_id, amount, type, description)
-         VALUES (p_user_id, 5, 'ad_reward', 'Rewarded ad credit');
-
-         RETURN json_build_object(
-           'success', true,
-           'credits_awarded', 5,
-           'new_balance', v_new_balance,
-           'ads_today', v_current_count,
-           'ads_remaining', 10 - v_current_count
-         );
-       END;
-       $$ LANGUAGE plpgsql SECURITY DEFINER;
-       ```
-
-    2. REVOKE from authenticated role (same pattern as deduct_credits):
-       ```sql
-       REVOKE ALL ON FUNCTION reward_ad_credits(UUID) FROM authenticated;
-       ```
-
-    AVOID:
-    - Do NOT allow clients to call this RPC directly — only service_role (Edge Function)
-    - Do NOT change the ad_views CHECK constraint (view_count <= 10) — the function handles it with the WHERE clause
-    - Do NOT award more or fewer than 5 credits per ad
+    - What to avoid: Do NOT test generated freezed code (constructors/copyWith are auto-tested).
+      Do NOT make real network or ad SDK calls.
   </action>
-  <verify>
-    test -f supabase/migrations/20260218100000_create_reward_ad_function.sql
-    grep -q "reward_ad_credits" supabase/migrations/20260218100000_create_reward_ad_function.sql
-    grep -q "SECURITY DEFINER" supabase/migrations/20260218100000_create_reward_ad_function.sql
-    grep -q "REVOKE" supabase/migrations/20260218100000_create_reward_ad_function.sql
-  </verify>
-  <done>
-    - `reward_ad_credits` function created with atomic daily limit check + credit award
-    - Returns JSON with success/failure, new balance, ads remaining
-    - SECURITY DEFINER + REVOKE from authenticated — only callable via service_role
-    - Handles edge case: user_credits row missing (no crash, just no UPDATE)
-  </done>
+  <verify>flutter test test/core/ --reporter expanded</verify>
+  <done>4 new test files; all tests GREEN</done>
 </task>
 
 <task type="auto">
-  <name>Create reward-ad Edge Function</name>
+  <name>Write settings feature tests</name>
   <files>
-    supabase/functions/reward-ad/index.ts (CREATE)
+    test/features/settings/data/notifications_provider_test.dart (new)
+    test/features/settings/presentation/widgets/settings_sections_test.dart (new)
   </files>
   <action>
-    1. Create `supabase/functions/reward-ad/index.ts` following the generate-image pattern:
-       - CORS headers (same pattern as generate-image)
-       - OPTIONS preflight handler
-       - JWT authentication: extract Bearer token, validate with `supabase.auth.getUser(token)`
-       - Call `reward_ad_credits` RPC with the authenticated user's ID:
-         ```typescript
-         const { data, error } = await supabase.rpc('reward_ad_credits', {
-           p_user_id: userId
-         });
-         ```
-       - Response mapping:
-         - If RPC error → 500
-         - If `data.success === false` → 429 (daily limit reached)
-         - If `data.success === true` → 200 with credits_awarded, new_balance, ads_remaining
-       - Keep it minimal: no request body needed (user ID comes from JWT)
+    1. **notifications_provider_test:** Test the shared preferences-backed notification
+       toggle provider reads and writes correctly
+    2. **settings_sections_test:** Widget test ensuring all section tiles render, theme toggle works,
+       notification toggle works, about dialog opens, and account-related actions call correct handlers
 
-    AVOID:
-    - Do NOT accept user_id from request body — extract from JWT only (security)
-    - Do NOT implement Server-Side Verification (SSV) yet — that's a future enhancement
-    - Do NOT add any ad validation logic — the function trusts the client called it after showing an ad
-    - Keep the function under 100 lines
+    Follow existing test patterns in `test/features/settings/`.
+
+    - What to avoid: Do NOT test platform-specific notification permissions (out of scope).
   </action>
-  <verify>
-    test -f supabase/functions/reward-ad/index.ts
-    grep -q "reward_ad_credits" supabase/functions/reward-ad/index.ts
-    grep -q "auth.getUser" supabase/functions/reward-ad/index.ts
-  </verify>
-  <done>
-    - `reward-ad` Edge Function authenticates user via JWT
-    - Calls `reward_ad_credits` RPC to atomically award credits
-    - Returns 200 with new_balance and ads_remaining on success
-    - Returns 429 when daily limit (10 ads) reached
-    - Returns 401 for invalid/missing auth
-    - Follows the same CORS + error handling pattern as generate-image
-  </done>
+  <verify>flutter test test/features/settings/ --reporter expanded</verify>
+  <done>2 new test files; all tests GREEN</done>
 </task>
 
 ## Success Criteria
-- [ ] `reward_ad_credits` SQL function exists in a migration file
-- [ ] Function atomically checks daily limit, awards 5 credits, logs transaction
-- [ ] Function is SECURITY DEFINER, REVOKED from authenticated role
-- [ ] `reward-ad` Edge Function authenticates via JWT
-- [ ] Edge Function returns structured JSON (credits_awarded, new_balance, ads_remaining)
-- [ ] 429 response when daily limit reached
-- [ ] No client-side RPC access to reward function
+- [ ] Core: 10+ test files (was 6)
+- [ ] Settings: 4+ test files (was 2)
+- [ ] All new tests pass
+- [ ] All existing tests still pass
+- [ ] `flutter analyze` clean
+- [ ] Total test file count: 70+ (was 61)

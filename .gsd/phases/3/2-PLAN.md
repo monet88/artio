@@ -4,165 +4,93 @@ plan: 2
 wave: 2
 ---
 
-# Plan 3.2: Credit Gate & Premium Gate UI
+# Plan 3.2: Reduce Cross-Feature Coupling
 
 ## Objective
-Wire credit checks into the generation flow and create bottom sheets for insufficient credits and premium model gating. After this plan, users see clear, actionable UI when they can't afford generation or try to use a premium model.
+Several features directly import from other features' presentation layers (21 cross-feature imports
+found). Some are legitimate (e.g., `create` using `template_engine` domain entities). Others
+represent coupling that should be routed through `core/state/` shared providers.
+
+**Main coupling patterns to fix:**
+1. **AuthViewModel** imported by 5 features — extract auth state to `core/state/`
+2. **CreditBalanceProvider** imported by create — already in `core/state/user_scoped_providers.dart`? Verify
+3. **SubscriptionProvider** imported by gallery, credits — extract to `core/state/`
 
 ## Context
-- `.gsd/SPEC.md` — Credit economy, premium model gating, "Watch Ad or Subscribe" prompt
-- `lib/features/create/presentation/create_screen.dart` — Current auth gate bottom sheet pattern (`_showAuthGateBottomSheet`)
-- `lib/features/create/presentation/view_models/create_view_model.dart` — Current generation flow, premium check at line 87-95
-- `lib/features/template_engine/data/repositories/generation_repository.dart` — Edge Function invocation, 402 handling needed at line 47-58
-- `lib/core/constants/ai_models.dart` — `AiModelConfig.creditCost`, `AiModelConfig.isPremium`
-- `lib/core/exceptions/app_exception.dart` — AppException variants (use `payment` for credit issues)
-- `lib/core/design_system/app_spacing.dart` — Spacing constants
-- `lib/features/credits/presentation/providers/credit_balance_provider.dart` — CreditBalanceNotifier from Plan 3.1
-- `lib/features/credits/domain/providers/credit_repository_provider.dart` — Repository provider from Plan 3.1
+- lib/core/state/user_scoped_providers.dart
+- Cross-feature import list (from /map analysis)
+- .gsd/ARCHITECTURE.md
 
 ## Tasks
 
 <task type="auto">
-  <name>Handle 402 insufficient credits + add credit pre-check</name>
+  <name>Audit and categorize cross-feature imports</name>
   <files>
-    lib/features/template_engine/data/repositories/generation_repository.dart (MODIFY)
-    lib/features/create/presentation/view_models/create_view_model.dart (MODIFY)
+    lib/core/state/user_scoped_providers.dart
   </files>
   <action>
-    1. Modify `generation_repository.dart` — Add 402 handler:
-       - After the `response.status == 429` check (line 47), add a `response.status == 402` check:
-         ```dart
-         if (response.status == 402) {
-           final data = response.data is Map<String, dynamic>
-               ? response.data as Map<String, dynamic>
-               : null;
-           final required = data?['required'] as int?;
-           throw AppException.payment(
-             message: 'Insufficient credits',
-             code: 'insufficient_credits',
-           );
-         }
-         ```
-       - Also add 402 to the FunctionException catch block (line 70-77)
+    1. Read `user_scoped_providers.dart` to see what's already shared via core
+    2. For each cross-feature import found in `/map`:
+       - Mark as LEGITIMATE if it accesses a domain entity or domain interface
+         (e.g., `GenerationJobModel` from template_engine is a domain entity — OK)
+       - Mark as FIX if it accesses a presentation-layer provider/viewmodel from another feature
+    3. For FIX items: determine if a `core/state/` provider already exists or needs creation
+    4. Write a summary of what needs to move
 
-    2. Modify `create_view_model.dart` — Add client-side credit pre-check:
-       - Add `creditBalanceNotifierProvider` import
-       - In `generate()`, after the premium model check, add credit balance check:
-         ```dart
-         final balance = ref.read(creditBalanceNotifierProvider).valueOrNull?.balance ?? 0;
-         if (balance < selectedModel.creditCost) {
-           state = AsyncError(
-             AppException.payment(
-               message: 'Insufficient credits',
-               code: 'insufficient_credits',
-             ),
-             StackTrace.current,
-           );
-           return;
-         }
-         ```
-       - This is an optimistic check — the Edge Function is the authoritative enforcer (Phase 2)
-       - The credit cost info is available from `selectedModel.creditCost`
-
-    AVOID:
-    - Do NOT deduct credits client-side — the Edge Function handles deduction
-    - Do NOT change the existing premium model check behavior yet (keeping the error for now; Task 2 changes the UI)
-    - Do NOT add retry logic for 402 — it's not a transient error
+    - What to avoid: Do NOT fix legitimate domain entity imports. They are correct.
   </action>
-  <verify>
-    dart analyze lib/features/template_engine/data/repositories/generation_repository.dart lib/features/create/presentation/view_models/create_view_model.dart — zero errors
-    flutter test — all existing tests pass
-  </verify>
-  <done>
-    - 402 responses from Edge Function are caught and thrown as `AppException.payment` with code `insufficient_credits`
-    - CreateViewModel checks credit balance before attempting generation
-    - Insufficient credits prevents the Edge Function call entirely (saves a round trip)
-    - All existing tests still pass
-  </done>
+  <verify>cat the summary output</verify>
+  <done>Categorization complete; fix list documented in commit message</done>
 </task>
 
 <task type="auto">
-  <name>Create InsufficientCredits and PremiumModelGate bottom sheets</name>
+  <name>Extract shared state providers to core</name>
   <files>
-    lib/features/credits/presentation/widgets/insufficient_credits_bottom_sheet.dart (CREATE)
-    lib/features/credits/presentation/widgets/premium_model_gate_bottom_sheet.dart (CREATE)
-    lib/features/create/presentation/create_screen.dart (MODIFY)
-    lib/features/create/presentation/widgets/model_selector.dart (MODIFY)
+    lib/core/state/user_scoped_providers.dart (or new files in lib/core/state/)
+    Affected feature files importing cross-feature presentation providers
   </files>
   <action>
-    1. Create `insufficient_credits_bottom_sheet.dart`:
-       - A stateless widget that shows a modal bottom sheet
-       - Props: `int currentBalance`, `int requiredCredits`, `String modelName`
-       - Layout:
-         - Warning icon (amber)
-         - "Not enough credits" title
-         - "You need {required} credits but have {balance}" subtitle
-         - "Watch Ad (+5 credits)" button — disabled with "Coming soon" text (Phase 4)
-         - "Subscribe" button — disabled with "Coming soon" text (Phase 5)
-         - "Cancel" text button
-       - Static helper method: `static Future<void> show(BuildContext context, {...})` that calls `showModalBottomSheet`
-       - Follow the pattern of `_showAuthGateBottomSheet` in create_screen.dart
+    For each FIX item from the audit:
+    1. Create or update a provider in `core/state/` that exposes the needed state
+    2. Update the importing feature files to use the `core/state/` provider instead
+    3. Keep the original feature's provider as the source of truth (the core provider
+       can simply re-export or delegate)
 
-    2. Create `premium_model_gate_bottom_sheet.dart`:
-       - A stateless widget for the premium model subscription prompt
-       - Props: `String modelName`
-       - Layout:
-         - Star/premium icon (primary color)
-         - "Premium Model" title
-         - "{modelName} requires a subscription" subtitle
-         - "View Plans" button — disabled with "Coming soon" text (Phase 5)
-         - "Use Free Model" button — pops and optionally switches to default free model
-         - "Cancel" text button
-       - Static helper method: `static Future<bool?> show(...)` returns true if user chose "Use Free Model"
+    Common pattern:
+    ```dart
+    // lib/core/state/auth_state_provider.dart
+    @riverpod
+    bool isAuthenticated(Ref ref) {
+      return ref.watch(authViewModelProvider).isAuthenticated;
+    }
+    ```
 
-    3. Modify `create_screen.dart`:
-       - Import both bottom sheets
-       - In `_handleGenerate`:
-         - Add credit balance check BEFORE calling generate:
-           Read `creditBalanceNotifierProvider`, get balance
-           Get selected model's credit cost from `AiModels.getById(formState.modelId)`
-           If `balance < creditCost` → show `InsufficientCreditsBottomSheet.show(...)` and return
-         - Replace the premium model check error handling:
-           Instead of letting CreateViewModel throw the error,
-           check `selectedModel.isPremium && !isPremiumUser` in _handleGenerate
-           and show `PremiumModelGateBottomSheet.show(...)` instead
-           If user chose "Use Free Model", call `formNotifier.setModel(AiModels.defaultModelId)` and return
-       - Remove the inline premium check from CreateViewModel since it's now handled in UI
-       - Also handle the `AppException.payment` with code `insufficient_credits` in the error listener
-         to show the bottom sheet if the server-side check catches what the client missed
-
-    4. Modify `model_selector.dart`:
-       - Show credit cost next to each model name in the dropdown/selector
-       - Display format: "{modelName} • {creditCost} credits"
-       - For premium models, add a small "PRO" badge or icon
-
-    AVOID:
-    - Do NOT implement actual ad watching — just show the button as disabled/coming soon
-    - Do NOT implement actual subscription purchasing — just show the button as disabled/coming soon
-    - Do NOT make the bottom sheets overly complex — they're placeholders that will be enhanced in Phase 4/5
-    - Do NOT remove the server-side 402 handling — it's a safety net
+    - What to avoid: Do NOT create deep abstractions. A thin re-export or derived provider is
+      sufficient. Do NOT break existing consumer behavior.
   </action>
-  <verify>
-    dart analyze lib/features/credits/ lib/features/create/ — zero errors
-    flutter test — all existing tests pass
-  </verify>
-  <done>
-    - InsufficientCreditsBottomSheet shows when user lacks credits (with balance and required amount)
-    - PremiumModelGateBottomSheet shows when selecting a premium model without subscription
-    - "Watch Ad" and "Subscribe" buttons are visible but disabled (Phase 4/5 will enable)
-    - Model selector shows credit cost per model
-    - Premium models show a "PRO" indicator
-    - Both bottom sheets follow the existing auth gate bottom sheet pattern
-    - All existing tests still pass
-  </done>
+  <verify>python3 -c "
+import os, re
+violations = 0
+for root, dirs, files in os.walk('lib/features'):
+    for f in files:
+        if f.endswith('.dart') and not f.endswith('.g.dart') and not f.endswith('.freezed.dart'):
+            fp = os.path.join(root, f)
+            parts = fp.split('/')
+            if len(parts) >= 3:
+                feature = parts[2]
+                with open(fp) as fh:
+                    for i, line in enumerate(fh, 1):
+                        m = re.search(r\"import 'package:artio/features/(\w+)/presentation/\", line)
+                        if m and m.group(1) != feature:
+                            violations += 1
+                            print(f'{fp}:{i} -> {m.group(1)}')
+print(f'Total violations: {violations}')
+"</verify>
+  <done>Cross-feature presentation imports reduced; only legitimate domain imports remain; tests pass</done>
 </task>
 
 ## Success Criteria
-- [ ] 402 from Edge Function is caught and mapped to `AppException.payment(code: 'insufficient_credits')`
-- [ ] CreateViewModel pre-checks credit balance before calling Edge Function
-- [ ] InsufficientCreditsBottomSheet displays when credits are insufficient
-- [ ] PremiumModelGateBottomSheet displays when selecting premium model without subscription
-- [ ] Model selector shows credit cost alongside model name
-- [ ] "Watch Ad" and "Subscribe" buttons exist but are disabled (coming soon)
-- [ ] `dart analyze` passes with zero errors
-- [ ] All existing flutter tests pass
+- [ ] Zero unnecessary cross-feature presentation-layer imports
+- [ ] Core state providers exist for auth and subscription status
+- [ ] `flutter analyze` clean
+- [ ] All tests pass (`flutter test`)
