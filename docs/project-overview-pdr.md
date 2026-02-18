@@ -13,6 +13,8 @@
 1. **Template Engine** (Home tab): Guided image-to-image transformation with curated presets
 2. **Text-to-Image** (Create tab): Freeform prompt-based generation
 
+Both flows now use the Supabase Edge Function `supabase/functions/generate-image/index.ts`, which enforces the `user_credits` balance (see `supabase/migrations/20260218000000_create_credit_system.sql`) before calling Kie/Gemini and mirrors results into storage, so the frontend can respond immediately with credit states or 402 responses.
+
 **Market Position:** Consumer-facing AI creativity tool with freemium monetization, targeting casual creators and small businesses.
 
 ---

@@ -507,6 +507,28 @@ void main() {
 
 ---
 
+## Credits & Monetization
+
+### Frontend Surface
+
+- `features/credits/domain/entities/credit_balance.dart` models the `user_credits.balance` row used by `CreditBalanceNotifier` (`features/credits/presentation/providers/credit_balance_provider.dart`).
+- `insufficient_credits_sheet.dart` and `premium_model_sheet.dart` provide the 402 + premium model gating UI for the create flow.
+- `CreateViewModel` (not listed here) now reacts to 402 responses by prompting the sheets and preventing generation until credits are replenished.
+
+### Backend Enforcement
+
+- The Supabase Edge Function `supabase/functions/generate-image/index.ts` deducts credits, polls Kie/Gemini, mirrors outputs to `generated-images`, and updates `generation_jobs` with completed/failure status.
+- A server-side model-cost map constant in `supabase/functions/generate-image/index.ts` defines cost tiers that match `core/constants/ai_models.dart`, ensuring the same model+quality pairing is priced consistently.
+- The Edge Function returns HTTP 402 + `{required}` when `deduct_credits` fails, triggering the premium/insufficient UI.
+
+### Supabase Schema
+
+- Migration `supabase/migrations/20260218000000_create_credit_system.sql` adds `user_credits`, `ad_views`, tighter `credit_transactions` constraints, and the `deduct_credits`/`refund_credits` RPCs.
+- The `handle_new_user` trigger now seeds `user_credits` with a 20-credit welcome bonus and logs a `welcome_bonus` transaction.
+- All RPCs are `SECURITY DEFINER` with grants to `authenticated`, allowing Edge Functions and clients to call them while honoring RLS policies.
+
+---
+
 ## Known Technical Debt
 
 ### Deferred Items

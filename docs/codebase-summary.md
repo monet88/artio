@@ -1,10 +1,15 @@
 # Codebase Summary
 
 **Project**: Artio - AI Image Generation SaaS
-**Generated**: 2026-02-16 (repomix v1.11.0)
-**Lines of Code**: Needs verification from repomix summary (latest pack shows 248 files; use repomix stats).
-**Total Files**: 248 files (per latest repomix pack)
-**Repomix Snapshot**: Derived from `repomix-output.xml` (219,485 tokens, 946,802 chars). Top token contributors: `pubspec.lock` (17,894 tokens), `admin/pubspec.lock` (12,674 tokens), `lib/core/exceptions/app_exception.freezed.dart` (8,992 tokens), `lib/features/auth/presentation/state/auth_state.freezed.dart` (5,725 tokens), `supabase/migrations/20260128130000_add_25_templates.sql` (4,102 tokens).
+**Generated**: 2026-02-18 (repomix v1.11.0)
+**Repomix Snapshot**: 676,568 tokens, 2,816,842 characters, 510 files (see `repomix-output.xml`). Top token contributors:
+1. `.test-machine.jsonl` (70,154 tokens, 261,364 chars)
+2. `pubspec.lock` (18,072 tokens, 50,326 chars)
+3. `admin/pubspec.lock` (12,670 tokens, 35,004 chars)
+4. `.agent/.shared/ui-ux-pro-max/scripts/design_system.py` (10,230 tokens, 43,811 chars)
+5. `.agent/.shared/ui-ux-pro-max/data/styles.csv` (9,925 tokens, 40,204 chars)
+
+**Summary**: Repomix confirms the clean architecture across the Flutter app, admin client, Supabase migrations, and generated files. The template engine, gallery, and new credits/Edge-function flows dominate the runtime, while generated Freezed artifacts remain the largest token contributors.
 
 ---
 

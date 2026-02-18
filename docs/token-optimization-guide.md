@@ -201,7 +201,4 @@ Track these for improvement:
 
 ---
 
-*See also:*
-- *[.agent/skills/token-budget/SKILL.md](.agent/skills/token-budget/SKILL.md)*
-- *[.agent/skills/context-compressor/SKILL.md](.agent/skills/context-compressor/SKILL.md)*
-- *[PROJECT_RULES.md](PROJECT_RULES.md) — Token Efficiency Rules*
+*See also:* internal token-budget and context-compressor skills (refer to `.agent/skills/` for the latest guidance) and the project-wide `PROJECT_RULES.md` when planning for token efficiency.
