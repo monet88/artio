@@ -1,6 +1,7 @@
 import 'package:artio/core/design_system/app_spacing.dart';
 import 'package:artio/core/utils/app_exception_mapper.dart';
 import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
+import 'package:artio/features/credits/presentation/providers/credit_balance_provider.dart';
 import 'package:artio/features/settings/data/notifications_provider.dart';
 import 'package:artio/features/settings/presentation/widgets/settings_sections.dart';
 import 'package:artio/features/settings/presentation/widgets/user_profile_card.dart';
@@ -167,6 +168,7 @@ class _SubscriptionCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final subAsync = ref.watch(subscriptionNotifierProvider);
+    final creditBalance = ref.watch(creditBalanceNotifierProvider).valueOrNull;
     final theme = Theme.of(context);
 
     return Container(
@@ -203,6 +205,15 @@ class _SubscriptionCard extends ConsumerWidget {
                           color: theme.colorScheme.onSurfaceVariant,
                         ),
                       ),
+                      if (creditBalance != null) ...[                        const SizedBox(height: 4),
+                        Text(
+                          '${creditBalance.balance} credits',
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: theme.colorScheme.primary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
                     ],
                   ),
                 ),
@@ -246,6 +257,15 @@ class _SubscriptionCard extends ConsumerWidget {
                   color: theme.colorScheme.onSurfaceVariant,
                 ),
               ),
+              if (creditBalance != null) ...[                const SizedBox(height: AppSpacing.xs),
+                Text(
+                  '${creditBalance.balance} credits remaining · ${status.monthlyCredits}/mo',
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.primary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
               const SizedBox(height: AppSpacing.sm),
               Row(
                 children: [
