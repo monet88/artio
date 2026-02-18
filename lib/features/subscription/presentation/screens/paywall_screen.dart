@@ -188,26 +188,29 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
 
   Future<void> _handleRestore() async {
     setState(() => _isPurchasing = true);
-    await ref.read(subscriptionNotifierProvider.notifier).restore();
-    if (!mounted) return;
-    final subscriptionState = ref.read(subscriptionNotifierProvider);
-    if (subscriptionState.hasError) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Restore failed. Please try again.')),
-      );
-    } else {
-      final status = subscriptionState.valueOrNull;
-      if (status != null && status.isActive) {
+    try {
+      await ref.read(subscriptionNotifierProvider.notifier).restore();
+      if (!mounted) return;
+      final subscriptionState = ref.read(subscriptionNotifierProvider);
+      if (subscriptionState.hasError) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Purchases restored!')),
+          const SnackBar(content: Text('Restore failed. Please try again.')),
         );
-        Navigator.of(context).pop();
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('No previous purchases found.')),
-        );
+        final status = subscriptionState.valueOrNull;
+        if (status != null && status.isActive) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Purchases restored!')),
+          );
+          Navigator.of(context).pop();
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('No previous purchases found.')),
+          );
+        }
       }
+    } finally {
+      if (mounted) setState(() => _isPurchasing = false);
     }
-    if (mounted) setState(() => _isPurchasing = false);
   }
 }
