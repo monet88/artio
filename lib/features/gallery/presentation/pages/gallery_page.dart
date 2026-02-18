@@ -4,6 +4,7 @@ import 'package:artio/features/gallery/presentation/providers/gallery_provider.d
 import 'package:artio/features/gallery/presentation/widgets/empty_gallery_state.dart';
 import 'package:artio/features/gallery/presentation/widgets/masonry_image_grid.dart';
 import 'package:artio/features/gallery/presentation/widgets/shimmer_grid.dart';
+import 'package:artio/features/subscription/presentation/providers/subscription_provider.dart';
 import 'package:artio/routing/routes/app_routes.dart';
 import 'package:artio/shared/widgets/error_state_widget.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +19,11 @@ class GalleryPage extends ConsumerWidget {
     final isLoggedIn = ref.watch(authViewModelProvider).maybeMap(
           authenticated: (_) => true,
           orElse: () => false,
+        );
+    // Free users see watermark; default true for loading/error (safe default).
+    final showWatermark = ref.watch(subscriptionNotifierProvider).maybeWhen(
+          data: (status) => status.isFree,
+          orElse: () => true,
         );
 
     return Scaffold(
@@ -35,6 +41,7 @@ class GalleryPage extends ConsumerWidget {
 
           return MasonryImageGrid(
             items: items,
+            showWatermark: showWatermark,
             onItemTap: (item, index) {
               GalleryImageRoute(
                 $extra: GalleryImageExtra(
