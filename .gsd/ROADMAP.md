@@ -20,9 +20,9 @@
 
 ## Current Milestone: Codebase Improvement
 
-### Phase 1: CORS & Edge Function DRY
+### Phase 1: CORS & Edge Function DRY ✅
 Extract duplicated CORS logic into `_shared/cors.ts`. Refactor `generate-image` and `reward-ad` to use it.
-- **Plans:** 1.1
+- **Plans:** 1.1 ✅
 - **Discovery:** Level 0 (internal cleanup)
 
 ### Phase 2: Widget Extraction
