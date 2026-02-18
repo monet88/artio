@@ -2,18 +2,12 @@
 
 ## Current Position
 - **Milestone**: Freemium Monetization
-- **Phase**: 6 — Watermark, Polish & Testing (verified)
-- **Status**: ✅ Complete and verified
+- **Phase**: PR Review Fixes (post Phase 5-6 review)
+- **Status**: Planned — ready for execution
 
 ## Plans
-- `6-1` — Watermark Overlay Widget & Display Integration — ✅ COMPLETE
-- `6-2` — Watermark on Export & Settings Polish — ✅ COMPLETE
-- `6-3` — Comprehensive Testing — ✅ COMPLETE
-
-## Verification
-- 13/13 must-haves verified
-- 519 tests passing, 0 failures
-- dart analyze: no new errors
+- `pr-fixes/1` — Watermark Safety & Resource Cleanup — ⬜ PENDING
+- `pr-fixes/2` — UX Logic & Cleanup Fixes — ⬜ PENDING
 
 ## Previous Phases
 - Phase 1: Remove Login Wall & Auth Gate — ✅ COMPLETE (merged)
@@ -24,4 +18,4 @@
 - Phase 6: Watermark, Polish & Testing — ✅ COMPLETE (PR #13, verified)
 
 ## Next Steps
-1. Merge PR #13 to complete the Freemium Monetization milestone
+1. /execute pr-fixes
