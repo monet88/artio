@@ -1,24 +1,18 @@
 # STATE.md
 
 ## Current Position
-- **Milestone**: Freemium Monetization
-- **Phase**: 7 — PR #13 Review Fixes
-- **Status**: ✅ COMPLETE — all 9 review issues fixed
+- **Milestone**: Codebase Improvement
+- **Phase**: Not started — needs `/plan`
+- **Status**: 🆕 New milestone
 
 ## Phases
-- Phase 1: Remove Login Wall & Auth Gate — ✅ COMPLETE (merged)
-- Phase 2: Credit System (Database + Backend) — ✅ COMPLETE (merged)
-- Phase 3: Free Quota & Premium Gate UI — ✅ COMPLETE (merged)
-- Phase 4: Google AdMob Rewarded Ads — ✅ COMPLETE (merged)
-- Phase 5: RevenueCat Subscription Integration — ✅ COMPLETE (PR #13)
-- Phase 6: Watermark, Polish & Testing — ✅ VERIFIED (13/13, PR #13)
-- PR Fixes: Watermark Safety & UX Cleanup — ✅ COMPLETE
-- Phase 7: PR #13 Review Fixes — ✅ COMPLETE
+_To be planned_
 
 ## Evidence
-- 530 tests passing, 0 failures
-- dart analyze: 0 errors, 0 new warnings
-- All 9 review issues resolved (3 P1, 3 P2, 3 P3)
+- 530 tests passing (from Freemium Monetization)
+- PR #13 merged to master
 
 ## Next Steps
-1. Merge PR #13
+1. `/map` — re-analyze codebase after Freemium Monetization changes
+2. `/plan` — decompose Codebase Improvement into phases
+3. `/execute` — implement fixes
