@@ -80,18 +80,11 @@
 - "Watch Ad" button in credit-insufficient dialog and dedicated earn-credits section
 
 ### Phase 5: RevenueCat Subscription Integration
-**Status**: ⬜ Not Started
+**Status**: ✅ Complete
 **Objective**: Wire up RevenueCat for in-app purchases (Pro/Ultra subscriptions)
-**Key Changes**:
-- Configure RevenueCat (products, offerings, entitlements)
-- Subscription service: purchase, restore, check entitlement
-- On subscription: grant monthly credits (200 Pro / 500 Ultra)
-- Hide ads for subscribers
-- Paywall UI (subscription comparison screen)
-- Handle subscription lifecycle (renewal, cancellation, grace period)
 
 ### Phase 6: Watermark, Polish & Testing
-**Status**: ⬜ Not Started
+**Status**: ✅ Complete (verified)
 **Objective**: Add watermark for free tier, polish flows, comprehensive testing
 **Key Changes**:
 - Watermark overlay on generated images for free users
