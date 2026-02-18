@@ -2,6 +2,8 @@ import 'package:artio/features/auth/presentation/state/auth_state.dart';
 import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
 import 'package:artio/features/settings/data/notifications_provider.dart';
 import 'package:artio/features/settings/presentation/settings_screen.dart';
+import 'package:artio/features/subscription/domain/entities/subscription_status.dart';
+import 'package:artio/features/subscription/presentation/providers/subscription_provider.dart';
 import 'package:artio/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -27,6 +29,8 @@ void main() {
       notificationsNotifierProvider
           .overrideWith(_FakeNotificationsNotifier.new),
       themeModeNotifierProvider.overrideWith(_FakeThemeModeNotifier.new),
+      subscriptionNotifierProvider
+          .overrideWith(_FakeSubscriptionNotifier.new),
     ];
 
     testWidgets('renders app bar with Settings title', (tester) async {
@@ -141,5 +145,12 @@ class _FakeThemeModeNotifier extends ThemeModeNotifier {
   @override
   Future<ThemeMode> build() async {
     return ThemeMode.system;
+  }
+}
+
+class _FakeSubscriptionNotifier extends SubscriptionNotifier {
+  @override
+  Future<SubscriptionStatus> build() async {
+    return const SubscriptionStatus();
   }
 }

@@ -4,12 +4,15 @@ import 'package:artio/features/auth/presentation/view_models/auth_view_model.dar
 import 'package:artio/features/settings/data/notifications_provider.dart';
 import 'package:artio/features/settings/presentation/widgets/settings_sections.dart';
 import 'package:artio/features/settings/presentation/widgets/user_profile_card.dart';
+import 'package:artio/features/subscription/presentation/providers/subscription_provider.dart';
+import 'package:artio/routing/routes/app_routes.dart';
 import 'package:artio/shared/widgets/loading_state_widget.dart';
 import 'package:artio/theme/app_colors.dart';
 import 'package:artio/utils/logger_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 /// Redesigned Settings screen with card-based layout, user profile card,
@@ -136,6 +139,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   UserProfileCard(email: email, isDark: isDark)
                 else
                   _SignInPromptCard(isDark: isDark),
+                if (isLoggedIn) ...[
+                  const SizedBox(height: AppSpacing.md),
+                  _SubscriptionCard(isDark: isDark),
+                ],
                 const SizedBox(height: AppSpacing.lg),
                 SettingsSections(
                   email: email,
@@ -148,6 +155,110 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 const SizedBox(height: AppSpacing.xxl),
               ],
             ),
+    );
+  }
+}
+
+class _SubscriptionCard extends ConsumerWidget {
+  const _SubscriptionCard({required this.isDark});
+
+  final bool isDark;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final subAsync = ref.watch(subscriptionNotifierProvider);
+    final theme = Theme.of(context);
+
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF1E2342) : const Color(0xFFF3F4F8),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: subAsync.when(
+        loading: () => const Center(
+          child: Padding(
+            padding: EdgeInsets.all(AppSpacing.md),
+            child: CircularProgressIndicator(),
+          ),
+        ),
+        error: (_, __) => const SizedBox.shrink(),
+        data: (status) {
+          if (status.isFree) {
+            return Row(
+              children: [
+                Icon(
+                  Icons.workspace_premium_outlined,
+                  color: theme.colorScheme.primary,
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Free Plan', style: theme.textTheme.titleSmall),
+                      Text(
+                        'Upgrade for more credits & features',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                FilledButton.tonal(
+                  onPressed: () => const PaywallRoute().push<void>(context),
+                  child: const Text('Upgrade'),
+                ),
+              ],
+            );
+          }
+
+          final tierLabel = status.tier?.toUpperCase() ?? 'PREMIUM';
+          final expiryText = status.expiresAt != null
+              ? DateFormat.yMMMd().format(status.expiresAt!)
+              : 'Never';
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    Icons.star,
+                    color: theme.colorScheme.primary,
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  Text(
+                    '$tierLabel Plan',
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppSpacing.xs),
+              Text(
+                status.willRenew
+                    ? 'Renews $expiryText'
+                    : 'Expires $expiryText',
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              Row(
+                children: [
+                  OutlinedButton(
+                    onPressed: () => const PaywallRoute().push<void>(context),
+                    child: const Text('Manage'),
+                  ),
+                ],
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 }
