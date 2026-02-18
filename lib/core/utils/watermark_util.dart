@@ -62,6 +62,7 @@ class WatermarkUtil {
     // Encode to PNG.
     final picture = recorder.endRecording();
     final rendered = await picture.toImage(width, height);
+    picture.dispose();
     final byteData = await rendered.toByteData(
       format: ui.ImageByteFormat.png,
     );

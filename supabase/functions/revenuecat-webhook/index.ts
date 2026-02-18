@@ -111,6 +111,21 @@ Deno.serve(async (req) => {
                     break;
                 }
 
+                const expiresAt = event.expiration_at_ms
+                    ? new Date(event.expiration_at_ms).toISOString()
+                    : null;
+
+                // Extend subscription expiry
+                const { error: statusErr } = await supabase.rpc("update_subscription_status", {
+                    p_user_id: appUserId,
+                    p_is_premium: true,
+                    p_tier: tierInfo.tier,
+                    p_expires_at: expiresAt,
+                });
+                if (statusErr) {
+                    console.error("[revenuecat-webhook] update_subscription_status error:", statusErr);
+                }
+
                 // Grant credits (idempotent via event_id)
                 const { error: creditErr } = await supabase.rpc("grant_subscription_credits", {
                     p_user_id: appUserId,
@@ -123,7 +138,7 @@ Deno.serve(async (req) => {
                 }
 
                 console.log(
-                    `[revenuecat-webhook] RENEWAL: ${tierInfo.credits} credits for ${appUserId}`
+                    `[revenuecat-webhook] RENEWAL: ${tierInfo.tier}, ${tierInfo.credits} credits for ${appUserId}`
                 );
                 break;
             }
