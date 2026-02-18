@@ -170,6 +170,42 @@ void main() {
         expect(state.error, isA<PaymentException>());
       });
 
+      test('proceeds when user has sufficient credits', () async {
+        container = createContainer(creditBalance: 100);
+
+        // Wait for the credit balance stream to emit data
+        await container.read(creditBalanceNotifierProvider.future);
+
+        when(() => mockPolicy.canGenerate(
+          userId: any(named: 'userId'),
+          templateId: any(named: 'templateId'),
+        )).thenAnswer((_) async => const GenerationEligibility.allowed());
+
+        when(() => mockRepository.startGeneration(
+          templateId: any(named: 'templateId'),
+          prompt: any(named: 'prompt'),
+          aspectRatio: any(named: 'aspectRatio'),
+          imageCount: any(named: 'imageCount'),
+          outputFormat: any(named: 'outputFormat'),
+          modelId: any(named: 'modelId'),
+        )).thenAnswer((_) async => 'job-123');
+
+        when(() => mockRepository.watchJob('job-123'))
+            .thenAnswer((_) => const Stream.empty());
+
+        await container.read(createViewModelProvider.notifier).generate(
+              formState: const CreateFormState(prompt: 'A sunset'),
+              userId: 'user-1',
+              isPremiumUser: false,
+            );
+
+        // Credit check passed, so policy should have been called
+        verify(() => mockPolicy.canGenerate(
+          userId: 'user-1',
+          templateId: any(named: 'templateId'),
+        )).called(1);
+      });
+
       test('calls policy canGenerate with correct params', () async {
         when(() => mockPolicy.canGenerate(
           userId: any(named: 'userId'),
