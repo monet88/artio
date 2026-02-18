@@ -7,6 +7,7 @@ import 'package:artio/features/gallery/domain/entities/gallery_item.dart';
 import 'package:artio/features/gallery/presentation/pages/gallery_page.dart';
 import 'package:artio/features/gallery/presentation/pages/image_viewer_page.dart';
 import 'package:artio/features/settings/presentation/settings_screen.dart';
+import 'package:artio/features/subscription/presentation/screens/paywall_screen.dart';
 import 'package:artio/features/template_engine/presentation/screens/home_screen.dart';
 import 'package:artio/features/template_engine/presentation/screens/template_detail_screen.dart';
 import 'package:artio/shared/widgets/main_shell.dart';
@@ -160,5 +161,15 @@ class GalleryImageRoute extends GoRouteData {
       items: extra.items,
       initialIndex: extra.initialIndex,
     );
+  }
+}
+
+@TypedGoRoute<PaywallRoute>(path: '/paywall')
+class PaywallRoute extends GoRouteData {
+  const PaywallRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const PaywallScreen();
   }
 }

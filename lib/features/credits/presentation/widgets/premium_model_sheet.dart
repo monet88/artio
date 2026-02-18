@@ -1,4 +1,5 @@
 import 'package:artio/core/design_system/app_spacing.dart';
+import 'package:artio/routing/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 
 /// Bottom sheet displayed when user tries to use a premium model
@@ -35,8 +36,10 @@ class PremiumModelSheet extends StatelessWidget {
           SizedBox(
             width: double.infinity,
             child: FilledButton.icon(
-              // TODO(phase-5): Navigate to subscription purchase screen
-              onPressed: () => Navigator.pop(context),
+              onPressed: () {
+                Navigator.pop(context);
+                const PaywallRoute().push<void>(context);
+              },
               icon: const Icon(Icons.star_outline),
               label: const Text('Upgrade to Premium'),
             ),
