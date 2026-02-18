@@ -35,6 +35,7 @@ class PremiumModelSheet extends StatelessWidget {
           SizedBox(
             width: double.infinity,
             child: FilledButton.icon(
+              // TODO(phase-5): Navigate to subscription purchase screen
               onPressed: () => Navigator.pop(context),
               icon: const Icon(Icons.star_outline),
               label: const Text('Upgrade to Premium'),

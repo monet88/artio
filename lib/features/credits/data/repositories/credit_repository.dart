@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:artio/core/constants/app_constants.dart';
 import 'package:artio/core/exceptions/app_exception.dart';
 import 'package:artio/core/providers/supabase_provider.dart';
 import 'package:artio/features/credits/domain/entities/credit_balance.dart';
@@ -72,20 +73,23 @@ class CreditRepository implements ICreditRepository {
     try {
       final response = await _supabase.functions.invoke('reward-ad');
 
+      // Check status codes before parsing body
+      if (response.status == 429) {
+        throw AppException.payment(
+          message: 'Daily ad limit reached '
+              '(${AppConstants.dailyAdLimit}/day)',
+          code: 'daily_limit_reached',
+        );
+      }
+
       final data = response.data is String
           ? jsonDecode(response.data as String) as Map<String, dynamic>
           : response.data as Map<String, dynamic>;
 
-      if (response.status == 429) {
-        throw const AppException.network(
-          message: 'Daily ad limit reached (10/day)',
-          statusCode: 429,
-        );
-      }
-
       if (data['success'] != true) {
         throw AppException.network(
           message: data['message'] as String? ?? 'Ad reward failed',
+          statusCode: response.status,
         );
       }
 
@@ -93,6 +97,18 @@ class CreditRepository implements ICreditRepository {
         creditsAwarded: data['credits_awarded'] as int,
         newBalance: data['new_balance'] as int,
         adsRemaining: data['ads_remaining'] as int,
+      );
+    } on FunctionException catch (e) {
+      if (e.status == 429) {
+        throw AppException.payment(
+          message: 'Daily ad limit reached '
+              '(${AppConstants.dailyAdLimit}/day)',
+          code: 'daily_limit_reached',
+        );
+      }
+      throw AppException.network(
+        message: e.reasonPhrase ?? 'Ad reward failed',
+        statusCode: e.status,
       );
     } on AppException {
       rethrow;
@@ -111,8 +127,8 @@ class CreditRepository implements ICreditRepository {
           .eq('view_date', today)
           .maybeSingle();
 
-      if (data == null) return 10; // No ads watched today
-      return 10 - (data['view_count'] as int);
+      if (data == null) return AppConstants.dailyAdLimit;
+      return AppConstants.dailyAdLimit - (data['view_count'] as int);
     } on PostgrestException catch (e) {
       throw AppException.network(message: e.message);
     } catch (e) {

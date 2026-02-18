@@ -18,6 +18,7 @@ abstract class ICreditRepository {
   Future<({int creditsAwarded, int newBalance, int adsRemaining})>
       rewardAdCredits();
 
-  /// Fetch how many ads the user can still watch today (max 10).
+  /// Fetch how many ads the user can still watch today.
+  /// See [AppConstants.dailyAdLimit] for the maximum.
   Future<int> fetchAdsRemainingToday();
 }

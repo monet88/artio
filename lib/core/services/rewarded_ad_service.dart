@@ -7,6 +7,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'rewarded_ad_service.g.dart';
 
 /// Test ad unit IDs from Google documentation.
+// TODO(release): Replace with production ad unit IDs from AdMob dashboard.
 const _testAdUnitIdAndroid = 'ca-app-pub-3940256099942544/5224354917';
 const _testAdUnitIdIos = 'ca-app-pub-3940256099942544/1712485313';
 
@@ -23,7 +24,10 @@ RewardedAdService rewardedAdService(RewardedAdServiceRef ref) {
 }
 
 /// Manages loading, showing, and disposing of Google AdMob rewarded ads.
-class RewardedAdService {
+///
+/// Extends [ChangeNotifier] so widgets can reactively rebuild when
+/// [isAdLoaded] changes (e.g., after preloading completes).
+class RewardedAdService extends ChangeNotifier {
   RewardedAd? _rewardedAd;
   bool _isLoading = false;
 
@@ -45,10 +49,12 @@ class RewardedAdService {
         onAdLoaded: (ad) {
           _rewardedAd = ad;
           _isLoading = false;
+          notifyListeners();
         },
         onAdFailedToLoad: (error) {
           debugPrint('RewardedAd failed to load: ${error.message}');
           _isLoading = false;
+          notifyListeners();
         },
       ),
     );
@@ -92,8 +98,10 @@ class RewardedAdService {
   }
 
   /// Disposes the current ad if loaded.
+  @override
   void dispose() {
     _rewardedAd?.dispose();
     _rewardedAd = null;
+    super.dispose();
   }
 }

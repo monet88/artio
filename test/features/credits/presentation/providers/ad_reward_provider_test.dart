@@ -1,12 +1,12 @@
 import 'package:artio/core/exceptions/app_exception.dart';
 import 'package:artio/core/services/rewarded_ad_service.dart';
-import 'package:artio/features/credits/domain/repositories/i_credit_repository.dart';
+import 'package:artio/features/credits/data/repositories/credit_repository.dart';
 import 'package:artio/features/credits/presentation/providers/ad_reward_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockCreditRepository extends Mock implements ICreditRepository {}
+class MockCreditRepository extends Mock implements CreditRepository {}
 
 class MockRewardedAdService extends Mock implements RewardedAdService {}
 
@@ -24,85 +24,100 @@ void main() {
 
     container = ProviderContainer(
       overrides: [
-        // Override the repository
-        adRewardNotifierProvider.overrideWith(() {
-          final notifier = AdRewardNotifier();
-          return notifier;
-        }),
+        creditRepositoryProvider.overrideWithValue(mockRepo),
+        rewardedAdServiceProvider.overrideWithValue(mockAdService),
       ],
     );
   });
 
   tearDown(() => container.dispose());
 
-  group('AdRewardNotifier (mock repo)', () {
-    test('rewardAdCredits returns correct record on success', () async {
-      when(() => mockRepo.rewardAdCredits()).thenAnswer(
-        (_) async => (creditsAwarded: 5, newBalance: 55, adsRemaining: 7),
-      );
-
-      final result = await mockRepo.rewardAdCredits();
-
-      expect(result.creditsAwarded, 5);
-      expect(result.newBalance, 55);
-      expect(result.adsRemaining, 7);
+  group('AdRewardNotifier', () {
+    test('build() returns ads remaining from repository', () async {
+      final remaining = await container.read(adRewardNotifierProvider.future);
+      expect(remaining, 8);
+      verify(() => mockRepo.fetchAdsRemainingToday()).called(1);
     });
 
-    test('rewardAdCredits throws validation on daily limit', () async {
-      when(() => mockRepo.rewardAdCredits()).thenThrow(
-        const AppException.network(
-          message: 'Daily ad limit reached (10/day)',
-          statusCode: 429,
-        ),
-      );
+    group('watchAdAndReward', () {
+      test('throws when no ad is loaded', () async {
+        // Wait for initial build
+        await container.read(adRewardNotifierProvider.future);
 
-      expect(
-        () => mockRepo.rewardAdCredits(),
-        throwsA(isA<NetworkException>()),
-      );
-    });
+        when(() => mockAdService.isAdLoaded).thenReturn(false);
 
-    test('showAd returns false when no ad loaded', () async {
-      when(() => mockAdService.isAdLoaded).thenReturn(false);
+        final notifier =
+            container.read(adRewardNotifierProvider.notifier);
 
-      expect(mockAdService.isAdLoaded, false);
-    });
+        expect(
+          () => notifier.watchAdAndReward(),
+          throwsA(isA<AppException>()),
+        );
+      });
 
-    test('showAd returns true when ad completes', () async {
-      when(() => mockAdService.isAdLoaded).thenReturn(true);
-      when(() => mockAdService.showAd()).thenAnswer((_) async => true);
+      test('throws when user dismisses ad early', () async {
+        await container.read(adRewardNotifierProvider.future);
 
-      final earned = await mockAdService.showAd();
+        when(() => mockAdService.isAdLoaded).thenReturn(true);
+        when(() => mockAdService.showAd()).thenAnswer((_) async => false);
 
-      expect(earned, true);
-      verify(() => mockAdService.showAd()).called(1);
-    });
+        final notifier =
+            container.read(adRewardNotifierProvider.notifier);
 
-    test('showAd returns false when user dismisses ad early', () async {
-      when(() => mockAdService.isAdLoaded).thenReturn(true);
-      when(() => mockAdService.showAd()).thenAnswer((_) async => false);
+        expect(
+          () => notifier.watchAdAndReward(),
+          throwsA(isA<AppException>()),
+        );
 
-      final earned = await mockAdService.showAd();
+        verify(() => mockAdService.showAd()).called(1);
+      });
 
-      expect(earned, false);
-    });
+      test('awards credits and returns result on success', () async {
+        await container.read(adRewardNotifierProvider.future);
 
-    test('fetchAdsRemainingToday returns correct count', () async {
-      when(() => mockRepo.fetchAdsRemainingToday())
-          .thenAnswer((_) async => 3);
+        when(() => mockAdService.isAdLoaded).thenReturn(true);
+        when(() => mockAdService.showAd()).thenAnswer((_) async => true);
+        when(() => mockRepo.rewardAdCredits()).thenAnswer(
+          (_) async =>
+              (creditsAwarded: 5, newBalance: 55, adsRemaining: 7),
+        );
+        // After invalidation, build() is called again
+        when(() => mockRepo.fetchAdsRemainingToday())
+            .thenAnswer((_) async => 7);
 
-      final remaining = await mockRepo.fetchAdsRemainingToday();
+        final notifier =
+            container.read(adRewardNotifierProvider.notifier);
 
-      expect(remaining, 3);
-    });
+        final result = await notifier.watchAdAndReward();
 
-    test('fetchAdsRemainingToday returns 0 at daily limit', () async {
-      when(() => mockRepo.fetchAdsRemainingToday())
-          .thenAnswer((_) async => 0);
+        expect(result.creditsAwarded, 5);
+        expect(result.newBalance, 55);
+        expect(result.adsRemaining, 7);
 
-      final remaining = await mockRepo.fetchAdsRemainingToday();
+        verify(() => mockAdService.showAd()).called(1);
+        verify(() => mockRepo.rewardAdCredits()).called(1);
+      });
 
-      expect(remaining, 0);
+      test('propagates server error from rewardAdCredits', () async {
+        await container.read(adRewardNotifierProvider.future);
+
+        when(() => mockAdService.isAdLoaded).thenReturn(true);
+        when(() => mockAdService.showAd()).thenAnswer((_) async => true);
+        when(() => mockRepo.rewardAdCredits()).thenThrow(
+          const AppException.payment(
+            message: 'Daily ad limit reached (10/day)',
+            code: 'daily_limit_reached',
+          ),
+        );
+
+        final notifier =
+            container.read(adRewardNotifierProvider.notifier);
+
+        expect(
+          () => notifier.watchAdAndReward(),
+          throwsA(isA<PaymentException>()),
+        );
+      });
     });
   });
 }

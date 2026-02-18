@@ -1,3 +1,4 @@
+import 'package:artio/core/constants/app_constants.dart';
 import 'package:artio/core/design_system/app_spacing.dart';
 import 'package:artio/core/exceptions/app_exception.dart';
 import 'package:artio/core/services/rewarded_ad_service.dart';
@@ -100,7 +101,7 @@ class _InsufficientCreditsSheetState
                       : const Icon(Icons.play_circle_outline),
                   label: Text(
                     adsRemaining > 0
-                        ? 'Watch ad for +5 credits ($adsRemaining left)'
+                        ? 'Watch ad for +${AppConstants.adRewardCredits} credits ($adsRemaining left)'
                         : 'Daily ad limit reached',
                   ),
                 );
