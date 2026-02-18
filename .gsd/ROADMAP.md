@@ -1,51 +1,117 @@
-# Roadmap
+# ROADMAP.md
 
-> Derived from verified brainstorm: `artifacts/superpowers/brainstorm.md`
-> Discovery Level: 0 (Skip) — all fixes follow established patterns, no new dependencies
+> **Current Milestone**: Freemium Monetization
+> **Goal**: Remove login wall, implement credit-based economy with rewarded ads and subscriptions
 
-## Phase 1: Edge Case Fixes
-**Priority:** Critical — user-facing bugs (crashes, race conditions, infinite loading)
-**Source:** `plans/260217-1648-fix-edge-cases/` (with corrections from brainstorm)
-**Status:** ✅ Complete
+---
 
-Fixes:
-1. DateTime parsing crash (`gallery_repository.dart:63,67`)
-2. Concurrent sign-in double-submit (no guard in auth methods)
-3. Profile creation TOCTOU race condition (no 23505 handling)
-4. 429 rate limit not retried (wrong exception type at 2 locations)
-5. No timeout on Edge Function calls
-6. TLS errors not retried (missing HandshakeException)
-7. `_notifyRouter()` missing in 2 code paths
-8. `writeAsBytes` no error handling (FileSystemException → wrong AppException type)
+## Completed Milestones
 
-**Corrections applied:**
-- Timeout: 90s (not 30s — generation takes 30-120s)
-- Fix BOTH 429 paths (line 47 AND 70 in generation_repository.dart)
-- Drop fake `_hasEnoughSpace()` — keep error classification + cleanup only
-- `AppException.storage` confirmed to exist (Serena verified)
+### Edge Case Fixes (Phase 1) ✅
+- DateTime parsing, concurrent sign-in guards, profile TOCTOU race, 429 retry, timeout, TLS retry, router notify, file error handling
+- 5 plans, 8 tasks, 453 tests passing
 
-## Phase 2: Codebase Improvement
-**Priority:** High — maintainability, not user-facing
-**Source:** `plans/260217-1647-codebase-improvement/` (with corrections from brainstorm)
-**Status:** PENDING (after Phase 1)
+### Codebase Improvement (Phase 2) ⬜
+- CORS fix, widget extraction, architecture violations, test coverage
+- Status: PENDING (deferred — not blocking new milestone)
 
-Fixes:
-1. CORS `*` wildcard in Edge Function
-2. Widget extraction (files >200 lines, only extract widgets >50 lines)
-3. Architecture violations (2 of 3 — `auth_view_model` is false positive)
-4. Test coverage improvement
+---
 
-**Corrections applied:**
-- Remove `auth_view_model.dart` from arch violations (Riverpod convention, Serena confirmed)
-- Reduce widget extraction from 16 to ~8-10 files (skip trivially small widgets)
-- Merge test coverage phase with Phase 1 testing
+## Current Milestone: Freemium Monetization
+
+### Must-Haves (from SPEC)
+- [ ] Remove login wall — app opens directly to Home
+- [ ] Credit system — all generation costs credits
+- [ ] Rewarded ads — free users watch ads to earn credits
+- [ ] Subscription tiers — Pro ($9.99) and Ultra ($19.99) via RevenueCat
+- [ ] Premium gate — prompt login + subscribe when selecting premium model or out of credits
+- [ ] Watermark on free tier images
+
+### Nice-to-Haves
+- [ ] Priority generation queue for subscribers
+- [ ] Credit history / transaction log UI
+- [ ] Subscription management settings page
+
+---
+
+## Phases
+
+### Phase 1: Remove Login Wall & Auth Gate
+**Status**: ✅ Complete
+**Objective**: Remove router login redirect, let unauthenticated users browse freely, add auth gate at generation action
+**Key Changes**:
+- Modify `AuthViewModel.redirect()` — allow Home, template detail, Settings without login
+- Update `SplashScreen` flow → go to Home directly (skip login)
+- Auth gate: when tapping "Generate" → check login → if not logged in → show login/register
+- Gallery tab: hidden or "Login to view" for unauthenticated users
+- Settings: theme toggle works, show "Login" button when not authenticated
+- No Supabase Anonymous Auth (ADR-003)
+- Generation still works normally after login (credit system in Phase 2)
+
+### Phase 2: Credit System (Database + Backend)
+**Status**: ✅ Complete
+**Objective**: Build the credit ledger — DB tables, Edge Function credit checks, credit deduction logic
+**Key Changes**:
+- New Supabase migration: `user_credits` table (user_id, balance, updated_at)
+- New Supabase migration: `credit_transactions` table (user_id, amount, type, created_at)
+- Update `generate-image` Edge Function: check credits before generation, deduct on success
+- Welcome bonus: insert 20 credits for new users (DB trigger or app logic)
+- Daily ad tracking: `ad_views` table (user_id, date, count)
+
+### Phase 3: Free Quota & Premium Gate UI
+**Status**: ⬜ Not Started
+**Objective**: Build the client-side credit system and premium gate modals
+**Key Changes**:
+- New feature: `credits/` (domain/data/presentation)
+- Credit balance provider (watches `user_credits`)
+- "Watch Ad or Subscribe" bottom sheet when credits insufficient
+- Premium model gate: show subscription prompt when selecting `isPremium: true` model
+- Credit cost display on generation button
+- Deduct credits before calling Edge Function
+
+### Phase 4: Google AdMob Rewarded Ads
+**Status**: ⬜ Not Started
+**Objective**: Integrate rewarded video ads for free credit earning
+**Key Changes**:
+- Configure AdMob for iOS + Android (ad unit IDs)
+- Rewarded ad service (load, show, reward callback)
+- Award 5 credits per completed ad view
+- Enforce max 10 ads/day limit (local + server validation)
+- "Watch Ad" button in credit-insufficient dialog and dedicated earn-credits section
+
+### Phase 5: RevenueCat Subscription Integration
+**Status**: ⬜ Not Started
+**Objective**: Wire up RevenueCat for in-app purchases (Pro/Ultra subscriptions)
+**Key Changes**:
+- Configure RevenueCat (products, offerings, entitlements)
+- Subscription service: purchase, restore, check entitlement
+- On subscription: grant monthly credits (200 Pro / 500 Ultra)
+- Hide ads for subscribers
+- Paywall UI (subscription comparison screen)
+- Handle subscription lifecycle (renewal, cancellation, grace period)
+
+### Phase 6: Watermark, Polish & Testing
+**Status**: ⬜ Not Started
+**Objective**: Add watermark for free tier, polish flows, comprehensive testing
+**Key Changes**:
+- Watermark overlay on generated images for free users
+- Remove watermark for subscribers
+- End-to-end flow testing (anonymous → earn credits → generate → subscribe)
+- Credit edge cases (concurrent generation, insufficient credits race)
+- Update settings screen for subscription status display
+- Update existing tests for new auth flow
+
+---
 
 ## Dependencies
 
 ```
-Phase 1 (Edge Cases) ──► Phase 2 (Codebase Improvement)
+Phase 1 (Anonymous Auth) 
+    ──► Phase 2 (Credit DB) 
+        ──► Phase 3 (Credit UI + Premium Gate)
+            ──► Phase 4 (AdMob)
+            ──► Phase 5 (RevenueCat)
+                ──► Phase 6 (Polish)
 ```
 
-Phase 2 depends on Phase 1 because:
-- Both touch `generation_repository.dart` and `gallery_repository.dart`
-- Edge case fixes must be stable before refactoring
+Phase 4 and Phase 5 can run in parallel after Phase 3.

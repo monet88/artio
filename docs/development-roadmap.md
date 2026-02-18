@@ -97,15 +97,16 @@
 
 **Phase 6: Subscription & Credits** (8h) - *NEXT*
 - Subscription model (Free/Pro tiers)
-- Credits system for free users
+- Credits system for free users (implemented: `user_credits`, `deduct_credits`/`refund_credits`, Edge Function + UI handling)
 - RevenueCat integration (iOS/Android)
 - Stripe integration (Web)
 - Rewarded ads (mobile)
+- Premium-model gating (insufficient credit + premium sheets)
 
 **Plan 2: Credit, Premium & Rate Limit** (6h) - *Merged into Phase 6*
-- Database schema for credits/limits
-- Edge Function enforcement
-- Rate limiting & cooldown
+- Database schema for credits/limits (complete)
+- Edge Function enforcement (complete)
+- Rate limiting & cooldown (pending)
 
 **Phase 8: Admin App** (~1.5h remaining)
 - ~~Separate Flutter web app for template management~~ ✓

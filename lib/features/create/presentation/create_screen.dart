@@ -1,5 +1,7 @@
+import 'package:artio/core/constants/ai_models.dart';
 import 'package:artio/core/constants/app_constants.dart';
 import 'package:artio/core/design_system/app_spacing.dart';
+import 'package:artio/core/exceptions/app_exception.dart';
 import 'package:artio/core/utils/app_exception_mapper.dart';
 import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
 import 'package:artio/features/create/domain/entities/create_form_state.dart';
@@ -9,10 +11,13 @@ import 'package:artio/features/create/presentation/widgets/aspect_ratio_selector
 import 'package:artio/features/create/presentation/widgets/generation_progress_overlay.dart';
 import 'package:artio/features/create/presentation/widgets/model_selector.dart';
 import 'package:artio/features/create/presentation/widgets/prompt_input_field.dart';
+import 'package:artio/features/credits/presentation/providers/credit_balance_provider.dart';
+import 'package:artio/features/credits/presentation/widgets/insufficient_credits_sheet.dart';
+import 'package:artio/features/credits/presentation/widgets/premium_model_sheet.dart';
 import 'package:artio/features/template_engine/domain/entities/generation_job_model.dart';
+import 'package:artio/routing/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 class CreateScreen extends ConsumerStatefulWidget {
   const CreateScreen({super.key});
@@ -51,9 +56,22 @@ class _CreateScreenState extends ConsumerState<CreateScreen> {
           error: (error, _) {
             // Skip if we already showed a SnackBar for a failed job above
             if (next.valueOrNull?.status == JobStatus.failed) return;
-            final message = AppExceptionMapper.toUserMessage(error);
+
             WidgetsBinding.instance.addPostFrameCallback((_) {
               if (!mounted) return;
+
+              // Show bottom sheet for credit / premium errors
+              if (error is PaymentException) {
+                _showInsufficientCreditsSheet();
+                return;
+              }
+              if (error is GenerationException &&
+                  error.message == 'This model requires a premium subscription') {
+                _showPremiumModelSheet();
+                return;
+              }
+
+              final message = AppExceptionMapper.toUserMessage(error);
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text(message)),
               );
@@ -81,15 +99,7 @@ class _CreateScreenState extends ConsumerState<CreateScreen> {
           orElse: () => null,
         );
     if (userId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Please log in to generate images'),
-          action: SnackBarAction(
-            label: 'Login',
-            onPressed: () => context.go('/login'),
-          ),
-        ),
-      );
+      _showAuthGateBottomSheet();
       return;
     }
 
@@ -103,6 +113,83 @@ class _CreateScreenState extends ConsumerState<CreateScreen> {
           userId: userId,
           isPremiumUser: isPremiumUser,
         );
+  }
+
+  void _showAuthGateBottomSheet() {
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (context) => Padding(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.lock_outline,
+              size: 48,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Text(
+              'Sign in to create',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              'Create an account or sign in to start generating AI art',
+              style: Theme.of(context).textTheme.bodyMedium,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  const LoginRoute().go(this.context);
+                },
+                child: const Text('Sign In'),
+              ),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  const RegisterRoute().go(this.context);
+                },
+                child: const Text('Create Account'),
+              ),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showInsufficientCreditsSheet() {
+    final balance = ref.read(creditBalanceNotifierProvider).valueOrNull?.balance ?? 0;
+    final formState = ref.read(createFormNotifierProvider);
+    final model = AiModels.getById(formState.modelId);
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (_) => InsufficientCreditsSheet(
+        currentBalance: balance,
+        requiredCredits: model?.creditCost ?? 0,
+      ),
+    );
+  }
+
+  void _showPremiumModelSheet() {
+    final formState = ref.read(createFormNotifierProvider);
+    final model = AiModels.getById(formState.modelId);
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (_) => PremiumModelSheet(
+        modelName: model?.displayName ?? 'This model',
+      ),
+    );
   }
 
   @override
@@ -148,6 +235,33 @@ class _CreateScreenState extends ConsumerState<CreateScreen> {
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 const SizedBox(height: AppSpacing.lg),
+                // Credit balance chip (authenticated users only)
+                if (ref.watch(authViewModelProvider).maybeMap(
+                      authenticated: (_) => true,
+                      orElse: () => false,
+                    ))
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                    child: ref.watch(creditBalanceNotifierProvider).maybeWhen(
+                      data: (balance) => Align(
+                        alignment: Alignment.centerLeft,
+                        child: Chip(
+                          avatar: const Text('💎', style: TextStyle(fontSize: 14)),
+                          label: Text('${balance.balance} credits'),
+                          visualDensity: VisualDensity.compact,
+                        ),
+                      ),
+                      loading: () => const Align(
+                        alignment: Alignment.centerLeft,
+                        child: Chip(
+                          avatar: Text('💎', style: TextStyle(fontSize: 14)),
+                          label: Text('...'),
+                          visualDensity: VisualDensity.compact,
+                        ),
+                      ),
+                      orElse: () => const SizedBox.shrink(),
+                    ),
+                  ),
                 PromptInputField(
                   label: 'Prompt',
                   hintText: 'Describe the image you want...',

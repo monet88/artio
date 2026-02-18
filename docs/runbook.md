@@ -115,12 +115,10 @@ grep -ri "error\|exception\|failed" *.log
 ### Build Verification
 
 ```powershell
-# Node.js
-npm run build
-if ($LASTEXITCODE -eq 0) { Write-Host "✅ Build passed" }
+# Flutter/Dart
+flutter analyze
+flutter test
 
-# Python
-python -m py_compile src/**/*.py
 ```
 
 ### Test Verification

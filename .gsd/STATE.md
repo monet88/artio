@@ -1,34 +1,28 @@
-# GSD State
+# STATE.md
 
 ## Current Position
-- **Phase**: 1 (completed)
-- **Task**: All tasks complete
-- **Status**: Verified
+- **Milestone**: Freemium Monetization
+- **Phase**: 3 — Free Quota & Premium Gate UI
+- **Task**: All plans complete
+- **Status**: ✅ COMPLETE — PR pending
 
-## Last Session Summary
-Phase 1 executed successfully. 5 plans, 8 tasks completed across 3 waves.
+## Plans Executed
+- `.gsd/phases/3/1-PLAN.md` — Credit Feature Foundation ✅
+- `.gsd/phases/3/2-PLAN.md` — Credit Gate & Premium Gate UI ✅
+- `.gsd/phases/3/3-PLAN.md` — Credit Feature Tests ✅
 
-### Wave 1 (Plans 1.1, 1.2, 1.3):
-- Created `safeParseDateTime` utility, replaced raw `DateTime.parse` in gallery_repository
-- Added 4 authenticating guards to auth sign-in methods
-- Added 23505 race condition handling in `_createUserProfile`
-- Fixed `_notifyRouter` to use `finally` block in `_handleSignedIn`
-- Changed both 429 exception types from `AppException.generation` to `AppException.network`
-- Added 90s timeout on `functions.invoke`
-- Added `HandshakeException` to retry transient errors
+## Commits (branch: feat/phase-3-credit-ui)
+1. `feat(3-1): create credit feature skeleton (entity + repository)`
+2. `feat(3-1): create CreditBalanceNotifier + display balance in CreateScreen`
+3. `feat(3-2): handle 402 insufficient credits + client-side credit pre-check`
+4. `feat(3-2): bottom sheets for insufficient credits and premium model gate`
+5. `test(3-3): credit repository, balance notifier, and viewmodel credit tests`
 
-### Wave 2 (Plan 1.4):
-- Added `FileSystemException` catch in `downloadImage` and `getImageFile`
-- Correctly classified as `AppException.storage`
-
-### Wave 3 (Plan 1.5):
-- Created `date_time_utils_test.dart` (6 tests)
-- Created `retry_test.dart` (4 tests)
-- Updated `generation_repository_test.dart` (429 → network, added timeout test)
-- All 453 tests pass
-
-## Current Branch
-`fix/edge-case-fixes`
+## Previous Phases
+- Phase 1: Remove Login Wall & Auth Gate — ✅ COMPLETE
+- Phase 2: Credit System (Database + Backend) — ✅ COMPLETE
+- Phase 3: Free Quota & Premium Gate UI — ✅ COMPLETE
 
 ## Next Steps
-1. `/execute 2` — Run Phase 2 (Codebase Improvement)
+1. Create PR for Phase 3
+2. Plan Phase 4 (Ad Rewards)

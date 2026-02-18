@@ -2,179 +2,159 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Development Rules
+## Repository Layout (non-obvious)
 
-Follow `.claude/rules/development-rules.md` strictly. Core principles: **YAGNI, KISS, DRY**.
+This repo has 3 active surfaces:
 
-## Build & Run Commands
+1. **Main Flutter app** (`/`) – end-user app (`name: artio`)
+2. **Admin Flutter app** (`/admin`) – template/admin dashboard (`name: artio_admin`)
+3. **Supabase backend** (`/supabase`) – SQL migrations + Edge Function (`generate-image`)
+
+When changing behavior, confirm which surface owns it before editing.
+
+## Common Commands
+
+### Main app (`/`)
 
 ```bash
-# Install dependencies
+# Install deps
 flutter pub get
 
-# Code generation (required after modifying Freezed/Riverpod annotations)
+# Codegen (Riverpod/Freezed/go_router)
 dart run build_runner build --delete-conflicting-outputs
 
-# Watch mode (auto-regenerate during development)
+# Codegen watch mode
 dart run build_runner watch
 
 # Run app
-flutter run                # Default device
-flutter run -d chrome      # Web
-flutter run -d windows     # Windows
+flutter run
+flutter run -d chrome
+flutter run -d windows
 
-# Compile check (run after modifying any .dart file)
+# Static analysis + format
 flutter analyze
-
-# Format
 dart format .
+
+# Tests
+flutter test
+flutter test --coverage
+flutter test test/features/auth/data/repositories/auth_repository_test.dart
+flutter test test/integration/template_seed_test.dart
+flutter test integration_test/template_e2e_test.dart
 ```
 
-## Testing
+### Admin app (`/admin`)
 
 ```bash
-# All tests
-flutter test
-
-# Single test file
-flutter test test/features/auth/data/repositories/auth_repository_test.dart
-
-# With coverage (current: 80%+)
-flutter test --coverage
-
-# Integration tests (requires Supabase credentials in .env.test)
-flutter test test/integration/template_seed_test.dart  # Seed data verification
-flutter test integration_test/template_e2e_test.dart   # E2E flows
+# Run inside repo root
+cd admin && flutter pub get
+cd admin && dart run build_runner build --delete-conflicting-outputs
+cd admin && flutter run -d chrome
+cd admin && flutter analyze
+cd admin && flutter test
 ```
 
-**Test coverage**: 80%+ (target met). Integration tests verify seed data integrity and Supabase connectivity.
+## Runtime / Environment
 
-## Environment Setup
+- Main app bootstraps env via `String.fromEnvironment('ENV', defaultValue: 'development')` in `lib/main.dart`.
+- Supabase config is loaded through `EnvConfig` (`lib/core/config/env_config.dart`).
+- Required runtime keys are in `.env` (see `README.md` + `pubspec.yaml` assets section).
+- Sentry is initialized during app startup (`lib/main.dart`, `lib/core/config/sentry_config.dart`).
 
-Create `.env` from `.env.example`:
-```env
-SUPABASE_URL=your_supabase_url
-SUPABASE_ANON_KEY=your_supabase_anon_key
+## Architecture (big picture)
+
+## 1) Frontend architecture (main app)
+
+- Feature-first clean architecture under `lib/features/*`.
+- Each feature uses: `domain` (interfaces/entities), `data` (repo impl), `presentation` (UI + Riverpod view models/providers).
+- Dependency direction is enforced: **Presentation -> Domain <- Data**.
+
+Cross-cutting modules:
+- `lib/core/` for config, providers, constants, design system, exceptions, utilities
+- `lib/routing/` for GoRouter + typed route definitions
+- `lib/shared/` for shared widgets/shell/error UI
+
+## 2) Navigation/auth orchestration
+
+- Router provider: `lib/routing/app_router.dart`
+- Typed routes: `lib/routing/routes/app_routes.dart`
+- Auth state + redirect logic: `lib/features/auth/presentation/view_models/auth_view_model.dart`
+
+AuthViewModel implements `Listenable` and drives router refresh/redirect behavior.
+
+## 3) Image generation pipeline (core product flow)
+
+Primary flow spans Flutter + Supabase Edge Function:
+
+1. UI/ViewModel starts generation (`create` or `template_engine` view model)
+2. Repository calls Supabase function `generate-image`
+3. Edge function selects provider (Kie or Gemini), performs generation, mirrors files to Supabase Storage
+4. Job rows are updated in `generation_jobs`
+5. Flutter listens via realtime stream (`watchJob`) and updates UI
+
+Key files:
+- Client repo: `lib/features/template_engine/data/repositories/generation_repository.dart`
+- Create flow VM: `lib/features/create/presentation/view_models/create_view_model.dart`
+- Template flow VM: `lib/features/template_engine/presentation/view_models/generation_view_model.dart`
+- Shared job orchestration: `lib/features/template_engine/presentation/helpers/generation_job_manager.dart`
+- Edge function: `supabase/functions/generate-image/index.ts`
+
+## 4) Credits + payment guardrails
+
+Credits are enforced in 2 layers:
+
+- **Client pre-check** in create flow (balance stream via credits provider)
+- **Server-authoritative deduction/refund** in edge function (`deduct_credits` / `refund_credits` RPC path)
+
+Key files:
+- `lib/features/credits/presentation/providers/credit_balance_provider.dart`
+- `supabase/functions/generate-image/index.ts`
+- migrations under `supabase/migrations/*create_credit_system.sql`
+
+## Codegen Rules (important)
+
+Generated artifacts are committed and expected (`*.g.dart`, `*.freezed.dart`, router generated files).
+
+After changing any:
+- `@riverpod` provider/viewmodel
+- Freezed/json entity
+- typed route annotation
+
+run:
+
+```bash
+dart run build_runner build --delete-conflicting-outputs
 ```
 
-Environment files loaded as Flutter assets (see `pubspec.yaml` flutter.assets). Do NOT bundle `.env.test` in release assets.
+Do not hand-edit generated files.
 
-## Architecture
+## Backend/AI references
 
-**Artio** is a cross-platform AI image generation SaaS (Flutter 3.10+, Dart 3.10+).
+- AI model reference source of truth: `docs/kie-api/`
+- Supabase edge runtime config: `supabase/config.toml`
+- Active function entrypoint: `supabase/functions/generate-image/index.ts`
 
-### Feature-First Clean Architecture
+## Test Layout
 
-```
-lib/
-+-- core/                   # Cross-cutting: constants, exceptions, providers, utils
-|   +-- providers/          # Riverpod providers (Supabase, connectivity)
-|   +-- utils/              # Utilities (retry logic, error mapper)
-+-- features/               # Each feature follows 3-layer pattern below
-|   +-- auth/               # Email/OAuth/password reset
-|   +-- template_engine/    # CORE: AI template-based image generation
-|   +-- gallery/            # Masonry grid, download/share/delete
-|   +-- settings/           # Theme switcher
-|   +-- create/             # Text-to-image (placeholder)
-+-- routing/                # GoRouter config
-+-- shared/                 # MainShell, OfflineBanner, ErrorPage
-+-- theme/                  # Theme management
-+-- main.dart               # Entry point
-```
+Main app tests are split by intent:
 
-### 3-Layer Pattern per Feature
+- `test/features/` feature unit/widget tests
+- `test/core/`, `test/shared/`, `test/routing/` infra/shared tests
+- `test/integration/` integration checks
+- `integration_test/` end-to-end style flows
 
-```
-features/{name}/
-+-- domain/                 # Business logic (depends on nothing)
-|   +-- entities/           # Freezed models
-|   +-- repositories/       # Abstract interfaces
-+-- data/                   # Implementation (depends on Domain)
-|   +-- repositories/       # Concrete Supabase implementations
-+-- presentation/           # UI + State (depends on Domain only)
-    +-- providers/          # @riverpod annotated providers
-    +-- screens/            # Full-screen pages
-    +-- widgets/            # Reusable components
-```
+When fixing behavior, prefer running the narrowest relevant test file first, then full suite.
 
-**Dependency rule**: Presentation -> Domain <- Data. Never import Data in Presentation.
+## Existing docs to keep aligned
 
-### Key Patterns
+- `README.md`
+- `docs/system-architecture.md`
+- `docs/code-standards.md`
+- `docs/project-overview-pdr.md`
+- `docs/codebase-summary.md`
+- `docs/development-roadmap.md`
 
-- **State Management**: Riverpod with `@riverpod` code generation only (no manual providers). Use `AsyncValue.guard` for error handling.
-- **Data Models**: Freezed with `part 'model.freezed.dart'` + `part 'model.g.dart'`. Factory constructors for JSON.
-- **Navigation**: TypedGoRoute with code generation (`@TypedGoRoute`). Use `.push(context)` or `.go(context)` methods on route classes. Config in `lib/routing/routes/app_routes.dart` (generated to `app_routes.g.dart`). Auth guards via redirect in router config.
-- **Error Handling**: `AppException` from data layer -> `AppExceptionMapper` for user-friendly messages. Use `ErrorStateWidget` for consistent error UI. Never expose stack traces.
-- **Network Resilience**: Wrap repository calls with `retry()` for automatic retry on transient errors (SocketException, TimeoutException, 5xx). Monitor connectivity with `connectivityProvider` stream. Show `OfflineBanner` when offline.
-- **Design System**: Centralized constants in `lib/core/design_system/` (spacing, dimensions, colors). Never use magic numbers.
-- **Backend**: Supabase (Auth, PostgreSQL with RLS, Storage, Edge Functions, Realtime).
+## Global policy inheritance (must follow)
 
-## Quick File Reference
-
-| Resource | Path |
-|----------|------|
-| Main entry | `lib/main.dart` |
-| Router config | `lib/routing/app_router.dart` |
-| Typed routes | `lib/routing/routes/app_routes.dart` (generated: `.g.dart`) |
-| Supabase provider | `lib/core/providers/supabase_provider.dart` |
-| Connectivity provider | `lib/core/providers/connectivity_provider.dart` |
-| Retry utility | `lib/core/utils/retry.dart` |
-| Error mapper | `lib/core/utils/app_exception_mapper.dart` |
-| Error widget | `lib/shared/widgets/error_state_widget.dart` |
-| Design system | `lib/core/design_system/` (spacing, dimensions, colors) |
-| Constants | `lib/core/constants/app_constants.dart` |
-| Env config | `lib/core/config/env_config.dart` |
-
-## AI Model API Reference
-
-`docs/kie-api/` is the source of truth for all AI model API specs. Key files:
-
-| Resource | Path |
-|----------|------|
-| Model Map (Index) | `docs/kie-api/kie-model-map.md` |
-| Full Model List | `docs/kie-api/kie-api-llms.txt` |
-| Google/Imagen | `docs/kie-api/google/` |
-| Flux-2 | `docs/kie-api/flux2/` |
-| GPT Image | `docs/kie-api/gpt-image/` |
-| Seedream | `docs/kie-api/seedream/` |
-
-Reference these when adding models, updating Edge Functions, or debugging API issues.
-
-## Feature Status
-
-| Feature | Status |
-|---------|--------|
-| Authentication | Complete |
-| Template Engine | Complete |
-| Gallery | Complete |
-| Settings | Complete |
-| Subscription & Credits | Pending |
-
-## Known Technical Debt
-
-| Issue | Priority |
-|-------|----------|
-| Test coverage ~5-10% (target 80%) | High |
-| DTO leakage in domain entities | Low (acceptable for MVP) |
-
-## Code Search & Navigation
-
-**Semantic search** via `mcp__ck-search__semantic_search` for concept-based discovery:
-- "Where does X happen?" → `semantic_search` (finds by meaning, not keywords)
-- "Find all uses of pattern Y" → `Grep` or `lexical_search` (exact match)
-- Use `semantic_search` with `top_k: 5-10`, `snippet_length: 300` for best results.
-- Index: `.ck/` directory (192 code files, model `bge-small`). Reindex after major changes: `ck --clean . && ck --index .`
-
-**Serena MCP** symbolic code navigation configured (`.serena/project.yml`):
-- Prefer Serena tools over Read/Edit/Grep for code navigation and editing
-- Source directories: `lib/`, `test/`
-- See global rules (`code-search.md`) for Serena best practices and parameter names
-
-## Tool Limitations
-
-- `ast-grep` (sg) does not support Dart. Use `rg` (ripgrep), `flutter analyze`, or Dart LSP instead.
-- On Windows, Claude Code uses Git Bash which may not resolve `.cmd` scripts.
-
-## Documentation
-
-All project docs in `./docs/`: project-overview-pdr.md, code-standards.md, codebase-summary.md, system-architecture.md, development-roadmap.md. Read `./README.md` for full project context.
+- If privacy hook blocks a sensitive file read, ask for explicit approval via `AskUserQuestion` before reading it.
+- Follow modularization guidance from global rules: consider splitting large code files (>200 LOC) by responsibility; do not apply this to markdown/plain-text/config/env/bash files.

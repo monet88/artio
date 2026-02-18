@@ -9,7 +9,9 @@ import 'package:flutter/material.dart';
 /// Animated empty gallery state with floating illustration,
 /// contextual messaging, and gradient CTA button.
 class EmptyGalleryState extends StatefulWidget {
-  const EmptyGalleryState({super.key});
+  const EmptyGalleryState({required this.isLoggedIn, super.key});
+
+  final bool isLoggedIn;
 
   @override
   State<EmptyGalleryState> createState() => _EmptyGalleryStateState();
@@ -92,7 +94,9 @@ class _EmptyGalleryStateState extends State<EmptyGalleryState>
 
                 // ── Title ─────────────────────────────────────────
                 Text(
-                  'Your Gallery is Empty',
+                  widget.isLoggedIn
+                      ? 'Your Gallery is Empty'
+                      : 'Sign in to see your gallery',
                   style: AppTypography.displaySmall.copyWith(
                     color: isDark
                         ? AppColors.textPrimary
@@ -104,7 +108,9 @@ class _EmptyGalleryStateState extends State<EmptyGalleryState>
 
                 // ── Subtitle ──────────────────────────────────────
                 Text(
-                  'Create your first AI-generated artwork\nand it will appear here',
+                  widget.isLoggedIn
+                      ? 'Create your first AI-generated artwork\nand it will appear here'
+                      : 'Your generated artworks will be\nsaved to your gallery',
                   textAlign: TextAlign.center,
                   style: AppTypography.bodySecondary(context),
                 ),
@@ -112,11 +118,17 @@ class _EmptyGalleryStateState extends State<EmptyGalleryState>
                 const SizedBox(height: AppSpacing.xl),
 
                 // ── CTA Button ────────────────────────────────────
-                _GradientCTAButton(
-                  onPressed: () => const HomeRoute().go(context),
-                  icon: Icons.auto_awesome,
-                  label: 'Start Creating',
-                ),
+                if (widget.isLoggedIn)
+                  _GradientCTAButton(
+                    onPressed: () => const HomeRoute().go(context),
+                    icon: Icons.auto_awesome,
+                    label: 'Start Creating',
+                  )
+                else
+                  FilledButton(
+                    onPressed: () => const LoginRoute().go(context),
+                    child: const Text('Sign In'),
+                  ),
               ],
             ),
           ),

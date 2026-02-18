@@ -27,7 +27,7 @@ final galleryStreamProvider =
 // ignore: unused_element
 typedef GalleryStreamRef = AutoDisposeStreamProviderRef<List<GalleryItem>>;
 String _$galleryActionsNotifierHash() =>
-    r'0326b5faf9fbec8b804375b7f29fc41d17860239';
+    r'2080b4fbf8ffcdab875edd03d52a56494d162f05';
 
 /// Notifier for gallery actions (delete, restore, retry)
 ///

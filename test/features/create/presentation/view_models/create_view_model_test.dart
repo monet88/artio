@@ -4,6 +4,8 @@ import 'package:artio/core/constants/app_constants.dart';
 import 'package:artio/core/exceptions/app_exception.dart';
 import 'package:artio/features/create/domain/entities/create_form_state.dart';
 import 'package:artio/features/create/presentation/view_models/create_view_model.dart';
+import 'package:artio/features/credits/domain/entities/credit_balance.dart';
+import 'package:artio/features/credits/presentation/providers/credit_balance_provider.dart';
 import 'package:artio/features/template_engine/data/repositories/generation_repository.dart';
 import 'package:artio/features/template_engine/domain/entities/generation_job_model.dart';
 import 'package:artio/features/template_engine/domain/policies/generation_policy.dart';
@@ -16,6 +18,20 @@ import '../../../../core/fixtures/fixtures.dart';
 
 class MockGenerationRepository extends Mock implements GenerationRepository {}
 class MockGenerationPolicy extends Mock implements IGenerationPolicy {}
+
+class _FakeCreditBalanceNotifier extends CreditBalanceNotifier {
+  _FakeCreditBalanceNotifier(this._balance);
+  final int _balance;
+
+  @override
+  Stream<CreditBalance> build() {
+    return Stream.value(CreditBalance(
+      userId: 'test-user',
+      balance: _balance,
+      updatedAt: DateTime.now(),
+    ));
+  }
+}
 
 void main() {
   group('CreateViewModel', () {
@@ -35,11 +51,14 @@ void main() {
       jobStreamController.close();
     });
 
-    ProviderContainer createContainer() {
+    ProviderContainer createContainer({int creditBalance = 100}) {
       return ProviderContainer(
         overrides: [
           generationRepositoryProvider.overrideWithValue(mockRepository),
           generationPolicyProvider.overrideWithValue(mockPolicy),
+          creditBalanceNotifierProvider.overrideWith(() {
+            return _FakeCreditBalanceNotifier(creditBalance);
+          }),
         ],
       );
     }
@@ -127,6 +146,64 @@ void main() {
 
         final state = container.read(createViewModelProvider);
         expect(state.hasError, true);
+      });
+
+      test('rejects when user has insufficient credits', () async {
+        container = createContainer(creditBalance: 0);
+
+        // Wait for the credit balance stream to emit data
+        await container.read(creditBalanceNotifierProvider.future);
+
+        await container.read(createViewModelProvider.notifier).generate(
+              formState: const CreateFormState(prompt: 'A sunset'),
+              userId: 'user-1',
+              isPremiumUser: false,
+            );
+
+        verifyNever(() => mockPolicy.canGenerate(
+          userId: any(named: 'userId'),
+          templateId: any(named: 'templateId'),
+        ));
+
+        final state = container.read(createViewModelProvider);
+        expect(state.hasError, true);
+        expect(state.error, isA<PaymentException>());
+      });
+
+      test('proceeds when user has sufficient credits', () async {
+        container = createContainer(creditBalance: 100);
+
+        // Wait for the credit balance stream to emit data
+        await container.read(creditBalanceNotifierProvider.future);
+
+        when(() => mockPolicy.canGenerate(
+          userId: any(named: 'userId'),
+          templateId: any(named: 'templateId'),
+        )).thenAnswer((_) async => const GenerationEligibility.allowed());
+
+        when(() => mockRepository.startGeneration(
+          templateId: any(named: 'templateId'),
+          prompt: any(named: 'prompt'),
+          aspectRatio: any(named: 'aspectRatio'),
+          imageCount: any(named: 'imageCount'),
+          outputFormat: any(named: 'outputFormat'),
+          modelId: any(named: 'modelId'),
+        )).thenAnswer((_) async => 'job-123');
+
+        when(() => mockRepository.watchJob('job-123'))
+            .thenAnswer((_) => const Stream.empty());
+
+        await container.read(createViewModelProvider.notifier).generate(
+              formState: const CreateFormState(prompt: 'A sunset'),
+              userId: 'user-1',
+              isPremiumUser: false,
+            );
+
+        // Credit check passed, so policy should have been called
+        verify(() => mockPolicy.canGenerate(
+          userId: 'user-1',
+          templateId: any(named: 'templateId'),
+        )).called(1);
       });
 
       test('calls policy canGenerate with correct params', () async {

@@ -51,6 +51,13 @@ class GenerationRepository implements IGenerationRepository {
         );
       }
 
+      if (response.status == 402) {
+        throw const AppException.payment(
+          message: 'Insufficient credits',
+          code: 'insufficient_credits',
+        );
+      }
+
       if (response.status != 200) {
         final errorMsg = response.data is Map<String, dynamic>
             ? ((response.data as Map<String, dynamic>)['error'] as String?) ?? 'Generation failed'
@@ -72,6 +79,12 @@ class GenerationRepository implements IGenerationRepository {
         throw const AppException.network(
           message: 'Too many requests. Please wait a moment and try again.',
           statusCode: 429,
+        );
+      }
+      if (e.status == 402) {
+        throw const AppException.payment(
+          message: 'Insufficient credits',
+          code: 'insufficient_credits',
         );
       }
       throw AppException.generation(message: e.reasonPhrase ?? 'Generation failed');
