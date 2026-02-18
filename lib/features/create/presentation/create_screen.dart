@@ -9,6 +9,7 @@ import 'package:artio/features/create/presentation/widgets/aspect_ratio_selector
 import 'package:artio/features/create/presentation/widgets/generation_progress_overlay.dart';
 import 'package:artio/features/create/presentation/widgets/model_selector.dart';
 import 'package:artio/features/create/presentation/widgets/prompt_input_field.dart';
+import 'package:artio/features/credits/presentation/providers/credit_balance_provider.dart';
 import 'package:artio/features/template_engine/domain/entities/generation_job_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -193,6 +194,33 @@ class _CreateScreenState extends ConsumerState<CreateScreen> {
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 const SizedBox(height: AppSpacing.lg),
+                // Credit balance chip (authenticated users only)
+                if (ref.watch(authViewModelProvider).maybeMap(
+                      authenticated: (_) => true,
+                      orElse: () => false,
+                    ))
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                    child: ref.watch(creditBalanceNotifierProvider).maybeWhen(
+                      data: (balance) => Align(
+                        alignment: Alignment.centerLeft,
+                        child: Chip(
+                          avatar: const Text('💎', style: TextStyle(fontSize: 14)),
+                          label: Text('${balance.balance} credits'),
+                          visualDensity: VisualDensity.compact,
+                        ),
+                      ),
+                      loading: () => const Align(
+                        alignment: Alignment.centerLeft,
+                        child: Chip(
+                          avatar: Text('💎', style: TextStyle(fontSize: 14)),
+                          label: Text('...'),
+                          visualDensity: VisualDensity.compact,
+                        ),
+                      ),
+                      orElse: () => const SizedBox.shrink(),
+                    ),
+                  ),
                 PromptInputField(
                   label: 'Prompt',
                   hintText: 'Describe the image you want...',
