@@ -80,10 +80,10 @@ class SubscriptionRepository implements ISubscriptionRepository {
     final active = info.entitlements.active;
 
     String? tier;
-    if (active.containsKey('ultra')) {
-      tier = 'ultra';
-    } else if (active.containsKey('pro')) {
-      tier = 'pro';
+    if (active.containsKey(SubscriptionTiers.ultra)) {
+      tier = SubscriptionTiers.ultra;
+    } else if (active.containsKey(SubscriptionTiers.pro)) {
+      tier = SubscriptionTiers.pro;
     }
 
     final entitlement = active[tier];

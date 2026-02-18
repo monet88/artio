@@ -5,6 +5,9 @@ import 'dart:ui' as ui;
 class WatermarkUtil {
   WatermarkUtil._();
 
+  static const _paddingRight = 12.0;
+  static const _paddingBottom = 8.0;
+
   /// Burns an "artio" watermark into [imageBytes] and returns PNG bytes.
   ///
   /// For images smaller than 100px on either dimension, returns [imageBytes]
@@ -55,8 +58,8 @@ class WatermarkUtil {
     final paragraph = paragraphBuilder.build()
       ..layout(ui.ParagraphConstraints(width: width.toDouble()));
 
-    final textX = width - paragraph.longestLine - 12;
-    final textY = height - paragraph.height - 8;
+    final textX = width - paragraph.longestLine - _paddingRight;
+    final textY = height - paragraph.height - _paddingBottom;
     canvas.drawParagraph(paragraph, ui.Offset(textX, textY));
 
     // Encode to PNG.

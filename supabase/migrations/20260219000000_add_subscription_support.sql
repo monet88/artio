@@ -1,5 +1,7 @@
 -- =============================================================================
 -- Migration: Add Subscription Support
+-- Depends on: 20260218000000_create_credit_system.sql (credit_transactions table
+-- and its reference_id column).
 -- Adds subscription columns to profiles, plus helper functions for
 -- granting subscription credits and updating subscription status.
 -- =============================================================================

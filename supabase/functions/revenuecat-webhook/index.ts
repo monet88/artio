@@ -64,6 +64,19 @@ Deno.serve(async (req) => {
 
         const supabase = getSupabaseClient();
 
+        // Soft-validate: warn if app_user_id is not linked to any profile
+        const { data: profile } = await supabase
+            .from("profiles")
+            .select("id")
+            .eq("revenuecat_app_user_id", appUserId)
+            .maybeSingle();
+
+        if (!profile) {
+            console.warn(
+                `[revenuecat-webhook] app_user_id ${appUserId} not linked to any profile. Proceeding with caution.`
+            );
+        }
+
         switch (eventType) {
             case "INITIAL_PURCHASE": {
                 const tierInfo = getTierInfo(productId);
@@ -85,6 +98,10 @@ Deno.serve(async (req) => {
                 });
                 if (statusErr) {
                     console.error("[revenuecat-webhook] update_subscription_status error:", statusErr);
+                    return new Response(JSON.stringify({ error: "Failed to update subscription status" }), {
+                        status: 500,
+                        headers: { "Content-Type": "application/json" },
+                    });
                 }
 
                 // Grant credits (idempotent via event_id)
@@ -96,6 +113,10 @@ Deno.serve(async (req) => {
                 });
                 if (creditErr) {
                     console.error("[revenuecat-webhook] grant_subscription_credits error:", creditErr);
+                    return new Response(JSON.stringify({ error: "Failed to grant credits" }), {
+                        status: 500,
+                        headers: { "Content-Type": "application/json" },
+                    });
                 }
 
                 console.log(
@@ -124,6 +145,10 @@ Deno.serve(async (req) => {
                 });
                 if (statusErr) {
                     console.error("[revenuecat-webhook] update_subscription_status error:", statusErr);
+                    return new Response(JSON.stringify({ error: "Failed to update subscription status" }), {
+                        status: 500,
+                        headers: { "Content-Type": "application/json" },
+                    });
                 }
 
                 // Grant credits (idempotent via event_id)
@@ -135,6 +160,10 @@ Deno.serve(async (req) => {
                 });
                 if (creditErr) {
                     console.error("[revenuecat-webhook] grant_subscription_credits error:", creditErr);
+                    return new Response(JSON.stringify({ error: "Failed to grant credits" }), {
+                        status: 500,
+                        headers: { "Content-Type": "application/json" },
+                    });
                 }
 
                 console.log(

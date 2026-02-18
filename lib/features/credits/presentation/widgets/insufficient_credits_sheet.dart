@@ -68,7 +68,7 @@ class _InsufficientCreditsSheetState
     final theme = Theme.of(context);
     final adsRemainingAsync = ref.watch(adRewardNotifierProvider);
     final adService = ref.watch(rewardedAdServiceProvider);
-    final isSubscriber = _isSubscriber(ref);
+    final isSubscriber = _isSubscriber;
 
     return Padding(
       padding: const EdgeInsets.all(AppSpacing.lg),
@@ -89,7 +89,7 @@ class _InsufficientCreditsSheetState
 
           if (isSubscriber) ...[
             // Subscriber: show renewal info + ad option + manage link
-            _buildRenewalInfo(ref, theme),
+            _buildRenewalInfo(theme),
             const SizedBox(height: AppSpacing.sm),
             _buildAdButton(adsRemainingAsync, adService),
             const SizedBox(height: AppSpacing.sm),
@@ -115,12 +115,12 @@ class _InsufficientCreditsSheetState
     );
   }
 
-  bool _isSubscriber(WidgetRef ref) {
+  bool get _isSubscriber {
     final sub = ref.watch(subscriptionNotifierProvider).valueOrNull;
     return sub != null && sub.isActive;
   }
 
-  Widget _buildRenewalInfo(WidgetRef ref, ThemeData theme) {
+  Widget _buildRenewalInfo(ThemeData theme) {
     final sub = ref.watch(subscriptionNotifierProvider).valueOrNull;
     final expiresAt = sub?.expiresAt;
     final renewalText = expiresAt != null

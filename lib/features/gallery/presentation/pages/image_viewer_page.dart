@@ -94,12 +94,16 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage>
     try {
       final repo = ref.read(galleryRepositoryProvider);
       if (_isFreeUser) {
-        // Download to temp, watermark, then save directly to gallery.
+        // Download to temp, watermark to separate file, then save to gallery.
         final file = await repo.getImageFile(imageUrl);
         final bytes = await file.readAsBytes();
         final watermarked = await WatermarkUtil.applyWatermark(bytes);
-        await file.writeAsBytes(watermarked);
-        await ImageGallerySaverPlus.saveFile(file.path);
+        final watermarkedFile = File(
+          '${file.parent.path}/watermarked_${file.uri.pathSegments.last}',
+        );
+        await watermarkedFile.writeAsBytes(watermarked);
+        await ImageGallerySaverPlus.saveFile(watermarkedFile.path);
+        await watermarkedFile.delete().catchError((_) => watermarkedFile);
         await file.delete().catchError((_) => file);
         HapticService.downloadComplete();
         if (mounted) {
@@ -144,6 +148,7 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage>
           );
         } finally {
           await watermarkedFile.delete().catchError((_) => watermarkedFile);
+          await file.delete().catchError((_) => file);
         }
       } else {
         await SharePlus.instance.share(
