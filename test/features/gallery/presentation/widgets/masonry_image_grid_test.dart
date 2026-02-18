@@ -98,8 +98,7 @@ void main() {
         (tester) async {
       final completedItems = [GalleryItemFixtures.completed()];
 
-      await tester
-          .pumpWidget(buildWidget(completedItems, showWatermark: false));
+      await tester.pumpWidget(buildWidget(completedItems));
 
       expect(find.text('artio'), findsNothing);
     });

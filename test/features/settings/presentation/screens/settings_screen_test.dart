@@ -203,7 +203,6 @@ class _FakeProSubscriptionNotifier extends SubscriptionNotifier {
       tier: 'pro',
       isActive: true,
       willRenew: true,
-      expiresAt: null,
     );
   }
 }

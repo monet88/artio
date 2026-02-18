@@ -64,8 +64,6 @@ void main() {
         ),
       );
 
-      // No Stack from WatermarkOverlay (MaterialApp may have its own)
-      final stacks = find.byType(Stack);
       // The overlay should not add a Stack, just return child directly
       expect(find.text('artio'), findsNothing);
       // Verify child is still rendered

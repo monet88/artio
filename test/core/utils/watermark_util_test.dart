@@ -7,11 +7,11 @@ import 'package:flutter_test/flutter_test.dart';
 /// Creates a minimal valid PNG image of the given dimensions.
 Future<Uint8List> _createTestImage(int width, int height) async {
   final recorder = ui.PictureRecorder();
-  final canvas = ui.Canvas(recorder);
-  canvas.drawRect(
-    ui.Rect.fromLTWH(0, 0, width.toDouble(), height.toDouble()),
-    ui.Paint()..color = const ui.Color(0xFF0000FF),
-  );
+  ui.Canvas(recorder)
+    ..drawRect(
+      ui.Rect.fromLTWH(0, 0, width.toDouble(), height.toDouble()),
+      ui.Paint()..color = const ui.Color(0xFF0000FF),
+    );
   final picture = recorder.endRecording();
   final image = await picture.toImage(width, height);
   final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
