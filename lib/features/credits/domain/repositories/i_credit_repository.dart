@@ -13,4 +13,11 @@ abstract class ICreditRepository {
     int limit = 20,
     int offset = 0,
   });
+
+  /// Call the reward-ad Edge Function to award credits for watching an ad.
+  Future<({int creditsAwarded, int newBalance, int adsRemaining})>
+      rewardAdCredits();
+
+  /// Fetch how many ads the user can still watch today (max 10).
+  Future<int> fetchAdsRemainingToday();
 }

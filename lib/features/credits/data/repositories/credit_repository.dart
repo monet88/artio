@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:artio/core/exceptions/app_exception.dart';
 import 'package:artio/core/providers/supabase_provider.dart';
 import 'package:artio/features/credits/domain/entities/credit_balance.dart';
@@ -63,4 +65,58 @@ class CreditRepository implements ICreditRepository {
       throw AppException.unknown(message: e.toString(), originalError: e);
     }
   }
+
+  @override
+  Future<({int creditsAwarded, int newBalance, int adsRemaining})>
+      rewardAdCredits() async {
+    try {
+      final response = await _supabase.functions.invoke('reward-ad');
+
+      final data = response.data is String
+          ? jsonDecode(response.data as String) as Map<String, dynamic>
+          : response.data as Map<String, dynamic>;
+
+      if (response.status == 429) {
+        throw const AppException.validation(
+          message: 'Daily ad limit reached (10/day)',
+        );
+      }
+
+      if (data['success'] != true) {
+        throw AppException.network(
+          message: data['message'] as String? ?? 'Ad reward failed',
+        );
+      }
+
+      return (
+        creditsAwarded: data['credits_awarded'] as int,
+        newBalance: data['new_balance'] as int,
+        adsRemaining: data['ads_remaining'] as int,
+      );
+    } on AppException {
+      rethrow;
+    } catch (e) {
+      throw AppException.unknown(message: e.toString(), originalError: e);
+    }
+  }
+
+  @override
+  Future<int> fetchAdsRemainingToday() async {
+    try {
+      final today = DateTime.now().toUtc().toIso8601String().substring(0, 10);
+      final data = await _supabase
+          .from('ad_views')
+          .select('view_count')
+          .eq('view_date', today)
+          .maybeSingle();
+
+      if (data == null) return 10; // No ads watched today
+      return 10 - (data['view_count'] as int);
+    } on PostgrestException catch (e) {
+      throw AppException.network(message: e.message);
+    } catch (e) {
+      throw AppException.unknown(message: e.toString(), originalError: e);
+    }
+  }
 }
+
