@@ -89,11 +89,12 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage>
   Future<void> _download() async {
     final imageUrl = _currentItem.imageUrl;
     if (imageUrl == null) return;
+    final isFreeUser = _isFreeUser;
     HapticService.buttonTap();
     setState(() => _isDownloading = true);
     try {
       final repo = ref.read(galleryRepositoryProvider);
-      if (_isFreeUser) {
+      if (isFreeUser) {
         // Download to temp, watermark to separate file, then save to gallery.
         final file = await repo.getImageFile(imageUrl);
         final bytes = await file.readAsBytes();
@@ -129,12 +130,13 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage>
   Future<void> _share() async {
     final imageUrl = _currentItem.imageUrl;
     if (imageUrl == null) return;
+    final isFreeUser = _isFreeUser;
     HapticService.share();
     setState(() => _isSharing = true);
     try {
       final repo = ref.read(galleryRepositoryProvider);
       final file = await repo.getImageFile(imageUrl);
-      if (_isFreeUser) {
+      if (isFreeUser) {
         final bytes = await file.readAsBytes();
         final watermarked = await WatermarkUtil.applyWatermark(bytes);
         final watermarkedFile = File('${file.parent.path}/watermarked_${file.uri.pathSegments.last}');
