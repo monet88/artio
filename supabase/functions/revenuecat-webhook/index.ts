@@ -31,9 +31,18 @@ Deno.serve(async (req) => {
         });
     }
 
-    // Verify webhook auth header
+    // Verify webhook auth header (timing-safe comparison)
     const authHeader = req.headers.get("Authorization");
-    if (!authHeader || authHeader !== `Bearer ${REVENUECAT_WEBHOOK_SECRET}`) {
+    const expectedAuth = `Bearer ${REVENUECAT_WEBHOOK_SECRET}`;
+    const encoder = new TextEncoder();
+    const authValid =
+        authHeader !== null &&
+        authHeader.length === expectedAuth.length &&
+        crypto.subtle.timingSafeEqual(
+            encoder.encode(authHeader),
+            encoder.encode(expectedAuth),
+        );
+    if (!authValid) {
         console.error("[revenuecat-webhook] Invalid or missing authorization header");
         return new Response(JSON.stringify({ error: "Unauthorized" }), {
             status: 401,
