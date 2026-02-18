@@ -4,7 +4,7 @@ import 'package:artio/features/subscription/presentation/providers/subscription_
 import 'package:artio/features/subscription/presentation/widgets/tier_comparison_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:artio/features/subscription/domain/entities/subscription_package.dart';
 
 class PaywallScreen extends ConsumerStatefulWidget {
@@ -29,7 +29,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
         title: const Text('Upgrade to Premium'),
         leading: IconButton(
           icon: const Icon(Icons.close),
-          onPressed: () => context.pop(),
+          onPressed: () => Navigator.of(context).pop(),
         ),
       ),
       body: offerings.when(
@@ -63,7 +63,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
 
   Widget _buildContent(
     BuildContext context,
-    List<Package> packages,
+    List<SubscriptionPackage> packages,
     AsyncValue<SubscriptionStatus> subscription,
   ) {
 
@@ -173,7 +173,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Subscription activated!')),
         );
-        context.pop();
+        Navigator.of(context).pop();
       }
     } on Exception catch (_) {
       if (mounted) {
@@ -201,7 +201,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Purchases restored!')),
         );
-        context.pop();
+        Navigator.of(context).pop();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('No previous purchases found.')),
