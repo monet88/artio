@@ -72,10 +72,16 @@ Deno.serve(async (req) => {
             .maybeSingle();
 
         if (!profile) {
-            console.warn(
-                `[revenuecat-webhook] app_user_id ${appUserId} not linked to any profile. Proceeding with caution.`
+            console.error(
+                `[revenuecat-webhook] CRITICAL: app_user_id ${appUserId} not linked to any profile. Skipping.`
             );
+            return new Response(JSON.stringify({ ok: true, skipped: true }), {
+                status: 200,
+                headers: { "Content-Type": "application/json" },
+            });
         }
+
+        const userId = profile.id;
 
         switch (eventType) {
             case "INITIAL_PURCHASE": {
@@ -91,7 +97,7 @@ Deno.serve(async (req) => {
 
                 // Update subscription status
                 const { error: statusErr } = await supabase.rpc("update_subscription_status", {
-                    p_user_id: appUserId,
+                    p_user_id: userId,
                     p_is_premium: true,
                     p_tier: tierInfo.tier,
                     p_expires_at: expiresAt,
@@ -106,7 +112,7 @@ Deno.serve(async (req) => {
 
                 // Grant credits (idempotent via event_id)
                 const { error: creditErr } = await supabase.rpc("grant_subscription_credits", {
-                    p_user_id: appUserId,
+                    p_user_id: userId,
                     p_amount: tierInfo.credits,
                     p_description: `${tierInfo.tier} subscription — initial purchase`,
                     p_reference_id: eventId,
@@ -138,7 +144,7 @@ Deno.serve(async (req) => {
 
                 // Extend subscription expiry
                 const { error: statusErr } = await supabase.rpc("update_subscription_status", {
-                    p_user_id: appUserId,
+                    p_user_id: userId,
                     p_is_premium: true,
                     p_tier: tierInfo.tier,
                     p_expires_at: expiresAt,
@@ -153,7 +159,7 @@ Deno.serve(async (req) => {
 
                 // Grant credits (idempotent via event_id)
                 const { error: creditErr } = await supabase.rpc("grant_subscription_credits", {
-                    p_user_id: appUserId,
+                    p_user_id: userId,
                     p_amount: tierInfo.credits,
                     p_description: `${tierInfo.tier} subscription — renewal`,
                     p_reference_id: eventId,
@@ -183,7 +189,7 @@ Deno.serve(async (req) => {
             case "EXPIRATION": {
                 // Subscription expired — remove premium status
                 const { error: statusErr } = await supabase.rpc("update_subscription_status", {
-                    p_user_id: appUserId,
+                    p_user_id: userId,
                     p_is_premium: false,
                     p_tier: null,
                     p_expires_at: null,
@@ -211,7 +217,7 @@ Deno.serve(async (req) => {
 
                 // Update tier
                 const { error: statusErr } = await supabase.rpc("update_subscription_status", {
-                    p_user_id: appUserId,
+                    p_user_id: userId,
                     p_is_premium: true,
                     p_tier: tierInfo.tier,
                     p_expires_at: expiresAt,
