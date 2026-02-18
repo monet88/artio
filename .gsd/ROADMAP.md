@@ -49,7 +49,7 @@
 - Generation still works normally after login (credit system in Phase 2)
 
 ### Phase 2: Credit System (Database + Backend)
-**Status**: ⬜ Not Started
+**Status**: ✅ Complete
 **Objective**: Build the credit ledger — DB tables, Edge Function credit checks, credit deduction logic
 **Key Changes**:
 - New Supabase migration: `user_credits` table (user_id, balance, updated_at)
