@@ -25,6 +25,16 @@ When creating PRs (use GitHub MCP tools):
 3. Include test coverage summary
 4. Push with `-u` flag if new branch
 
+## GitHub Operations — Tool Priority
+
+For any GitHub task (comment, review, PR, issue), use tools in this order:
+
+1. **GitHub MCP** (`github-mcp-server`) — preferred, fast, no auth issues
+2. **`gh` CLI** — fallback when MCP lacks the specific tool (e.g., posting PR comments)
+3. **Browser** — last resort only; never use if CLI or MCP can do the job
+
+**Never open the browser for GitHub tasks without first trying MCP and `gh` CLI.**
+
 ## Feature Development
 
 1. Create feature branch from `master`

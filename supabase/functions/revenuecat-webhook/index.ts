@@ -218,14 +218,11 @@ Deno.serve(async (req) => {
         });
     } catch (error) {
         console.error("[revenuecat-webhook] Unexpected error:", error);
-        // Still return 200 to prevent retries — we'll investigate via logs
+        // Return 500 so RevenueCat retries — credit granting is idempotent via reference_id
         return new Response(
-            JSON.stringify({
-                ok: true,
-                warning: "Processed with errors — see logs",
-            }),
+            JSON.stringify({ error: "Internal server error" }),
             {
-                status: 200,
+                status: 500,
                 headers: { "Content-Type": "application/json" },
             }
         );
