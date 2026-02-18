@@ -5,7 +5,7 @@ import 'package:artio/features/subscription/presentation/widgets/tier_comparison
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:purchases_flutter/purchases_flutter.dart';
+import 'package:artio/features/subscription/domain/entities/subscription_package.dart';
 
 class PaywallScreen extends ConsumerStatefulWidget {
   const PaywallScreen({super.key});
@@ -15,7 +15,7 @@ class PaywallScreen extends ConsumerStatefulWidget {
 }
 
 class _PaywallScreenState extends ConsumerState<PaywallScreen> {
-  Package? _selectedPackage;
+  SubscriptionPackage? _selectedPackage;
   bool _isPurchasing = false;
 
   @override
@@ -92,13 +92,13 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
 
                   // Build cards from available packages
                   ...packages.map((pkg) {
-                    final isPro = pkg.storeProduct.identifier
+                    final isPro = pkg.identifier
                         .startsWith('artio_pro_');
                     return Padding(
                       padding: const EdgeInsets.only(bottom: AppSpacing.md),
                       child: TierComparisonCard(
                         tierName: isPro ? 'Pro' : 'Ultra',
-                        price: pkg.storeProduct.priceString,
+                        price: pkg.priceString,
                         credits: isPro ? '200 credits/month' : '500 credits/month',
                         features: isPro
                             ? const [

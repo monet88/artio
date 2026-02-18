@@ -6,27 +6,28 @@ part of 'subscription_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$offeringsHash() => r'e9c4dc5822abac007535a32b3e8d8c5f6b05f425';
+String _$offeringsHash() => r'843c84752f684a44b98b80dcad0736e3d0e0101b';
 
 /// Provider for available subscription offerings.
 ///
 /// Copied from [offerings].
 @ProviderFor(offerings)
-final offeringsProvider = AutoDisposeFutureProvider<List<Package>>.internal(
-  offerings,
-  name: r'offeringsProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$offeringsHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+final offeringsProvider =
+    AutoDisposeFutureProvider<List<SubscriptionPackage>>.internal(
+      offerings,
+      name: r'offeringsProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$offeringsHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef OfferingsRef = AutoDisposeFutureProviderRef<List<Package>>;
+typedef OfferingsRef = AutoDisposeFutureProviderRef<List<SubscriptionPackage>>;
 String _$subscriptionNotifierHash() =>
-    r'e284506445117fe7bec8952a6d7ad053cba02c9b';
+    r'280b4e2ddd19c5351299cc734a74bb7ad2eba17d';
 
 /// See also [SubscriptionNotifier].
 @ProviderFor(SubscriptionNotifier)

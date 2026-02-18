@@ -1,6 +1,6 @@
 import 'package:artio/features/subscription/data/repositories/subscription_repository.dart';
 import 'package:artio/features/subscription/domain/entities/subscription_status.dart';
-import 'package:purchases_flutter/purchases_flutter.dart';
+import 'package:artio/features/subscription/domain/entities/subscription_package.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'subscription_provider.g.dart';
@@ -14,7 +14,7 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
   }
 
   /// Purchase a subscription package and update state.
-  Future<void> purchase(Package package) async {
+  Future<void> purchase(SubscriptionPackage package) async {
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async {
       final repo = ref.read(subscriptionRepositoryProvider);
@@ -34,7 +34,7 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
 
 /// Provider for available subscription offerings.
 @riverpod
-Future<List<Package>> offerings(OfferingsRef ref) async {
+Future<List<SubscriptionPackage>> offerings(OfferingsRef ref) async {
   final repo = ref.watch(subscriptionRepositoryProvider);
   return repo.getOfferings();
 }

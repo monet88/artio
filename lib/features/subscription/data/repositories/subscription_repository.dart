@@ -1,4 +1,5 @@
 import 'package:artio/core/exceptions/app_exception.dart';
+import 'package:artio/features/subscription/domain/entities/subscription_package.dart';
 import 'package:artio/features/subscription/domain/entities/subscription_status.dart';
 import 'package:artio/features/subscription/domain/repositories/i_subscription_repository.dart';
 import 'package:flutter/services.dart';
@@ -29,10 +30,19 @@ class SubscriptionRepository implements ISubscriptionRepository {
   }
 
   @override
-  Future<List<Package>> getOfferings() async {
+  Future<List<SubscriptionPackage>> getOfferings() async {
     try {
       final offerings = await Purchases.getOfferings();
-      return offerings.current?.availablePackages ?? [];
+      final packages = offerings.current?.availablePackages ?? <Package>[];
+      return packages
+          .map(
+            (p) => SubscriptionPackage(
+              identifier: p.identifier,
+              priceString: p.storeProduct.priceString,
+              nativePackage: p,
+            ),
+          )
+          .toList();
     } on PlatformException catch (e) {
       throw AppException.payment(
         message: e.message ?? 'Failed to load offerings',
@@ -42,10 +52,11 @@ class SubscriptionRepository implements ISubscriptionRepository {
   }
 
   @override
-  Future<SubscriptionStatus> purchase(Package package) async {
+  Future<SubscriptionStatus> purchase(SubscriptionPackage package) async {
     try {
+      final nativePkg = package.nativePackage as Package;
       final result =
-          await Purchases.purchase(PurchaseParams.package(package));
+          await Purchases.purchase(PurchaseParams.package(nativePkg));
       return _mapCustomerInfo(result.customerInfo);
     } on PlatformException catch (e) {
       // RevenueCat error code 1 = purchase cancelled by user
