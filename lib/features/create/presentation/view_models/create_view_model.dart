@@ -6,6 +6,7 @@ import 'package:artio/core/constants/generation_constants.dart';
 import 'package:artio/core/exceptions/app_exception.dart';
 import 'package:artio/core/utils/retry.dart';
 import 'package:artio/features/create/domain/entities/create_form_state.dart';
+import 'package:artio/features/credits/presentation/providers/credit_balance_provider.dart';
 import 'package:artio/features/template_engine/domain/entities/generation_job_model.dart';
 import 'package:artio/features/template_engine/domain/providers/generation_repository_provider.dart';
 import 'package:artio/features/template_engine/presentation/helpers/generation_job_manager.dart';
@@ -88,6 +89,21 @@ class CreateViewModel extends _$CreateViewModel {
       state = AsyncError(
         const AppException.generation(
           message: 'This model requires a premium subscription',
+        ),
+        StackTrace.current,
+      );
+      return;
+    }
+
+    // Optimistic credit check — only block if we have confirmed balance data.
+    // If the stream is still loading or errored, let the Edge Function enforce.
+    final creditState = ref.read(creditBalanceNotifierProvider);
+    final confirmedBalance = creditState.valueOrNull?.balance;
+    if (confirmedBalance != null && confirmedBalance < selectedModel.creditCost) {
+      state = AsyncError(
+        const AppException.payment(
+          message: 'Insufficient credits',
+          code: 'insufficient_credits',
         ),
         StackTrace.current,
       );

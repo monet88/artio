@@ -50,8 +50,24 @@ ON ad_views FOR SELECT
 USING (auth.uid() = user_id);
 
 -- =============================================================================
--- 3. Alter credit_transactions — add missing types and reference_id
+-- 3. Create credit_transactions table (if not exists) and update constraints
 -- =============================================================================
+
+CREATE TABLE IF NOT EXISTS credit_transactions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  amount INTEGER NOT NULL,
+  type TEXT NOT NULL,
+  description TEXT,
+  reference_id TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+ALTER TABLE credit_transactions ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can view own transactions"
+ON credit_transactions FOR SELECT
+USING (auth.uid() = user_id);
 
 ALTER TABLE credit_transactions DROP CONSTRAINT IF EXISTS credit_transactions_type_check;
 
@@ -99,18 +115,30 @@ CREATE OR REPLACE FUNCTION refund_credits(
   p_description TEXT,
   p_reference_id TEXT DEFAULT NULL
 ) RETURNS VOID AS $$
+DECLARE
+  rows_affected INTEGER;
 BEGIN
   UPDATE user_credits
   SET balance = balance + p_amount
   WHERE user_id = p_user_id;
+
+  GET DIAGNOSTICS rows_affected = ROW_COUNT;
+
+  IF rows_affected = 0 THEN
+    RAISE EXCEPTION 'refund_credits: no user_credits row for user %', p_user_id;
+  END IF;
 
   INSERT INTO credit_transactions (user_id, amount, type, description, reference_id)
   VALUES (p_user_id, p_amount, 'refund', p_description, p_reference_id);
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
-GRANT EXECUTE ON FUNCTION deduct_credits(UUID, INTEGER, TEXT, TEXT) TO authenticated;
-GRANT EXECUTE ON FUNCTION refund_credits(UUID, INTEGER, TEXT, TEXT) TO authenticated;
+-- Security: Do NOT grant these to 'authenticated'.
+-- They are SECURITY DEFINER with no auth.uid() check, so any authenticated
+-- user could manipulate any account via RPC.  Only the Edge Function
+-- (service_role) should call them.
+REVOKE ALL ON FUNCTION deduct_credits(UUID, INTEGER, TEXT, TEXT) FROM authenticated;
+REVOKE ALL ON FUNCTION refund_credits(UUID, INTEGER, TEXT, TEXT) FROM authenticated;
 
 -- =============================================================================
 -- 5. Update handle_new_user() — add welcome bonus
@@ -138,3 +166,11 @@ BEGIN
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- =============================================================================
+-- 6. Backfill existing users with 0 credits (no welcome bonus)
+-- =============================================================================
+
+INSERT INTO user_credits (user_id, balance)
+SELECT id, 0 FROM auth.users
+ON CONFLICT (user_id) DO NOTHING;

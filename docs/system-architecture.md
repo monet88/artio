@@ -10,8 +10,8 @@
 
 Artio is a cross-platform (Android, iOS, Web, Windows) AI image generation SaaS with dual generation modes:
 - **Template Engine** (Home tab): Image-to-image with curated templates (Portrait, Art Style, Editing, etc.)
-- **Text-to-Image** (Create tab): Custom prompt generation (UI and flow wiring present; backend coverage still in progress)
-
+- **Text-to-Image** (Create tab): Custom prompt generation with prompt + params UI wired to Supabase jobs and the shared Edge Function
+Both flows now post to `supabase/functions/generate-image/index.ts`, which deducts credits via `user_credits`/`credit_transactions` (`supabase/migrations/20260218000000_create_credit_system.sql`), polls Kie/Gemini, mirrors outputs into `generated-images`, and emits 402 responses when the balance is insufficient. The same server-side model-cost map constant (defined in the Edge Function) mirrors `core/constants/ai_models.dart`, ensuring consistent price tiers across client and server.
 ### Technology Stack
 
 ```

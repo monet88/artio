@@ -43,7 +43,7 @@ Load for context:
   <name>Add credit check and deduction logic to Edge Function</name>
   <files>supabase/functions/generate-image/index.ts</files>
   <action>
-    Add a new required field `creditCost` to the `GenerationRequest` interface (sent by the client).
+    Note: `creditCost` is NOT required in the client request — the server ignores client-sent values and uses its own MODEL_CREDIT_COSTS map.
 
     Add a server-side model→cost lookup map as a safety net:
     ```typescript

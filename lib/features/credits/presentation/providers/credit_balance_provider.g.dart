@@ -1,31 +1,30 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'generation_view_model.dart';
+part of 'credit_balance_provider.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$generationViewModelHash() =>
-    r'de1cb41539ae0c0974b498553457d2b9567f4d82';
+String _$creditBalanceNotifierHash() =>
+    r'3892c5bfe10c10758536b109a90108f6ca646386';
 
-/// See also [GenerationViewModel].
-@ProviderFor(GenerationViewModel)
-final generationViewModelProvider =
-    AutoDisposeNotifierProvider<
-      GenerationViewModel,
-      AsyncValue<GenerationJobModel?>
+/// See also [CreditBalanceNotifier].
+@ProviderFor(CreditBalanceNotifier)
+final creditBalanceNotifierProvider =
+    AutoDisposeStreamNotifierProvider<
+      CreditBalanceNotifier,
+      CreditBalance
     >.internal(
-      GenerationViewModel.new,
-      name: r'generationViewModelProvider',
+      CreditBalanceNotifier.new,
+      name: r'creditBalanceNotifierProvider',
       debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
           ? null
-          : _$generationViewModelHash,
+          : _$creditBalanceNotifierHash,
       dependencies: null,
       allTransitiveDependencies: null,
     );
 
-typedef _$GenerationViewModel =
-    AutoDisposeNotifier<AsyncValue<GenerationJobModel?>>;
+typedef _$CreditBalanceNotifier = AutoDisposeStreamNotifier<CreditBalance>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

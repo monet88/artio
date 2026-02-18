@@ -135,18 +135,20 @@ flutter build windows  # Windows
 |---------|-------------|--------|
 | **Authentication** | Email/password, Google OAuth, Apple Sign-In, password reset | Complete |
 | **Template Engine** | Browse templates, dynamic inputs, generation tracking | Complete |
-| **Create (Text-to-Image)** | Create screen UI and generation flow wiring | In progress (backend integration pending) |
+| **Create (Text-to-Image)** | Prompt + parameter UI backed by Supabase generation jobs and Edge Function | Complete (Kie/Gemini integration + credit enforcement) |
 | **Gallery** | Masonry grid, image viewer, download/share/delete | Complete |
 | **Settings** | Theme switcher (light/dark/system) | Complete |
 | **Realtime Updates** | Job status streaming via Supabase Realtime | Complete |
-| **Error Handling** | Centralized AppException hierarchy | Complete |
+| **Credits & Premium Model Gate** | Balance display, insufficient credit + premium model sheets, 402 handling | In progress (credit engine wired, purchases pending) |
+
+**Credit Guardrails:** Text-to-Image generation now posts to `supabase/functions/generate-image`, which deducts credits through the `deduct_credits` RPC, polls the selected Kie/Gemini model, mirrors outputs into `generated-images`, and updates `generation_jobs`. Insufficient balances surface the 402 response and the `insufficient_credits_sheet`/`premium_model_sheet` widgets implemented in `features/credits/presentation/widgets`.
 
 ### Planned / Pending
 
 | Feature | Description | Status |
 |---------|-------------|--------|
-| **Subscription & Credits** | Free/Pro tiers, RevenueCat + Stripe | Planned |
-| **Rate Limiting** | Daily generation limits, cooldown | Planned |
+| **Subscription purchases** | RevenueCat + Stripe + rewarded ads | Pending (purchase flows + pricing) |
+| **Rate Limiting** | Daily generation limits, cooldown, anti-abuse | Planned |
 
 ---
 
