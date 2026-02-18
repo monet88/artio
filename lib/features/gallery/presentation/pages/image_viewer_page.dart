@@ -135,12 +135,16 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage>
         final watermarked = await WatermarkUtil.applyWatermark(bytes);
         final watermarkedFile = File('${file.parent.path}/watermarked_${file.uri.pathSegments.last}');
         await watermarkedFile.writeAsBytes(watermarked);
-        await SharePlus.instance.share(
-          ShareParams(
-            files: [XFile(watermarkedFile.path)],
-            text: 'Created with Artio',
-          ),
-        );
+        try {
+          await SharePlus.instance.share(
+            ShareParams(
+              files: [XFile(watermarkedFile.path)],
+              text: 'Created with Artio',
+            ),
+          );
+        } finally {
+          await watermarkedFile.delete().catchError((_) => watermarkedFile);
+        }
       } else {
         await SharePlus.instance.share(
           ShareParams(

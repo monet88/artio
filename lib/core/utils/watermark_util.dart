@@ -12,6 +12,7 @@ class WatermarkUtil {
   static Future<Uint8List> applyWatermark(Uint8List imageBytes) async {
     final codec = await ui.instantiateImageCodec(imageBytes);
     final frame = await codec.getNextFrame();
+    codec.dispose();
     final image = frame.image;
 
     final width = image.width;
@@ -68,6 +69,9 @@ class WatermarkUtil {
     image.dispose();
     rendered.dispose();
 
-    return byteData!.buffer.asUint8List();
+    // Graceful fallback: return original if encoding failed.
+    if (byteData == null) return imageBytes;
+
+    return byteData.buffer.asUint8List();
   }
 }
