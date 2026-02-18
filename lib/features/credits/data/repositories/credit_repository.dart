@@ -77,8 +77,9 @@ class CreditRepository implements ICreditRepository {
           : response.data as Map<String, dynamic>;
 
       if (response.status == 429) {
-        throw const AppException.validation(
+        throw const AppException.network(
           message: 'Daily ad limit reached (10/day)',
+          statusCode: 429,
         );
       }
 
@@ -119,4 +120,3 @@ class CreditRepository implements ICreditRepository {
     }
   }
 }
-

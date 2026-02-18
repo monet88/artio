@@ -1,4 +1,5 @@
 import 'package:artio/core/design_system/app_spacing.dart';
+import 'package:artio/core/exceptions/app_exception.dart';
 import 'package:artio/core/services/rewarded_ad_service.dart';
 import 'package:artio/features/credits/presentation/providers/ad_reward_provider.dart';
 import 'package:flutter/material.dart';
@@ -43,7 +44,7 @@ class _InsufficientCreditsSheetState
         ),
       );
       Navigator.pop(context);
-    } on StateError catch (e) {
+    } on AppException catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(e.message)),
@@ -104,14 +105,14 @@ class _InsufficientCreditsSheetState
                   ),
                 );
               },
-              loading: () => const FilledButton.icon(
+              loading: () => FilledButton.icon(
                 onPressed: null,
-                icon: SizedBox(
+                icon: const SizedBox(
                   width: 18,
                   height: 18,
                   child: CircularProgressIndicator(strokeWidth: 2),
                 ),
-                label: Text('Loading...'),
+                label: const Text('Loading...'),
               ),
               error: (_, __) => FilledButton.icon(
                 onPressed: () => ref.invalidate(adRewardNotifierProvider),

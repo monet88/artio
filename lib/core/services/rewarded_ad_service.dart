@@ -80,10 +80,12 @@ class RewardedAdService {
       },
     );
 
-    ad.show(
-      onUserEarnedReward: (ad, reward) {
-        rewarded = true;
-      },
+    unawaited(
+      ad.show(
+        onUserEarnedReward: (ad, reward) {
+          rewarded = true;
+        },
+      ),
     );
 
     return completer.future;

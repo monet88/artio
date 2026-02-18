@@ -129,5 +129,74 @@ void main() {
         );
       });
     });
+
+    group('rewardAdCredits', () {
+      test('returns reward result on success', () async {
+        when(() => mockRepository.rewardAdCredits()).thenAnswer(
+          (_) async => (creditsAwarded: 5, newBalance: 55, adsRemaining: 7),
+        );
+
+        final result = await mockRepository.rewardAdCredits();
+
+        expect(result.creditsAwarded, 5);
+        expect(result.newBalance, 55);
+        expect(result.adsRemaining, 7);
+      });
+
+      test('throws AppException.validation when daily limit reached',
+          () async {
+        when(() => mockRepository.rewardAdCredits()).thenThrow(
+          const AppException.network(
+            message: 'Daily ad limit reached (10/day)',
+            statusCode: 429,
+          ),
+        );
+
+        expect(
+          () => mockRepository.rewardAdCredits(),
+          throwsA(isA<NetworkException>()),
+        );
+      });
+
+      test('throws AppException.network on server error', () async {
+        when(() => mockRepository.rewardAdCredits()).thenThrow(
+          const AppException.network(message: 'Server error'),
+        );
+
+        expect(
+          () => mockRepository.rewardAdCredits(),
+          throwsA(isA<NetworkException>()),
+        );
+      });
+    });
+
+    group('fetchAdsRemainingToday', () {
+      test('returns 10 when no ads watched today', () async {
+        when(() => mockRepository.fetchAdsRemainingToday())
+            .thenAnswer((_) async => 10);
+
+        final result = await mockRepository.fetchAdsRemainingToday();
+
+        expect(result, 10);
+      });
+
+      test('returns remaining count when some ads watched', () async {
+        when(() => mockRepository.fetchAdsRemainingToday())
+            .thenAnswer((_) async => 7);
+
+        final result = await mockRepository.fetchAdsRemainingToday();
+
+        expect(result, 7);
+      });
+
+      test('returns 0 when daily limit reached', () async {
+        when(() => mockRepository.fetchAdsRemainingToday())
+            .thenAnswer((_) async => 0);
+
+        final result = await mockRepository.fetchAdsRemainingToday();
+
+        expect(result, 0);
+      });
+    });
   });
 }
