@@ -1,30 +1,28 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'create_view_model.dart';
+part of 'rewarded_ad_service.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$createViewModelHash() => r'47180fa9a6cccdcbb5beacf4581a67e21d02e2ab';
+String _$rewardedAdServiceHash() => r'd1d64b9dc4b8badc6c59b5eaa5c1da9266945a36';
 
-/// See also [CreateViewModel].
-@ProviderFor(CreateViewModel)
-final createViewModelProvider =
-    AutoDisposeNotifierProvider<
-      CreateViewModel,
-      AsyncValue<GenerationJobModel?>
-    >.internal(
-      CreateViewModel.new,
-      name: r'createViewModelProvider',
+/// See also [rewardedAdService].
+@ProviderFor(rewardedAdService)
+final rewardedAdServiceProvider =
+    AutoDisposeProvider<RewardedAdService>.internal(
+      rewardedAdService,
+      name: r'rewardedAdServiceProvider',
       debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
           ? null
-          : _$createViewModelHash,
+          : _$rewardedAdServiceHash,
       dependencies: null,
       allTransitiveDependencies: null,
     );
 
-typedef _$CreateViewModel =
-    AutoDisposeNotifier<AsyncValue<GenerationJobModel?>>;
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef RewardedAdServiceRef = AutoDisposeProviderRef<RewardedAdService>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

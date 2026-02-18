@@ -59,7 +59,7 @@
 - Daily ad tracking: `ad_views` table (user_id, date, count)
 
 ### Phase 3: Free Quota & Premium Gate UI
-**Status**: ⬜ Not Started
+**Status**: ✅ Complete
 **Objective**: Build the client-side credit system and premium gate modals
 **Key Changes**:
 - New feature: `credits/` (domain/data/presentation)
@@ -70,7 +70,7 @@
 - Deduct credits before calling Edge Function
 
 ### Phase 4: Google AdMob Rewarded Ads
-**Status**: ⬜ Not Started
+**Status**: ✅ Complete
 **Objective**: Integrate rewarded video ads for free credit earning
 **Key Changes**:
 - Configure AdMob for iOS + Android (ad unit IDs)

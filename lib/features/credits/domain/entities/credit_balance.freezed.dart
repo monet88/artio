@@ -21,8 +21,10 @@ CreditBalance _$CreditBalanceFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$CreditBalance {
+  @JsonKey(name: 'user_id')
   String get userId => throw _privateConstructorUsedError;
   int get balance => throw _privateConstructorUsedError;
+  @JsonKey(name: 'updated_at')
   DateTime get updatedAt => throw _privateConstructorUsedError;
 
   /// Serializes this CreditBalance to a JSON map.
@@ -42,7 +44,11 @@ abstract class $CreditBalanceCopyWith<$Res> {
     $Res Function(CreditBalance) then,
   ) = _$CreditBalanceCopyWithImpl<$Res, CreditBalance>;
   @useResult
-  $Res call({String userId, int balance, DateTime updatedAt});
+  $Res call({
+    @JsonKey(name: 'user_id') String userId,
+    int balance,
+    @JsonKey(name: 'updated_at') DateTime updatedAt,
+  });
 }
 
 /// @nodoc
@@ -93,7 +99,11 @@ abstract class _$$CreditBalanceImplCopyWith<$Res>
   ) = __$$CreditBalanceImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String userId, int balance, DateTime updatedAt});
+  $Res call({
+    @JsonKey(name: 'user_id') String userId,
+    int balance,
+    @JsonKey(name: 'updated_at') DateTime updatedAt,
+  });
 }
 
 /// @nodoc
@@ -137,19 +147,21 @@ class __$$CreditBalanceImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$CreditBalanceImpl implements _CreditBalance {
   const _$CreditBalanceImpl({
-    required this.userId,
+    @JsonKey(name: 'user_id') required this.userId,
     required this.balance,
-    required this.updatedAt,
+    @JsonKey(name: 'updated_at') required this.updatedAt,
   });
 
   factory _$CreditBalanceImpl.fromJson(Map<String, dynamic> json) =>
       _$$CreditBalanceImplFromJson(json);
 
   @override
+  @JsonKey(name: 'user_id')
   final String userId;
   @override
   final int balance;
   @override
+  @JsonKey(name: 'updated_at')
   final DateTime updatedAt;
 
   @override
@@ -188,19 +200,21 @@ class _$CreditBalanceImpl implements _CreditBalance {
 
 abstract class _CreditBalance implements CreditBalance {
   const factory _CreditBalance({
-    required final String userId,
+    @JsonKey(name: 'user_id') required final String userId,
     required final int balance,
-    required final DateTime updatedAt,
+    @JsonKey(name: 'updated_at') required final DateTime updatedAt,
   }) = _$CreditBalanceImpl;
 
   factory _CreditBalance.fromJson(Map<String, dynamic> json) =
       _$CreditBalanceImpl.fromJson;
 
   @override
+  @JsonKey(name: 'user_id')
   String get userId;
   @override
   int get balance;
   @override
+  @JsonKey(name: 'updated_at')
   DateTime get updatedAt;
 
   /// Create a copy of CreditBalance

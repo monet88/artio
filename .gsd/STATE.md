@@ -2,27 +2,27 @@
 
 ## Current Position
 - **Milestone**: Freemium Monetization
-- **Phase**: 3 — Free Quota & Premium Gate UI
-- **Task**: All plans complete
-- **Status**: ✅ COMPLETE — PR pending
+- **Phase**: 4 — Google AdMob Rewarded Ads (verified)
+- **Task**: All tasks complete
+- **Status**: ✅ Complete and verified
 
-## Plans Executed
-- `.gsd/phases/3/1-PLAN.md` — Credit Feature Foundation ✅
-- `.gsd/phases/3/2-PLAN.md` — Credit Gate & Premium Gate UI ✅
-- `.gsd/phases/3/3-PLAN.md` — Credit Feature Tests ✅
-
-## Commits (branch: feat/phase-3-credit-ui)
-1. `feat(3-1): create credit feature skeleton (entity + repository)`
-2. `feat(3-1): create CreditBalanceNotifier + display balance in CreateScreen`
-3. `feat(3-2): handle 402 insufficient credits + client-side credit pre-check`
-4. `feat(3-2): bottom sheets for insufficient credits and premium model gate`
-5. `test(3-3): credit repository, balance notifier, and viewmodel credit tests`
+## Executed Plans
+- `4-1` — Platform Config & Rewarded Ad Service ✅
+- `4-2` — Server-Side Ad Reward Logic ✅
+- `4-3` — Wire Ad Rewards into Credit UI ✅
+- `4-4` — Ad Reward Tests ✅
 
 ## Previous Phases
-- Phase 1: Remove Login Wall & Auth Gate — ✅ COMPLETE
-- Phase 2: Credit System (Database + Backend) — ✅ COMPLETE
-- Phase 3: Free Quota & Premium Gate UI — ✅ COMPLETE
+- Phase 1: Remove Login Wall & Auth Gate — ✅ COMPLETE (merged)
+- Phase 2: Credit System (Database + Backend) — ✅ COMPLETE (merged)
+- Phase 3: Free Quota & Premium Gate UI — ✅ COMPLETE (merged)
+
+## Commits
+- `9ea4b42` — feat(4-1): add AdMob platform config and RewardedAdService
+- `d797657` — feat(4-2): add reward_ad_credits SQL function and reward-ad Edge Function
+- `cec78ed` — feat(4-3): wire ad rewards into credit UI — AdRewardNotifier + InsufficientCreditsSheet
+- `80ec69b` — feat(4-4): add ad reward tests — repository + provider + service
 
 ## Next Steps
-1. Create PR for Phase 3
-2. Plan Phase 4 (Ad Rewards)
+1. Create PR for Phase 4
+2. `/plan 5` — Plan RevenueCat Subscription Integration

@@ -11,6 +11,10 @@ class AppConstants {
   static const int defaultCredits = 5;
   static const int dailyFreeLimit = 5;
 
+  // Ad rewards
+  static const int dailyAdLimit = 10;
+  static const int adRewardCredits = 5;
+
   // Generation
   static const List<String> aspectRatios = ['1:1', '4:3', '3:4', '16:9', '9:16'];
   static const String defaultAspectRatio = '1:1';
