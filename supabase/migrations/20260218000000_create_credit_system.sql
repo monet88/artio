@@ -109,8 +109,12 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
-GRANT EXECUTE ON FUNCTION deduct_credits(UUID, INTEGER, TEXT, TEXT) TO authenticated;
-GRANT EXECUTE ON FUNCTION refund_credits(UUID, INTEGER, TEXT, TEXT) TO authenticated;
+-- Security: Do NOT grant these to 'authenticated'.
+-- They are SECURITY DEFINER with no auth.uid() check, so any authenticated
+-- user could manipulate any account via RPC.  Only the Edge Function
+-- (service_role) should call them.
+REVOKE ALL ON FUNCTION deduct_credits(UUID, INTEGER, TEXT, TEXT) FROM authenticated;
+REVOKE ALL ON FUNCTION refund_credits(UUID, INTEGER, TEXT, TEXT) FROM authenticated;
 
 -- =============================================================================
 -- 5. Update handle_new_user() — add welcome bonus
