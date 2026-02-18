@@ -9,6 +9,7 @@ import 'package:artio/features/gallery/presentation/widgets/image_viewer_app_bar
 import 'package:artio/features/gallery/presentation/widgets/image_viewer_image_page.dart';
 import 'package:artio/features/gallery/presentation/widgets/image_viewer_page_indicator.dart';
 import 'package:artio/features/gallery/presentation/widgets/image_viewer_swipe_dismiss.dart';
+import 'package:artio/features/subscription/presentation/providers/subscription_provider.dart';
 import 'package:artio/shared/widgets/app_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -174,6 +175,10 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage>
   Widget build(BuildContext context) {
     const kOpacityFadeStart = 100.0;
     const kOpacityFadeRange = 200.0;
+    final showWatermark = ref.watch(subscriptionNotifierProvider).maybeWhen(
+          data: (status) => status.isFree,
+          orElse: () => true,
+        );
     final viewerOpacity = (_dragOffset.abs() > kOpacityFadeStart)
         ? (1.0 -
             ((_dragOffset.abs() - kOpacityFadeStart) / kOpacityFadeRange)
@@ -217,7 +222,10 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage>
                 _resetIndicatorTimer();
               },
               itemBuilder: (context, index) {
-                return ImageViewerImagePage(item: _items[index]);
+                return ImageViewerImagePage(
+                  item: _items[index],
+                  showWatermark: showWatermark,
+                );
               },
             ),
           ),
