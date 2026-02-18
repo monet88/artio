@@ -1,4 +1,5 @@
 import 'package:artio/features/subscription/domain/entities/subscription_status.dart';
+// TODO(arch): Abstract Package type to a domain entity to decouple from RevenueCat SDK.
 import 'package:purchases_flutter/purchases_flutter.dart';
 
 abstract class ISubscriptionRepository {

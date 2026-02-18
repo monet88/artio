@@ -7,6 +7,7 @@ import 'package:artio/features/subscription/presentation/providers/subscription_
 import 'package:artio/routing/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 /// Bottom sheet displayed when user has insufficient credits
 /// to generate with the selected model.
@@ -67,6 +68,7 @@ class _InsufficientCreditsSheetState
     final theme = Theme.of(context);
     final adsRemainingAsync = ref.watch(adRewardNotifierProvider);
     final adService = ref.watch(rewardedAdServiceProvider);
+    final isSubscriber = _isSubscriber(ref);
 
     return Padding(
       padding: const EdgeInsets.all(AppSpacing.lg),
@@ -85,11 +87,19 @@ class _InsufficientCreditsSheetState
           ),
           const SizedBox(height: AppSpacing.lg),
 
-          // Show ad button for free users, subscribe button for subscribers
-          if (_isSubscriber(ref))
-            _buildSubscribeButton()
-          else
+          if (isSubscriber) ...[
+            // Subscriber: show renewal info + ad option + manage link
+            _buildRenewalInfo(ref, theme),
+            const SizedBox(height: AppSpacing.sm),
             _buildAdButton(adsRemainingAsync, adService),
+            const SizedBox(height: AppSpacing.sm),
+            _buildManageSubscriptionButton(),
+          ] else ...[
+            // Free user: ad button + upgrade option
+            _buildAdButton(adsRemainingAsync, adService),
+            const SizedBox(height: AppSpacing.sm),
+            _buildUpgradeButton(),
+          ],
 
           const SizedBox(height: AppSpacing.sm),
           SizedBox(
@@ -110,16 +120,66 @@ class _InsufficientCreditsSheetState
     return sub != null && sub.isActive;
   }
 
-  Widget _buildSubscribeButton() {
+  Widget _buildRenewalInfo(WidgetRef ref, ThemeData theme) {
+    final sub = ref.watch(subscriptionNotifierProvider).valueOrNull;
+    final expiresAt = sub?.expiresAt;
+    final renewalText = expiresAt != null
+        ? 'Your credits refresh on ${DateFormat.yMMMd().format(expiresAt)}'
+        : 'Your credits refresh at next billing cycle';
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(AppSpacing.sm),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.primaryContainer.withValues(alpha: 0.3),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            Icons.schedule,
+            size: 18,
+            color: theme.colorScheme.primary,
+          ),
+          const SizedBox(width: AppSpacing.xs),
+          Expanded(
+            child: Text(
+              renewalText,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.primary,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildManageSubscriptionButton() {
     return SizedBox(
       width: double.infinity,
-      child: FilledButton.icon(
+      child: OutlinedButton.icon(
         onPressed: () {
           Navigator.pop(context);
           const PaywallRoute().push<void>(context);
         },
-        icon: const Icon(Icons.star_outline),
-        label: const Text('Get More Credits'),
+        icon: const Icon(Icons.settings_outlined, size: 18),
+        label: const Text('Manage Subscription'),
+      ),
+    );
+  }
+
+  Widget _buildUpgradeButton() {
+    return SizedBox(
+      width: double.infinity,
+      child: OutlinedButton.icon(
+        onPressed: () {
+          Navigator.pop(context);
+          const PaywallRoute().push<void>(context);
+        },
+        icon: const Icon(Icons.star_outline, size: 18),
+        label: const Text('Upgrade to Premium'),
       ),
     );
   }

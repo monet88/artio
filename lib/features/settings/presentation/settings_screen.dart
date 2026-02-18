@@ -205,7 +205,8 @@ class _SubscriptionCard extends ConsumerWidget {
                           color: theme.colorScheme.onSurfaceVariant,
                         ),
                       ),
-                      if (creditBalance != null) ...[                        const SizedBox(height: 4),
+                      if (creditBalance != null) ...[
+                        const SizedBox(height: 4),
                         Text(
                           '${creditBalance.balance} credits',
                           style: theme.textTheme.bodySmall?.copyWith(
@@ -257,7 +258,8 @@ class _SubscriptionCard extends ConsumerWidget {
                   color: theme.colorScheme.onSurfaceVariant,
                 ),
               ),
-              if (creditBalance != null) ...[                const SizedBox(height: AppSpacing.xs),
+              if (creditBalance != null) ...[
+                const SizedBox(height: AppSpacing.xs),
                 Text(
                   '${creditBalance.balance} credits remaining · ${status.monthlyCredits}/mo',
                   style: theme.textTheme.bodySmall?.copyWith(

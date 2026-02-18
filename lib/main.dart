@@ -31,12 +31,14 @@ Future<void> main() async {
   await SentryConfig.init();
   await MobileAds.instance.initialize();
 
-  // Initialize RevenueCat SDK (skip if keys not configured)
-  final rcKey = Platform.isIOS
-      ? EnvConfig.revenuecatAppleKey
-      : EnvConfig.revenuecatGoogleKey;
-  if (rcKey.isNotEmpty) {
-    await Purchases.configure(PurchasesConfiguration(rcKey));
+  // Initialize RevenueCat SDK (skip if keys not configured or running on web)
+  if (!kIsWeb) {
+    final rcKey = Platform.isIOS
+        ? EnvConfig.revenuecatAppleKey
+        : EnvConfig.revenuecatGoogleKey;
+    if (rcKey.isNotEmpty) {
+      await Purchases.configure(PurchasesConfiguration(rcKey));
+    }
   }
 
   runApp(const ProviderScope(child: ArtioApp()));
