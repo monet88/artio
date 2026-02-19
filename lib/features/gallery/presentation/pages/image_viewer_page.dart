@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:artio/core/design_system/app_animations.dart';
 import 'package:artio/core/services/haptic_service.dart';
+import 'package:artio/core/state/subscription_state_provider.dart';
 import 'package:artio/core/utils/app_exception_mapper.dart';
 import 'package:artio/core/utils/watermark_util.dart';
 import 'package:artio/features/gallery/domain/entities/gallery_item.dart';
@@ -12,7 +13,6 @@ import 'package:artio/features/gallery/presentation/widgets/image_viewer_app_bar
 import 'package:artio/features/gallery/presentation/widgets/image_viewer_image_page.dart';
 import 'package:artio/features/gallery/presentation/widgets/image_viewer_page_indicator.dart';
 import 'package:artio/features/gallery/presentation/widgets/image_viewer_swipe_dismiss.dart';
-import 'package:artio/core/state/subscription_state_provider.dart';
 import 'package:artio/shared/widgets/app_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

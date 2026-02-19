@@ -1,9 +1,7 @@
 import 'package:artio/core/exceptions/app_exception.dart';
-import 'package:artio/features/subscription/data/repositories/subscription_repository.dart';
 import 'package:artio/features/subscription/domain/entities/subscription_package.dart';
 import 'package:artio/features/subscription/domain/entities/subscription_status.dart';
 import 'package:artio/features/subscription/domain/repositories/i_subscription_repository.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -20,7 +18,7 @@ void main() {
       mockRepo = MockSubscriptionRepository();
       registerFallbackValue(const SubscriptionPackage(
         identifier: 'test',
-        priceString: '\$0',
+        priceString: r'$0',
         nativePackage: 'native',
       ));
     });
@@ -56,13 +54,13 @@ void main() {
         (_) async => SubscriptionStatus(
           tier: 'ultra',
           isActive: true,
-          expiresAt: DateTime.utc(2026, 6, 1),
+          expiresAt: DateTime.utc(2026, 6),
         ),
       );
 
       final status = await mockRepo.getStatus();
       expect(status.isUltra, isTrue);
-      expect(status.expiresAt, DateTime.utc(2026, 6, 1));
+      expect(status.expiresAt, DateTime.utc(2026, 6));
     });
 
     test('getStatus throws AppException.payment on SDK error', () async {
@@ -84,12 +82,12 @@ void main() {
         (_) async => [
           const SubscriptionPackage(
             identifier: 'pro_monthly',
-            priceString: '\$9.99/month',
+            priceString: r'$9.99/month',
             nativePackage: 'native_pkg_1',
           ),
           const SubscriptionPackage(
             identifier: 'ultra_monthly',
-            priceString: '\$19.99/month',
+            priceString: r'$19.99/month',
             nativePackage: 'native_pkg_2',
           ),
         ],
@@ -98,7 +96,7 @@ void main() {
       final offerings = await mockRepo.getOfferings();
       expect(offerings, hasLength(2));
       expect(offerings[0].identifier, 'pro_monthly');
-      expect(offerings[1].priceString, '\$19.99/month');
+      expect(offerings[1].priceString, r'$19.99/month');
     });
 
     test('getOfferings returns empty list when no current offering',
@@ -120,7 +118,7 @@ void main() {
 
       final result = await mockRepo.purchase(const SubscriptionPackage(
         identifier: 'pro_monthly',
-        priceString: '\$9.99',
+        priceString: r'$9.99',
         nativePackage: 'native',
       ));
 
@@ -139,7 +137,7 @@ void main() {
       expect(
         () => mockRepo.purchase(const SubscriptionPackage(
           identifier: 'pro',
-          priceString: '\$9.99',
+          priceString: r'$9.99',
           nativePackage: 'native',
         )),
         throwsA(

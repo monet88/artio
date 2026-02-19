@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:artio/core/config/sentry_config.dart';
 import 'package:artio/core/design_system/app_spacing.dart';
-import 'package:artio/core/utils/app_exception_mapper.dart';
 import 'package:artio/core/state/auth_view_model_provider.dart';
+import 'package:artio/core/utils/app_exception_mapper.dart';
 import 'package:artio/features/template_engine/domain/entities/generation_job_model.dart';
 import 'package:artio/features/template_engine/domain/entities/input_field_model.dart';
 import 'package:artio/features/template_engine/domain/entities/template_model.dart';

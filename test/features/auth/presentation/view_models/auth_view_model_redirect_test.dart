@@ -65,32 +65,32 @@ void main() {
 
     group('when unauthenticated', () {
       test('splash redirects to /home', () async {
-        final notifier = await createSettledNotifier(returningUser: null);
+        final notifier = await createSettledNotifier();
         expect(notifier.redirect(currentPath: '/'), '/home');
       });
 
       test('allows access to /home (no redirect)', () async {
-        final notifier = await createSettledNotifier(returningUser: null);
+        final notifier = await createSettledNotifier();
         expect(notifier.redirect(currentPath: '/home'), isNull);
       });
 
       test('allows access to /create (no redirect)', () async {
-        final notifier = await createSettledNotifier(returningUser: null);
+        final notifier = await createSettledNotifier();
         expect(notifier.redirect(currentPath: '/create'), isNull);
       });
 
       test('allows access to /settings (no redirect)', () async {
-        final notifier = await createSettledNotifier(returningUser: null);
+        final notifier = await createSettledNotifier();
         expect(notifier.redirect(currentPath: '/settings'), isNull);
       });
 
       test('allows access to /gallery (no redirect)', () async {
-        final notifier = await createSettledNotifier(returningUser: null);
+        final notifier = await createSettledNotifier();
         expect(notifier.redirect(currentPath: '/gallery'), isNull);
       });
 
       test('allows access to /login (no redirect)', () async {
-        final notifier = await createSettledNotifier(returningUser: null);
+        final notifier = await createSettledNotifier();
         expect(notifier.redirect(currentPath: '/login'), isNull);
       });
     });
@@ -171,7 +171,7 @@ void main() {
       });
 
       test('returns false when unauthenticated', () async {
-        final notifier = await createSettledNotifier(returningUser: null);
+        final notifier = await createSettledNotifier();
         expect(notifier.isLoggedIn, isFalse);
       });
     });

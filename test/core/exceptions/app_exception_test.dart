@@ -59,8 +59,8 @@ void main() {
 
     group('UnknownException', () {
       test('stores message and optional originalError', () {
-        final inner = FormatException('bad');
-        final e = AppException.unknown(
+        const inner = FormatException('bad');
+        const e = AppException.unknown(
           message: 'Unexpected',
           originalError: inner,
         );

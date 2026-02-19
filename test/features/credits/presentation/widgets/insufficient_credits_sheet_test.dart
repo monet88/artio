@@ -1,10 +1,8 @@
 import 'package:artio/core/services/rewarded_ad_service.dart';
 import 'package:artio/features/credits/data/repositories/credit_repository.dart';
-import 'package:artio/features/credits/presentation/providers/ad_reward_provider.dart';
 import 'package:artio/features/credits/presentation/widgets/insufficient_credits_sheet.dart';
 import 'package:artio/features/subscription/data/repositories/subscription_repository.dart';
 import 'package:artio/features/subscription/domain/entities/subscription_status.dart';
-import 'package:artio/features/subscription/presentation/providers/subscription_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -63,7 +61,6 @@ void main() {
   group('InsufficientCreditsSheet', () {
     testWidgets('shows credit deficit info', (tester) async {
       await tester.pumpWidget(buildWidget(
-        currentBalance: 2,
         requiredCredits: 10,
       ));
       await tester.pumpAndSettle();

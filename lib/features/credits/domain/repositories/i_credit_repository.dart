@@ -1,3 +1,4 @@
+import 'package:artio/core/constants/app_constants.dart' show AppConstants;
 import 'package:artio/features/credits/domain/entities/credit_balance.dart';
 import 'package:artio/features/credits/domain/entities/credit_transaction.dart';
 

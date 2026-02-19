@@ -1,4 +1,3 @@
-import 'package:artio/features/settings/data/notifications_provider.dart';
 import 'package:artio/features/settings/presentation/widgets/settings_sections.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

@@ -18,7 +18,7 @@ void main() {
     mockRepo = MockSubscriptionRepository();
     registerFallbackValue(const SubscriptionPackage(
       identifier: 'test',
-      priceString: '\$0',
+      priceString: r'$0',
       nativePackage: 'native',
     ));
   });
@@ -71,7 +71,7 @@ void main() {
             container.read(subscriptionNotifierProvider.notifier);
         await notifier.purchase(const SubscriptionPackage(
           identifier: 'pro_monthly',
-          priceString: '\$9.99',
+          priceString: r'$9.99',
           nativePackage: 'native',
         ));
 
@@ -95,7 +95,7 @@ void main() {
             container.read(subscriptionNotifierProvider.notifier);
         await notifier.purchase(const SubscriptionPackage(
           identifier: 'pro',
-          priceString: '\$9.99',
+          priceString: r'$9.99',
           nativePackage: 'native',
         ));
 
@@ -153,7 +153,7 @@ void main() {
         (_) async => [
           const SubscriptionPackage(
             identifier: 'pro_monthly',
-            priceString: '\$9.99/month',
+            priceString: r'$9.99/month',
             nativePackage: 'native',
           ),
         ],

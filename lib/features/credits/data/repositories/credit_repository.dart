@@ -75,7 +75,7 @@ class CreditRepository implements ICreditRepository {
 
       // Check status codes before parsing body
       if (response.status == 429) {
-        throw AppException.payment(
+        throw const AppException.payment(
           message: 'Daily ad limit reached '
               '(${AppConstants.dailyAdLimit}/day)',
           code: 'daily_limit_reached',
@@ -100,7 +100,7 @@ class CreditRepository implements ICreditRepository {
       );
     } on FunctionException catch (e) {
       if (e.status == 429) {
-        throw AppException.payment(
+        throw const AppException.payment(
           message: 'Daily ad limit reached '
               '(${AppConstants.dailyAdLimit}/day)',
           code: 'daily_limit_reached',
