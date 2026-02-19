@@ -79,7 +79,7 @@ class AiModels {
       isNew: true,
     ),
     AiModelConfig(
-      id: 'google/nano-banana-pro',
+      id: 'nano-banana-pro',
       displayName: 'Nano Banana Pro',
       isPremium: false,
       supportedAspectRatios: standardAspectRatios,
