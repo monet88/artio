@@ -13,6 +13,7 @@
 | 2 | Widget Extraction | 2.1 ✅ 2.2 ✅ | ✅ Complete |
 | 3 | Architecture Violations | 3.1 ✅ 3.2 ✅ | ✅ Verified |
 | 4 | Test Coverage | 4.1 ✅ 4.2 ✅ | ✅ Verified |
+| 5 | Fix All Analyzer Warnings | 5.1 | 🔲 Ready |
 
 ## Last Session Summary
 Phase 4 executed and verified (2026-02-19). 2 plans completed.

@@ -35,10 +35,28 @@ Fix 7 presentation→data layer violations and reduce cross-feature coupling.
 - **Plans:** 3.1 (domain interfaces), 3.2 (shared providers)
 - **Discovery:** Level 0 (internal refactoring)
 
-### Phase 4: Test Coverage
+
+### Phase 4: Test Coverage ✅
 Close test gaps in credits, subscription, settings, and core modules.
-- **Plans:** 4.1 (credits & subscription), 4.2 (core & settings)
+- **Plans:** 4.1 ✅ 4.2 ✅
 - **Discovery:** Level 0 (internal)
+
+### Phase 5: Fix All Analyzer Warnings
+Resolve all 4 warnings (severity 2) and 9 info-level hints (severity 3) from `flutter analyze`.
+- **Plans:** 5.1 (all fixes)
+- **Discovery:** Level 0 (cleanup)
+
+**Warnings (4):**
+- `asset_does_not_exist` — `.env` in `admin/pubspec.yaml`
+- `invalid_annotation_target` × 2 — `@JsonKey` in `credit_balance.dart` (Freezed pattern)
+- `unused_field` — `_borderRadiusSm` in `app_theme.dart`
+
+**Info hints (9):**
+- `sort_pub_dependencies` × 2 — `pubspec.yaml`
+- `deprecated_member_use` — `parent` in `pump_app.dart`
+- `cascade_invocations` × 3 — test + source files
+- `one_member_abstracts` — `GenerationPolicy` single-method abstract
+- `eol_at_end_of_file` — `i_subscription_repository.dart`
 
 ---
 
