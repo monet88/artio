@@ -16,6 +16,15 @@ const KIE_MODELS = [
   "google/imagen4-ultra",
   "nano-banana-pro",
   "google/nano-banana-edit",
+  "google/pro-image-to-image",
+  "flux-2/flex-text-to-image",
+  "flux-2/flex-image-to-image",
+  "flux-2/pro-text-to-image",
+  "flux-2/pro-image-to-image",
+  "gpt-image/1.5-text-to-image",
+  "gpt-image/1.5-image-to-image",
+  "seedream/4.5-text-to-image",
+  "seedream/4.5-edit",
 ] as const;
 
 const GEMINI_MODELS = [
