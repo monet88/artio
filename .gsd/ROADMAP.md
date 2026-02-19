@@ -1,7 +1,7 @@
 # ROADMAP.md
 
-> **Current Milestone**: Codebase Improvement
-> **Goal**: Fix CORS, extract widgets, resolve architecture violations, increase test coverage
+> **Current Milestone**: Widget Cleanup
+> **Goal**: Bring all remaining hand-written files under 250 lines
 
 ---
 
@@ -23,6 +23,23 @@
 
 ---
 
+## Current Milestone: Widget Cleanup
+
+### Must-Haves
+- [ ] `app_component_themes.dart` ≤250 lines
+- [ ] `home_screen.dart` ≤250 lines
+- [ ] `create_screen.dart` ≤250 lines
+- [ ] `register_screen.dart` ≤250 lines
+- [ ] `flutter analyze` clean
+- [ ] All tests pass
+
+### Phase 1: Theme & Screen Extraction
+**Status**: ⬜ Not Started
+**Objective**: Extract sub-widgets from 4 oversized files (302, 270, 270, 252 lines)
+- **Discovery:** Level 0 (pure refactoring, identical pattern to Plan 2.3)
+
+---
+
 ## Backlog
 
 - [ ] Stripe integration for web payments
@@ -31,3 +48,4 @@
 - [ ] Subscription management settings page
 - [ ] Referral / affiliate system
 - [ ] Replace test AdMob IDs with production IDs (TODO in rewarded_ad_service.dart)
+
