@@ -59,12 +59,16 @@ class ImageViewerActionHelper {
         await file.delete().catchError((_) => file);
       }
     } else {
-      await SharePlus.instance.share(
-        ShareParams(
-          files: [XFile(file.path)],
-          text: 'Created with Artio',
-        ),
-      );
+      try {
+        await SharePlus.instance.share(
+          ShareParams(
+            files: [XFile(file.path)],
+            text: 'Created with Artio',
+          ),
+        );
+      } finally {
+        await file.delete().catchError((_) => file);
+      }
     }
   }
 }
