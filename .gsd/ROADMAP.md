@@ -25,14 +25,14 @@ Extract duplicated CORS logic into `_shared/cors.ts`. Refactor `generate-image` 
 - **Plans:** 1.1 ✅
 - **Discovery:** Level 0 (internal cleanup)
 
-### Phase 2: Widget Extraction
+### Phase 2: Widget Extraction ✅
 Break 11 oversized files (>250 lines) into focused, single-responsibility components.
-- **Plans:** 2.1 (theme), 2.2 (screens), 2.3 (gallery & misc)
+- **Plans:** 2.1 ✅ 2.2 ✅ (2.3 deferred to backlog)
 - **Discovery:** Level 0 (pure refactoring)
 
-### Phase 3: Architecture Violations
+### Phase 3: Architecture Violations ✅
 Fix 7 presentation→data layer violations and reduce cross-feature coupling.
-- **Plans:** 3.1 (domain interfaces), 3.2 (shared providers)
+- **Plans:** 3.1 ✅ 3.2 ✅
 - **Discovery:** Level 0 (internal refactoring)
 
 
@@ -67,3 +67,5 @@ Resolve all 4 warnings (severity 2) and 9 info-level hints (severity 3) from `fl
 - [ ] Credit history / transaction log UI
 - [ ] Subscription management settings page
 - [ ] Referral / affiliate system
+- [ ] Widget extraction: 8 files >250 lines (deferred from Phase 2.3)
+- [ ] Replace test AdMob IDs with production IDs (TODO in rewarded_ad_service.dart)
