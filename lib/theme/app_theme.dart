@@ -14,7 +14,6 @@ import 'package:flutter/services.dart';
 abstract class AppTheme {
   static const _fontFamily = 'Inter';
   static const _borderRadius = 14.0;
-  static const _borderRadiusSm = 8.0;
   static const _borderRadiusLg = 20.0;
 
   // ═══════════════════════════════════════════════════════════════════════

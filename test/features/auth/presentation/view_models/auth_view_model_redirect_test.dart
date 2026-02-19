@@ -152,6 +152,7 @@ void main() {
           ],
         );
 
+        // ignore: cascade_invocations, need return value from read()
         container.listen(authViewModelProvider, (_, __) {});
         final notifier = container.read(authViewModelProvider.notifier);
 

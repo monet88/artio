@@ -1,3 +1,4 @@
+// ignore_for_file: invalid_annotation_target, Freezed uses @JsonKey on factory params intentionally
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'credit_balance.freezed.dart';

@@ -2,6 +2,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'generation_policy.freezed.dart';
 
+// ignore: one_member_abstracts, intentional DI interface
 abstract class IGenerationPolicy {
   Future<GenerationEligibility> canGenerate({
     required String userId,
