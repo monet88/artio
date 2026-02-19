@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:artio/features/gallery/data/services/gallery_cache_service.dart';
 import 'package:artio/features/template_engine/domain/entities/generation_job_model.dart';
 import 'package:artio/features/template_engine/domain/providers/generation_repository_provider.dart';
 import 'package:artio/features/template_engine/presentation/helpers/generation_job_manager.dart';
@@ -63,7 +64,12 @@ class GenerationViewModel extends _$GenerationViewModel {
 
       _jobManager.watchJob(
         jobStream: repo.watchJob(jobId),
-        onData: (job) => state = AsyncData(job),
+        onData: (job) {
+          state = AsyncData(job);
+          if (job.status == JobStatus.completed) {
+            ref.read(galleryCacheServiceProvider).clearCache();
+          }
+        },
         onError: (e, st) => state = AsyncError(e, st),
         onTimeout: () => state = AsyncError(
           Exception(
