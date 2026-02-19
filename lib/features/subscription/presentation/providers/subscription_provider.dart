@@ -1,6 +1,7 @@
 import 'package:artio/features/subscription/domain/entities/subscription_package.dart';
 import 'package:artio/features/subscription/domain/entities/subscription_status.dart';
 import 'package:artio/features/subscription/domain/providers/subscription_repository_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'subscription_provider.g.dart';
@@ -34,7 +35,7 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
 
 /// Provider for available subscription offerings.
 @riverpod
-Future<List<SubscriptionPackage>> offerings(OfferingsRef ref) async {
+Future<List<SubscriptionPackage>> offerings(Ref ref) async {
   final repo = ref.watch(subscriptionRepositoryProvider);
   return repo.getOfferings();
 }

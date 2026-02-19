@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -16,7 +17,7 @@ String get _adUnitId => defaultTargetPlatform == TargetPlatform.android
     : _testAdUnitIdIos;
 
 @riverpod
-RewardedAdService rewardedAdService(RewardedAdServiceRef ref) {
+RewardedAdService rewardedAdService(Ref ref) {
   final service = RewardedAdService()..loadAd();
   ref.onDispose(service.dispose);
   return service;
