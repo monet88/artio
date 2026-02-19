@@ -134,14 +134,14 @@ flutter build windows  # Windows
 | Feature | Description | Status |
 |---------|-------------|--------|
 | **Authentication** | Email/password, Google OAuth, Apple Sign-In, password reset | Complete |
-| **Template Engine** | Browse templates, dynamic inputs, generation tracking | Complete |
-| **Create (Text-to-Image)** | Prompt + parameter UI backed by Supabase generation jobs and Edge Function | Complete (Kie/Gemini integration + credit enforcement) |
-| **Gallery** | Masonry grid, image viewer, download/share/delete | Complete |
-| **Settings** | Theme switcher (light/dark/system) | Complete |
-| **Realtime Updates** | Job status streaming via Supabase Realtime | Complete |
-| **Credits & Premium Model Gate** | Balance display, insufficient credit + premium model sheets, 402 handling | In progress (credit engine wired, purchases pending) |
+| **Template Engine** | Browse templates, dynamic inputs, generation tracking, realtime job updates | Complete |
+| **Create (Text-to-Image)** | Prompt + parameter UI, backend integration, credit enforcement via Edge Function | Complete |
+| **Gallery** | Masonry grid, image viewer, download/share/delete, soft delete | Complete |
+| **Settings** | Theme switcher (light/dark/system), account management | Complete |
+| **Realtime Updates** | Job status streaming via Supabase Realtime (template + create flows) | Complete |
+| **Credits System** | Balance display, insufficient credit + premium model sheets, 402 handling, deduct/refund RPCs | Complete |
 
-**Credit Guardrails:** Text-to-Image generation now posts to `supabase/functions/generate-image`, which deducts credits through the `deduct_credits` RPC, polls the selected Kie/Gemini model, mirrors outputs into `generated-images`, and updates `generation_jobs`. Insufficient balances surface the 402 response and the `insufficient_credits_sheet`/`premium_model_sheet` widgets implemented in `features/credits/presentation/widgets`.
+**Credit Guardrails:** Both Template-Based and Text-to-Image generation flows post to `supabase/functions/generate-image`, which enforces the user's credit balance via `deduct_credits` RPC. On insufficient balance, returns 402 and displays `insufficient_credits_sheet` or `premium_model_sheet` widgets from `features/credits/presentation/widgets`. On success, polls the selected Kie/Gemini model, mirrors outputs into `generated-images` bucket, and updates `generation_jobs` table. Model costs defined in Edge Function match `core/constants/ai_models.dart`.
 
 ### Planned / Pending
 
@@ -286,6 +286,6 @@ For issues, questions, or contributions, please open an issue in the project rep
 
 **Built with Flutter**
 
-**Last Updated**: 2026-02-16
+**Last Updated**: 2026-02-19
 
 </div>

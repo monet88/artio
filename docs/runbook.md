@@ -1,26 +1,45 @@
-# GSD Runbook
+# Artio Runbook
 
-> Operational procedures for debugging, validation, and recovery.
+> Operational procedures for debugging, validation, and recovery in the Artio Flutter project.
 
 ---
 
 ## Quick Commands
 
-### Status Check
+### Flutter Project Health
 
-**PowerShell:**
-```powershell
-# Current git status
-git status
+**Check build status:**
+```bash
+# Static analysis
+flutter analyze
 
-# Recent commits
-git log --oneline -10
+# Run tests
+flutter test
 
-# Current branch
-git branch --show-current
+# Run tests with coverage
+flutter test --coverage
+
+# Code generation
+dart run build_runner build --delete-conflicting-outputs
 ```
 
-**Bash:**
+**Run app on different platforms:**
+```bash
+# iOS/Android (default device)
+flutter run
+
+# Web
+flutter run -d chrome
+
+# Windows
+flutter run -d windows
+
+# All platforms debug
+flutter run -d all
+```
+
+### Git Status Check
+
 ```bash
 # Current git status
 git status
@@ -30,265 +49,214 @@ git log --oneline -10
 
 # Current branch
 git branch --show-current
+
+# View file at commit
+git show <commit-hash>:path/to/file
 ```
 
 ---
 
-## Wave Validation
+## Build Verification
 
-### Verify Wave Completion
+### Code Quality Checks
 
-**Before marking a wave complete:**
+Before committing:
 
-1. All tasks have commits:
-   ```powershell
-   git log --oneline -N  # N = number of tasks in wave
+1. **Lint clean:**
+   ```bash
+   flutter analyze  # Must report 0 errors
    ```
 
-2. All verifications passed (documented in SUMMARY.md)
+2. **Tests pass:**
+   ```bash
+   flutter test                    # All unit/widget tests
+   flutter test --coverage         # Coverage report
+   ```
 
-3. STATE.md updated with current position
+3. **Code gen up to date:**
+   ```bash
+   dart run build_runner build --delete-conflicting-outputs
+   git status  # Should show no .dart/.freezed/.g.dart changes
+   ```
 
-4. State snapshot created
+4. **Format code:**
+   ```bash
+   dart format .
+   ```
 
-### Wave Rollback
+### Pre-Commit Checklist
 
-**If a wave needs to be reverted:**
-
-```powershell
-# Find commit before wave started
-git log --oneline -20
-
-# Reset to that commit (keeps changes staged)
-git reset --soft <commit-hash>
-
-# Or hard reset (discards changes)
-git reset --hard <commit-hash>
-```
+- [ ] `flutter analyze` reports 0 errors
+- [ ] All tests pass (`flutter test`)
+- [ ] Code generation run (`build_runner build`)
+- [ ] No secrets committed (.env files excluded)
+- [ ] Commit message follows conventional format
+- [ ] No debug prints or TODOs left in code
 
 ---
 
 ## Debugging Procedures
 
-### 3-Strike Rule
+### Common Issues
 
-After 3 consecutive failed debug attempts:
+#### "Build failed: Unable to generate..."
 
-1. **Stop** — Don't try a 4th approach in same session
+**Cause:** `build_runner` needs to regenerate Freezed/Riverpod artifacts
 
-2. **Document** in STATE.md:
-   ```markdown
-   ## Debug Session
-   
-   **Problem:** {description}
-   
-   **Attempts:**
-   1. {approach 1} → {result}
-   2. {approach 2} → {result}
-   3. {approach 3} → {result}
-   
-   **Hypothesis:** {current theory}
-   
-   **Recommended next:** {suggested approach}
-   ```
-
-3. **Fresh session** — Start new conversation with documented context
-
-### Log Inspection
-
-**Find relevant logs:**
-
-```powershell
-# Search for error patterns
-Select-String -Path "*.log" -Pattern "error|exception|failed" -CaseSensitive:$false
-```
-
+**Fix:**
 ```bash
-# Search for error patterns
-grep -ri "error\|exception\|failed" *.log
-```
-
----
-
-## Verification Commands
-
-### Build Verification
-
-```powershell
-# Flutter/Dart
+dart run build_runner clean
+dart run build_runner build --delete-conflicting-outputs
+flutter pub get
 flutter analyze
-flutter test
-
 ```
 
-### Test Verification
+#### "Tests failing with 'Provider not found'"
 
-```powershell
-# Node.js
-npm test
+**Cause:** Missing mock setup or provider dependency
 
-# Python
-pytest -v
+**Fix:**
+1. Check test fixtures in `test/fixtures/`
+2. Verify mock setup in `setUp()` block
+3. Ensure `ProviderContainer` initialized with mocks
+4. Run: `flutter test <test_file> -v` for detailed output
 
-# Go
-go test ./...
-```
+#### "Supabase connection fails in tests"
 
-### Lint Verification
+**Cause:** Missing environment or mock Supabase client
 
-```powershell
-# Node.js
-npm run lint
+**Fix:**
+1. Verify `.env` file exists with test credentials
+2. Check `MockSupabaseClient` in test setup
+3. Use `supabaseProvider` override in tests:
+   ```dart
+   container.listen(supabaseProvider, (_, __) => mockSupabase);
+   ```
 
-# Python
-ruff check .
+#### "Hot reload not working"
 
-# Go
-golangci-lint run
-```
+**Cause:** Code changes require full rebuild (Freezed/Riverpod changes)
 
----
-
-## State Recovery
-
-### From STATE.md
-
-When resuming work:
-
-1. Read STATE.md for current position
-2. Check "Last Action" for context
-3. Follow "Next Steps" to continue
-4. Verify recent commits match documented progress
-
-### From Git History
-
-If STATE.md is outdated:
-
-```powershell
-# See recent work
-git log --oneline -20
-
-# Check specific commit details
-git show <commit-hash> --stat
-
-# View file at specific commit
-git show <commit-hash>:path/to/file
-```
-
-### Context Pollution Recovery
-
-If quality is degrading mid-session:
-
-1. Create state snapshot immediately
-2. Update STATE.md with full context
-3. Commit any pending work
-4. Start fresh session
-5. Run `/resume` to reload context
-
----
-
-## Search Commands
-
-### Find in Codebase
-
-**PowerShell:**
-```powershell
-# Find pattern in files
-Select-String -Path "src/**/*.ts" -Pattern "TODO" -Recurse
-
-# Find files by name
-Get-ChildItem -Recurse -Filter "*.config.*"
-```
-
-**Bash:**
+**Fix:**
 ```bash
-# Find pattern in files (with ripgrep)
-rg "TODO" --type ts
-
-# Find pattern in files (with grep)
-grep -r "TODO" src/
-
-# Find files by name
-find . -name "*.config.*"
+flutter clean
+flutter pub get
+flutter run
 ```
 
-### Search-First Workflow
+### Navigation Debugging
 
-Before reading any file:
+**Check current route:**
+```bash
+# Add logging in AppRouter
+print('Current location: ${router.routerDelegate.currentConfiguration.location}');
+```
 
-1. Search for relevant terms:
-   ```powershell
-   Select-String -Path "**/*.md" -Pattern "architecture" -Recurse
-   ```
-
-2. Identify candidate files from results
-
-3. Read only relevant sections:
-   ```powershell
-   Get-Content file.md | Select-Object -Skip 49 -First 20  # Lines 50-70
-   ```
-
----
-
-## Common Issues
-
-### "SPEC.md not FINALIZED"
-
-**Cause:** Planning lock prevents implementation
-
-**Fix:**
-1. Open `.gsd/SPEC.md`
-2. Complete all required sections
-3. Change status to `Status: FINALIZED`
-4. Retry command
-
-### "Context degrading"
-
-**Symptoms:** Shorter responses, skipped steps, inconsistency
-
-**Fix:**
-1. Create state snapshot
-2. Commit current work
-3. Start fresh session
-4. Run `/resume`
-
-### "Commit failed"
-
-**Causes:** Staged conflicts, hook failures
-
-**Debug:**
-```powershell
-git status
-git diff --staged
+**Verify auth guards:**
+```bash
+# Check auth state manually
+final user = supabase.auth.currentUser;
+print('Authenticated: $user');
 ```
 
 ---
 
-## Checklist Templates
+## Supabase Edge Function Testing
 
-### Pre-Execution Checklist
+### Local Testing
 
-- [ ] SPEC.md is FINALIZED
-- [ ] ROADMAP.md has current phase
-- [ ] STATE.md loaded and understood
-- [ ] Previous wave verified complete
+```bash
+# Install Supabase CLI
+supabase start  # Run local Supabase
 
-### Post-Wave Checklist
+# Invoke function locally
+supabase functions invoke generate-image --local
+```
 
-- [ ] All tasks committed
-- [ ] Verifications documented
-- [ ] STATE.md updated
-- [ ] State snapshot created
-- [ ] No uncommitted changes
+### Production Deployment
 
-### Session End Checklist
+```bash
+# Deploy Edge Function
+supabase functions deploy generate-image
 
-- [ ] Current work committed
-- [ ] STATE.md has "Next Steps"
-- [ ] JOURNAL.md updated (if milestone)
-- [ ] No loose ends
+# Check logs
+supabase functions logs generate-image
+```
+
+### Database Migrations
+
+```bash
+# Create new migration
+supabase migration new <migration_name>
+
+# Apply migrations
+supabase db push
+
+# Reset to clean state (dev only)
+supabase db reset
+```
 
 ---
 
-*See PROJECT_RULES.md for canonical rules.*
-*See docs/model-selection-playbook.md for model guidance.*
+## Performance Debugging
+
+### Measure widget build time
+
+```dart
+// Wrap widget in performance monitor
+Stopwatch sw = Stopwatch()..start();
+// ... build code ...
+print('Build time: ${sw.elapsedMilliseconds}ms');
+```
+
+### Check Riverpod state changes
+
+```bash
+# Add logging to providers
+@riverpod
+MyState myState(MyStateRef ref) {
+  print('myState rebuilding');
+  return MyState();
+}
+```
+
+### Memory profiling
+
+```bash
+# Use Flutter DevTools
+flutter pub global activate devtools
+devtools
+
+# Check memory in Android Studio Profiler
+```
+
+---
+
+## Commit Guidelines
+
+Follow [Conventional Commits](https://www.conventionalcommits.org/):
+
+```bash
+# Format
+<type>: <description>
+
+# Examples
+git commit -m "feat: add text-to-image generation UI"
+git commit -m "fix: resolve null pointer in gallery realtime stream"
+git commit -m "refactor: extract button themes to design_system"
+git commit -m "docs: update roadmap Phase 6 status"
+git commit -m "test: add gallery repository tests"
+```
+
+**Types:** `feat`, `fix`, `refactor`, `docs`, `test`, `chore`
+
+---
+
+## References
+
+- **Development Roadmap**: `docs/development-roadmap.md`
+- **Code Standards**: `docs/code-standards.md`
+- **System Architecture**: `docs/system-architecture.md`
+- **Flutter Docs**: https://docs.flutter.dev
+- **Supabase Docs**: https://supabase.com/docs
+- **Riverpod Docs**: https://riverpod.dev

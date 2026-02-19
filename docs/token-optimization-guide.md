@@ -176,29 +176,65 @@ GOOD:
 
 ---
 
-## Integration with GSD
-
-| GSD Workflow | Token Optimization |
-|--------------|-------------------|
-| `/map` | Generate outline, not full read |
-| `/plan` | Budget estimate per task |
-| `/execute` | Load minimal per task |
-| `/verify` | Targeted evidence only |
-| `/pause` | Compress and dump state |
-
----
-
 ## Metrics
 
 Track these for improvement:
 
 | Metric | Good | Poor |
 |--------|------|------|
-| Files fully loaded | <3 per wave | 10+ |
+| Files fully loaded | <3 per session | 10+ |
 | Search:Load ratio | 3:1 | 1:3 |
 | Re-reads | 0 | 3+ |
-| Budget at wave end | <50% | >70% |
+| Budget at session end | <50% | >70% |
 
 ---
 
-*See also:* internal token-budget and context-compressor skills (refer to `.agent/skills/` for the latest guidance) and the project-wide `PROJECT_RULES.md` when planning for token efficiency.
+## Flutter-Specific Patterns
+
+### Pattern 1: Feature-First Code Outline
+
+```
+Before reading full feature:
+1. Search for "feature_name" in codebase
+2. Check domain/data/presentation structure
+3. Read only domain/repositories/interface first
+4. Then dive into specific implementation if needed
+
+Saves: ~60% of tokens vs reading all files
+```
+
+### Pattern 2: Riverpod Provider Discovery
+
+```
+Instead of:
+- Reading all provider files in a feature
+
+Do:
+- Search for "@riverpod" annotation
+- Get list of providers with line numbers
+- Load only providers relevant to your change
+
+Saves: ~40% of tokens per feature
+```
+
+### Pattern 3: Test Fixture Reference
+
+```
+Instead of:
+- Reading test files and looking for setup
+
+Do:
+- Note fixture files: test/fixtures/*.dart
+- Reference by name in understanding
+- Load only when implementing similar test
+
+Saves: Quick recall without full file reads
+```
+
+---
+
+## References
+
+- **Code Standards**: `docs/code-standards.md`
+- **System Architecture**: `docs/system-architecture.md`
+- **Development Roadmap**: `docs/development-roadmap.md`

@@ -1,7 +1,7 @@
 # System Architecture
 
 **Project**: Artio - AI Image Generation SaaS
-**Updated**: 2026-02-16
+**Updated**: 2026-02-19
 **Version**: 1.3
 
 ---
@@ -132,12 +132,12 @@ supabaseProvider           → SupabaseClient (singleton)
 
 // Auth Feature
 authRepositoryProvider     → IAuthRepository (DI from Supabase)
-authNotifierProvider       → AuthNotifier (manages auth state)
+authViewModelProvider      → AuthViewModel (manages auth state, implements Listenable)
 
 // Template Engine Feature
 templateRepositoryProvider → ITemplateRepository
 generationRepositoryProvider → IGenerationRepository
-templateListProvider       → AsyncValue<List<TemplateModel>>
+templateProvider           → AsyncValue<List<TemplateModel>>
 generationJobProvider(id)  → Stream<GenerationJobModel>
 ```
 
@@ -146,18 +146,18 @@ generationJobProvider(id)  → Stream<GenerationJobModel>
 ```
 User taps "Sign In"
       ↓
-LoginScreen calls ref.read(authNotifierProvider.notifier).signIn(...)
+LoginScreen calls ref.read(authViewModelProvider.notifier).signIn(...)
       ↓
-AuthNotifier updates state to AsyncLoading
+AuthViewModel updates state to AsyncLoading
       ↓
-AuthNotifier calls ref.read(authRepositoryProvider).signInWithEmail(...)
+AuthViewModel calls ref.read(authRepositoryProvider).signInWithEmail(...)
       ↓
 AuthRepository calls Supabase.auth.signInWithPassword(...)
       ↓
-On success: AuthNotifier updates state to AsyncData(UserModel)
-On error: AuthNotifier updates state to AsyncError(AppException)
+On success: AuthViewModel updates state to AsyncData(UserModel)
+On error: AuthViewModel updates state to AsyncError(AppException)
       ↓
-LoginScreen rebuilds via ref.watch(authNotifierProvider)
+LoginScreen rebuilds via ref.watch(authViewModelProvider)
       ↓
 UI shows success (navigate) or error (snackbar)
 ```
@@ -315,7 +315,7 @@ On success:
   - AuthRepository fetches/creates profile from profiles table
   - Returns UserModel (merged user + profile data)
       ↓
-AuthNotifier updates state → AsyncData(UserModel)
+AuthViewModel updates state → AsyncData(UserModel)
       ↓
 Router redirects to Home (auth guard detects session)
 ```
@@ -386,15 +386,24 @@ Realtime subscription streams job updates to UI
 **Current Status**:
 - Create screen UI implemented with prompt input
 - Parameter selection UI implemented
-- Generation flow wiring exists; backend behavior depends on Edge Function support
+- Generation flow wired to `GenerationRepository`
+- Edge Function (`supabase/functions/generate-image/index.ts`) enforces credits before calling Kie/Gemini
+- Model selection: Imagen 4 (primary), Flux-2 (Pro), GPT Image, Seedream (fallback options)
 
-**Planned Flow**:
-- No image upload required
-- Edge Function calls Imagen 4 (or Flux-2, GPT Image, Seedream)
-- Longer processing time (~30-60s)
+**Flow**:
+1. User enters prompt and selects parameters
+2. CreateViewModel validates input and calls `GenerationRepository.createJob()`
+3. Repository posts to Edge Function (requires `user_id` in JWT)
+4. Edge Function deducts credits via `deduct_credits` RPC
+5. If insufficient balance (402): repository catches and returns error
+6. If balance ok: Edge Function calls selected AI model (Kie or Gemini)
+7. Result uploaded to `generated-images` bucket
+8. Realtime stream updates UI from `generation_jobs` table
 
 **Notes**:
-- Exact request payload fields and model selection logic need verification in Edge Function implementation.
+- Model-cost map in Edge Function mirrors `core/constants/ai_models.dart`
+- Edge Function timeout: 120 seconds (Supabase limit)
+- Rate limiting and anti-abuse policies pending (Phase 6)
 
 ---
 
@@ -700,4 +709,4 @@ ref.listen(generationJobProvider(jobId), (prev, next) {
 
 **AI Model Documentation**: `docs/kie-api/` (source of truth for model specs, parameters, Edge Function integration)
 
-**Last Updated**: 2026-02-10
+**Last Updated**: 2026-02-19
