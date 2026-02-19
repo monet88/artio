@@ -8,6 +8,8 @@ import 'package:artio/features/create/domain/entities/create_form_state.dart';
 import 'package:artio/features/create/presentation/providers/create_form_provider.dart';
 import 'package:artio/features/create/presentation/view_models/create_view_model.dart';
 import 'package:artio/features/create/presentation/widgets/aspect_ratio_selector.dart';
+import 'package:artio/features/create/presentation/widgets/auth_gate_sheet.dart';
+import 'package:artio/features/create/presentation/widgets/credit_balance_chip.dart';
 import 'package:artio/features/create/presentation/widgets/generation_progress_overlay.dart';
 import 'package:artio/features/create/presentation/widgets/model_selector.dart';
 import 'package:artio/features/create/presentation/widgets/prompt_input_field.dart';
@@ -15,7 +17,6 @@ import 'package:artio/features/credits/presentation/providers/credit_balance_pro
 import 'package:artio/features/credits/presentation/widgets/insufficient_credits_sheet.dart';
 import 'package:artio/features/credits/presentation/widgets/premium_model_sheet.dart';
 import 'package:artio/features/template_engine/domain/entities/generation_job_model.dart';
-import 'package:artio/routing/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -60,7 +61,6 @@ class _CreateScreenState extends ConsumerState<CreateScreen> {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               if (!mounted) return;
 
-              // Show bottom sheet for credit / premium errors
               if (error is PaymentException) {
                 _showInsufficientCreditsSheet();
                 return;
@@ -89,9 +89,7 @@ class _CreateScreenState extends ConsumerState<CreateScreen> {
   }
 
   void _handleGenerate(CreateFormState formState, {required bool isGenerating}) {
-    if (isGenerating) {
-      return;
-    }
+    if (isGenerating) return;
 
     final authState = ref.read(authViewModelProvider);
     final userId = authState.maybeMap(
@@ -99,7 +97,7 @@ class _CreateScreenState extends ConsumerState<CreateScreen> {
           orElse: () => null,
         );
     if (userId == null) {
-      _showAuthGateBottomSheet();
+      showAuthGateSheet(context);
       return;
     }
 
@@ -113,59 +111,6 @@ class _CreateScreenState extends ConsumerState<CreateScreen> {
           userId: userId,
           isPremiumUser: isPremiumUser,
         );
-  }
-
-  void _showAuthGateBottomSheet() {
-    showModalBottomSheet<void>(
-      context: context,
-      builder: (context) => Padding(
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.lock_outline,
-              size: 48,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-            const SizedBox(height: AppSpacing.md),
-            Text(
-              'Sign in to create',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              'Create an account or sign in to start generating AI art',
-              style: Theme.of(context).textTheme.bodyMedium,
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: AppSpacing.lg),
-            SizedBox(
-              width: double.infinity,
-              child: FilledButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  const LoginRoute().go(this.context);
-                },
-                child: const Text('Sign In'),
-              ),
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  const RegisterRoute().go(this.context);
-                },
-                child: const Text('Create Account'),
-              ),
-            ),
-            const SizedBox(height: AppSpacing.sm),
-          ],
-        ),
-      ),
-    );
   }
 
   void _showInsufficientCreditsSheet() {
@@ -201,13 +146,11 @@ class _CreateScreenState extends ConsumerState<CreateScreen> {
       createViewModelProvider.select(CreateViewModel.isJobActive),
     );
 
-    // Wire isPremium from user's actual subscription status
     final isPremium = ref.watch(authViewModelProvider).maybeMap(
           authenticated: (state) => state.user.isPremium,
           orElse: () => false,
         );
 
-    // Only show prompt error after user has interacted with the field
     final promptLength = formState.prompt.trim().length;
     final showPromptError = !formState.isValid && formNotifier.hasInteracted;
     final promptErrorText = !showPromptError
@@ -235,33 +178,7 @@ class _CreateScreenState extends ConsumerState<CreateScreen> {
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 const SizedBox(height: AppSpacing.lg),
-                // Credit balance chip (authenticated users only)
-                if (ref.watch(authViewModelProvider).maybeMap(
-                      authenticated: (_) => true,
-                      orElse: () => false,
-                    ))
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                    child: ref.watch(creditBalanceNotifierProvider).maybeWhen(
-                      data: (balance) => Align(
-                        alignment: Alignment.centerLeft,
-                        child: Chip(
-                          avatar: const Text('💎', style: TextStyle(fontSize: 14)),
-                          label: Text('${balance.balance} credits'),
-                          visualDensity: VisualDensity.compact,
-                        ),
-                      ),
-                      loading: () => const Align(
-                        alignment: Alignment.centerLeft,
-                        child: Chip(
-                          avatar: Text('💎', style: TextStyle(fontSize: 14)),
-                          label: Text('...'),
-                          visualDensity: VisualDensity.compact,
-                        ),
-                      ),
-                      orElse: () => const SizedBox.shrink(),
-                    ),
-                  ),
+                const CreditBalanceChip(),
                 PromptInputField(
                   label: 'Prompt',
                   hintText: 'Describe the image you want...',
@@ -319,7 +236,6 @@ class _CreateScreenState extends ConsumerState<CreateScreen> {
             if (jobState.valueOrNull != null)
               GenerationProgressOverlay(job: jobState.valueOrNull!)
             else
-              // Show a simple loading indicator before the first stream event
               Positioned.fill(
                 child: ColoredBox(
                   color: Theme.of(context)

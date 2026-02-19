@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:artio/core/config/sentry_config.dart';
-import 'package:artio/core/design_system/app_dimensions.dart';
 import 'package:artio/core/design_system/app_spacing.dart';
 import 'package:artio/core/utils/app_exception_mapper.dart';
 import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
@@ -11,8 +10,8 @@ import 'package:artio/features/template_engine/domain/entities/template_model.da
 import 'package:artio/features/template_engine/presentation/providers/generation_options_provider.dart';
 import 'package:artio/features/template_engine/presentation/providers/template_provider.dart';
 import 'package:artio/features/template_engine/presentation/view_models/generation_view_model.dart';
-import 'package:artio/features/template_engine/presentation/widgets/generation_progress.dart';
 import 'package:artio/features/template_engine/presentation/widgets/input_field_builder.dart';
+import 'package:artio/features/template_engine/presentation/widgets/template_detail_widgets.dart';
 import 'package:artio/shared/widgets/aspect_ratio_selector.dart';
 import 'package:artio/shared/widgets/image_count_dropdown.dart';
 import 'package:artio/shared/widgets/loading_state_widget.dart';
@@ -160,39 +159,7 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Template thumbnail
-                if (template.thumbnailUrl.isNotEmpty) ...[
-                  ClipRRect(
-                    borderRadius: AppDimensions.buttonRadius,
-                    child: Image.network(
-                      template.thumbnailUrl,
-                      height: 200,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => GestureDetector(
-                        onTap: () => setState(() {}), // Force rebuild to retry
-                        child: const SizedBox(
-                          height: 200,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.broken_image, size: AppDimensions.iconXl),
-                              SizedBox(height: 8),
-                              Text('Tap to retry', style: TextStyle(fontSize: 12)),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.md),
-                ],
-
-                // Template info
-                Text(template.name, style: Theme.of(context).textTheme.headlineSmall),
-                const SizedBox(height: AppSpacing.sm),
-                Text(template.description),
-                const SizedBox(height: AppSpacing.lg),
-
+                TemplateDetailHeader(template: template),
                 // Template input fields
                 Form(
                   key: _formKey,
@@ -208,8 +175,6 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
                     ],
                   ),
                 ),
-
-                // Other Ideas input (optional)
                 InputFieldBuilder(
                   field: const InputFieldModel(
                     name: 'otherIdeas',
@@ -220,8 +185,6 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
                   onChanged: (value) => _inputValues['otherIdeas'] = value,
                 ),
                 const SizedBox(height: AppSpacing.lg),
-
-                // Generation Options Section
                 Text(
                   'Generation Options',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
@@ -229,31 +192,23 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
                   ),
                 ),
                 const SizedBox(height: AppSpacing.md),
-
-                // Aspect Ratio Selector
                 AspectRatioSelector(
                   selectedRatio: options.aspectRatio,
                   selectedModelId: options.modelId,
                   onChanged: (ratio) => ref.read(generationOptionsProvider.notifier).updateAspectRatio(ratio),
                 ),
                 const SizedBox(height: AppSpacing.md),
-
-                // Image Count Dropdown
                 ImageCountDropdown(
                   value: options.imageCount,
                   onChanged: (count) => ref.read(generationOptionsProvider.notifier).updateImageCount(count),
                 ),
                 const SizedBox(height: AppSpacing.md),
-
-                // Output Format Toggle
                 OutputFormatToggle(
                   value: options.outputFormat,
                   isPremium: _isPremium,
                   onChanged: (format) => ref.read(generationOptionsProvider.notifier).updateOutputFormat(format),
                 ),
                 const SizedBox(height: AppSpacing.md),
-
-                // Model Selector
                 ModelSelector(
                   selectedModelId: options.modelId,
                   isPremium: _isPremium,
@@ -261,60 +216,17 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
                   filterByType: 'text-to-image',
                 ),
                 const SizedBox(height: AppSpacing.lg),
-
-                // Generation State (button/progress)
-                _buildGenerationState(jobAsync, template),
+                GenerationStateSection(
+                  jobAsync: jobAsync,
+                  isGenerating: ref.read(generationViewModelProvider.notifier).isGenerating,
+                  onGenerate: () => _handleGenerate(template),
+                  onReset: () => ref.read(generationViewModelProvider.notifier).reset(),
+                ),
               ],
             ),
           );
         },
       ),
-    );
-  }
-
-  Widget _buildGenerationState(AsyncValue<GenerationJobModel?> jobAsync, TemplateModel template) {
-    final isGenerating = ref.read(generationViewModelProvider.notifier).isGenerating;
-
-    return jobAsync.when(
-      loading: () => const LoadingStateWidget(),
-       error: (error, _) => Column(
-         children: [
-           Text(
-             AppExceptionMapper.toUserMessage(error),
-             style: TextStyle(color: Theme.of(context).colorScheme.error),
-           ),
-          const SizedBox(height: AppSpacing.sm),
-          FilledButton(
-            onPressed: isGenerating
-                ? null
-                : () {
-                    ref.read(generationViewModelProvider.notifier).reset();
-                    _handleGenerate(template);
-                  },
-            child: const Text('Retry'),
-          ),
-        ],
-      ),
-      data: (job) {
-        if (job == null) {
-          return FilledButton(
-            onPressed: isGenerating ? null : () => _handleGenerate(template),
-            child: const Text('Generate'),
-          );
-        }
-
-        return Column(
-          children: [
-            GenerationProgress(job: job),
-            const SizedBox(height: AppSpacing.md),
-            if (job.status == JobStatus.completed)
-              FilledButton(
-                onPressed: () => ref.read(generationViewModelProvider.notifier).reset(),
-                child: const Text('Generate Another'),
-              ),
-          ],
-        );
-      },
     );
   }
 }
