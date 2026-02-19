@@ -79,6 +79,14 @@ class AiModels {
       isNew: true,
     ),
     AiModelConfig(
+      id: 'nano-banana-pro',
+      displayName: 'Nano Banana Pro',
+      isPremium: false,
+      supportedAspectRatios: standardAspectRatios,
+      creditCost: 10,
+      type: 'text-to-image',
+    ),
+    AiModelConfig(
       id: 'google/pro-image-to-image',
       displayName: 'Pro Image-to-Image',
       isPremium: true,
@@ -155,6 +163,26 @@ class AiModels {
       supportedAspectRatios: standardAspectRatios,
       creditCost: 10,
       type: 'image-editing',
+    ),
+
+    // Gemini Native Models
+    AiModelConfig(
+      id: 'gemini-3-pro-image-preview',
+      displayName: 'Gemini 3 Pro Image',
+      isPremium: true,
+      supportedAspectRatios: standardAspectRatios,
+      creditCost: 15,
+      type: 'text-to-image',
+      isNew: true,
+    ),
+    AiModelConfig(
+      id: 'gemini-2.5-flash-image',
+      displayName: 'Gemini 2.5 Flash Image',
+      isPremium: false,
+      supportedAspectRatios: standardAspectRatios,
+      creditCost: 8,
+      type: 'text-to-image',
+      isNew: true,
     ),
   ];
 
