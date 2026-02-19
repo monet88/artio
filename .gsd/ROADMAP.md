@@ -45,8 +45,8 @@
 - [ ] Cache invalidation strategy (TTL or stale-while-revalidate)
 - [ ] Offline mode indicator when data is served from cache
 
-### Phase 1: Model Registry Sync
-**Status**: ⬜ Not Started
+### Phase 1: Model Registry Sync ✅
+**Status**: ✅ Complete
 **Objective**: Create single source of truth for AI models — sync app constants with Edge Function model lists and credit costs. Remove orphan models, add missing models, ensure `getProvider()` routing covers all models explicitly.
 
 ### Phase 2: Template Data Caching
