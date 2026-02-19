@@ -49,8 +49,8 @@
 **Status**: ✅ Complete
 **Objective**: Create single source of truth for AI models — sync app constants with Edge Function model lists and credit costs. Remove orphan models, add missing models, ensure `getProvider()` routing covers all models explicitly.
 
-### Phase 2: Template Data Caching
-**Status**: ⬜ Not Started
+### Phase 2: Template Data Caching ✅
+**Status**: ✅ Complete
 **Objective**: Add local persistence for template data so template list loads instantly from cache with network refresh in background. Reduce Supabase API calls on app open.
 
 ### Phase 3: Gallery Data Caching
