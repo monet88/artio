@@ -6,7 +6,7 @@ part of 'ad_reward_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$adRewardNotifierHash() => r'451bdc6237a240e30349d883305b81f0382008f6';
+String _$adRewardNotifierHash() => r'fda978dff39527eba20da52cb41a56811c9fff33';
 
 /// Manages the ad-watch → server-reward → UI-refresh flow.
 ///

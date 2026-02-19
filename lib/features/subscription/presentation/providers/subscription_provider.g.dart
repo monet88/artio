@@ -6,7 +6,7 @@ part of 'subscription_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$offeringsHash() => r'843c84752f684a44b98b80dcad0736e3d0e0101b';
+String _$offeringsHash() => r'2eb62fe03c9a43507e707198a0ac0883f456eea6';
 
 /// Provider for available subscription offerings.
 ///
