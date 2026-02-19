@@ -2,8 +2,6 @@
 
 ## Technical Debt
 - [ ] Replace test AdMob IDs with production IDs (`rewarded_ad_service.dart:10`) `high` — 2026-02-19
-- [ ] Integration tests require real Supabase credentials `low` — 2026-02-19
-- [ ] Offline mode indicator when data served from cache `low` — 2026-02-19
 
 ## Completed
 - [x] Extract `app_component_themes.dart` into smaller theme files — Widget Cleanup ✅
