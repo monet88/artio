@@ -1,8 +1,8 @@
 # Development Roadmap
 
 **Project**: Artio - AI Image Generation SaaS
-**Updated**: 2026-02-16
-**Status**: Phase 5, 7 complete; Phase 8 partial; Phase 6 next
+**Updated**: 2026-02-19
+**Status**: Phase 1-5,7 complete; Phase 6 started (50%); Phase 8 in progress (70%)
 
 ---
 
@@ -95,23 +95,24 @@
 
 ### ⏸ Pending
 
-**Phase 6: Subscription & Credits** (8h) - *NEXT*
-- Subscription model (Free/Pro tiers)
-- Credits system for free users (implemented: `user_credits`, `deduct_credits`/`refund_credits`, Edge Function + UI handling)
-- RevenueCat integration (iOS/Android)
-- Stripe integration (Web)
-- Rewarded ads (mobile)
-- Premium-model gating (insufficient credit + premium sheets)
+**Phase 6: Subscription & Credits** (8h) - *IN PROGRESS (50% complete)*
+- ✓ Credits system for free users (`user_credits`, `deduct_credits`/`refund_credits`, Edge Function + UI handling complete)
+- ✓ Premium-model gating (insufficient credit + premium sheets implemented)
+- Subscription model (Free/Pro tiers) - pending
+- RevenueCat integration (iOS/Android) - pending
+- Stripe integration (Web) - pending
+- Rewarded ads (mobile) - pending
 
 **Plan 2: Credit, Premium & Rate Limit** (6h) - *Merged into Phase 6*
 - Database schema for credits/limits (complete)
 - Edge Function enforcement (complete)
 - Rate limiting & cooldown (pending)
 
-**Phase 8: Admin App** (~1.5h remaining)
-- ~~Separate Flutter web app for template management~~ ✓
-- ~~Admin role enforcement via RLS~~ ✓
-- Template CRUD interface (pending)
+**Phase 8: Admin App** (~0.9h remaining - 70% complete)
+- ✓ Separate Flutter web app for template management
+- ✓ Admin role enforcement via RLS
+- ✓ Template model and router setup
+- Template CRUD UI (pending)
 - Visual JSON editor for input fields (pending)
 - Drag-to-reorder templates (pending)
 - Deployment to admin.artio.app (pending)
@@ -197,11 +198,11 @@
 | **Generation Engine** | 100% | ✓ Complete (Phase 4) |
 | **Architecture Quality** | 100% | ✓ Complete (Phase 4.6) |
 | **User Features** | 100% | ✓ Complete (Phase 5, 7) |
-| **Monetization** | 0% | Pending (Phase 6) |
-| **Admin Tools** | 50% | In Progress (Phase 8) |
-| **Documentation** | 100% | ✓ Standardized (content review ongoing) |
+| **Monetization** | 50% | In Progress (Phase 6) - Credit system done, purchases pending |
+| **Admin Tools** | 70% | In Progress (Phase 8) - Auth + CRUD done, drag-drop + deployment pending |
+| **Documentation** | 100% | ✓ Current (2026-02-19 refresh) |
 
-**Total Project**: 81% (39.5h / 48.5h total estimated)
+**Total Project**: 84% (40.8h / 48.5h total estimated)
 
 ---
 
@@ -284,6 +285,7 @@
 | 2026-01-30 | 1.1 | Test coverage 80%+, Admin app 50%, documentation sync |
 | 2026-02-03 | 1.1.1 | Fix TemplateDetailScreen listener lifecycle (tests) |
 | 2026-02-10 | 1.2 | Documentation accuracy sync - updated file counts, schemas, navigation patterns |
+| 2026-02-19 | 1.3 | Phase progress update (Phase 6: 50%, Phase 8: 70%), date refresh, metrics verification |
 
 ---
 
@@ -296,4 +298,4 @@
 
 ---
 
-**Last Updated**: 2026-02-10
+**Last Updated**: 2026-02-19

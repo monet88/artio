@@ -1,8 +1,8 @@
-# Model Selection Playbook
+# Model Selection Playbook for Artio
 
-> Guidance for choosing models by phase and task type.
-> 
-> **No model is required.** These are recommendations, not requirements.
+> Guidance for choosing AI models by development phase and task type in the Artio Flutter project.
+>
+> **No specific model is required.** These are recommendations based on task complexity and context needs.
 
 ---
 
@@ -99,30 +99,62 @@
 ## Model Switching Mid-Session
 
 **When to switch:**
-- Context is getting polluted (approaching 50%)
-- Task type changes significantly (planning → implementation)
-- Current model struggling with task type
+- Context approaching token limit (>50%)
+- Task type changes significantly (architecture → implementation)
+- Current model struggling with task complexity
+- Performance degradation detected (shorter responses, skipped details)
 
 **How to switch:**
-1. Create state snapshot
-2. Update STATE.md with current position
+1. Commit current work
+2. Create summary of findings in task comments
 3. Start fresh session with appropriate model
-4. Load STATE.md to resume
+4. Load development-roadmap.md for context
 
 ---
 
-## GSD Model-Agnostic Principle
+## Task-Specific Recommendations
 
-GSD works with any capable LLM. The methodology compensates for model differences through:
+### Architecture & Planning
+- **Use:** Extended reasoning, large context (analyze multiple files)
+- **Why:** Decisions impact entire codebase (Feature-First clean architecture)
+- **Example:** Planning Phase 6 (Credits & Subscription system)
 
-1. **Structured plans** — Reduce ambiguity
-2. **Explicit verification** — Catch errors regardless of model
-3. **State persistence** — Enable model switching
-4. **Fresh context** — Prevent accumulation issues
+### Bug Fixes & Debugging
+- **Use:** Standard or reasoning model with search-first approach
+- **Why:** Need to trace through Riverpod providers, repositories, and UI layers
+- **Example:** Fixing realtime update timing in gallery feature
 
-Choose models based on task needs, not methodology requirements.
+### UI/Widget Implementation
+- **Use:** Fast model with frequent iteration
+- **Why:** Many small changes, visual feedback-driven development
+- **Example:** Building CreateScreen input fields
+
+### Test Writing
+- **Use:** Standard model with fixture patterns
+- **Why:** Tests follow predictable patterns (mocks, setup, assertions)
+- **Example:** Writing GenerationRepositoryTest
+
+### Code Review & Refactoring
+- **Use:** Large context window (see before/after diffs)
+- **Why:** Maintain consistency across 7 features and 85+ source files
+- **Example:** Applying token optimization patterns across codebase
 
 ---
 
-*See PROJECT_RULES.md for canonical rules.*
-*See docs/runbook.md for operational procedures.*
+## Artio-Specific Context
+
+**Key consideration:** Artio uses Riverpod 2.x with code generation, so any AI model must:
+1. Understand `@riverpod` annotations and `AsyncValue` patterns
+2. Be aware of code generation artifacts (build_runner, .freezed.dart, .g.dart)
+3. Follow 3-layer clean architecture (domain/data/presentation)
+4. Respect Supabase integration patterns
+
+This narrows model choice less by capability, more by familiarity with Flutter ecosystem.
+
+---
+
+## References
+
+- **Development Roadmap**: `docs/development-roadmap.md`
+- **Code Standards**: `docs/code-standards.md`
+- **Runbook**: `docs/runbook.md`

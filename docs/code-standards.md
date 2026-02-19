@@ -1,7 +1,7 @@
 # Code Standards
 
 **Project**: Artio - AI Image Generation SaaS
-**Updated**: 2026-02-16
+**Updated**: 2026-02-19
 **Version**: 1.3
 
 ---
@@ -137,8 +137,8 @@ lib/
 | Models | `{name}_model.dart` | `user_model.dart` |
 | Repositories (Interface) | `i_{name}_repository.dart` | `i_auth_repository.dart` |
 | Repositories (Impl) | `{name}_repository.dart` | `auth_repository.dart` |
-| Providers | `{name}_provider.dart` | `auth_notifier_provider.dart` |
-| Notifiers | `{name}_notifier.dart` | `auth_notifier.dart` |
+| Providers | `{name}_provider.dart` or `{name}_view_model.dart` | `auth_view_model_provider.dart` |
+| ViewModels | `{name}_view_model.dart` | `auth_view_model.dart` |
 
 ### Classes
 
@@ -149,8 +149,8 @@ lib/
 | Models | `{Name}Model` | `UserModel` |
 | Repositories (Interface) | `I{Name}Repository` | `IAuthRepository` |
 | Repositories (Impl) | `{Name}Repository` | `AuthRepository` |
-| Notifiers | `{Name}Notifier` | `AuthViewModel` |
-| Providers | `{name}Provider` | `authNotifierProvider` |
+| ViewModels | `{Name}ViewModel` | `AuthViewModel` |
+| Providers | `{name}Provider` | `authViewModelProvider` |
 
 ---
 
@@ -161,7 +161,7 @@ lib/
 **Use `@riverpod` annotations (riverpod_generator), never manual providers:**
 
 ```dart
-// ✓ CORRECT: Generated provider
+// ✓ CORRECT: Generated provider with @riverpod annotation
 @riverpod
 class AuthViewModel extends _$AuthViewModel {
   @override
@@ -175,7 +175,7 @@ class AuthViewModel extends _$AuthViewModel {
   }
 }
 
-// ✗ WRONG: Manual provider
+// ✗ WRONG: Manual provider (don't use this pattern)
 final authProvider = StateNotifierProvider<AuthViewModel, AuthState>(...);
 ```
 
@@ -196,10 +196,16 @@ IAuthRepository authRepository(AuthRepositoryRef ref) {
   return AuthRepository(ref.watch(supabaseProvider));
 }
 
-// features/auth/presentation/providers/auth_notifier_provider.dart
+// features/auth/presentation/providers/auth_view_model.dart (or auth_view_model_provider.dart)
 @riverpod
-class AuthNotifier extends _$AuthNotifier {
-  // Access via ref.read(authRepositoryProvider)
+class AuthViewModel extends _$AuthViewModel {
+  @override
+  FutureOr<AuthUser?> build() {
+    // Initialize auth state
+    return null;
+  }
+
+  // Implement methods like signIn, signUp, signOut
 }
 ```
 
@@ -606,4 +612,4 @@ flutter pub outdated
 
 ---
 
-**Last Updated**: 2026-02-10
+**Last Updated**: 2026-02-19
