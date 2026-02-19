@@ -110,3 +110,27 @@ build/
 *.lock
 *.toml
 LICENSE*
+
+# GSD methodology & agent configs
+.gsd/
+.agent/
+.serena/
+.gemini/
+
+# Shell/Scripts (not project code)
+*.ps1
+*.sh
+*.bat
+*.cmd
+
+# Platform code (rarely searched)
+windows/
+linux/
+macos/
+ios/Runner/
+android/app/src/
+
+# Web/Markup (non-code)
+*.html
+*.xml
+*.xhtml
