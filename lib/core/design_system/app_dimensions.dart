@@ -3,6 +3,8 @@ import 'package:flutter/widgets.dart';
 class AppDimensions {
   AppDimensions._();
 
+  static const String fontFamily = 'Inter';
+
   static const double touchTargetMin = 44;
   static const double buttonHeight = 48;
 

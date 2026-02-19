@@ -1,3 +1,4 @@
+import 'package:artio/core/design_system/app_dimensions.dart';
 import 'package:artio/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,10 +10,6 @@ export 'app_button_themes.dart';
 /// Each method returns the fully configured component theme.
 /// Parameters are only those values that differ between light/dark.
 abstract class AppComponentThemes {
-  static const _fontFamily = 'Inter';
-  static const _borderRadius = 14.0;
-  static const _borderRadiusSm = 8.0;
-  static const _borderRadiusLg = 20.0;
 
   // ── AppBar ──────────────────────────────────────────────────────────
   static AppBarTheme appBar({
@@ -27,7 +24,7 @@ abstract class AppComponentThemes {
         surfaceTintColor: Colors.transparent,
         centerTitle: false,
         titleTextStyle: TextStyle(
-          fontFamily: _fontFamily,
+          fontFamily: AppDimensions.fontFamily,
           fontSize: 20,
           fontWeight: FontWeight.w700,
           color: titleColor,
@@ -47,7 +44,7 @@ abstract class AppComponentThemes {
         color: color,
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(_borderRadius),
+          borderRadius: BorderRadius.circular(AppDimensions.radiusMd),
           side: borderSide ?? BorderSide.none,
         ),
         clipBehavior: Clip.antiAlias,
@@ -66,20 +63,20 @@ abstract class AppComponentThemes {
         surfaceTintColor: Colors.transparent,
         indicatorColor: AppColors.primaryCta.withValues(alpha: 0.15),
         indicatorShape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(_borderRadiusLg),
+          borderRadius: BorderRadius.circular(AppDimensions.radiusLg),
         ),
         labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
         labelTextStyle: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
             return const TextStyle(
-              fontFamily: _fontFamily,
+              fontFamily: AppDimensions.fontFamily,
               fontSize: 12,
               fontWeight: FontWeight.w600,
               color: AppColors.primaryCta,
             );
           }
           return TextStyle(
-            fontFamily: _fontFamily,
+            fontFamily: AppDimensions.fontFamily,
             fontSize: 12,
             fontWeight: FontWeight.w500,
             color: unselectedLabelColor,
@@ -109,33 +106,33 @@ abstract class AppComponentThemes {
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(_borderRadius),
+          borderRadius: BorderRadius.circular(AppDimensions.radiusMd),
           borderSide: BorderSide.none,
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(_borderRadius),
+          borderRadius: BorderRadius.circular(AppDimensions.radiusMd),
           borderSide: enabledBorderSide ?? BorderSide.none,
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(_borderRadius),
+          borderRadius: BorderRadius.circular(AppDimensions.radiusMd),
           borderSide:
               const BorderSide(color: AppColors.primaryCta, width: 1.5),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(_borderRadius),
+          borderRadius: BorderRadius.circular(AppDimensions.radiusMd),
           borderSide: const BorderSide(color: AppColors.error, width: 1.5),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(_borderRadius),
+          borderRadius: BorderRadius.circular(AppDimensions.radiusMd),
           borderSide: const BorderSide(color: AppColors.error, width: 2),
         ),
         hintStyle: TextStyle(
-          fontFamily: _fontFamily,
+          fontFamily: AppDimensions.fontFamily,
           color: hintColor,
           fontSize: 14,
         ),
         labelStyle: TextStyle(
-          fontFamily: _fontFamily,
+          fontFamily: AppDimensions.fontFamily,
           color: labelColor,
           fontSize: 14,
         ),
@@ -152,13 +149,13 @@ abstract class AppComponentThemes {
         selectedColor: AppColors.primaryCta.withValues(alpha: 0.15),
         checkmarkColor: AppColors.primaryCta,
         labelStyle: TextStyle(
-          fontFamily: _fontFamily,
+          fontFamily: AppDimensions.fontFamily,
           fontSize: 13,
           fontWeight: FontWeight.w500,
           color: labelColor,
         ),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(_borderRadiusSm),
+          borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
           side: shapeSide ?? BorderSide.none,
         ),
         side: BorderSide.none,
@@ -175,12 +172,12 @@ abstract class AppComponentThemes {
         behavior: SnackBarBehavior.floating,
         backgroundColor: backgroundColor,
         contentTextStyle: TextStyle(
-          fontFamily: _fontFamily,
+          fontFamily: AppDimensions.fontFamily,
           color: textColor,
           fontSize: 14,
         ),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(_borderRadius),
+          borderRadius: BorderRadius.circular(AppDimensions.radiusMd),
           side: borderSide ?? BorderSide.none,
         ),
       );
@@ -208,7 +205,7 @@ abstract class AppComponentThemes {
         backgroundColor: backgroundColor,
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(_borderRadiusLg),
+          borderRadius: BorderRadius.circular(AppDimensions.radiusLg),
           side: borderSide ?? BorderSide.none,
         ),
       );
