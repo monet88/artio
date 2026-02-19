@@ -18,14 +18,23 @@ TemplateCacheService templateCacheService(Ref ref) {
 /// Stores templates as a JSON file with a timestamp for TTL validation.
 /// Uses `path_provider` to locate the app's documents directory.
 class TemplateCacheService {
+  /// Production constructor — resolves path via `path_provider`.
+  TemplateCacheService();
+
+  /// Test constructor — uses [directoryPath] directly.
+  TemplateCacheService.forTesting(String directoryPath)
+      : _directoryPath = directoryPath;
+
   static const _cacheFileName = 'templates_cache.json';
   static const _defaultTtl = Duration(minutes: 5);
 
+  String? _directoryPath;
   DateTime? _lastCachedAt;
 
   Future<File> get _cacheFile async {
-    final dir = await getApplicationDocumentsDirectory();
-    return File('${dir.path}/$_cacheFileName');
+    final path =
+        _directoryPath ?? (await getApplicationDocumentsDirectory()).path;
+    return File('$path/$_cacheFileName');
   }
 
   /// Returns cached templates, or `null` if no cache exists.
