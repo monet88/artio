@@ -1,7 +1,7 @@
 # ROADMAP.md
 
-> **Current Milestone**: Widget Cleanup
-> **Goal**: Bring all remaining hand-written files under 250 lines
+> **Current Milestone**: Code Health
+> **Goal**: Fix all flutter analyze errors across main app + admin web
 
 ---
 
@@ -21,26 +21,32 @@
 - 5 phases, 9 plans, 606 tests passing
 - All must-haves delivered, 0 deferrals
 
+### Widget Cleanup ✅
+- Theme & screen extraction: app_component_themes, home_screen, create_screen, register_screen
+- 1 phase, flutter analyze clean, 606/606 tests passing
+
 ---
 
-## Current Milestone: Widget Cleanup
+## Current Milestone: Code Health
 
 ### Must-Haves
-- [x] `app_component_themes.dart` ≤250 lines (228 → extracted button themes)
-- [x] `home_screen.dart` ≤250 lines (160 → extracted widgets)
-- [x] `create_screen.dart` ≤250 lines (246 → extracted overlay widget)
-- [x] `register_screen.dart` ≤250 lines (248 → trimmed spacing)
-- [x] `flutter analyze` clean
-- [x] All tests pass (606/606)
+- [ ] Admin web dependencies resolved (`flutter pub get`)
+- [ ] Admin codegen up to date (`build_runner`)
+- [ ] Fix `dart:io` in admin web (not available on web platform)
+- [ ] Fix deprecated `Ref` warnings in main app
+- [ ] `flutter analyze` clean (0 errors)
 
-### Phase 1: Theme & Screen Extraction
-**Status**: ✅ Complete
-**Objective**: Extract sub-widgets from oversized files
-- **Discovery:** Level 0 (pure refactoring)
-- Extracted `AppButtonThemes` from `app_component_themes.dart` (302 → 228)
-- Extracted `GenerationStartingOverlay` from `create_screen.dart` (270 → 246)
-- Extracted `TemplateCountBadge` + `CategoryChips` from `home_screen.dart` (270 → 160)
-- Trimmed blank lines in `register_screen.dart` (253 → 248)
+### Phase 1: Admin Web Fix
+**Status**: ⬜ Not Started
+**Objective**: Resolve dependencies, fix dart:io usage, run codegen
+
+### Phase 2: Main App Warnings
+**Status**: ⬜ Not Started
+**Objective**: Fix deprecated Ref type annotations
+
+### Phase 3: Verify
+**Status**: ⬜ Not Started
+**Objective**: flutter analyze clean, all tests pass
 
 ---
 
@@ -52,4 +58,3 @@
 - [ ] Subscription management settings page
 - [ ] Referral / affiliate system
 - [ ] Replace test AdMob IDs with production IDs (TODO in rewarded_ad_service.dart)
-
