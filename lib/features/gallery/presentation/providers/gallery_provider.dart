@@ -1,4 +1,4 @@
-import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
+import 'package:artio/core/state/auth_view_model_provider.dart';
 import 'package:artio/features/gallery/domain/entities/gallery_item.dart';
 import 'package:artio/features/gallery/domain/providers/gallery_repository_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

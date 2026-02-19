@@ -6,7 +6,7 @@ import 'package:artio/core/constants/generation_constants.dart';
 import 'package:artio/core/exceptions/app_exception.dart';
 import 'package:artio/core/utils/retry.dart';
 import 'package:artio/features/create/domain/entities/create_form_state.dart';
-import 'package:artio/features/credits/presentation/providers/credit_balance_provider.dart';
+import 'package:artio/core/state/credit_balance_state_provider.dart';
 import 'package:artio/features/template_engine/domain/entities/generation_job_model.dart';
 import 'package:artio/features/template_engine/domain/providers/generation_repository_provider.dart';
 import 'package:artio/features/template_engine/presentation/helpers/generation_job_manager.dart';

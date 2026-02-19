@@ -1,6 +1,6 @@
 import 'package:artio/core/design_system/app_spacing.dart';
-import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
-import 'package:artio/features/credits/presentation/providers/credit_balance_provider.dart';
+import 'package:artio/core/state/auth_view_model_provider.dart';
+import 'package:artio/core/state/credit_balance_state_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

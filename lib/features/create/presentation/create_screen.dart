@@ -3,7 +3,7 @@ import 'package:artio/core/constants/app_constants.dart';
 import 'package:artio/core/design_system/app_spacing.dart';
 import 'package:artio/core/exceptions/app_exception.dart';
 import 'package:artio/core/utils/app_exception_mapper.dart';
-import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
+import 'package:artio/core/state/auth_view_model_provider.dart';
 import 'package:artio/features/create/domain/entities/create_form_state.dart';
 import 'package:artio/features/create/presentation/providers/create_form_provider.dart';
 import 'package:artio/features/create/presentation/view_models/create_view_model.dart';
@@ -13,7 +13,7 @@ import 'package:artio/features/create/presentation/widgets/credit_balance_chip.d
 import 'package:artio/features/create/presentation/widgets/generation_progress_overlay.dart';
 import 'package:artio/features/create/presentation/widgets/model_selector.dart';
 import 'package:artio/features/create/presentation/widgets/prompt_input_field.dart';
-import 'package:artio/features/credits/presentation/providers/credit_balance_provider.dart';
+import 'package:artio/core/state/credit_balance_state_provider.dart';
 import 'package:artio/features/credits/presentation/widgets/insufficient_credits_sheet.dart';
 import 'package:artio/features/credits/presentation/widgets/premium_model_sheet.dart';
 import 'package:artio/features/template_engine/domain/entities/generation_job_model.dart';
