@@ -1,3 +1,4 @@
+import 'package:artio/core/design_system/app_dimensions.dart';
 import 'package:artio/theme/app_colors.dart';
 import 'package:artio/theme/app_component_themes.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
@@ -12,9 +13,6 @@ import 'package:flutter/services.dart';
 /// Component theme details live in [AppComponentThemes].
 /// Color palette lives in [AppColors].
 abstract class AppTheme {
-  static const _fontFamily = 'Inter';
-  static const _borderRadius = 14.0;
-  static const _borderRadiusLg = 20.0;
 
   // ═══════════════════════════════════════════════════════════════════════
   //  LIGHT THEME
@@ -32,17 +30,17 @@ abstract class AppTheme {
         surfaceMode: FlexSurfaceMode.levelSurfacesLowScaffold,
         blendLevel: 7,
         subThemesData: const FlexSubThemesData(
-          defaultRadius: _borderRadius,
-          cardRadius: _borderRadius,
-          inputDecoratorRadius: _borderRadius,
-          filledButtonRadius: _borderRadius,
-          elevatedButtonRadius: _borderRadius,
-          outlinedButtonRadius: _borderRadius,
-          textButtonRadius: _borderRadius,
-          dialogRadius: _borderRadiusLg,
-          bottomSheetRadius: _borderRadiusLg,
+          defaultRadius: AppDimensions.radiusMd,
+          cardRadius: AppDimensions.radiusMd,
+          inputDecoratorRadius: AppDimensions.radiusMd,
+          filledButtonRadius: AppDimensions.radiusMd,
+          elevatedButtonRadius: AppDimensions.radiusMd,
+          outlinedButtonRadius: AppDimensions.radiusMd,
+          textButtonRadius: AppDimensions.radiusMd,
+          dialogRadius: AppDimensions.radiusLg,
+          bottomSheetRadius: AppDimensions.radiusLg,
         ),
-        fontFamily: _fontFamily,
+        fontFamily: AppDimensions.fontFamily,
       ).copyWith(
         scaffoldBackgroundColor: AppColors.lightBackground,
         cardColor: AppColors.lightCard,
@@ -53,11 +51,11 @@ abstract class AppTheme {
         ),
         cardTheme: AppComponentThemes.card(color: AppColors.lightCard),
         filledButtonTheme:
-            AppComponentThemes.filledButton(foreground: Colors.white),
+            AppButtonThemes.filledButton(foreground: Colors.white),
         elevatedButtonTheme:
-            AppComponentThemes.elevatedButton(foreground: Colors.white),
-        outlinedButtonTheme: AppComponentThemes.outlinedButton,
-        textButtonTheme: AppComponentThemes.textButton,
+            AppButtonThemes.elevatedButton(foreground: Colors.white),
+        outlinedButtonTheme: AppButtonThemes.outlinedButton,
+        textButtonTheme: AppButtonThemes.textButton,
         navigationBarTheme: AppComponentThemes.navigationBar(
           backgroundColor: AppColors.lightSurface1,
           unselectedLabelColor: AppColors.textMutedLight,
@@ -106,17 +104,17 @@ abstract class AppTheme {
         surfaceMode: FlexSurfaceMode.levelSurfacesLowScaffold,
         blendLevel: 13,
         subThemesData: const FlexSubThemesData(
-          defaultRadius: _borderRadius,
-          cardRadius: _borderRadius,
-          inputDecoratorRadius: _borderRadius,
-          filledButtonRadius: _borderRadius,
-          elevatedButtonRadius: _borderRadius,
-          outlinedButtonRadius: _borderRadius,
-          textButtonRadius: _borderRadius,
-          dialogRadius: _borderRadiusLg,
-          bottomSheetRadius: _borderRadiusLg,
+          defaultRadius: AppDimensions.radiusMd,
+          cardRadius: AppDimensions.radiusMd,
+          inputDecoratorRadius: AppDimensions.radiusMd,
+          filledButtonRadius: AppDimensions.radiusMd,
+          elevatedButtonRadius: AppDimensions.radiusMd,
+          outlinedButtonRadius: AppDimensions.radiusMd,
+          textButtonRadius: AppDimensions.radiusMd,
+          dialogRadius: AppDimensions.radiusLg,
+          bottomSheetRadius: AppDimensions.radiusLg,
         ),
-        fontFamily: _fontFamily,
+        fontFamily: AppDimensions.fontFamily,
       ).copyWith(
         scaffoldBackgroundColor: AppColors.darkBackground,
         cardColor: AppColors.darkCard,
@@ -132,14 +130,14 @@ abstract class AppTheme {
             width: 0.5,
           ),
         ),
-        filledButtonTheme: AppComponentThemes.filledButton(
+        filledButtonTheme: AppButtonThemes.filledButton(
           foreground: AppColors.darkBackground,
         ),
-        elevatedButtonTheme: AppComponentThemes.elevatedButton(
+        elevatedButtonTheme: AppButtonThemes.elevatedButton(
           foreground: AppColors.darkBackground,
         ),
-        outlinedButtonTheme: AppComponentThemes.outlinedButton,
-        textButtonTheme: AppComponentThemes.textButton,
+        outlinedButtonTheme: AppButtonThemes.outlinedButton,
+        textButtonTheme: AppButtonThemes.textButton,
         navigationBarTheme: AppComponentThemes.navigationBar(
           backgroundColor: AppColors.darkSurface1,
           unselectedLabelColor: AppColors.textMuted,

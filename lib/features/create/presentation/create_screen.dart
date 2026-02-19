@@ -12,6 +12,7 @@ import 'package:artio/features/create/presentation/widgets/aspect_ratio_selector
 import 'package:artio/features/create/presentation/widgets/auth_gate_sheet.dart';
 import 'package:artio/features/create/presentation/widgets/credit_balance_chip.dart';
 import 'package:artio/features/create/presentation/widgets/generation_progress_overlay.dart';
+import 'package:artio/features/create/presentation/widgets/generation_starting_overlay.dart';
 import 'package:artio/features/create/presentation/widgets/model_selector.dart';
 import 'package:artio/features/create/presentation/widgets/prompt_input_field.dart';
 import 'package:artio/features/credits/presentation/widgets/insufficient_credits_sheet.dart';
@@ -236,32 +237,7 @@ class _CreateScreenState extends ConsumerState<CreateScreen> {
             if (jobState.valueOrNull != null)
               GenerationProgressOverlay(job: jobState.valueOrNull!)
             else
-              Positioned.fill(
-                child: ColoredBox(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .surface
-                      .withValues(alpha: 0.9),
-                  child: Center(
-                    child: Card(
-                      child: Padding(
-                        padding: AppSpacing.cardPadding,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const CircularProgressIndicator(),
-                            const SizedBox(height: AppSpacing.md),
-                            Text(
-                              'Starting generation...',
-                              style: Theme.of(context).textTheme.titleMedium,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+              const GenerationStartingOverlay(),
           ],
         ],
       ),

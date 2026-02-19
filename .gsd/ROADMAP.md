@@ -26,17 +26,19 @@
 ## Current Milestone: Widget Cleanup
 
 ### Must-Haves
-- [ ] `app_component_themes.dart` ≤250 lines
-- [ ] `home_screen.dart` ≤250 lines
-- [ ] `create_screen.dart` ≤250 lines
-- [ ] `register_screen.dart` ≤250 lines
+- [x] `app_component_themes.dart` ≤250 lines (231 → extracted button themes)
+- [x] `home_screen.dart` ≤250 lines (249 — already met)
+- [x] `create_screen.dart` ≤250 lines (246 → extracted overlay widget)
+- [x] `register_screen.dart` ≤250 lines (233 — already met)
 - [ ] `flutter analyze` clean
 - [ ] All tests pass
 
 ### Phase 1: Theme & Screen Extraction
-**Status**: ⬜ Not Started
-**Objective**: Extract sub-widgets from 4 oversized files (302, 270, 270, 252 lines)
+**Status**: 🔄 In Progress
+**Objective**: Extract sub-widgets from oversized files
 - **Discovery:** Level 0 (pure refactoring, identical pattern to Plan 2.3)
+- Extracted `AppButtonThemes` from `app_component_themes.dart` (302 → 231)
+- Extracted `GenerationStartingOverlay` from `create_screen.dart` (270 → 246)
 
 ---
 
