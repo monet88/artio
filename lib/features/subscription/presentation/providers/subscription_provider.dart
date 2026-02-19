@@ -1,4 +1,4 @@
-import 'package:artio/features/subscription/data/repositories/subscription_repository.dart';
+import 'package:artio/features/subscription/domain/providers/subscription_repository_provider.dart';
 import 'package:artio/features/subscription/domain/entities/subscription_status.dart';
 import 'package:artio/features/subscription/domain/entities/subscription_package.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

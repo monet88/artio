@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:artio/features/template_engine/data/repositories/generation_repository.dart';
+import 'package:artio/features/template_engine/domain/providers/generation_repository_provider.dart';
 import 'package:artio/features/template_engine/domain/entities/generation_job_model.dart';
 import 'package:artio/features/template_engine/presentation/helpers/generation_job_manager.dart';
 import 'package:artio/features/template_engine/presentation/providers/generation_policy_provider.dart';
