@@ -86,7 +86,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const SizedBox(height: AppSpacing.lg),
-
                   // ── Logo & Branding ─────────────────────────────────
                   Center(
                     child: Container(
@@ -133,7 +132,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   ),
 
                   const SizedBox(height: AppSpacing.xl),
-
                   // ── Form Fields ─────────────────────────────────────
                   TextFormField(
                     controller: _emailController,
@@ -212,7 +210,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   ),
 
                   const SizedBox(height: AppSpacing.lg),
-
                   // ── Create Account Button ───────────────────────────
                   GradientButton(
                     onPressed: isLoading ? null : _handleRegister,
@@ -221,7 +218,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   ),
 
                   const SizedBox(height: AppSpacing.lg),
-
                   // ── Social Login ────────────────────────────────────
                   const SocialLoginButtons(),
 

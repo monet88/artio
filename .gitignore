@@ -178,3 +178,5 @@ package-lock.json
 !.claude/
 .ck/
 artifacts/
+
+gsd-template/
