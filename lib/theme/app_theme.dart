@@ -53,11 +53,11 @@ abstract class AppTheme {
         ),
         cardTheme: AppComponentThemes.card(color: AppColors.lightCard),
         filledButtonTheme:
-            AppComponentThemes.filledButton(foreground: Colors.white),
+            AppButtonThemes.filledButton(foreground: Colors.white),
         elevatedButtonTheme:
-            AppComponentThemes.elevatedButton(foreground: Colors.white),
-        outlinedButtonTheme: AppComponentThemes.outlinedButton,
-        textButtonTheme: AppComponentThemes.textButton,
+            AppButtonThemes.elevatedButton(foreground: Colors.white),
+        outlinedButtonTheme: AppButtonThemes.outlinedButton,
+        textButtonTheme: AppButtonThemes.textButton,
         navigationBarTheme: AppComponentThemes.navigationBar(
           backgroundColor: AppColors.lightSurface1,
           unselectedLabelColor: AppColors.textMutedLight,
@@ -132,14 +132,14 @@ abstract class AppTheme {
             width: 0.5,
           ),
         ),
-        filledButtonTheme: AppComponentThemes.filledButton(
+        filledButtonTheme: AppButtonThemes.filledButton(
           foreground: AppColors.darkBackground,
         ),
-        elevatedButtonTheme: AppComponentThemes.elevatedButton(
+        elevatedButtonTheme: AppButtonThemes.elevatedButton(
           foreground: AppColors.darkBackground,
         ),
-        outlinedButtonTheme: AppComponentThemes.outlinedButton,
-        textButtonTheme: AppComponentThemes.textButton,
+        outlinedButtonTheme: AppButtonThemes.outlinedButton,
+        textButtonTheme: AppButtonThemes.textButton,
         navigationBarTheme: AppComponentThemes.navigationBar(
           backgroundColor: AppColors.darkSurface1,
           unselectedLabelColor: AppColors.textMuted,

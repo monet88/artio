@@ -2,6 +2,8 @@ import 'package:artio/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+export 'app_button_themes.dart';
+
 /// Component theme overrides shared between Light and Dark themes.
 ///
 /// Each method returns the fully configured component theme.
@@ -50,79 +52,6 @@ abstract class AppComponentThemes {
         ),
         clipBehavior: Clip.antiAlias,
         margin: EdgeInsets.zero,
-      );
-
-  // ── Buttons ──────────────────────────────────────────────────────────
-  static FilledButtonThemeData filledButton({required Color foreground}) =>
-      FilledButtonThemeData(
-        style: FilledButton.styleFrom(
-          backgroundColor: AppColors.primaryCta,
-          foregroundColor: foreground,
-          minimumSize: const Size(double.infinity, 52),
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-          textStyle: const TextStyle(
-            fontFamily: _fontFamily,
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 0.3,
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(_borderRadius),
-          ),
-        ),
-      );
-
-  static ElevatedButtonThemeData elevatedButton({required Color foreground}) =>
-      ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primaryCta,
-          foregroundColor: foreground,
-          minimumSize: const Size(double.infinity, 52),
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-          elevation: 0,
-          textStyle: const TextStyle(
-            fontFamily: _fontFamily,
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 0.3,
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(_borderRadius),
-          ),
-        ),
-      );
-
-  static OutlinedButtonThemeData get outlinedButton =>
-      OutlinedButtonThemeData(
-        style: OutlinedButton.styleFrom(
-          foregroundColor: AppColors.primaryCta,
-          minimumSize: const Size(double.infinity, 52),
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-          side: const BorderSide(color: AppColors.primaryCta, width: 1.5),
-          textStyle: const TextStyle(
-            fontFamily: _fontFamily,
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 0.3,
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(_borderRadius),
-          ),
-        ),
-      );
-
-  static TextButtonThemeData get textButton => TextButtonThemeData(
-        style: TextButton.styleFrom(
-          foregroundColor: AppColors.primaryCta,
-          textStyle: const TextStyle(
-            fontFamily: _fontFamily,
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(_borderRadiusSm),
-          ),
-        ),
       );
 
   // ── NavigationBar ───────────────────────────────────────────────────
