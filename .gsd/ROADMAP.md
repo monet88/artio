@@ -1,7 +1,7 @@
 # ROADMAP.md
 
-> **Current Milestone**: Code Health
-> **Goal**: Fix all flutter analyze errors across main app + admin web
+> **Current Milestone**: Data Integrity & Performance
+> **Goal**: Sync model registry between app and Edge Function; add local data caching for templates and gallery
 
 ---
 
@@ -25,28 +25,37 @@
 - Theme & screen extraction: app_component_themes, home_screen, create_screen, register_screen
 - 1 phase, flutter analyze clean, 606/606 tests passing
 
+### Code Health ✅
+- Admin web dependencies, dart:io fix, deprecated Ref types, flutter analyze clean
+- 3 phases, PR #19
+
 ---
 
-## Current Milestone: Code Health
+## Current Milestone: Data Integrity & Performance
 
 ### Must-Haves
-- [x] Admin web dependencies resolved (`flutter pub get`)
-- [x] Admin codegen up to date (`build_runner`)
-- [x] Fix `dart:io` in admin web (not available on web platform)
-- [x] Fix deprecated `Ref` warnings in main app
-- [x] `flutter analyze` clean (0 errors)
+- [ ] Model list in app (`ai_models.dart`) and Edge Function (`index.ts`) are 100% in sync
+- [ ] All models in `MODEL_CREDIT_COSTS` have corresponding `AiModelConfig` entries
+- [ ] All app models are correctly routed to the right provider (`kie` or `gemini`)
+- [ ] Template list loads instantly from local cache on subsequent opens
+- [ ] Gallery metadata cached locally for faster gallery loads
+- [ ] `flutter analyze` remains clean (0 errors)
 
-### Phase 1: Admin Web Fix
-**Status**: ✅ Complete
-**Objective**: Resolve dependencies, fix dart:io usage, run codegen
+### Nice-to-Haves
+- [ ] Cache invalidation strategy (TTL or stale-while-revalidate)
+- [ ] Offline mode indicator when data is served from cache
 
-### Phase 2: Main App Warnings
-**Status**: ✅ Complete
-**Objective**: Fix deprecated Ref type annotations
+### Phase 1: Model Registry Sync
+**Status**: ⬜ Not Started
+**Objective**: Create single source of truth for AI models — sync app constants with Edge Function model lists and credit costs. Remove orphan models, add missing models, ensure `getProvider()` routing covers all models explicitly.
 
-### Phase 3: Verify
-**Status**: ✅ Complete
-**Objective**: flutter analyze clean — No issues found!
+### Phase 2: Template Data Caching
+**Status**: ⬜ Not Started
+**Objective**: Add local persistence for template data so template list loads instantly from cache with network refresh in background. Reduce Supabase API calls on app open.
+
+### Phase 3: Gallery Data Caching
+**Status**: ⬜ Not Started
+**Objective**: Cache gallery metadata locally for faster gallery screen loads. Implement stale-while-revalidate pattern — show cached data immediately, refresh from network.
 
 ---
 
