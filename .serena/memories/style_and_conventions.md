@@ -1,7 +1,7 @@
 # Style & Conventions
 
 ## Naming
-- **Files**: kebab-case, descriptive (e.g. `auth-view-model.dart`, `app-exception-mapper.dart`)
+- **Files**: snake_case, descriptive (e.g. `auth_view_model.dart`, `app_exception_mapper.dart`)
 - **Classes**: PascalCase (`AuthViewModel`, `TemplateEngine`)
 - **Variables/functions**: camelCase
 - **Constants**: camelCase or SCREAMING_SNAKE for top-level

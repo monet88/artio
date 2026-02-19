@@ -1,7 +1,7 @@
 # ROADMAP.md
 
-> **Current Milestone**: Data Integrity & Performance
-> **Goal**: Sync model registry between app and Edge Function; add local data caching for templates and gallery
+> **Current Milestone**: None (between milestones)
+> **Last Completed**: Data Integrity & Performance (2026-02-19)
 
 ---
 
@@ -29,33 +29,13 @@
 - Admin web dependencies, dart:io fix, deprecated Ref types, flutter analyze clean
 - 3 phases, PR #19
 
+### Data Integrity & Performance ✅
+- Model registry sync, template data caching, gallery data caching
+- 3 phases, all verified
+
 ---
 
-## Current Milestone: Data Integrity & Performance
-
-### Must-Haves
-- [ ] Model list in app (`ai_models.dart`) and Edge Function (`index.ts`) are 100% in sync
-- [ ] All models in `MODEL_CREDIT_COSTS` have corresponding `AiModelConfig` entries
-- [ ] All app models are correctly routed to the right provider (`kie` or `gemini`)
-- [ ] Template list loads instantly from local cache on subsequent opens
-- [ ] Gallery metadata cached locally for faster gallery loads
-- [ ] `flutter analyze` remains clean (0 errors)
-
-### Nice-to-Haves
-- [ ] Cache invalidation strategy (TTL or stale-while-revalidate)
-- [ ] Offline mode indicator when data is served from cache
-
-### Phase 1: Model Registry Sync ✅
-**Status**: ✅ Complete
-**Objective**: Create single source of truth for AI models — sync app constants with Edge Function model lists and credit costs. Remove orphan models, add missing models, ensure `getProvider()` routing covers all models explicitly.
-
-### Phase 2: Template Data Caching ✅
-**Status**: ✅ Complete
-**Objective**: Add local persistence for template data so template list loads instantly from cache with network refresh in background. Reduce Supabase API calls on app open.
-
-### Phase 3: Gallery Data Caching
-**Status**: ⬜ Not Started
-**Objective**: Cache gallery metadata locally for faster gallery screen loads. Implement stale-while-revalidate pattern — show cached data immediately, refresh from network.
+## Current Milestone: None (between milestones)
 
 ---
 

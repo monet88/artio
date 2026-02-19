@@ -25,8 +25,13 @@ features/{name}/
 ## Key Directories
 ```
 lib/
-  core/          # Constants, exceptions, providers, utils
-  features/      # auth, template_engine, gallery, settings, create
+  core/          # Config, constants, design system, exceptions, providers, services, state, utils
+  features/      # auth, template_engine, create, gallery, settings, credits, subscription
+  routing/       # GoRouter config (app_router.dart)
+  shared/        # MainShell, ErrorPage, reusable widgets
+  theme/         # Theme management (colors, button themes, component themes)
+  main.dart      # Entry point
+```
   routing/       # GoRouter config (app_router.dart)
   shared/        # MainShell, ErrorPage
   theme/         # Theme management
@@ -38,7 +43,9 @@ lib/
 - Template Engine: Complete
 - Gallery: Complete
 - Settings: Complete
-- Subscription & Credits: Pending
+- Create: Complete
+- Credits: Complete
+- Subscription: Complete
 
 ## Key Files
 - Entry: lib/main.dart
@@ -47,6 +54,10 @@ lib/
 - Error mapper: lib/core/utils/app_exception_mapper.dart
 - Constants: lib/core/constants/app_constants.dart
 - Env config: lib/core/config/env_config.dart
+- Connectivity: lib/core/providers/connectivity_provider.dart
+- Haptic: lib/core/services/haptic_service.dart
+- Rewarded Ads: lib/core/services/rewarded_ad_service.dart
+- Design System: lib/core/design_system/ (animations, dimensions, gradients, shadows, spacing, typography)
 
 ## AI Model API Docs
 Source of truth: `docs/kie-api/` (Google/Imagen, Flux-2, GPT Image, Seedream)

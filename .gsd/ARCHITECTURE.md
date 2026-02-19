@@ -37,9 +37,9 @@
 
 ```
 artio/
-├── lib/                      # Main app source code (143 source files, ~11,400 LoC)
+├── lib/                      # Main app source code (~195 files incl. generated, ~11,400 LoC)
 │   ├── main.dart             # Entry point, Supabase init, RevenueCat init, Sentry
-│   ├── core/                 # Shared infrastructure (26 files)
+│   ├── core/                 # Shared infrastructure (29 files)
 │   │   ├── config/           # EnvConfig, SentryConfig
 │   │   ├── constants/        # AiModels, AppConstants (credits, ads, generation), GenerationConstants
 │   │   ├── design_system/    # Animations, Dimensions, Gradients, Shadows, Spacing, Typography
@@ -49,13 +49,13 @@ artio/
 │   │   ├── state/            # UserScopedProviders
 │   │   └── utils/            # AppExceptionMapper, Retry, DateTimeUtils, WatermarkUtil
 │   ├── features/             # Feature modules (7 features, Clean Architecture)
-│   │   ├── auth/             # Authentication (data/domain/presentation) — 11 files
-│   │   ├── template_engine/  # Template browsing & detail (data/domain/presentation) — 27 files
-│   │   ├── create/           # Text-to-image generation (domain/presentation) — 11 files
-│   │   ├── credits/          # Credit system & ad rewards (data/domain/presentation) — 9 files
-│   │   ├── subscription/     # RevenueCat subscriptions (data/domain/presentation) — 8 files
-│   │   ├── gallery/          # User image gallery (data/domain/presentation) — 20 files
-│   │   └── settings/         # App settings (data/presentation) — 8 files
+│   │   ├── auth/             # Authentication (data/domain/presentation) — 16 files
+│   │   ├── template_engine/  # Template browsing & detail (data/domain/presentation) — 44 files
+│   │   ├── create/           # Text-to-image generation (domain/presentation) — 14 files
+│   │   ├── credits/          # Credit system & ad rewards (data/domain/presentation) — 16 files
+│   │   ├── subscription/     # RevenueCat subscriptions (data/domain/presentation) — 13 files
+│   │   ├── gallery/          # User image gallery (data/domain/presentation) — 26 files
+│   │   └── settings/         # App settings (data/domain/presentation) — 9 files
 │   ├── routing/              # GoRouter with type-safe routes
 │   ├── shared/widgets/       # 15 reusable widgets
 │   ├── theme/                # AppTheme, AppColors, ThemeProvider
@@ -71,7 +71,7 @@ artio/
 │       ├── generate-image/   # Deno Edge Function — AI image generation orchestrator
 │       ├── reward-ad/        # Deno Edge Function — rewarded ad credit granting
 │       └── revenuecat-webhook/ # Deno Edge Function — subscription lifecycle webhook
-├── test/                     # 85 unit + widget test files (mirrors lib/ structure)
+├── test/                     # 67+ unit + widget test files (mirrors lib/ structure)
 ├── integration_test/         # 5 E2E tests (auth, gallery, generation, settings, template)
 ├── docs/                     # Project docs, KIE API docs, architecture
 ├── scripts/                  # Validation & search scripts (PowerShell + Bash)
@@ -82,7 +82,7 @@ artio/
 
 ## Components
 
-### 1. Auth Feature (`lib/features/auth/`) — 11 files
+### 1. Auth Feature (`lib/features/auth/`) — 16 files
 - **Purpose:** User registration, login, password reset, session management
 - **Architecture:** data/domain/presentation (Clean Architecture)
 - **Domain entities:** `UserModel` (freezed)
@@ -90,7 +90,7 @@ artio/
 - **Presentation:** `AuthViewModel` (Riverpod), `SplashScreen`, `LoginScreen`, `RegisterScreen`, `ForgotPasswordScreen`
 - **Key behavior:** AuthViewModel acts as `Listenable` for GoRouter redirect; guards all authenticated routes
 
-### 2. Template Engine Feature (`lib/features/template_engine/`) — 27 files
+### 2. Template Engine Feature (`lib/features/template_engine/`) — 44 files
 - **Purpose:** Browse, search, and select AI art generation templates
 - **Architecture:** data/domain/presentation (Clean Architecture) — largest feature
 - **Domain entities:** `TemplateModel`, `InputFieldModel`, `GenerationJobModel`, `GenerationOptionsModel` (all freezed)
@@ -98,14 +98,14 @@ artio/
 - **Data layer:** `TemplateRepository` (Supabase `templates` table)
 - **Presentation:** `HomeScreen` (template grid), `TemplateDetailScreen`, view models, providers, widgets
 
-### 3. Create Feature (`lib/features/create/`) — 11 files
+### 3. Create Feature (`lib/features/create/`) — 14 files
 - **Purpose:** Text-to-image generation flow — prompt input, model selection, aspect ratio, image generation
 - **Architecture:** domain/presentation (no separate data layer — uses template_engine repos)
 - **Domain entities:** `CreateFormState` (freezed)
 - **Presentation:** `CreateScreen`, `CreateViewModel`, widgets (prompt input, generation options)
 - **Integration:** Calls `generate-image` Supabase Edge Function; performs optimistic credit check before generation
 
-### 4. Credits Feature (`lib/features/credits/`) — 9 files
+### 4. Credits Feature (`lib/features/credits/`) — 16 files
 - **Purpose:** Freemium credit system — balance tracking, transaction history, ad reward integration
 - **Architecture:** data/domain/presentation (Clean Architecture)
 - **Domain entities:** `CreditBalance` (freezed), `CreditTransaction` (freezed)
@@ -114,7 +114,7 @@ artio/
 - **Presentation:** `CreditBalanceProvider` (stream-based, real-time), `AdRewardProvider`, `InsufficientCreditsSheet`, `PremiumModelSheet`
 - **Key behavior:** Balance watched via Supabase real-time stream; ad rewards are atomic (daily limit: 10 ads, 5 credits each)
 
-### 5. Subscription Feature (`lib/features/subscription/`) — 8 files
+### 5. Subscription Feature (`lib/features/subscription/`) — 13 files
 - **Purpose:** RevenueCat in-app purchase integration — subscription tiers (Pro/Ultra), paywall, purchase/restore
 - **Architecture:** data/domain/presentation (Clean Architecture)
 - **Domain entities:** `SubscriptionStatus` (freezed), `SubscriptionPackage` (freezed)
@@ -124,7 +124,7 @@ artio/
 - **Tiers:** Free (10 welcome credits), Pro (200 credits/month), Ultra (500 credits/month)
 - **Key behavior:** RevenueCat webhook updates `profiles` table subscription columns server-side
 
-### 6. Gallery Feature (`lib/features/gallery/`) — 20 files
+### 6. Gallery Feature (`lib/features/gallery/`) — 26 files
 - **Purpose:** View, share, download, and soft-delete generated images
 - **Architecture:** data/domain/presentation (Clean Architecture)
 - **Domain entities:** `GalleryItem` (freezed)
@@ -133,14 +133,14 @@ artio/
 - **Extracted widgets:** `ImageInfoBottomSheet`, `ImageViewerAppBar`, `ImageViewerImagePage`, `ImageViewerPageIndicator`, `ImageViewerSwipeDismiss`
 - **Key behavior:** Free-tier images display watermark overlay (via `WatermarkUtil`)
 
-### 7. Settings Feature (`lib/features/settings/`) — 7 files
+### 7. Settings Feature (`lib/features/settings/`) — 9 files
 - **Purpose:** Theme toggle, account management
-- **Architecture:** data/presentation (lightweight)
+- **Architecture:** data/domain/presentation
 - **Data layer:** `SharedPreferences`-based persistence
 - **Presentation:** `SettingsScreen`
 - **Extracted widgets:** `UserProfileCard`, `SettingsSections`, `SettingsHelpers` (6 helper widgets)
 
-### 8. Core Layer (`lib/core/`) — 26 files
+### 8. Core Layer (`lib/core/`) — 29 files
 - **Config:** `EnvConfig` (dotenv loader, validates SUPABASE_URL/ANON_KEY), `SentryConfig`
 - **Constants:** `AiModels` (13 AI models across 4 providers), `AppConstants` (credits: 5 default, 10 daily ad limit, 5 credits/ad, aspect ratios, categories), `GenerationConstants`
 - **Design System:** Animations, Dimensions, Gradients, Shadows, Spacing, Typography
@@ -299,7 +299,7 @@ artio/
 
 **Testing:**
 - Test structure mirrors `lib/` (`test/core/`, `test/features/`)
-- 85 unit/widget test files, 5 integration test files
+- 67+ unit/widget test files, 5 integration test files
 - Mocking: `mocktail` (primary) + `mockito`
 - Test fixtures in `test/core/fixtures/`
 - Integration tests in `integration_test/`

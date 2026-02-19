@@ -27,11 +27,13 @@ When creating PRs (use GitHub MCP tools):
 
 ## GitHub Operations — Tool Priority
 
-For any GitHub task (comment, review, PR, issue), use tools in this order:
+For **any** GitHub interaction (read content, comment, review, PR, issue), use tools in this order:
 
 1. **GitHub MCP** (`github-mcp-server`) — preferred, fast, no auth issues
-2. **`gh` CLI** — fallback when MCP lacks the specific tool (e.g., posting PR comments)
+2. **`gh` CLI** — fallback when MCP lacks the specific tool
 3. **Browser** — last resort only; never use if CLI or MCP can do the job
+
+**Reading GitHub content:** When given a GitHub URL (e.g., `https://github.com/owner/repo`), always use `get_file_contents` MCP tool to read repo files instead of `read_url_content` or browser. Parse `owner` and `repo` from the URL.
 
 **Never open the browser for GitHub tasks without first trying MCP and `gh` CLI.**
 

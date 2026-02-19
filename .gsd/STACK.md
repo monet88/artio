@@ -130,7 +130,7 @@
 | Tool | Command | Purpose |
 |------|---------|---------|
 | build_runner | `dart run build_runner build --delete-conflicting-outputs` | Generate `.g.dart` / `.freezed.dart` files |
-| flutter test | `flutter test` | Run unit + widget tests (85 test files) |
+| flutter test | `flutter test` | Run unit + widget tests (67+ test files) |
 | integration tests | `flutter test integration_test/` | Run E2E tests (5 test files) |
 | analysis | `flutter analyze` | Static analysis (very_good_analysis) — 0 issues ✅ |
 
