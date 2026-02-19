@@ -44,7 +44,7 @@ class AiModels {
 
   // All models
   static const List<AiModelConfig> all = [
-    // Google / Imagen Models
+    // ── KIE: Google / Imagen Models ──
     AiModelConfig(
       id: 'google/imagen4',
       displayName: 'Imagen 4',
@@ -79,7 +79,7 @@ class AiModels {
       isNew: true,
     ),
     AiModelConfig(
-      id: 'nano-banana-pro',
+      id: 'nano-banana-pro', // NOTE: no google/ prefix per KIE API spec
       displayName: 'Nano Banana Pro',
       isPremium: false,
       supportedAspectRatios: standardAspectRatios,
@@ -95,7 +95,7 @@ class AiModels {
       type: 'image-to-image',
     ),
 
-    // Flux-2 Models
+    // ── KIE: Flux-2 Models ──
     AiModelConfig(
       id: 'flux-2/flex-text-to-image',
       displayName: 'Flux-2 Flex',
@@ -129,7 +129,7 @@ class AiModels {
       type: 'image-to-image',
     ),
 
-    // GPT Image Models
+    // ── KIE: GPT Image Models ──
     AiModelConfig(
       id: 'gpt-image/1.5-text-to-image',
       displayName: 'GPT Image 1.5',
@@ -147,7 +147,7 @@ class AiModels {
       type: 'image-to-image',
     ),
 
-    // Seedream Models
+    // ── KIE: Seedream Models ──
     AiModelConfig(
       id: 'seedream/4.5-text-to-image',
       displayName: 'Seedream 4.5',
@@ -165,7 +165,7 @@ class AiModels {
       type: 'image-editing',
     ),
 
-    // Gemini Native Models
+    // ── Gemini: Google Native Models (fallback) ──
     AiModelConfig(
       id: 'gemini-3-pro-image-preview',
       displayName: 'Gemini 3 Pro Image',

@@ -10,23 +10,29 @@ const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY")!;
 const KIE_API_BASE = "https://api.kie.ai";
 const GEMINI_API_BASE = "https://generativelanguage.googleapis.com/v1beta";
 
+// Main provider — all models routed through KIE API
 const KIE_MODELS = [
+  // Google / Imagen
   "google/imagen4",
   "google/imagen4-fast",
   "google/imagen4-ultra",
-  "nano-banana-pro",
+  "nano-banana-pro", // NOTE: no google/ prefix per KIE API spec
   "google/nano-banana-edit",
   "google/pro-image-to-image",
+  // Flux-2
   "flux-2/flex-text-to-image",
   "flux-2/flex-image-to-image",
   "flux-2/pro-text-to-image",
   "flux-2/pro-image-to-image",
+  // GPT Image
   "gpt-image/1.5-text-to-image",
   "gpt-image/1.5-image-to-image",
+  // Seedream
   "seedream/4.5-text-to-image",
   "seedream/4.5-edit",
 ] as const;
 
+// Fallback provider — Google native Gemini models
 const GEMINI_MODELS = [
   "gemini-3-pro-image-preview",
   "gemini-2.5-flash-image",
