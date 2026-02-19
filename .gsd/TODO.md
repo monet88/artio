@@ -2,6 +2,7 @@
 
 ## Technical Debt
 - [ ] Replace test AdMob IDs with production IDs (`rewarded_ad_service.dart:10`) `high` — 2026-02-19
+- [ ] Gallery cache not invalidated on new image generation (only mutations invalidate) `low` — 2026-02-20
 
 ## Completed
 - [x] Extract `app_component_themes.dart` into smaller theme files — Widget Cleanup ✅
