@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:artio_admin/core/theme/admin_colors.dart';
 import 'package:flutter/material.dart';
 
@@ -36,7 +34,6 @@ class ErrorStateWidget extends StatelessWidget {
   }
 
   static ErrorCategory _categorize(Object error) {
-    if (error is SocketException) return ErrorCategory.network;
     final msg = error.toString().toLowerCase();
     if (msg.contains('socket') ||
         msg.contains('connection') ||
