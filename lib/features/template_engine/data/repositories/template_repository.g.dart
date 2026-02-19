@@ -7,7 +7,7 @@ part of 'template_repository.dart';
 // **************************************************************************
 
 String _$templateRepositoryHash() =>
-    r'e8ece95a5960744377caff77a6cfdad38e47ef78';
+    r'fab54818029ca655a7b16b7df279be471717fe77';
 
 /// See also [templateRepository].
 @ProviderFor(templateRepository)
