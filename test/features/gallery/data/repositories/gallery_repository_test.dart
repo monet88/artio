@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:io';
 
+import 'package:artio/features/gallery/data/services/gallery_cache_service.dart';
 import 'package:artio/features/gallery/domain/entities/gallery_item.dart';
 import 'package:artio/features/gallery/domain/repositories/i_gallery_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -202,6 +204,65 @@ void main() {
           completes,
         );
       });
+    });
+  });
+
+  group('Gallery cache integration', () {
+    late GalleryCacheService cache;
+    late Directory tempDir;
+
+    setUp(() {
+      tempDir = Directory.systemTemp.createTempSync('gallery_repo_cache_test_');
+      cache = GalleryCacheService.forTesting(tempDir.path);
+    });
+
+    tearDown(() {
+      if (tempDir.existsSync()) {
+        tempDir.deleteSync(recursive: true);
+      }
+    });
+
+    test('cache hit returns data', () async {
+      final items = GalleryItemFixtures.list(count: 3);
+      await cache.cacheItems(items);
+
+      expect(cache.isCacheValid(), isTrue);
+      final cached = await cache.getCachedItems();
+      expect(cached, hasLength(3));
+    });
+
+    test('cache miss returns null', () async {
+      expect(cache.isCacheValid(), isFalse);
+      final cached = await cache.getCachedItems();
+      expect(cached, isNull);
+    });
+
+    test('stale cache still returns data for fallback', () async {
+      final items = GalleryItemFixtures.list(count: 2);
+      await cache.cacheItems(items);
+
+      expect(cache.isCacheValid(maxAge: Duration.zero), isFalse);
+      final stale = await cache.getCachedItems();
+      expect(stale, isNotNull);
+      expect(stale, hasLength(2));
+    });
+
+    test('cache overwrite with new data', () async {
+      await cache.cacheItems(GalleryItemFixtures.list(count: 2));
+      await cache.cacheItems(GalleryItemFixtures.list(count: 5));
+
+      final result = await cache.getCachedItems();
+      expect(result, hasLength(5));
+    });
+
+    test('clearCache invalidates cache for mutation scenarios', () async {
+      await cache.cacheItems(GalleryItemFixtures.list(count: 3));
+      expect(cache.isCacheValid(), isTrue);
+
+      await cache.clearCache();
+
+      expect(cache.isCacheValid(), isFalse);
+      expect(await cache.getCachedItems(), isNull);
     });
   });
 }
