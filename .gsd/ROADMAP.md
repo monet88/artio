@@ -41,9 +41,9 @@ Close test gaps in credits, subscription, settings, and core modules.
 - **Plans:** 4.1 ✅ 4.2 ✅
 - **Discovery:** Level 0 (internal)
 
-### Phase 5: Fix All Analyzer Warnings
+### Phase 5: Fix All Analyzer Warnings ✅
 Resolve all 4 warnings (severity 2) and 9 info-level hints (severity 3) from `flutter analyze`.
-- **Plans:** 5.1 (all fixes)
+- **Plans:** 5.1 ✅
 - **Discovery:** Level 0 (cleanup)
 
 **Warnings (4):**

@@ -2,8 +2,8 @@
 
 ## Current Position
 - **Milestone**: Codebase Improvement
-- **Phase**: 5 (planned)
-- **Status**: 📋 Phase 5 planned — ready for execution
+- **Phase**: 5 (verified)
+- **Status**: ✅ All phases complete — milestone done
 
 ## Phases
 
@@ -13,28 +13,22 @@
 | 2 | Widget Extraction | 2.1 ✅ 2.2 ✅ | ✅ Complete |
 | 3 | Architecture Violations | 3.1 ✅ 3.2 ✅ | ✅ Verified |
 | 4 | Test Coverage | 4.1 ✅ 4.2 ✅ | ✅ Verified |
-| 5 | Fix All Analyzer Warnings | 5.1 | 🔲 Ready |
+| 5 | Fix All Analyzer Warnings | 5.1 ✅ | ✅ Verified |
 
 ## Last Session Summary
-Phase 4 executed and verified (2026-02-19). 2 plans completed.
+Phase 5 executed and verified (2026-02-19). 1 plan, 3 tasks completed.
 
-**Plan 4.1 — Credits & Subscription tests:**
-- 4 new credits test files (entity, widget tests)
-- 2 new subscription test files (repository, provider tests)
-- Credits: 3→7 test files, Subscription: 2→4 test files
-
-**Plan 4.2 — Core & Settings tests:**
-- 4 new core test files (AppException, HapticService, connectivity, RewardedAdService)
-- 2 new settings test files (notifications provider, settings sections widget)
-- Core: 6→10 test files, Settings: 2→4 test files
+**Plan 5.1 — Fix all analyzer warnings & info hints:**
+- 4 warnings fixed (asset_does_not_exist, invalid_annotation_target ×2, unused_field)
+- 9 info hints fixed (sort_pub_dependencies ×2, deprecated_member_use, cascade_invocations ×4, one_member_abstracts, eol_at_end_of_file)
+- 11 files modified, 0 behavioral changes
 
 ## Evidence
-- Commit: `test(credits): add entity and widget tests — 4 new test files`
-- Commit: `test(subscription): add repository and provider tests — 2 new test files`
-- Commit: `test(core,settings): add AppException, HapticService, connectivity, notifications, and settings sections tests — 6 new test files`
-- Verification: `.gsd/phases/4/VERIFICATION.md` — 7/7 must-haves PASS
-- 606 tests passing, flutter analyze clean (0 errors, 4 pre-existing warnings)
+- Commit: `fix: resolve all 13 analyzer warnings and info hints`
+- Verification: `.gsd/phases/5/VERIFICATION.md` — 3/3 must-haves PASS
+- flutter analyze: "No issues found!"
+- flutter test: 606 tests passing
 
 ## Next Steps
-- Milestone complete — all 4 phases verified
-- Consider `/complete-milestone` to archive
+- All 5 phases verified — milestone complete
+- Run `/complete-milestone` to archive
