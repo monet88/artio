@@ -54,7 +54,7 @@ void main() {
     });
 
     test('expiresAt is correctly stored', () {
-      final expires = DateTime(2026, 3, 1);
+      final expires = DateTime(2026, 3);
       final status = SubscriptionStatus(
         tier: 'pro',
         isActive: true,

@@ -17,8 +17,7 @@ String get _adUnitId => defaultTargetPlatform == TargetPlatform.android
 
 @riverpod
 RewardedAdService rewardedAdService(RewardedAdServiceRef ref) {
-  final service = RewardedAdService();
-  service.loadAd();
+  final service = RewardedAdService()..loadAd();
   ref.onDispose(service.dispose);
   return service;
 }

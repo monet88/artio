@@ -1,11 +1,10 @@
 import 'package:artio/core/design_system/app_spacing.dart';
+import 'package:artio/features/subscription/domain/entities/subscription_package.dart';
 import 'package:artio/features/subscription/domain/entities/subscription_status.dart';
 import 'package:artio/features/subscription/presentation/providers/subscription_provider.dart';
 import 'package:artio/features/subscription/presentation/widgets/tier_comparison_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import 'package:artio/features/subscription/domain/entities/subscription_package.dart';
 
 class PaywallScreen extends ConsumerStatefulWidget {
   const PaywallScreen({super.key});

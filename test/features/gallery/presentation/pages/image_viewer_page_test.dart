@@ -3,7 +3,6 @@ import 'package:artio/features/gallery/domain/entities/gallery_item.dart';
 import 'package:artio/features/gallery/presentation/pages/image_viewer_page.dart';
 import 'package:artio/features/subscription/data/repositories/subscription_repository.dart';
 import 'package:artio/features/subscription/domain/entities/subscription_status.dart';
-import 'package:artio/shared/widgets/watermark_overlay.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -165,7 +164,7 @@ void main() {
           createTestWidget(
             items: items,
             subscriptionStatus: const SubscriptionStatus(
-              isActive: false,
+              
             ),
           ),
         );

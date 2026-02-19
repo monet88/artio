@@ -49,8 +49,8 @@ void main() {
     });
 
     test('handles repository stream errors as AsyncError', () async {
-      final controller = StreamController<CreditBalance>();
-      controller.addError(Exception('Stream error'));
+      final controller = StreamController<CreditBalance>()
+        ..addError(Exception('Stream error'));
 
       final container = createContainer(
         balanceStream: controller.stream,

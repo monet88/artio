@@ -1,5 +1,5 @@
-import 'package:artio/features/template_engine/data/repositories/template_repository.dart';
 import 'package:artio/features/template_engine/domain/entities/template_model.dart';
+import 'package:artio/features/template_engine/domain/providers/template_repository_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

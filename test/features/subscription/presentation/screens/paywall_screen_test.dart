@@ -1,14 +1,13 @@
 import 'dart:async';
 
 import 'package:artio/features/subscription/data/repositories/subscription_repository.dart';
+import 'package:artio/features/subscription/domain/entities/subscription_package.dart';
 import 'package:artio/features/subscription/domain/entities/subscription_status.dart';
-import 'package:artio/features/subscription/presentation/providers/subscription_provider.dart';
 import 'package:artio/features/subscription/presentation/screens/paywall_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:artio/features/subscription/domain/entities/subscription_package.dart';
 
 class MockSubscriptionRepository extends Mock implements SubscriptionRepository {}
 
@@ -129,7 +128,7 @@ void main() {
     testWidgets('restore shows "No previous purchases found" when inactive',
         (tester) async {
       when(() => mockRepo.restore())
-          .thenAnswer((_) async => const SubscriptionStatus(isActive: false));
+          .thenAnswer((_) async => const SubscriptionStatus());
 
       await pumpPaywall(tester);
 

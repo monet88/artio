@@ -171,7 +171,7 @@ void main() {
       });
 
       test('proceeds when user has sufficient credits', () async {
-        container = createContainer(creditBalance: 100);
+        container = createContainer();
 
         // Wait for the credit balance stream to emit data
         await container.read(creditBalanceNotifierProvider.future);

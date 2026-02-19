@@ -37,11 +37,9 @@ extension PumpApp on WidgetTester {
     {
     required GoRouter router,
     List<Override>? overrides,
-    ProviderContainer? parent,
   }) async {
     await pumpWidget(
       ProviderScope(
-        parent: parent,
         overrides: overrides ?? [],
         child: MaterialApp.router(routerConfig: router),
       ),

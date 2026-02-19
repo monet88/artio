@@ -1,5 +1,6 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
+import { corsHeaders, handleCorsIfPreflight } from "../_shared/cors.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -351,16 +352,10 @@ async function updateJobStatus(
 }
 
 Deno.serve(async (req) => {
-  const allowedOrigin = Deno.env.get('CORS_ALLOWED_ORIGIN') ?? 'https://artio.app';
-  const corsHeaders = {
-    "Access-Control-Allow-Origin": allowedOrigin,
-    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-    "Access-Control-Allow-Methods": "POST, OPTIONS",
-  };
+  const preflight = handleCorsIfPreflight(req);
+  if (preflight) return preflight;
 
-  if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
-  }
+  const headers = corsHeaders();
 
   try {
     // Extract userId from JWT token (not from request body)
@@ -368,7 +363,7 @@ Deno.serve(async (req) => {
     if (!authHeader?.startsWith("Bearer ")) {
       return new Response(
         JSON.stringify({ error: "Missing authorization header" }),
-        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        { status: 401, headers: { ...headers, "Content-Type": "application/json" } }
       );
     }
 
@@ -379,7 +374,7 @@ Deno.serve(async (req) => {
     if (authError || !user) {
       return new Response(
         JSON.stringify({ error: "Invalid or expired token" }),
-        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        { status: 401, headers: { ...headers, "Content-Type": "application/json" } }
       );
     }
 
@@ -399,7 +394,7 @@ Deno.serve(async (req) => {
     if (!jobId || !prompt) {
       return new Response(
         JSON.stringify({ error: "Missing required fields: jobId, prompt" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        { status: 400, headers: { ...headers, "Content-Type": "application/json" } }
       );
     }
 
@@ -413,14 +408,14 @@ Deno.serve(async (req) => {
     if (jobError || !job) {
       return new Response(
         JSON.stringify({ error: "Job not found" }),
-        { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        { status: 404, headers: { ...headers, "Content-Type": "application/json" } }
       );
     }
 
     if (job.user_id !== userId) {
       return new Response(
         JSON.stringify({ error: "Unauthorized: job belongs to another user" }),
-        { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        { status: 403, headers: { ...headers, "Content-Type": "application/json" } }
       );
     }
     // Resolve credit cost from server-side map
@@ -428,7 +423,7 @@ Deno.serve(async (req) => {
     if (creditCost === undefined) {
       return new Response(
         JSON.stringify({ error: `Unknown model: ${model}` }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        { status: 400, headers: { ...headers, "Content-Type": "application/json" } }
       );
     }
 
@@ -438,7 +433,7 @@ Deno.serve(async (req) => {
       console.log(`[${jobId}] Insufficient credits: need ${creditCost}`);
       return new Response(
         JSON.stringify({ error: creditResult.error, required: creditCost, model }),
-        { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        { status: 402, headers: { ...headers, "Content-Type": "application/json" } }
       );
     }
 
@@ -462,7 +457,7 @@ Deno.serve(async (req) => {
           await updateJobStatus(supabase, jobId, { status: "failed", error_message: createResult.error });
           return new Response(JSON.stringify({ error: createResult.error }), {
             status: 500,
-            headers: { ...corsHeaders, "Content-Type": "application/json" },
+            headers: { ...headers, "Content-Type": "application/json" },
           });
         }
 
@@ -476,7 +471,7 @@ Deno.serve(async (req) => {
           await updateJobStatus(supabase, jobId, { status: "failed", error_message: pollResult.error });
           return new Response(JSON.stringify({ error: pollResult.error }), {
             status: 500,
-            headers: { ...corsHeaders, "Content-Type": "application/json" },
+            headers: { ...headers, "Content-Type": "application/json" },
           });
         }
 
@@ -493,7 +488,7 @@ Deno.serve(async (req) => {
           await updateJobStatus(supabase, jobId, { status: "failed", error_message: geminiResult.error });
           return new Response(JSON.stringify({ error: geminiResult.error }), {
             status: 500,
-            headers: { ...corsHeaders, "Content-Type": "application/json" },
+            headers: { ...headers, "Content-Type": "application/json" },
           });
         }
 
@@ -511,7 +506,7 @@ Deno.serve(async (req) => {
 
       return new Response(
         JSON.stringify({ success: true, jobId, storagePaths }),
-        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        { status: 200, headers: { ...headers, "Content-Type": "application/json" } }
       );
     } catch (postDeductionError) {
       // Refund credits if any step after deduction fails (e.g. mirroring)
@@ -520,14 +515,14 @@ Deno.serve(async (req) => {
       await updateJobStatus(supabase, jobId, { status: "failed", error_message: errorMsg });
       return new Response(
         JSON.stringify({ error: errorMsg }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        { status: 500, headers: { ...headers, "Content-Type": "application/json" } }
       );
     }
   } catch (error) {
     console.error("Edge function error:", error);
     return new Response(
       JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      { status: 500, headers: { ...headers, "Content-Type": "application/json" } }
     );
   }
 });

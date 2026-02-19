@@ -50,7 +50,7 @@ void main() {
             container.read(adRewardNotifierProvider.notifier);
 
         expect(
-          () => notifier.watchAdAndReward(),
+          notifier.watchAdAndReward,
           throwsA(isA<AppException>()),
         );
       });
@@ -65,7 +65,7 @@ void main() {
             container.read(adRewardNotifierProvider.notifier);
 
         expect(
-          () => notifier.watchAdAndReward(),
+          notifier.watchAdAndReward,
           throwsA(isA<AppException>()),
         );
 
@@ -114,7 +114,7 @@ void main() {
             container.read(adRewardNotifierProvider.notifier);
 
         expect(
-          () => notifier.watchAdAndReward(),
+          notifier.watchAdAndReward,
           throwsA(isA<PaymentException>()),
         );
       });

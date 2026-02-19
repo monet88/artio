@@ -4,13 +4,12 @@ import 'dart:io';
 import 'package:artio/core/config/sentry_config.dart';
 import 'package:artio/core/exceptions/app_exception.dart';
 import 'package:artio/core/providers/supabase_provider.dart';
-import 'package:artio/core/utils/date_time_utils.dart';
 import 'package:artio/core/utils/retry.dart';
+import 'package:artio/features/gallery/data/repositories/gallery_repository_helpers.dart';
 import 'package:artio/features/gallery/domain/entities/gallery_item.dart';
 import 'package:artio/features/gallery/domain/repositories/i_gallery_repository.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:http/http.dart' as http;
 import 'package:image_gallery_saver_plus/image_gallery_saver_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -29,45 +28,6 @@ class GalleryRepository implements IGalleryRepository {
 
   const GalleryRepository(this._supabase);
   final SupabaseClient _supabase;
-
-  /// Convert job status string to enum
-  GenerationStatus _parseStatus(String? status) {
-    switch (status) {
-      case 'pending':
-        return GenerationStatus.pending;
-      case 'generating':
-        return GenerationStatus.generating;
-      case 'processing':
-        return GenerationStatus.processing;
-      case 'completed':
-        return GenerationStatus.completed;
-      case 'failed':
-        return GenerationStatus.failed;
-      default:
-        return GenerationStatus.pending;
-    }
-  }
-
-  /// Parse job data to GalleryItem
-  GalleryItem _parseJob(Map<String, dynamic> job, int imageIndex) {
-    final urls = (job['result_urls'] as List?) ?? [];
-    final imageUrl = imageIndex < urls.length ? urls[imageIndex] as String : null;
-    
-    return GalleryItem(
-      id: '${job['id']}_$imageIndex',
-      jobId: job['id'] as String,
-      userId: job['user_id'] as String,
-      imageUrl: imageUrl,
-      templateId: (job['template_id'] as String?) ?? '',
-      templateName: ((job['templates'] as Map<String, dynamic>?)?['name'] as String?) ?? 'Unknown',
-      prompt: job['prompt'] as String?,
-      createdAt: safeParseDateTime(job['created_at']) ?? DateTime.now(),
-      status: _parseStatus(job['status'] as String?),
-      resultPaths: urls.cast<String>(),
-      deletedAt: safeParseDateTime(job['deleted_at']),
-      isFavorite: (job['is_favorite'] as bool?) ?? false,
-    );
-  }
 
   @override
   Future<List<GalleryItem>> fetchGalleryItems({
@@ -96,10 +56,10 @@ class GalleryRepository implements IGalleryRepository {
           final job = row as Map<String, dynamic>;
           final urls = (job['result_urls'] as List?) ?? [];
           if (urls.isEmpty && job['status'] != 'completed') {
-            items.add(_parseJob(job, 0));
+            items.add(parseJob(job, 0));
           } else {
             for (var i = 0; i < urls.length; i++) {
-              items.add(_parseJob(job, i));
+              items.add(parseJob(job, i));
             }
           }
         }
@@ -127,10 +87,10 @@ class GalleryRepository implements IGalleryRepository {
 
             final urls = (job['result_urls'] as List?) ?? [];
             if (urls.isEmpty) {
-              items.add(_parseJob(job, 0));
+              items.add(parseJob(job, 0));
             } else {
               for (var i = 0; i < urls.length; i++) {
-                items.add(_parseJob(job, i));
+                items.add(parseJob(job, i));
               }
             }
           }
@@ -214,48 +174,12 @@ class GalleryRepository implements IGalleryRepository {
     }
   }
 
-  /// Extract file extension from URL path, fallback to .png
-  String _extensionFromUrl(String url) {
-    try {
-      final path = Uri.parse(url).path;
-      final lastDot = path.lastIndexOf('.');
-      if (lastDot != -1 && lastDot < path.length - 1) {
-        final ext = path.substring(lastDot).toLowerCase();
-        if (const ['.png', '.jpg', '.jpeg', '.webp', '.gif'].contains(ext)) {
-          return ext;
-        }
-      }
-    } on FormatException catch (_) {}
-    return '.png';
-  }
-
-  /// Download image bytes to a file in the given directory
-  Future<File> _downloadToFile(
-    String imageUrl,
-    Directory directory,
-    String prefix,
-  ) async {
-    final response = await http.get(Uri.parse(imageUrl));
-    if (response.statusCode != 200) {
-      throw AppException.network(
-        message: 'Download failed',
-        statusCode: response.statusCode,
-      );
-    }
-
-    final ext = _extensionFromUrl(imageUrl);
-    final fileName = '${prefix}_${DateTime.now().millisecondsSinceEpoch}$ext';
-    final file = File('${directory.path}/$fileName');
-    await file.writeAsBytes(response.bodyBytes);
-    return file;
-  }
-
   @override
   Future<String> downloadImage(String imageUrl) async {
     return retry(() async {
       try {
         final directory = await getTemporaryDirectory();
-        final file = await _downloadToFile(imageUrl, directory, 'artio');
+        final file = await downloadToFile(imageUrl, directory, 'artio');
 
         // Save to gallery on mobile platforms
         if (!kIsWeb &&
@@ -286,7 +210,7 @@ class GalleryRepository implements IGalleryRepository {
   Future<File> getImageFile(String imageUrl) async {
     try {
       final directory = await getTemporaryDirectory();
-      return await _downloadToFile(imageUrl, directory, 'share');
+      return await downloadToFile(imageUrl, directory, 'share');
     } on FileSystemException catch (e) {
       throw AppException.storage(message: 'Failed to save image: ${e.message}');
     } on Exception catch (e) {

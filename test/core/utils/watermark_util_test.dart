@@ -8,7 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 Future<Uint8List> _createTestImage(int width, int height) async {
   final recorder = ui.PictureRecorder();
   ui.Canvas(recorder)
-    ..drawRect(
+    .drawRect(
       ui.Rect.fromLTWH(0, 0, width.toDouble(), height.toDouble()),
       ui.Paint()..color = const ui.Color(0xFF0000FF),
     );

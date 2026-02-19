@@ -1,6 +1,6 @@
 import 'package:artio/core/design_system/app_spacing.dart';
 import 'package:artio/core/design_system/app_typography.dart';
-import 'package:artio/features/settings/data/notifications_provider.dart';
+import 'package:artio/features/settings/domain/providers/notifications_provider.dart';
 import 'package:artio/features/settings/presentation/widgets/settings_helpers.dart';
 import 'package:artio/features/settings/presentation/widgets/theme_switcher.dart';
 import 'package:artio/theme/app_colors.dart';

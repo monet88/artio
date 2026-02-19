@@ -27,7 +27,7 @@ void main() {
     });
 
     testWidgets('renders without errors in dark mode', (tester) async {
-      await tester.pumpWidget(buildWidget(isDark: true));
+      await tester.pumpWidget(buildWidget());
 
       expect(find.byType(ErrorIllustration), findsOneWidget);
     });

@@ -14,4 +14,3 @@ abstract class ISubscriptionRepository {
   /// Restore previous purchases.
   Future<SubscriptionStatus> restore();
 }
-

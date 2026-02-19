@@ -43,8 +43,9 @@ class AdRewardNotifier extends _$AdRewardNotifier {
     final result = await repo.rewardAdCredits();
 
     // Refresh ads remaining + credit balance
-    ref.invalidateSelf();
-    ref.invalidate(creditBalanceNotifierProvider);
+    ref
+      ..invalidateSelf()
+      ..invalidate(creditBalanceNotifierProvider);
 
     return result;
   }

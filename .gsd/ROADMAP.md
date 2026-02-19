@@ -1,7 +1,7 @@
 # ROADMAP.md
 
-> **Current Milestone**: Codebase Improvement
-> **Goal**: Fix CORS, extract widgets, resolve architecture violations, increase test coverage
+> **Current Milestone**: Widget Cleanup
+> **Goal**: Bring all remaining hand-written files under 250 lines
 
 ---
 
@@ -16,29 +16,27 @@
 - 7 phases, 530 tests passing
 - All must-haves delivered, PR #13 merged
 
+### Codebase Improvement ✅
+- CORS DRY, widget extraction, architecture violations, test coverage, analyzer warnings
+- 5 phases, 9 plans, 606 tests passing
+- All must-haves delivered, 0 deferrals
+
 ---
 
-## Current Milestone: Codebase Improvement
+## Current Milestone: Widget Cleanup
 
-### Phase 1: CORS & Edge Function DRY
-Extract duplicated CORS logic into `_shared/cors.ts`. Refactor `generate-image` and `reward-ad` to use it.
-- **Plans:** 1.1
-- **Discovery:** Level 0 (internal cleanup)
+### Must-Haves
+- [ ] `app_component_themes.dart` ≤250 lines
+- [ ] `home_screen.dart` ≤250 lines
+- [ ] `create_screen.dart` ≤250 lines
+- [ ] `register_screen.dart` ≤250 lines
+- [ ] `flutter analyze` clean
+- [ ] All tests pass
 
-### Phase 2: Widget Extraction
-Break 11 oversized files (>250 lines) into focused, single-responsibility components.
-- **Plans:** 2.1 (theme), 2.2 (screens), 2.3 (gallery & misc)
-- **Discovery:** Level 0 (pure refactoring)
-
-### Phase 3: Architecture Violations
-Fix 7 presentation→data layer violations and reduce cross-feature coupling.
-- **Plans:** 3.1 (domain interfaces), 3.2 (shared providers)
-- **Discovery:** Level 0 (internal refactoring)
-
-### Phase 4: Test Coverage
-Close test gaps in credits, subscription, settings, and core modules.
-- **Plans:** 4.1 (credits & subscription), 4.2 (core & settings)
-- **Discovery:** Level 0 (internal)
+### Phase 1: Theme & Screen Extraction
+**Status**: ⬜ Not Started
+**Objective**: Extract sub-widgets from 4 oversized files (302, 270, 270, 252 lines)
+- **Discovery:** Level 0 (pure refactoring, identical pattern to Plan 2.3)
 
 ---
 
@@ -49,3 +47,5 @@ Close test gaps in credits, subscription, settings, and core modules.
 - [ ] Credit history / transaction log UI
 - [ ] Subscription management settings page
 - [ ] Referral / affiliate system
+- [ ] Replace test AdMob IDs with production IDs (TODO in rewarded_ad_service.dart)
+
