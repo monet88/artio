@@ -2,10 +2,17 @@
 
 ## Technical Debt
 - [ ] Replace test AdMob IDs with production IDs (`rewarded_ad_service.dart:10`) `high` — 2026-02-19
-- [ ] Extract `app_component_themes.dart` (302 lines) into smaller theme files `low` — 2026-02-19
-- [ ] Extract `home_screen.dart` (270 lines) screen sub-widgets `low` — 2026-02-19
-- [ ] Extract `create_screen.dart` (270 lines) form sections `low` — 2026-02-19
-- [ ] Extract `register_screen.dart` (252 lines) form sections `low` — 2026-02-19
+- [ ] KIE vs app model mismatch — Edge Function hardcodes certain model lists `medium` — 2026-02-19
+- [ ] No caching layer — Templates and gallery fetched fresh each time `medium` — 2026-02-19
+- [ ] Integration tests require real Supabase credentials `low` — 2026-02-19
+
+## Completed
+- [x] Extract `app_component_themes.dart` into smaller theme files — Widget Cleanup ✅
+- [x] Extract `home_screen.dart` screen sub-widgets — Widget Cleanup ✅
+- [x] Extract `create_screen.dart` form sections — Widget Cleanup ✅
+- [x] Extract `register_screen.dart` form sections — Widget Cleanup ✅
+- [x] Fix deprecated Riverpod Ref types — Code Health ✅
+- [x] Fix admin web dart:io usage — Code Health ✅
 
 ## Future Milestones
 - [ ] Stripe integration for web payments
