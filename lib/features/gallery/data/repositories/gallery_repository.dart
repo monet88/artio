@@ -6,6 +6,7 @@ import 'package:artio/core/exceptions/app_exception.dart';
 import 'package:artio/core/providers/supabase_provider.dart';
 import 'package:artio/core/utils/retry.dart';
 import 'package:artio/features/gallery/data/repositories/gallery_repository_helpers.dart';
+import 'package:artio/features/gallery/data/services/gallery_cache_service.dart';
 import 'package:artio/features/gallery/domain/entities/gallery_item.dart';
 import 'package:artio/features/gallery/domain/repositories/i_gallery_repository.dart';
 import 'package:flutter/foundation.dart';
@@ -21,18 +22,69 @@ part 'gallery_repository.g.dart';
 
 @riverpod
 GalleryRepository galleryRepository(Ref ref) {
-  return GalleryRepository(ref.watch(supabaseClientProvider));
+  return GalleryRepository(
+    ref.watch(supabaseClientProvider),
+    ref.watch(galleryCacheServiceProvider),
+  );
 }
 
 class GalleryRepository implements IGalleryRepository {
-
-  const GalleryRepository(this._supabase);
+  const GalleryRepository(this._supabase, this._cache);
   final SupabaseClient _supabase;
+  final GalleryCacheService _cache;
+
+  /// Whether [offset] and [templateId] represent a cacheable first-page query.
+  bool _isCacheableQuery(int offset, String? templateId) =>
+      offset == 0 && templateId == null;
 
   @override
   Future<List<GalleryItem>> fetchGalleryItems({
     int limit = 20,
     int offset = 0,
+    String? templateId,
+  }) async {
+    // Cache-first: only for the default first page.
+    if (_isCacheableQuery(offset, templateId) && _cache.isCacheValid()) {
+      final cached = await _cache.getCachedItems();
+      if (cached != null) return cached;
+    }
+
+    try {
+      final items = await _fetchFromNetwork(
+        limit: limit, offset: offset, templateId: templateId,
+      );
+      if (_isCacheableQuery(offset, templateId)) {
+        await _cache.cacheItems(items);
+      }
+      return items;
+    } on AppException {
+      // Network error: fallback to stale cache for first page.
+      if (_isCacheableQuery(offset, templateId)) {
+        final stale = await _cache.getCachedItems();
+        if (stale != null) return stale;
+      }
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List<GalleryItem>> refreshGalleryItems({
+    int limit = 20,
+    int offset = 0,
+    String? templateId,
+  }) async {
+    final items = await _fetchFromNetwork(
+      limit: limit, offset: offset, templateId: templateId,
+    );
+    if (_isCacheableQuery(offset, templateId)) {
+      await _cache.cacheItems(items);
+    }
+    return items;
+  }
+
+  Future<List<GalleryItem>> _fetchFromNetwork({
+    required int limit,
+    required int offset,
     String? templateId,
   }) async {
     return retry(() async {
@@ -123,6 +175,7 @@ class GalleryRepository implements IGalleryRepository {
       }
 
       await _supabase.from('generation_jobs').delete().eq('id', jobId);
+      await _cache.clearCache();
     } on PostgrestException catch (e) {
       throw AppException.storage(message: e.message);
     }
@@ -135,6 +188,7 @@ class GalleryRepository implements IGalleryRepository {
           .from('generation_jobs')
           .update({'deleted_at': DateTime.now().toIso8601String()})
           .eq('id', jobId);
+      await _cache.clearCache();
     } on PostgrestException catch (e) {
       throw AppException.storage(message: e.message);
     }
@@ -147,6 +201,7 @@ class GalleryRepository implements IGalleryRepository {
           .from('generation_jobs')
           .update({'deleted_at': null})
           .eq('id', jobId);
+      await _cache.clearCache();
     } on PostgrestException catch (e) {
       throw AppException.storage(message: e.message);
     }
@@ -230,6 +285,7 @@ class GalleryRepository implements IGalleryRepository {
       await _supabase
           .from('generation_jobs')
           .update({'is_favorite': isFavorite}).eq('id', jobId);
+      await _cache.clearCache();
     } on PostgrestException catch (e) {
       throw AppException.storage(message: e.message);
     }

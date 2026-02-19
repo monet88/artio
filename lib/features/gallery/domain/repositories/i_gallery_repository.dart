@@ -10,6 +10,13 @@ abstract class IGalleryRepository {
     String? templateId,
   });
 
+  /// Force refresh gallery items from network, bypassing cache
+  Future<List<GalleryItem>> refreshGalleryItems({
+    int limit = 20,
+    int offset = 0,
+    String? templateId,
+  });
+
   /// Watch user images with realtime updates
   Stream<List<GalleryItem>> watchUserImages({required String userId});
 
