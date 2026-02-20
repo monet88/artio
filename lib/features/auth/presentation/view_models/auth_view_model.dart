@@ -18,6 +18,8 @@ part 'auth_view_model.g.dart';
 class AuthViewModel extends _$AuthViewModel implements Listenable {
   VoidCallback? _routerListener;
   StreamSubscription<supabase.AuthState>? _authSubscription;
+  Timer? _oauthTimeoutTimer;
+  static const _oauthTimeoutDuration = Duration(minutes: 3);
 
   @override
   AuthState build() {
@@ -28,6 +30,7 @@ class AuthViewModel extends _$AuthViewModel implements Listenable {
     final oldSub = _authSubscription;
     _authSubscription = authRepo.onAuthStateChange.listen(
       (data) {
+        _oauthTimeoutTimer?.cancel();
         if (data.session != null) {
           _handleSignedIn();
         } else {
@@ -41,7 +44,10 @@ class AuthViewModel extends _$AuthViewModel implements Listenable {
     );
     oldSub?.cancel();
 
-    ref.onDispose(() => _authSubscription?.cancel());
+    ref.onDispose(() {
+      _authSubscription?.cancel();
+      _oauthTimeoutTimer?.cancel();
+    });
 
     _checkAuthentication();
     return const AuthState.initial();
@@ -81,6 +87,14 @@ class AuthViewModel extends _$AuthViewModel implements Listenable {
   }
 
   Future<void> signInWithEmail(String email, String password) async {
+    if (email.trim().isEmpty) {
+      state = const AuthState.error('Email is required');
+      return;
+    }
+    if (password.isEmpty) {
+      state = const AuthState.error('Password is required');
+      return;
+    }
     if (state is AuthStateAuthenticating) return;
     state = const AuthState.authenticating();
     try {
@@ -94,6 +108,18 @@ class AuthViewModel extends _$AuthViewModel implements Listenable {
   }
 
   Future<void> signUpWithEmail(String email, String password) async {
+    if (email.trim().isEmpty) {
+      state = const AuthState.error('Email is required');
+      return;
+    }
+    if (password.isEmpty) {
+      state = const AuthState.error('Password is required');
+      return;
+    }
+    if (password.length < 6) {
+      state = const AuthState.error('Password must be at least 6 characters');
+      return;
+    }
     if (state is AuthStateAuthenticating) return;
     state = const AuthState.authenticating();
     try {
@@ -109,10 +135,19 @@ class AuthViewModel extends _$AuthViewModel implements Listenable {
   Future<void> signInWithGoogle() async {
     if (state is AuthStateAuthenticating) return;
     state = const AuthState.authenticating();
+    _oauthTimeoutTimer?.cancel();
+    _oauthTimeoutTimer = Timer(_oauthTimeoutDuration, () {
+      if (state is AuthStateAuthenticating) {
+        state = const AuthState.error(
+          'Sign in timed out. Please try again.',
+        );
+      }
+    });
     try {
       final authRepo = ref.read(authRepositoryProvider);
       await authRepo.signInWithGoogle();
     } on Exception catch (e) {
+      _oauthTimeoutTimer?.cancel();
       state = AuthState.error(_parseErrorMessage(e));
     }
   }
