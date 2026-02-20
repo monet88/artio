@@ -93,7 +93,7 @@ void main() {
       await pumpPaywall(tester, offeringsError: true);
 
       expect(find.text('Unable to load subscription options'), findsOneWidget);
-      expect(find.text('Retry'), findsOneWidget);
+      expect(find.text('Try Again'), findsOneWidget);
     });
 
     testWidgets('shows Free tier card when offerings load empty',
