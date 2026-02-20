@@ -169,6 +169,7 @@ class GalleryRepository implements IGalleryRepository {
               .from('generated-images')
               .remove(['$userId/$jobId/$i.png']);
         } on storage_client.StorageException catch (e) {
+          debugPrint('Storage delete failed for $userId/$jobId/$i.png: $e');
           // Report to Sentry for production visibility
           unawaited(SentryConfig.captureException(e, stackTrace: StackTrace.current));
         }

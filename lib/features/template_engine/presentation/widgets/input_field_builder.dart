@@ -51,6 +51,14 @@ class _InputFieldBuilderState extends State<InputFieldBuilder> {
           onChanged: (value) {
             if (value != null) widget.onChanged(value);
           },
+          validator: widget.field.required
+              ? (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please select an option';
+                  }
+                  return null;
+                }
+              : null,
         );
 
       case 'slider':
