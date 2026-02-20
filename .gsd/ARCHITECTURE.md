@@ -149,7 +149,7 @@ artio/
 - **Exceptions:** `AppException` (freezed union: network, auth, storage, **payment**, **generation**, unknown)
 - **Providers:** Supabase client, Connectivity
 - **Services:** `HapticService`, `RewardedAdService` (Google AdMob rewarded interstitials)
-- **Utils:** `AppExceptionMapper`, `EmailValidator` ⭐ NEW, `retry` (exponential backoff), `DateTimeUtils`, `WatermarkUtil`
+- **Utils:** `AppExceptionMapper`, `EmailValidator`, `retry` (exponential backoff), `DateTimeUtils`, `WatermarkUtil`
 
 ### 9. Routing (`lib/routing/`)
 - **Router:** GoRouter with type-safe route classes (`go_router_builder` codegen)

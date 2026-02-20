@@ -1,0 +1,31 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Markdown files always LF
+*.md text eol=lf
+
+# Dart source files
+*.dart text eol=lf
+
+# Config files
+*.yaml text eol=lf
+*.yml text eol=lf
+*.json text eol=lf
+*.toml text eol=lf
+
+# Shell scripts
+*.sh text eol=lf
+
+# TypeScript/JavaScript (Edge Functions)
+*.ts text eol=lf
+*.js text eol=lf
+
+# CSV data files
+*.csv text eol=lf
+
+# Python scripts
+*.py text eol=lf
+
+# Windows-specific
+*.bat text eol=crlf
+*.ps1 text eol=crlf
