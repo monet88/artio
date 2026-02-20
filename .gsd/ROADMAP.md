@@ -76,9 +76,16 @@
 
 ## Backlog
 
+### Features
 - [ ] Stripe integration for web payments
 - [ ] Priority generation queue for subscribers
 - [ ] Credit history / transaction log UI
 - [ ] Subscription management settings page
 - [ ] Referral / affiliate system
+
+### Technical Debt (from Edge Case Fixes audit)
+- [ ] Edge Function integration tests (refund retry, premium enforcement)
+- [ ] PREMIUM_MODELS sync between `ai_models.dart` and `index.ts` — shared source of truth
+- [ ] Deno type-check CI step for Edge Functions
+- [ ] Sentry alert rule for `[CRITICAL] Credit refund failed`
 - [ ] Replace test AdMob IDs with production IDs (TODO in rewarded_ad_service.dart)
