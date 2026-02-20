@@ -310,6 +310,20 @@ async function uploadToStorage(
   return storagePath;
 }
 
+async function cleanupStorageFiles(
+  supabase: ReturnType<typeof getSupabaseClient>,
+  paths: string[]
+): Promise<void> {
+  const { error } = await supabase.storage
+    .from("generated-images")
+    .remove(paths);
+
+  if (error) {
+    console.error(`Failed to cleanup orphaned files: ${error.message}`, paths);
+    // Non-fatal: log but don't throw — the original error is more important
+  }
+}
+
 async function mirrorUrlsToStorage(
   supabase: ReturnType<typeof getSupabaseClient>,
   userId: string,
@@ -320,9 +334,17 @@ async function mirrorUrlsToStorage(
   const storagePaths: string[] = [];
 
   for (let i = 0; i < imageUrls.length; i++) {
-    const imageData = await downloadImage(imageUrls[i]);
-    const storagePath = await uploadToStorage(supabase, userId, jobId, imageData, i, outputFormat);
-    storagePaths.push(storagePath);
+    try {
+      const imageData = await downloadImage(imageUrls[i]);
+      const storagePath = await uploadToStorage(supabase, userId, jobId, imageData, i, outputFormat);
+      storagePaths.push(storagePath);
+    } catch (error) {
+      if (storagePaths.length > 0) {
+        console.warn(`[${jobId}] Upload failed at index ${i}, cleaning up ${storagePaths.length} orphaned files`);
+        await cleanupStorageFiles(supabase, storagePaths);
+      }
+      throw error;
+    }
   }
 
   return storagePaths;
@@ -338,14 +360,22 @@ async function mirrorBase64ToStorage(
   const storagePaths: string[] = [];
 
   for (let i = 0; i < base64Images.length; i++) {
-    const binaryString = atob(base64Images[i]);
-    const bytes = new Uint8Array(binaryString.length);
-    for (let j = 0; j < binaryString.length; j++) {
-      bytes[j] = binaryString.charCodeAt(j);
-    }
+    try {
+      const binaryString = atob(base64Images[i]);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let j = 0; j < binaryString.length; j++) {
+        bytes[j] = binaryString.charCodeAt(j);
+      }
 
-    const storagePath = await uploadToStorage(supabase, userId, jobId, bytes, i, outputFormat);
-    storagePaths.push(storagePath);
+      const storagePath = await uploadToStorage(supabase, userId, jobId, bytes, i, outputFormat);
+      storagePaths.push(storagePath);
+    } catch (error) {
+      if (storagePaths.length > 0) {
+        console.warn(`[${jobId}] Base64 upload failed at index ${i}, cleaning up ${storagePaths.length} orphaned files`);
+        await cleanupStorageFiles(supabase, storagePaths);
+      }
+      throw error;
+    }
   }
 
   return storagePaths;
