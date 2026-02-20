@@ -1,3 +1,4 @@
+import 'package:artio/core/state/credit_balance_state_provider.dart';
 import 'package:artio/features/create/presentation/providers/create_form_provider.dart';
 import 'package:artio/features/create/presentation/view_models/create_view_model.dart';
 import 'package:artio/features/gallery/presentation/providers/gallery_provider.dart';
@@ -14,5 +15,6 @@ void invalidateUserScopedProviders(Ref ref) {
     ..invalidate(templatesProvider)
     ..invalidate(generationViewModelProvider)
     ..invalidate(createViewModelProvider)
-    ..invalidate(createFormNotifierProvider);
+    ..invalidate(createFormNotifierProvider)
+    ..invalidate(creditBalanceNotifierProvider); // Prevent stale credits on re-login
 }
