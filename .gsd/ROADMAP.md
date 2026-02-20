@@ -67,8 +67,8 @@
 **Objective**: Fix concurrent generation requests (deduplication), concurrent credit deductions (atomic UPDATE/INSERT), and Edge Function locking for job processing. Also refine KIE timeout logic.
 
 ### Phase 2: Auth & Template Resilience
-**Status**: ⬜ Not Started
-**Objective**: Detect and handle OAuth cancellation securely. Update password reset UX to not reveal email existence. Implement resilient parsing for Freezed template models (skip defective items rather than failing whole list).
+**Status**: ✅ Complete
+**Objective**: Hardening UI/UX edge cases for robust user experience across client. Catch OAuth cancellation errors without throwing Toasts, prevent password recovery email enumeration, and wrap templates payload mapping with try-catch so failing payload blocks do not crash the valid list. (skip defective items rather than failing whole list).
 
 ### Phase 3: Gallery UX & Guards
 **Status**: ⬜ Not Started
