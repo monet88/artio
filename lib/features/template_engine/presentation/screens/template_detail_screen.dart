@@ -20,6 +20,7 @@ import 'package:artio/shared/widgets/output_format_toggle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 class TemplateDetailScreen extends ConsumerStatefulWidget {
 
@@ -146,6 +147,11 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
           authenticated: (state) => state.user.isPremium,
           orElse: () => false,
         );
+
+    // Tag Sentry events with premium status for post-deploy monitoring
+    Sentry.configureScope(
+      (scope) => scope.setTag('isPremium', isPremium.toString()),
+    );
 
     return Scaffold(
       appBar: AppBar(title: const Text('Generate')),
