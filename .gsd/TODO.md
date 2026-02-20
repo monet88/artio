@@ -9,6 +9,8 @@
 - [x] Verify `_shared/` module works with `supabase functions deploy` `medium` — 2026-02-20 ✅
 - [x] Cross-language model count assertion (Dart test: AiModels.all.length == 16) `low` — 2026-02-20 ✅
 - [ ] Complete RevenueCat Dashboard setup checklist (see `docs/revenuecat-checklist.md`) `high` — 2026-02-20
+- [ ] Widget tests for reduced-motion behavior (`loading_state_widget`, `error_state_widget`, `splash_screen`) `low` — 2026-02-21 *(from ui-ux-polish audit)*
+- [ ] Add Sentry breadcrumb/tag for `isPremium` in TemplateDetailScreen to monitor post-deploy `low` — 2026-02-21 *(from ui-ux-polish audit)*
 
 ## Completed
 - [x] Extract `app_component_themes.dart` into smaller theme files — Widget Cleanup ✅
