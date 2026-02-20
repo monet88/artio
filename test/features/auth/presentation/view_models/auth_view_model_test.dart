@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:artio/features/auth/data/repositories/auth_repository.dart';
-import 'package:artio/features/auth/domain/entities/user_model.dart';
 import 'package:artio/features/auth/presentation/state/auth_state.dart';
 import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
 import 'package:fake_async/fake_async.dart';
@@ -365,10 +364,10 @@ void main() {
               StreamController<supabase.AuthState>.broadcast();
           when(() => mockAuthRepo.onAuthStateChange)
               .thenAnswer((_) => authStreamController.stream);
-          when(() => mockAuthRepo.getCurrentUserWithProfile())
+          when(mockAuthRepo.getCurrentUserWithProfile)
               .thenAnswer((_) async => null);
           // signInWithGoogle never completes
-          when(() => mockAuthRepo.signInWithGoogle())
+          when(mockAuthRepo.signInWithGoogle)
               .thenAnswer((_) => Completer<void>().future);
 
           final container = ProviderContainer(
@@ -417,9 +416,9 @@ void main() {
               StreamController<supabase.AuthState>.broadcast();
           when(() => mockAuthRepo.onAuthStateChange)
               .thenAnswer((_) => authStreamController.stream);
-          when(() => mockAuthRepo.getCurrentUserWithProfile())
+          when(mockAuthRepo.getCurrentUserWithProfile)
               .thenAnswer((_) async => null);
-          when(() => mockAuthRepo.signInWithGoogle())
+          when(mockAuthRepo.signInWithGoogle)
               .thenAnswer((_) => Completer<void>().future);
 
           final container = ProviderContainer(
@@ -440,7 +439,7 @@ void main() {
 
           // Simulate auth state change (user signs in via OAuth callback)
           final user = UserFixtures.authenticated();
-          when(() => mockAuthRepo.getCurrentUserWithProfile())
+          when(mockAuthRepo.getCurrentUserWithProfile)
               .thenAnswer((_) async => user);
 
           // Push auth event — this cancels the timer
