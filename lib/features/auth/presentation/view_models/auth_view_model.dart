@@ -146,8 +146,11 @@ class AuthViewModel extends _$AuthViewModel implements Listenable {
     try {
       final authRepo = ref.read(authRepositoryProvider);
       await authRepo.signInWithGoogle();
+      // Only set to success if user actually got populated. In case of cancellation,
+      // the repo returns void, but user state listener will reset to unauthenticated.
     } on Exception catch (e) {
       _oauthTimeoutTimer?.cancel();
+      // Revert loading on error.
       state = AuthState.error(_parseErrorMessage(e));
     }
   }

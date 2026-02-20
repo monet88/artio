@@ -78,7 +78,11 @@ class AuthRepository implements IAuthRepository {
         OAuthProvider.google,
         redirectTo: kIsWeb ? null : AppConstants.loginCallback,
       );
+    } on AuthException catch (e) {
+      if (e.message.contains('canceled') || e.message.contains('cancelled')) return;
+      throw AppException.auth(message: e.message);
     } catch (e) {
+      if (e.toString().contains('canceled') || e.toString().contains('cancelled')) return;
       throw AppException.auth(message: e.toString());
     }
   }
@@ -90,7 +94,11 @@ class AuthRepository implements IAuthRepository {
         OAuthProvider.apple,
         redirectTo: AppConstants.loginCallback,
       );
+    } on AuthException catch (e) {
+      if (e.message.contains('canceled') || e.message.contains('cancelled')) return;
+      throw AppException.auth(message: e.message);
     } catch (e) {
+      if (e.toString().contains('canceled') || e.toString().contains('cancelled')) return;
       throw AppException.auth(message: e.toString());
     }
   }
