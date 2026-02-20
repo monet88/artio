@@ -1,6 +1,7 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
 import { corsHeaders, handleCorsIfPreflight } from "../_shared/cors.ts";
+import { MODEL_CREDIT_COSTS, isPremiumModel, getModelCreditCost } from "../_shared/model_config.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -38,37 +39,8 @@ const GEMINI_MODELS = [
   "gemini-2.5-flash-image",
 ] as const;
 
-// ⚠️ SYNC: Must match creditCost values in lib/core/constants/ai_models.dart
-// Server-side authoritative model costs
-const MODEL_CREDIT_COSTS: Record<string, number> = {
-  "google/imagen4": 6,
-  "google/imagen4-fast": 4,
-  "google/imagen4-ultra": 12,
-  "google/nano-banana-edit": 10,
-  "nano-banana-pro": 10,
-  "google/pro-image-to-image": 15,
-  "flux-2/flex-text-to-image": 8,
-  "flux-2/flex-image-to-image": 10,
-  "flux-2/pro-text-to-image": 16,
-  "flux-2/pro-image-to-image": 20,
-  "gpt-image/1.5-text-to-image": 15,
-  "gpt-image/1.5-image-to-image": 18,
-  "seedream/4.5-text-to-image": 8,
-  "seedream/4.5-edit": 10,
-  "gemini-3-pro-image-preview": 15,
-  "gemini-2.5-flash-image": 8,
-};
-
-// ⚠️ SYNC: Must match isPremium: true entries in lib/core/constants/ai_models.dart
-const PREMIUM_MODELS = [
-  'google/imagen4-ultra',
-  'google/pro-image-to-image',
-  'flux-2/pro-text-to-image',
-  'flux-2/pro-image-to-image',
-  'gpt-image/1.5-text-to-image',
-  'gpt-image/1.5-image-to-image',
-  'gemini-3-pro-image-preview',
-] as const;
+// MODEL_CREDIT_COSTS, PREMIUM_MODELS, isPremiumModel, getModelCreditCost
+// imported from ../_shared/model_config.ts
 
 interface GenerationRequest {
   jobId: string;
@@ -468,7 +440,7 @@ Deno.serve(async (req) => {
       );
     }
     // Resolve credit cost from server-side map
-    const creditCost = MODEL_CREDIT_COSTS[model];
+    const creditCost = getModelCreditCost(model);
     if (creditCost === undefined) {
       return new Response(
         JSON.stringify({ error: `Unknown model: ${model}` }),
@@ -477,7 +449,7 @@ Deno.serve(async (req) => {
     }
 
     // Premium model enforcement — check BEFORE credit deduction
-    if ((PREMIUM_MODELS as readonly string[]).includes(model)) {
+    if (isPremiumModel(model)) {
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('is_premium')
