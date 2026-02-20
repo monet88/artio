@@ -28,8 +28,17 @@ Future<void> main() async {
     return;
   }
 
-  await SentryConfig.init();
-  await MobileAds.instance.initialize();
+  try {
+    await SentryConfig.init();
+  } on Object catch (e) {
+    debugPrint('Sentry init failed (non-blocking): $e');
+  }
+
+  try {
+    await MobileAds.instance.initialize();
+  } on Object catch (e) {
+    debugPrint('MobileAds init failed (non-blocking): $e');
+  }
 
   // Initialize RevenueCat SDK (skip if keys not configured or running on web)
   if (!kIsWeb) {
@@ -37,10 +46,14 @@ Future<void> main() async {
         ? EnvConfig.revenuecatAppleKey
         : EnvConfig.revenuecatGoogleKey;
     if (rcKey.isNotEmpty) {
-      if (kDebugMode) {
-        await Purchases.setLogLevel(LogLevel.debug);
+      try {
+        if (kDebugMode) {
+          await Purchases.setLogLevel(LogLevel.debug);
+        }
+        await Purchases.configure(PurchasesConfiguration(rcKey));
+      } on Object catch (e) {
+        debugPrint('RevenueCat init failed (non-blocking): $e');
       }
-      await Purchases.configure(PurchasesConfiguration(rcKey));
     }
   }
 
