@@ -17,9 +17,9 @@
 - [x] KIE vs app model mismatch — Phase 1: Model Registry Sync ✅
 - [x] No caching layer — Phase 2 (Templates) + Phase 3 (Gallery) ✅
 
-## Future Milestones
-- [ ] Stripe integration for web payments
-- [ ] Priority generation queue for subscribers
-- [ ] Credit history / transaction log UI
-- [ ] Subscription management settings page
-- [ ] Referral / affiliate system
+## Backlog — Features
+- [ ] Stripe integration for web payments `high` — 2026-02-20
+- [ ] Priority generation queue for subscribers `medium` — 2026-02-20
+- [ ] Credit history / transaction log UI `medium` — 2026-02-20
+- [ ] Subscription management settings page `medium` — 2026-02-20
+- [ ] Referral / affiliate system `low` — 2026-02-20
