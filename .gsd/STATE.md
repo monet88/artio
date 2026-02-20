@@ -7,8 +7,9 @@
 - **Status**: Verified
 
 ## Last Session Summary
-Phase 3 executed successfully. Validated >10MB constraints for image picking, wrapped gallery grid with `RefreshIndicator` for forced user cache updates, and swapped the optimistic deletion UX for an explicit Dialog-based gate so users don't mistakenly delete items irreversibly. Milestone is now complete.
+Phase 4 (Analyzer Zero) added to roadmap. Phases 1–3 complete, milestone audit done.
 
 ## Next Steps
-1. Project milestones fully addressed. Create a new milestone with `/new-milestone`.
+1. `/plan 4` — Create execution plans for Analyzer Zero
+2. `/execute 4` — Fix all 28 analyzer issues
 

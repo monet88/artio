@@ -74,6 +74,10 @@
 **Status**: ✅ Complete
 **Objective**: Add size validation for image uploads (>10MB). Implement manual pull-to-refresh for Gallery. Replace Delete undo with a explicit confirmation dialog.
 
+### Phase 4: Analyzer Zero
+**Status**: ⬜ Not Started
+**Objective**: Fix all 28 remaining `flutter analyze` issues (5 warnings, 23 infos) to achieve a clean zero-issue analyzer output. Covers unused fields in `generation_job_manager.dart`, lint fixes in `image_picker_provider.dart` and `template_repository.dart`, import ordering in auth screens, cascade invocations in tests, and miscellaneous infos.
+
 ---
 
 ## Backlog
