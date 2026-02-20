@@ -38,7 +38,8 @@ const GEMINI_MODELS = [
   "gemini-2.5-flash-image",
 ] as const;
 
-// Server-side authoritative model costs (matches ai_models.dart)
+// ⚠️ SYNC: Must match creditCost values in lib/core/constants/ai_models.dart
+// Server-side authoritative model costs
 const MODEL_CREDIT_COSTS: Record<string, number> = {
   "google/imagen4": 6,
   "google/imagen4-fast": 4,
@@ -58,6 +59,7 @@ const MODEL_CREDIT_COSTS: Record<string, number> = {
   "gemini-2.5-flash-image": 8,
 };
 
+// ⚠️ SYNC: Must match isPremium: true entries in lib/core/constants/ai_models.dart
 const PREMIUM_MODELS = [
   'google/imagen4-ultra',
   'google/pro-image-to-image',
@@ -65,6 +67,7 @@ const PREMIUM_MODELS = [
   'flux-2/pro-image-to-image',
   'gpt-image/1.5-text-to-image',
   'gpt-image/1.5-image-to-image',
+  'gemini-3-pro-image-preview',
 ] as const;
 
 interface GenerationRequest {

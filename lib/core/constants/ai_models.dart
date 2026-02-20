@@ -20,6 +20,8 @@ class AiModelConfig {
 }
 
 /// All available AI models from KIE API
+/// ⚠️ SYNC: isPremium flags and creditCost values must match
+/// supabase/functions/generate-image/index.ts (PREMIUM_MODELS + MODEL_CREDIT_COSTS)
 class AiModels {
   AiModels._();
 
@@ -133,7 +135,7 @@ class AiModels {
     AiModelConfig(
       id: 'gpt-image/1.5-text-to-image',
       displayName: 'GPT Image 1.5',
-      isPremium: false,
+      isPremium: true,
       supportedAspectRatios: gptAspectRatios,
       creditCost: 15,
       type: 'text-to-image',
@@ -141,7 +143,7 @@ class AiModels {
     AiModelConfig(
       id: 'gpt-image/1.5-image-to-image',
       displayName: 'GPT Image 1.5 Edit',
-      isPremium: false,
+      isPremium: true,
       supportedAspectRatios: gptAspectRatios,
       creditCost: 18,
       type: 'image-to-image',
