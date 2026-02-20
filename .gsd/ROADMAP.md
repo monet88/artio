@@ -71,7 +71,7 @@
 **Objective**: Hardening UI/UX edge cases for robust user experience across client. Catch OAuth cancellation errors without throwing Toasts, prevent password recovery email enumeration, and wrap templates payload mapping with try-catch so failing payload blocks do not crash the valid list. (skip defective items rather than failing whole list).
 
 ### Phase 3: Gallery UX & Guards
-**Status**: ⬜ Not Started
+**Status**: ✅ Complete
 **Objective**: Add size validation for image uploads (>10MB). Implement manual pull-to-refresh for Gallery. Replace Delete undo with a explicit confirmation dialog.
 
 ---
