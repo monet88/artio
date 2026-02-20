@@ -1,13 +1,13 @@
 # STATE.md
 
 ## Current Position
-- **Milestone**: UI & Concurrency Polish
-- **Phase**: 4 (completed)
-- **Task**: All tasks complete
-- **Status**: Verified
+- **Milestone**: (none)
+- **Phase**: —
+- **Task**: —
+- **Status**: Ready for next milestone
 
-## Last Session Summary
-Phase 4 (Analyzer Zero) executed. Fixed all 28 `flutter analyze` issues across 9 files. Result: **0 errors, 0 warnings, 0 infos**. 478 tests passing.
-
-## Next Steps
-1. `/complete-milestone` — Archive and tag the milestone
+## Last Completed Milestone
+**UI & Concurrency Polish** — 2026-02-20
+- 4 phases, 17 commits
+- 478 tests passing, 0 analyzer issues
+- Tag: `ui-concurrency-polish`

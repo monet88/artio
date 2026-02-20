@@ -37,6 +37,17 @@ Detailed rules in `.agent/rules/`:
 - **`testing.md`** — TDD (red/green/refactor), 80%+ coverage, mocktail
 - **`patterns.md`** — Repository pattern, Freezed entities, Riverpod state, error handling flow
 
+### Dart MCP vs Shell
+
+**Dart MCP is the default** for analyze, test, fix, format, and pub. Only use shell when you need pipe/filter output or flags that MCP doesn't expose.
+
+| Scenario | Use | Reason |
+|----------|-----|--------|
+| Analyze, test, fix, format (standard) | **Dart MCP** | Structured output, less noise |
+| Need pipe/filter output (grep, select-string) | **Shell** | MCP doesn't support piping |
+| Need special flags (`--reporter`, `--name`) | **Shell** | MCP doesn't expose all flags |
+| Pub commands (add, get, deps, outdated) | **Dart MCP** | `pub` tool has full support |
+
 ---
 
 ## GSD Methodology
@@ -141,12 +152,12 @@ Then `nmem_recall(query="authentication")` finds related code through the neural
 
 ### Memory Quality Skills
 
-3 skills trong `.agent/skills/` để quản lý chất lượng NeuralMemory:
+3 skills in `.agent/skills/` for NeuralMemory quality management:
 
-| Skill | Khi nào dùng | Slash/keyword |
-|-------|-------------|---------------|
-| **memory-audit** | Kiểm tra sức khỏe brain (6 chiều: purity, freshness, coverage, clarity, relevance, structure) | User nhắc "audit memory", "check memory health", "kiểm tra memory" |
-| **memory-evolution** | Tối ưu memory: consolidate duplicates, prune dead, enrich gaps, normalize tags | User nhắc "optimize memory", "tối ưu memory", sau audit |
-| **memory-intake** | Nhập info thô → structured memories (1-question clarification, dedup, batch store) | User nhắc "intake", "lưu notes", paste text lớn cần lưu |
+| Skill | When to use | Trigger |
+|-------|-------------|---------|
+| **memory-audit** | Check brain health (6 dimensions: purity, freshness, coverage, clarity, relevance, structure) | User mentions "audit memory", "check memory health" |
+| **memory-evolution** | Optimize memory: consolidate duplicates, prune dead, enrich gaps, normalize tags | User mentions "optimize memory", after audit |
+| **memory-intake** | Convert raw info → structured memories (1-question clarification, dedup, batch store) | User mentions "intake", "save notes", pastes large text to store |
 
-**Workflow khuyến nghị:** intake → audit (1-2 tuần/lần) → evolution (sau audit)
+**Recommended workflow:** intake → audit (every 1-2 weeks) → evolution (after audit)

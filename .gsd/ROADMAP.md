@@ -51,32 +51,17 @@
 
 ---
 
-## Current Milestone: UI & Concurrency Polish
+## Completed Milestones
+- **UI & Concurrency Polish** — 2026-02-20 (tag: `ui-concurrency-polish`)
+- **Model Sync & Edge Function Tests** (tag: `model-sync`)
+- **Data Integrity & Performance** (tag: `data-integrity-performance`)
+- **Widget Cleanup** (tag: `widget-cleanup`)
 
-**Goal:** Handle remaining "Partial Handling" edge cases from the 2026-02-20 verification report related to UI UX components and concurrent behaviors.
+---
 
-### Must-Haves
-- [ ] Concurrent request processing & credit deductions (deduplication & locks)
-- [ ] Better error UX for Gallery (size validation, confirm deletes, pull-to-refresh)
-- [ ] Refined Auth flows (OAuth cancel logic, safe password reset feedback)
-- [ ] Resilient parsing (Missing template fields don't fail entire list)
-- [ ] Adjust and verify 120s timeout expectation for AI provider polling
+## Current Milestone: (none)
 
-### Phase 1: Concurrency & Backend Limits
-**Status**: ✅ Complete
-**Objective**: Fix concurrent generation requests (deduplication), concurrent credit deductions (atomic UPDATE/INSERT), and Edge Function locking for job processing. Also refine KIE timeout logic.
-
-### Phase 2: Auth & Template Resilience
-**Status**: ✅ Complete
-**Objective**: Hardening UI/UX edge cases for robust user experience across client. Catch OAuth cancellation errors without throwing Toasts, prevent password recovery email enumeration, and wrap templates payload mapping with try-catch so failing payload blocks do not crash the valid list. (skip defective items rather than failing whole list).
-
-### Phase 3: Gallery UX & Guards
-**Status**: ✅ Complete
-**Objective**: Add size validation for image uploads (>10MB). Implement manual pull-to-refresh for Gallery. Replace Delete undo with a explicit confirmation dialog.
-
-### Phase 4: Analyzer Zero
-**Status**: ✅ Complete
-**Objective**: Fix all 28 remaining `flutter analyze` issues (5 warnings, 23 infos) to achieve a clean zero-issue analyzer output. Covers unused fields in `generation_job_manager.dart`, lint fixes in `image_picker_provider.dart` and `template_repository.dart`, import ordering in auth screens, cascade invocations in tests, and miscellaneous infos.
+*Use `/new-milestone` to start the next milestone.*
 
 ---
 
