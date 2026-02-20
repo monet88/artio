@@ -1,14 +1,12 @@
 # STATE.md
 
 ## Current Position
-- **Milestone**: Tech Debt Cleanup ✅
-- **Phase**: Phase 1 — Gap Closure (completed)
-- **Task**: All tasks complete
-- **Status**: Verified
+- **Milestone**: Edge Case Resilience
+- **Phase**: Not started
+- **Task**: Pending /plan
+- **Status**: Milestone planned
 
 ## Last Session Summary
-Phase 1 Gap Closure executed successfully.
-- 2 plans, 4 tasks, 3 commits
-- Dead code removed, type error fixed, sync tests strengthened
-- Flutter: 651 tests, 0 analyzer issues
-- Deno: 15 tests (5 files type-check clean)
+Tech Debt Cleanup milestone completed. Now starting Edge Case Resilience:
+- Phase 1: Init error handling (main.dart)
+- Phase 2: Network exception mapping (app_exception_mapper.dart)
