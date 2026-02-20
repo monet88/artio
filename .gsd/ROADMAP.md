@@ -1,6 +1,6 @@
 # ROADMAP.md
 
-> **Current Milestone**: (none — backlog)
+> **Current Milestone**: UI/UX Polish
 > **Last Completed**: Edge Case Resilience (2026-02-20)
 
 ---
@@ -77,6 +77,19 @@
 
 ### Phase 2: Network Exception Mapping ✅
 **Deliverables:** SocketException/TimeoutException detection with user-friendly messages, 2 new tests
+
+---
+
+## Current Milestone: UI/UX Polish
+
+**Goal:** Fix 8 UI/UX issues from frontend review (P0-P3). Strengthen accessibility, brand consistency, and code quality.
+
+### Phase 1: UI/UX Polish (6 plans, 3 waves)
+- **Wave 1 (parallel):** Fix _isPremium bug, upgrade PaywallScreen widgets, remove dead LoginScreen mixin
+- **Wave 2 (parallel):** Home screen emoji/search cleanup, reduced-motion support + spacing
+- **Wave 3:** Semantics & accessibility labels
+
+**Plan**: `.gsd/phases/ui-ux-polish/PLAN.md`
 
 ---
 
