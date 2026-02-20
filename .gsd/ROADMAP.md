@@ -62,24 +62,16 @@
 
 ---
 
-## Current Milestone: Tech Debt Cleanup
+## Current Milestone: Tech Debt Cleanup ✅
 
 **Goal:** Dọn dead code, sync shared models, fix type errors — tất cả 🟡 gaps từ milestone audit.
 
-### Phase 1: Gap Closure
-**Status**: ⬜ Not Started
-**Objective**: Fix 3 medium-priority gaps từ verification audit.
-
-**Tasks:**
-- [ ] **imagePickerProvider dead code** — Provider tồn tại nhưng không widget nào import. Wire vào create screen hoặc remove nếu không dùng.
-- [ ] **PREMIUM_MODELS sync** — `ai_models.dart` ↔ `index.ts` không có shared source of truth. Thêm build-time validation hoặc code-gen.
-- [ ] **revenuecat-webhook timingSafeEqual** — Type error bị exclude khỏi `deno task check`. Fix bằng cast hoặc Deno-specific crypto API.
-
-**Verification:**
-- `flutter analyze` → 0 issues
-- `deno task check` bao gồm cả `revenuecat-webhook/index.ts` → pass
-- Không còn unused provider
-- PREMIUM_MODELS count validated at build/test time
+### Phase 1: Gap Closure ✅
+**Status**: ✅ Complete
+**Deliverables:**
+- Removed dead `imagePickerProvider` + test (0 external imports)
+- Fixed `timingSafeEqual` type error, added `revenuecat-webhook` to `deno task check`
+- Strengthened model sync tests: exact ID + cost validation (not count-only)
 
 ---
 
