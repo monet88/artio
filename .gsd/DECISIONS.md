@@ -117,3 +117,23 @@
 - **Chose:** Delete `free_beta_policy.dart`
 - **Reason:** Dead code after `CreditCheckPolicy` replaces it. No future use case identified.
 
+---
+
+## Model Sync & Edge Function Tests Decisions
+
+**Date:** 2026-02-20
+
+### PREMIUM_MODELS Drift — Quick Fix (Option A)
+- **Chose:** Sync lists manually now + add cross-reference comments
+- **Rejected:** Shared JSON config (Option B) — over-engineering for 16 models; DB-driven config (Option C) — overkill
+- **Reason:** Drift already exists (3 mismatches found during audit). Quick fix is immediate. Cross-reference comments reduce future drift risk.
+- **Finding:** GPT Image models in TS but not Dart (UX bug); Gemini Pro in Dart but not TS (security gap)
+
+### Edge Function Tests — Unit Tests for Logic Functions
+- **Chose:** Extract logic functions and test with Deno test
+- **Rejected:** Integration tests (too slow, 14s+ for retry), skip (logic needs coverage)
+- **Reason:** Refund retry and premium check are critical money-related logic. Unit tests give fast feedback without needing full Supabase stack.
+
+### Credit Costs — Sync Both Lists
+- **Chose:** Sync `MODEL_CREDIT_COSTS` (TS) with `creditCost` (Dart) in same pass
+- **Reason:** If credit costs drift, client shows wrong price → user trust issue. Same effort as syncing premium list alone.
