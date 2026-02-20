@@ -37,6 +37,9 @@ Future<void> main() async {
         ? EnvConfig.revenuecatAppleKey
         : EnvConfig.revenuecatGoogleKey;
     if (rcKey.isNotEmpty) {
+      if (kDebugMode) {
+        await Purchases.setLogLevel(LogLevel.debug);
+      }
       await Purchases.configure(PurchasesConfiguration(rcKey));
     }
   }
