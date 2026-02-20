@@ -21,7 +21,6 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final offerings = ref.watch(offeringsProvider);
     final subscription = ref.watch(subscriptionNotifierProvider);
 
