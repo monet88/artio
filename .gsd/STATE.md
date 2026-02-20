@@ -3,8 +3,12 @@
 ## Current Position
 - **Milestone**: Tech Debt Cleanup
 - **Phase**: Phase 1 — Gap Closure
-- **Task**: —
-- **Status**: Phase planned, not started
+- **Task**: Planning complete
+- **Status**: Ready for execution
+
+## Plans
+- Plan 1.1: Dead Code Cleanup & timingSafeEqual Fix (wave 1)
+- Plan 1.2: PREMIUM_MODELS Sync Validation (wave 2)
 
 ## Last Completed Milestone
 **Test Coverage & Production Readiness** — 2026-02-20
