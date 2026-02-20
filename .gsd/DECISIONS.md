@@ -86,3 +86,34 @@
 - Generation still requires JWT (Edge Function) — users MUST login before generating
 - Phase 1 does NOT include credit system — generation works as-is after login (credits in Phase 2)
 - Welcome bonus (20 credits) deferred to Phase 2 (credit system)
+
+---
+
+## Edge Case Fixes Decisions
+
+**Date:** 2026-02-20
+
+### Scope & Execution Strategy
+- **Chose:** 3 PRs grouped by file area (Auth → Credits → Edge Function)
+- **Reason:** Each PR is small, focused, easy to review. All 3 are independent — no cross-PR deps.
+
+### Issue 1.1: Credit Pre-Check — Hardcode vs Dynamic
+- **Chose:** Hardcode `minimumCost = 4` (cheapest model)
+- **Reason:** Client-side check is optimistic only. Server enforces exact per-model cost via `MODEL_CREDIT_COSTS` map. Avoids breaking `IGenerationPolicy.canGenerate()` signature.
+
+### Issue 2.1: Premium Check Placement
+- **Chose:** Check BEFORE credit deduction
+- **Reason:** Premium check is validation — belongs with other pre-generation checks. Avoids creating unnecessary deduct+refund transaction pairs in DB.
+
+### Issue 1.4: Session Expiry — Deferred
+- **Chose:** Defer entirely
+- **Reason:** Supabase SDK handles auto-refresh natively. Manual `ensureValidSession()` is redundant. Revisit only if users report session-related errors in Sentry.
+
+### Issue 2.3: OAuth Timeout Duration
+- **Chose:** 3 minutes (reduced from 5)
+- **Reason:** Typical OAuth flow completes in 30s-2min. 3 minutes gives enough buffer for slow networks while providing reasonable UX.
+
+### FreeBetaPolicy Cleanup
+- **Chose:** Delete `free_beta_policy.dart`
+- **Reason:** Dead code after `CreditCheckPolicy` replaces it. No future use case identified.
+

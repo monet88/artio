@@ -1,6 +1,7 @@
 # ROADMAP.md
 
-> **Current Milestone**: None (between milestones)
+> **Current Milestone**: Edge Case Fixes (Phase 2)
+> **Goal**: Fix 7 edge cases from code review — auth, credits, edge function
 > **Last Completed**: Data Integrity & Performance (2026-02-19)
 
 ---
@@ -35,7 +36,41 @@
 
 ---
 
-## Current Milestone: None (between milestones)
+## Current Milestone: Edge Case Fixes (Phase 2)
+
+**Goal**: Fix 7 edge cases identified during parallel code review to harden auth, credit system, and edge function reliability.
+
+### Must-Haves
+- [ ] Auth input validation — empty email/password blocked before network call
+- [ ] OAuth timeout — stuck authenticating state auto-recovers after 3 min
+- [ ] Credit pre-check — generation blocked when balance < minimum cost
+- [ ] Provider disposal — credit providers invalidated on logout
+- [ ] Credit stream recovery — empty rows return default, errors don't kill stream
+- [ ] Refund retry — 3x exponential backoff on refund failure
+- [ ] Premium enforcement — server-side 403 for non-premium users on premium models
+
+### Nice-to-Haves
+- [ ] Session expiry check (deferred — Supabase auto-refresh sufficient)
+
+### Phases
+
+#### Phase 1: Auth Fixes
+**Status**: ⬜ Not Started
+**Objective**: Input validation for signIn/signUp + OAuth 3-min timeout
+**Plan**: `plans/260220-0845-edge-case-fixes/1-PLAN-auth-fixes.md`
+**Issues**: 2.2, 2.3
+
+#### Phase 2: Credit Fixes
+**Status**: ⬜ Not Started
+**Objective**: CreditCheckPolicy, provider disposal on logout, stream error recovery
+**Plan**: `plans/260220-0845-edge-case-fixes/2-PLAN-credit-fixes.md`
+**Issues**: 1.1, 1.3, 2.4
+
+#### Phase 3: Edge Function Fixes
+**Status**: ⬜ Not Started
+**Objective**: Refund retry with exponential backoff, premium model enforcement
+**Plan**: `plans/260220-0845-edge-case-fixes/3-PLAN-edge-func-fixes.md`
+**Issues**: 1.2, 2.1
 
 ---
 

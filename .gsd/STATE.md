@@ -1,9 +1,14 @@
 # STATE.md
 
 ## Current Position
-- **Milestone**: Between milestones (Data Integrity & Performance completed)
-- **Phase**: N/A
-- **Status**: ✅ All milestones complete — ready for next milestone from Backlog
+- **Milestone**: Edge Case Fixes (Phase 2)
+- **Phase**: Not started
+- **Status**: Planned — 3 phases, 3 plans ready for execution
+
+## Plans Ready
+1. Phase 1: Auth Fixes → `plans/260220-0845-edge-case-fixes/1-PLAN-auth-fixes.md`
+2. Phase 2: Credit Fixes → `plans/260220-0845-edge-case-fixes/2-PLAN-credit-fixes.md`
+3. Phase 3: Edge Func Fixes → `plans/260220-0845-edge-case-fixes/3-PLAN-edge-func-fixes.md`
 
 ## Last Completed
 - **Milestone**: Data Integrity & Performance
@@ -11,5 +16,4 @@
 - **Date**: 2026-02-19
 
 ## Next Steps
-1. Choose next milestone from Backlog (ROADMAP.md)
-2. Options: Stripe web payments, credit history UI, subscription management, production AdMob IDs
+1. `/execute` — Pick any phase to start (all independent)
