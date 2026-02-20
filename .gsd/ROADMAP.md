@@ -63,7 +63,7 @@
 - [ ] Adjust and verify 120s timeout expectation for AI provider polling
 
 ### Phase 1: Concurrency & Backend Limits
-**Status**: ⬜ Not Started
+**Status**: ✅ Complete
 **Objective**: Fix concurrent generation requests (deduplication), concurrent credit deductions (atomic UPDATE/INSERT), and Edge Function locking for job processing. Also refine KIE timeout logic.
 
 ### Phase 2: Auth & Template Resilience
