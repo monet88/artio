@@ -2,6 +2,10 @@
 
 ## Technical Debt
 - [ ] Replace test AdMob IDs with production IDs (`rewarded_ad_service.dart:10`) `high` — 2026-02-19
+- [ ] Edge Function integration tests — refund retry + premium enforcement `medium` — 2026-02-20
+- [ ] PREMIUM_MODELS sync — shared source of truth between `ai_models.dart` and `index.ts` `medium` — 2026-02-20
+- [ ] Deno type-check CI step for Edge Functions `low` — 2026-02-20
+- [ ] Sentry alert rule for `[CRITICAL] Credit refund failed` log pattern `low` — 2026-02-20
 
 ## Completed
 - [x] Extract `app_component_themes.dart` into smaller theme files — Widget Cleanup ✅
