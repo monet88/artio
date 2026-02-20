@@ -58,6 +58,15 @@ const MODEL_CREDIT_COSTS: Record<string, number> = {
   "gemini-2.5-flash-image": 8,
 };
 
+const PREMIUM_MODELS = [
+  'google/imagen4-ultra',
+  'google/pro-image-to-image',
+  'flux-2/pro-text-to-image',
+  'flux-2/pro-image-to-image',
+  'gpt-image/1.5-text-to-image',
+  'gpt-image/1.5-image-to-image',
+] as const;
+
 interface GenerationRequest {
   jobId: string;
   prompt: string;
@@ -462,6 +471,22 @@ Deno.serve(async (req) => {
         JSON.stringify({ error: `Unknown model: ${model}` }),
         { status: 400, headers: { ...headers, "Content-Type": "application/json" } }
       );
+    }
+
+    // Premium model enforcement — check BEFORE credit deduction
+    if ((PREMIUM_MODELS as readonly string[]).includes(model)) {
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('is_premium')
+        .eq('id', userId)
+        .single();
+
+      if (profileError || !profile?.is_premium) {
+        return new Response(
+          JSON.stringify({ error: 'Premium subscription required for this model', model, premiumRequired: true }),
+          { status: 403, headers: { ...headers, 'Content-Type': 'application/json' } }
+        );
+      }
     }
 
     // Deduct credits before generation
