@@ -1,7 +1,7 @@
 # ROADMAP.md
 
-> **Current Milestone**: Edge Case Resilience
-> **Last Completed**: Tech Debt Cleanup (2026-02-20)
+> **Current Milestone**: (none — backlog)
+> **Last Completed**: Edge Case Resilience (2026-02-20)
 
 ---
 
@@ -68,23 +68,15 @@
 
 ---
 
-## Current Milestone: Edge Case Resilience
+## Current Milestone: Edge Case Resilience ✅
 
 **Goal:** Fix 2 critical edge cases: app init crash protection và network error UX.
 
-### Must-Haves
-- [ ] Provider init failures (Sentry/MobileAds/RevenueCat) don't crash the app
-- [ ] SocketException/TimeoutException show user-friendly network error messages
+### Phase 1: Init Error Handling ✅
+**Deliverables:** Wrapped Sentry, MobileAds, RevenueCat init in individual try-catch blocks
 
-### Phase 1: Init Error Handling
-**Status**: ⬜ Not Started
-**Objective**: Wrap Sentry, MobileAds, RevenueCat init in individual try-catch blocks in `main.dart`
-**File**: `lib/main.dart`
-
-### Phase 2: Network Exception Mapping
-**Status**: ⬜ Not Started
-**Objective**: Detect SocketException/TimeoutException in `app_exception_mapper.dart` for proper UX
-**File**: `lib/core/utils/app_exception_mapper.dart`
+### Phase 2: Network Exception Mapping ✅
+**Deliverables:** SocketException/TimeoutException detection with user-friendly messages, 2 new tests
 
 ---
 
