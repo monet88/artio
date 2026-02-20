@@ -1,10 +1,10 @@
 # STATE.md
 
 ## Current Position
-- **Milestone**: None
-- **Phase**: N/A
+- **Milestone**: Edge Case Hardening
+- **Phase**: Not started
 - **Task**: N/A
-- **Status**: Idle — ready for next milestone
+- **Status**: Milestone planned — ready for /plan
 
 ## Last Completed
 - **Milestone**: Security — Reward Ad SSV
