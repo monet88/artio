@@ -137,3 +137,22 @@
 ### Credit Costs — Sync Both Lists
 - **Chose:** Sync `MODEL_CREDIT_COSTS` (TS) with `creditCost` (Dart) in same pass
 - **Reason:** If credit costs drift, client shows wrong price → user trust issue. Same effort as syncing premium list alone.
+
+---
+
+## UI & Concurrency Polish - Phase 3 Decisions
+
+**Date:** 2026-02-20
+
+### Scope
+- **File Size > 10MB Limit:** Applied to the client-side Image Picker for local uploads (e.g., Image-to-Image creation) to prevent large payload requests.
+- **Pull-to-refresh:** Use the default Material `RefreshIndicator` for the Gallery to keep it simple and native.
+- **Delete Image Logic:** Replace the current Optimistic UI + Undo approach with a traditional explicit `AlertDialog` (Yes/Cancel) for safer deletion.
+
+### Approach
+- Chose: Material `RefreshIndicator` and `AlertDialog`
+- Reason: Simplifies implementation (KISS principle) and provides explicit, safer user actions at the slight cost of an extra tap for deletion.
+
+### Constraints
+- Loss of "Optimistic UI" for deletion could make the app feel slightly slower during that specific action, but it guarantees safety.
+
