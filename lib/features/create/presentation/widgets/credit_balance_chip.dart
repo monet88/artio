@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'package:artio/core/design_system/app_spacing.dart';
 import 'package:artio/core/state/auth_view_model_provider.dart';
 import 'package:artio/core/state/credit_balance_state_provider.dart';
@@ -25,7 +26,7 @@ class CreditBalanceChip extends ConsumerWidget {
           alignment: Alignment.centerLeft,
           child: Chip(
             avatar: const Text('💎', style: TextStyle(fontSize: 14)),
-            label: Text('${balance.balance} credits'),
+            label: Text('${math.max(0, balance.balance)} credits'),
             visualDensity: VisualDensity.compact,
           ),
         ),

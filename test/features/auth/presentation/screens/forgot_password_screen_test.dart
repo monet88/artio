@@ -58,7 +58,7 @@ void main() {
       await tester.tap(find.text('Send Reset Link'));
       await tester.pumpAndSettle();
 
-      expect(find.text('Please enter a valid email'), findsOneWidget);
+      expect(find.text('Please enter a valid email address'), findsOneWidget);
     });
 
     testWidgets('renders back button in app bar', (tester) async {

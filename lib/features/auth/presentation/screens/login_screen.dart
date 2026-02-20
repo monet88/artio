@@ -5,6 +5,7 @@ import 'package:artio/features/auth/presentation/state/auth_state.dart';
 import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
 import 'package:artio/features/auth/presentation/widgets/social_login_buttons.dart';
 import 'package:artio/routing/routes/app_routes.dart';
+import 'package:artio/core/utils/email_validator.dart';
 import 'package:artio/shared/widgets/gradient_button.dart';
 import 'package:artio/theme/app_colors.dart';
 import 'package:flutter/material.dart';
@@ -131,15 +132,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                       labelText: 'Email',
                       prefixIcon: Icon(Icons.email_outlined),
                     ),
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'Please enter your email';
-                      }
-                      if (!value.contains('@')) {
-                        return 'Please enter a valid email';
-                      }
-                      return null;
-                    },
+                    validator: EmailValidator.validate,
                   ),
                   const SizedBox(height: AppSpacing.md),
                   TextFormField(

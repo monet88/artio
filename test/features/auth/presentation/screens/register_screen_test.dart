@@ -68,7 +68,7 @@ void main() {
       await tester.tap(find.text('Create Account').last);
       await tester.pumpAndSettle();
 
-      expect(find.text('Please enter a valid email'), findsOneWidget);
+      expect(find.text('Please enter a valid email address'), findsOneWidget);
     });
 
     testWidgets('shows error on empty password', (tester) async {

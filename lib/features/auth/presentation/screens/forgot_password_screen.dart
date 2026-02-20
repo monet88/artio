@@ -1,4 +1,5 @@
 import 'package:artio/core/design_system/app_spacing.dart';
+import 'package:artio/core/utils/email_validator.dart';
 import 'package:artio/core/utils/app_exception_mapper.dart';
 import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
 import 'package:flutter/material.dart';
@@ -129,15 +130,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
               labelText: 'Email',
               prefixIcon: Icon(Icons.email_outlined),
             ),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter your email';
-              }
-              if (!value.contains('@')) {
-                return 'Please enter a valid email';
-              }
-              return null;
-            },
+            validator: EmailValidator.validate,
           ),
           const SizedBox(height: AppSpacing.lg),
           FilledButton(
