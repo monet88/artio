@@ -8,6 +8,7 @@ import 'package:artio/features/auth/domain/entities/user_model.dart';
 import 'package:artio/features/auth/domain/providers/auth_repository_provider.dart';
 import 'package:artio/features/auth/presentation/state/auth_state.dart';
 import 'package:artio/routing/routes/app_routes.dart';
+import 'package:artio/utils/logger_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase show AuthState;
