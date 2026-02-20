@@ -61,7 +61,7 @@
 **Objective**: Fix 3 PREMIUM_MODELS mismatches, sync credit costs, add cross-reference comments
 
 #### Phase 2: Edge Function Unit Tests
-**Status**: ⬜ Not Started
+**Status**: ✅ Complete
 **Objective**: Extract logic functions from index.ts, write Deno tests for refund retry + premium check
 
 ---
