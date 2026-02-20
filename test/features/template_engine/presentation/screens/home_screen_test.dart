@@ -49,8 +49,8 @@ void main() {
 
         // HomeScreen should render with greeting text instead of AppBar title
         expect(find.byType(HomeScreen), findsOneWidget);
-        // Redesigned — greeting text like "Good morning/afternoon/evening, Artist"
-        expect(find.textContaining('Artist'), findsOneWidget);
+        // Redesigned — greeting text like "Good morning/afternoon/evening"
+        expect(find.text('Discover Templates'), findsOneWidget);
       });
 
       testWidgets('shows loading state initially', (tester) async {
