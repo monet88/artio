@@ -4,6 +4,7 @@ import 'package:artio/core/utils/retry.dart';
 import 'package:artio/features/template_engine/data/services/template_cache_service.dart';
 import 'package:artio/features/template_engine/domain/entities/template_model.dart';
 import 'package:artio/features/template_engine/domain/repositories/i_template_repository.dart';
+import 'package:artio/utils/logger_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -79,7 +80,16 @@ class TemplateRepository implements ITemplateRepository {
           .eq('is_active', true)
           .order('order', ascending: true);
 
-      return response.map(TemplateModel.fromJson).toList();
+      final List<TemplateModel> results = [];
+      for (final item in response) {
+        try {
+          results.add(TemplateModel.fromJson(item));
+        } catch (e) {
+          // Skip the corrupted template and log the failure
+          Log.w('Failed to parse a template from fetched category ($category): $e');
+        }
+      }
+      return results;
     } on PostgrestException catch (e) {
       throw AppException.network(message: e.message);
     } catch (e) {
@@ -106,7 +116,16 @@ class TemplateRepository implements ITemplateRepository {
             .eq('is_active', true)
             .order('order', ascending: true);
 
-        return response.map(TemplateModel.fromJson).toList();
+        final List<TemplateModel> results = [];
+        for (final item in response) {
+          try {
+            results.add(TemplateModel.fromJson(item));
+          } catch (e) {
+            // Skip the corrupted template and log the failure
+            Log.w('Failed to parse a template from network sync: $e');
+          }
+        }
+        return results;
       } on PostgrestException catch (e) {
         throw AppException.network(message: e.message);
       } catch (e) {
