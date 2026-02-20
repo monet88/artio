@@ -60,56 +60,43 @@ class _LoadingStateWidgetState extends State<LoadingStateWidget>
       );
     }
 
+    final reduceMotion = MediaQuery.of(context).disableAnimations;
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // ── Pulsing Branded Logo ─────────────────────────────
-          AnimatedBuilder(
-            animation: _pulseController,
-            builder: (context, child) {
-              final scale = 0.9 + (_pulseController.value * 0.1);
-              final glowOpacity = 0.1 + (_pulseController.value * 0.15);
+          // ── Branded Logo (static or pulsing) ─────────────────
+          if (reduceMotion)
+            _buildStaticLogo()
+          else
+            AnimatedBuilder(
+              animation: _pulseController,
+              builder: (context, child) {
+                final scale = 0.9 + (_pulseController.value * 0.1);
+                final glowOpacity = 0.1 + (_pulseController.value * 0.15);
 
-              return Transform.scale(
-                scale: scale,
-                child: Container(
-                  width: 64,
-                  height: 64,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(18),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.primaryCta.withValues(alpha: glowOpacity),
-                        blurRadius: 24,
-                        spreadRadius: _pulseController.value * 4,
-                      ),
-                    ],
+                return Transform.scale(
+                  scale: scale,
+                  child: Container(
+                    width: 64,
+                    height: 64,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(18),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.primaryCta.withValues(alpha: glowOpacity),
+                          blurRadius: 24,
+                          spreadRadius: _pulseController.value * 4,
+                        ),
+                      ],
+                    ),
+                    child: child,
                   ),
-                  child: child,
-                ),
-              );
-            },
-            child: Container(
-              width: 64,
-              height: 64,
-              decoration: BoxDecoration(
-                gradient: AppGradients.primaryGradient,
-                borderRadius: BorderRadius.circular(18),
-              ),
-              child: const Center(
-                child: Text(
-                  'A',
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.w800,
-                    color: Colors.white,
-                    height: 1,
-                  ),
-                ),
-              ),
+                );
+              },
+              child: _buildLogoBox(),
             ),
-          ),
 
           const SizedBox(height: AppSpacing.lg),
 
@@ -138,6 +125,41 @@ class _LoadingStateWidgetState extends State<LoadingStateWidget>
       ),
     );
   }
+
+  Widget _buildLogoBox() => Container(
+    width: 64,
+    height: 64,
+    decoration: BoxDecoration(
+      gradient: AppGradients.primaryGradient,
+      borderRadius: BorderRadius.circular(18),
+    ),
+    child: const Center(
+      child: Text(
+        'A',
+        style: TextStyle(
+          fontSize: 28,
+          fontWeight: FontWeight.w800,
+          color: Colors.white,
+          height: 1,
+        ),
+      ),
+    ),
+  );
+
+  Widget _buildStaticLogo() => Container(
+    width: 64,
+    height: 64,
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(18),
+      boxShadow: [
+        BoxShadow(
+          color: AppColors.primaryCta.withValues(alpha: 0.2),
+          blurRadius: 24,
+        ),
+      ],
+    ),
+    child: _buildLogoBox(),
+  );
 }
 
 /// Skeleton loading placeholder — use for content areas like cards/lists.
@@ -179,6 +201,18 @@ class _SkeletonLoaderState extends State<SkeletonLoader>
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final reduceMotion = MediaQuery.of(context).disableAnimations;
+
+    if (reduceMotion) {
+      return Container(
+        width: widget.width,
+        height: widget.height,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(widget.borderRadius),
+          color: isDark ? AppColors.shimmerBase : const Color(0xFFE8EAF0),
+        ),
+      );
+    }
 
     return AnimatedBuilder(
       animation: _shimmerController,

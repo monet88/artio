@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:artio/core/design_system/app_animations.dart';
 import 'package:artio/core/design_system/app_gradients.dart';
+import 'package:artio/core/design_system/app_spacing.dart';
 import 'package:artio/core/design_system/app_typography.dart';
 import 'package:artio/theme/app_colors.dart';
 import 'package:flutter/material.dart';
@@ -66,10 +67,27 @@ class _SplashScreenState extends State<SplashScreen>
     _pulseController = AnimationController(
       vsync: this,
       duration: AppAnimations.ambient,
-    )..repeat(reverse: true);
+    );
+  }
 
-    // Start animation sequence
-    _startAnimations();
+  bool _animationsStarted = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_animationsStarted) return;
+    _animationsStarted = true;
+
+    final reduceMotion = MediaQuery.of(context).disableAnimations;
+    if (reduceMotion) {
+      // Skip animations — show final state immediately
+      _logoController.value = 1.0;
+      _taglineController.value = 1.0;
+      _pulseController.value = 0.5;
+    } else {
+      _pulseController.repeat(reverse: true);
+      _startAnimations();
+    }
   }
 
   Future<void> _startAnimations() async {
@@ -119,24 +137,26 @@ class _SplashScreenState extends State<SplashScreen>
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Animated logo
                   FadeTransition(
                     opacity: _logoOpacity,
                     child: ScaleTransition(
                       scale: _logoScale,
-                      child: const GradientText(
-                        'Artio',
-                        style: TextStyle(
-                          fontSize: 56,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: -1.5,
-                          height: 1,
+                      child: Semantics(
+                        label: 'Artio logo',
+                        child: const GradientText(
+                          'Artio',
+                          style: TextStyle(
+                            fontSize: 56,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: -1.5,
+                            height: 1,
+                          ),
                         ),
                       ),
                     ),
                   ),
 
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.sm),
 
                   // Animated tagline
                   SlideTransition(
@@ -155,7 +175,7 @@ class _SplashScreenState extends State<SplashScreen>
                     ),
                   ),
 
-                  const SizedBox(height: 64),
+                  const SizedBox(height: AppSpacing.xxl),
 
                   // Pulsing loading indicator
                   FadeTransition(

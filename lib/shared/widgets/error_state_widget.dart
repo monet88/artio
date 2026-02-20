@@ -91,7 +91,7 @@ class _ErrorStateWidgetState extends State<ErrorStateWidget>
     _controller = AnimationController(
       vsync: this,
       duration: AppAnimations.slow,
-    )..forward();
+    );
 
     _fadeAnimation = CurvedAnimation(
       parent: _controller,
@@ -103,6 +103,21 @@ class _ErrorStateWidgetState extends State<ErrorStateWidget>
         curve: AppAnimations.defaultCurve,
       ),
     );
+  }
+
+  bool _animationStarted = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_animationStarted) return;
+    _animationStarted = true;
+
+    if (MediaQuery.of(context).disableAnimations) {
+      _controller.value = 1.0;
+    } else {
+      _controller.forward();
+    }
   }
 
   @override
