@@ -401,6 +401,24 @@ Deno.serve(async (req) => {
 
     const userId = user.id; // Trusted source from JWT
 
+    // Rate limiting: 5 requests per 60 seconds per user
+    const { data: rateLimit, error: rateLimitError } = await supabase.rpc("check_rate_limit", {
+      p_user_id: userId,
+      p_max_requests: 5,
+      p_window_seconds: 60,
+    });
+
+    if (rateLimitError) {
+      console.error(`Rate limit check failed for ${userId}:`, rateLimitError);
+      // Fail open: allow request if rate limit check fails
+    } else if (rateLimit?.allowed === false) {
+      console.warn(`[rate-limit] User ${userId} exceeded limit. Retry after ${rateLimit.retry_after}s`);
+      return new Response(
+        JSON.stringify({ error: "Rate limit exceeded", retry_after: rateLimit.retry_after }),
+        { status: 429, headers: { ...headers, "Content-Type": "application/json" } }
+      );
+    }
+
     const body: GenerationRequest = await req.json();
     const {
       jobId,
@@ -415,6 +433,14 @@ Deno.serve(async (req) => {
     if (!jobId || !prompt) {
       return new Response(
         JSON.stringify({ error: "Missing required fields: jobId, prompt" }),
+        { status: 400, headers: { ...headers, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Validate imageCount bounds (1-4)
+    if (!Number.isInteger(imageCount) || imageCount < 1 || imageCount > 4) {
+      return new Response(
+        JSON.stringify({ error: "imageCount must be an integer between 1 and 4" }),
         { status: 400, headers: { ...headers, "Content-Type": "application/json" } }
       );
     }
