@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:artio/core/config/sentry_config.dart';
+
 import 'package:artio/core/constants/app_constants.dart';
 import 'package:artio/core/exceptions/app_exception.dart';
 import 'package:artio/core/providers/supabase_provider.dart';
@@ -42,10 +44,14 @@ class CreditRepository implements ICreditRepository {
         .stream(primaryKey: ['user_id'])
         .map((rows) {
       if (rows.isEmpty) {
-        throw const AppException.network(message: 'No credit balance found');
+        return CreditBalance(userId: '', balance: 0, updatedAt: DateTime.now());
       }
       return CreditBalance.fromJson(rows.first);
-    });
+    }).handleError(
+      (Object error, StackTrace stackTrace) {
+        SentryConfig.captureException(error, stackTrace: stackTrace);
+      },
+    );
   }
 
   @override
