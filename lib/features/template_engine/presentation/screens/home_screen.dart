@@ -7,8 +7,7 @@ import 'package:artio/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/// Redesigned Home Screen with greeting header, search bar (UI),
-/// category filter chips, and pull-to-refresh.
+/// Home Screen with greeting header, category filter chips, and pull-to-refresh.
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
@@ -52,7 +51,7 @@ class HomeScreen extends ConsumerWidget {
                                 ),
                                 const SizedBox(height: 2),
                                 Text(
-                                  'Discover Templates ✨',
+                                  'Discover Templates',
                                   style: AppTypography.displayMedium.copyWith(
                                     color: isDark
                                         ? AppColors.textPrimary
@@ -67,40 +66,7 @@ class HomeScreen extends ConsumerWidget {
                         ],
                       ),
 
-                      const SizedBox(height: AppSpacing.md),
 
-                      // Search bar (UI only)
-                      Container(
-                        decoration: BoxDecoration(
-                          color: isDark
-                              ? AppColors.darkSurface2
-                              : AppColors.lightSurface2,
-                          borderRadius: BorderRadius.circular(14),
-                          border: isDark
-                              ? Border.all(
-                                  color: AppColors.white10,
-                                  width: 0.5,
-                                )
-                              : null,
-                        ),
-                        child: TextField(
-                          enabled: false, // UI only for now
-                          decoration: InputDecoration(
-                            hintText: 'Search templates...',
-                            prefixIcon: Icon(
-                              Icons.search_rounded,
-                              color: isDark
-                                  ? AppColors.textMuted
-                                  : AppColors.textMutedLight,
-                            ),
-                            border: InputBorder.none,
-                            enabledBorder: InputBorder.none,
-                            disabledBorder: InputBorder.none,
-                            contentPadding:
-                                const EdgeInsets.symmetric(vertical: 14),
-                          ),
-                        ),
-                      ),
 
                       const SizedBox(height: AppSpacing.md),
 
@@ -153,8 +119,8 @@ class HomeScreen extends ConsumerWidget {
 
   String _getGreeting() {
     final hour = DateTime.now().hour;
-    if (hour < 12) return 'Good morning, Artist 🌅';
-    if (hour < 17) return 'Good afternoon, Artist 🎨';
-    return 'Good evening, Artist 🌙';
+    if (hour < 12) return 'Good morning';
+    if (hour < 17) return 'Good afternoon';
+    return 'Good evening';
   }
 }
