@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:artio/core/exceptions/app_exception.dart';
 
 /// Maps [AppException] variants to user-friendly messages.
@@ -17,6 +20,12 @@ class AppExceptionMapper {
   /// Handles all [AppException] variants with appropriate messages.
   /// Non-AppException errors get a generic fallback.
   static String toUserMessage(Object error) {
+    if (error is SocketException) {
+      return 'No internet connection. Please check your network.';
+    }
+    if (error is TimeoutException) {
+      return 'Request timed out. Please try again.';
+    }
     if (error is! AppException) {
       return 'An unexpected error occurred. Please try again.';
     }

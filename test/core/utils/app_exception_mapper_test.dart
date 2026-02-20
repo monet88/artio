@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:artio/core/exceptions/app_exception.dart';
 import 'package:artio/core/utils/app_exception_mapper.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -5,6 +8,23 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   group('AppExceptionMapper', () {
     group('toUserMessage', () {
+      test('returns network message for SocketException', () {
+        final error = const SocketException('Connection refused');
+
+        final message = AppExceptionMapper.toUserMessage(error);
+
+        expect(
+            message, 'No internet connection. Please check your network.');
+      });
+
+      test('returns timeout message for TimeoutException', () {
+        final error = TimeoutException('Request timeout');
+
+        final message = AppExceptionMapper.toUserMessage(error);
+
+        expect(message, 'Request timed out. Please try again.');
+      });
+
       test('returns generic message for non-AppException errors', () {
         final error = Exception('Some random error');
 
