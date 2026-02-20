@@ -193,41 +193,60 @@ async function pollKieTask(
   maxAttempts = 60,
   intervalMs = 2000
 ): Promise<{ images: string[] } | { error: string }> {
+  const startTime = Date.now();
+  const timeoutMs = 120 * 1000; // 120 seconds max
+
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
-    const response = await fetch(
-      `${KIE_API_BASE}/api/v1/jobs/getTaskDetail?taskId=${taskId}`,
-      {
-        method: "GET",
-        headers: { Authorization: `Bearer ${KIE_API_KEY}` },
-      }
-    );
-
-    const result: KieTaskDetailResponse = await response.json();
-
-    if (result.code !== 200) {
-      return { error: result.msg || "Failed to get task status" };
+    if (Date.now() - startTime >= timeoutMs) {
+      console.warn(`[${taskId}] Polling timed out after 120s`);
+      return { error: "Generation timed out after 120 seconds" };
     }
 
-    const status = result.data?.status;
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout per req
 
-    if (status === "completed") {
-      const images: string[] = [];
-      if (result.data?.output?.images) {
-        images.push(...result.data.output.images);
-      } else if (result.data?.output?.image_url) {
-        images.push(result.data.output.image_url);
+      const response = await fetch(
+        `${KIE_API_BASE}/api/v1/jobs/getTaskDetail?taskId=${taskId}`,
+        {
+          method: "GET",
+          headers: { Authorization: `Bearer ${KIE_API_KEY}` },
+          signal: controller.signal,
+        }
+      );
+      
+      clearTimeout(timeoutId);
+
+      const result: KieTaskDetailResponse = await response.json();
+
+      if (result.code !== 200) {
+        return { error: result.msg || "Failed to get task status" };
       }
-      return { images };
-    }
 
-    if (status === "failed") {
-      return { error: result.data?.error || "Generation failed" };
+      const status = result.data?.status;
+
+      if (status === "completed") {
+        const images: string[] = [];
+        if (result.data?.output?.images) {
+          images.push(...result.data.output.images);
+        } else if (result.data?.output?.image_url) {
+          images.push(result.data.output.image_url);
+        }
+        return { images };
+      }
+
+      if (status === "failed") {
+        return { error: result.data?.error || "Generation failed" };
+      }
+    } catch (err) {
+      console.error(`[${taskId}] Poll loop error:`, err);
+      // Fall through to exponential backoff or next attempt
     }
 
     await new Promise((resolve) => setTimeout(resolve, intervalMs));
   }
 
-  return { error: "Task timed out" };
+  return { error: "Generation timed out after 120 seconds" };
 }
 
 async function generateViaGemini(
@@ -475,10 +494,10 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Verify job ownership
+    // Verify job ownership and deduplication
     const { data: job, error: jobError } = await supabase
       .from("generation_jobs")
-      .select("user_id")
+      .select("user_id, status")
       .eq("id", jobId)
       .single();
 
@@ -493,6 +512,14 @@ Deno.serve(async (req) => {
       return new Response(
         JSON.stringify({ error: "Unauthorized: job belongs to another user" }),
         { status: 403, headers: { ...headers, "Content-Type": "application/json" } }
+      );
+    }
+
+    if (job.status !== "pending") {
+      console.warn(`[${jobId}] Duplicate generation request ignored (status: ${job.status})`);
+      return new Response(
+        JSON.stringify({ error: `Job has already been processed or is currently running (status: ${job.status})` }),
+        { status: 409, headers: { ...headers, "Content-Type": "application/json" } }
       );
     }
     // Resolve credit cost from server-side map
