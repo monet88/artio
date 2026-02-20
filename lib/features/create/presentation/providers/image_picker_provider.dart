@@ -17,10 +17,12 @@ class ImagePickerState {
 }
 
 class ImagePickerNotifier extends StateNotifier<ImagePickerState> {
-  ImagePickerNotifier() : super(const ImagePickerState());
+  ImagePickerNotifier({ImagePicker? picker})
+      : _picker = picker ?? ImagePicker(),
+        super(const ImagePickerState());
 
-  final ImagePicker _picker = ImagePicker();
-  static const int _maxFileSize = 10 * 1024 * 1024; // 10MB
+  final ImagePicker _picker;
+  static const int maxFileSize = 10 * 1024 * 1024; // 10MB
 
   Future<void> pickImage(ImageSource source) async {
     state = state.copyWith(clearError: true);
@@ -33,7 +35,7 @@ class ImagePickerNotifier extends StateNotifier<ImagePickerState> {
       final file = File(image.path);
       final length = await file.length();
       
-      if (length > _maxFileSize) {
+      if (length > maxFileSize) {
         state = state.copyWith(error: 'Image is too large. Maximum size is 10MB.');
         return;
       }
