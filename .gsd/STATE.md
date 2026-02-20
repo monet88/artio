@@ -2,9 +2,16 @@
 
 ## Current Position
 - **Milestone**: Edge Case Hardening
-- **Phase**: Not started
-- **Task**: N/A
-- **Status**: Milestone planned — ready for /plan
+- **Phase**: 1 — Backend Hardening
+- **Task**: Planning complete
+- **Status**: Ready for execution
+
+## Plans
+- 1.1: Rate Limiting & Input Validation (wave 1)
+- 1.2: Storage Cleanup on Partial Upload Failure (wave 1)
+
+## Next Steps
+1. /execute 1
 
 ## Last Completed
 - **Milestone**: Security — Reward Ad SSV
