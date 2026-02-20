@@ -1,4 +1,4 @@
-import 'package:artio/features/template_engine/data/policies/free_beta_policy.dart';
+import 'package:artio/features/template_engine/data/policies/credit_check_policy.dart';
 import 'package:artio/features/template_engine/domain/policies/generation_policy.dart';
 import 'package:artio/features/template_engine/presentation/providers/generation_policy_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,42 +12,12 @@ void main() {
       container.dispose();
     });
 
-    test('provides FreeBetaPolicy by default', () {
+    test('provides CreditCheckPolicy by default', () {
       container = ProviderContainer();
       final policy = container.read(generationPolicyProvider);
 
       expect(policy, isA<IGenerationPolicy>());
-      expect(policy, isA<FreeBetaPolicy>());
-    });
-
-    test('policy allows generation for any user', () async {
-      container = ProviderContainer();
-      final policy = container.read(generationPolicyProvider);
-
-      final result = await policy.canGenerate(
-        userId: 'user-123',
-        templateId: 'template-456',
-      );
-
-      expect(result.isAllowed, true);
-      expect(result.isDenied, false);
-    });
-
-    test('policy returns remaining credits', () async {
-      container = ProviderContainer();
-      final policy = container.read(generationPolicyProvider);
-
-      final result = await policy.canGenerate(
-        userId: 'user-123',
-        templateId: 'template-456',
-      );
-
-      result.maybeMap(
-        allowed: (allowed) {
-          expect(allowed.remainingCredits, 999);
-        },
-        orElse: () => fail('Expected allowed result'),
-      );
+      expect(policy, isA<CreditCheckPolicy>());
     });
 
     test('can override policy in tests', () async {
