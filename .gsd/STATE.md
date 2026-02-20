@@ -1,13 +1,10 @@
 # STATE.md
 
 ## Current Position
-- **Milestone**: None — ready for next milestone
-- **Last Completed**: Edge Case Fixes Phase 2 (2026-02-20)
-- **Status**: 🎉 Milestone complete
+- **Milestone**: Model Sync & Edge Function Tests
+- **Phase**: Not started
+- **Status**: Milestone planned
 
-## Summary
-Edge Case Fixes (Phase 2) delivered all 7 must-haves:
-- Auth input validation + OAuth timeout
-- CreditCheckPolicy + provider disposal + stream recovery
-- Refund retry + premium model enforcement
-- 638 tests passing, 0 analyzer errors
+## Next Steps
+1. `/plan 1` — Create Phase 1 execution plan (Model Config Sync)
+2. `/execute 1` — Fix PREMIUM_MODELS + credit costs drift

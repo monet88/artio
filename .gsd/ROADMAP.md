@@ -1,6 +1,7 @@
 # ROADMAP.md
 
-> **Current Milestone**: None — ready for next milestone
+> **Current Milestone**: Model Sync & Edge Function Tests
+> **Goal**: Fix model config drift between Dart and TS, add unit tests for Edge Function logic
 > **Last Completed**: Edge Case Fixes Phase 2 (2026-02-20)
 
 ---
@@ -39,9 +40,29 @@
 
 ---
 
-## Current Milestone
+## Current Milestone: Model Sync & Edge Function Tests
 
-No active milestone. Run `/new-milestone` to start.
+**Goal**: Fix model config drift between Dart and TS, add unit tests for Edge Function logic.
+
+### Must-Haves
+- [ ] PREMIUM_MODELS synced — Dart `ai_models.dart` ↔ TS `index.ts` match 100%
+- [ ] MODEL_CREDIT_COSTS synced — credit costs match between both sources
+- [ ] Cross-reference comments in both files to prevent future drift
+- [ ] Edge Function unit tests — `refundCreditsOnFailure` + premium check logic
+
+### Nice-to-Haves
+- [ ] Deno type-check CI step
+- [ ] Sentry alert rule for CRITICAL refund
+
+### Phases
+
+#### Phase 1: Model Config Sync
+**Status**: ⬜ Not Started
+**Objective**: Fix 3 PREMIUM_MODELS mismatches, sync credit costs, add cross-reference comments
+
+#### Phase 2: Edge Function Unit Tests
+**Status**: ⬜ Not Started
+**Objective**: Extract logic functions from index.ts, write Deno tests for refund retry + premium check
 
 ---
 
