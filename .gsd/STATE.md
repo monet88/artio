@@ -2,9 +2,8 @@
 
 ## Current Position
 - **Milestone**: Model Sync & Edge Function Tests
-- **Phase**: Not started
-- **Status**: Milestone planned
+- **Phase**: 1 — Model Config Sync
+- **Status**: Planned, ready for execution
 
 ## Next Steps
-1. `/plan 1` — Create Phase 1 execution plan (Model Config Sync)
-2. `/execute 1` — Fix PREMIUM_MODELS + credit costs drift
+1. `/execute 1` — Fix PREMIUM_MODELS drift + add cross-reference comments
