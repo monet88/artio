@@ -1,7 +1,8 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
 import { corsHeaders, handleCorsIfPreflight } from "../_shared/cors.ts";
-import { MODEL_CREDIT_COSTS, isPremiumModel, getModelCreditCost } from "../_shared/model_config.ts";
+import { isPremiumModel, getModelCreditCost } from "../_shared/model_config.ts";
+import { checkAndDeductCredits, refundCreditsOnFailure } from "../_shared/credit_logic.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -81,77 +82,6 @@ function getProvider(model: string): "kie" | "gemini" {
   return "kie";
 }
 
-async function checkAndDeductCredits(
-  supabase: ReturnType<typeof getSupabaseClient>,
-  userId: string,
-  amount: number,
-  jobId: string
-): Promise<{ success: boolean; error?: string }> {
-  const { data, error } = await supabase.rpc("deduct_credits", {
-    p_user_id: userId,
-    p_amount: amount,
-    p_description: "Image generation",
-    p_reference_id: jobId,
-  });
-
-  if (error) {
-    console.error(`[${jobId}] Credit deduction RPC error:`, error);
-    return { success: false, error: "Credit check failed" };
-  }
-
-  // deduct_credits returns boolean: true = success, false = insufficient
-  if (data === false) {
-    return { success: false, error: "Insufficient credits" };
-  }
-
-  return { success: true };
-}
-
-async function refundCreditsOnFailure(
-  supabase: ReturnType<typeof getSupabaseClient>,
-  userId: string,
-  amount: number,
-  jobId: string,
-  maxRetries: number = 3
-): Promise<{ success: boolean; attempts: number }> {
-  let lastError: unknown = null;
-
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    try {
-      const { error } = await supabase.rpc("refund_credits", {
-        p_user_id: userId,
-        p_amount: amount,
-        p_description: "Generation failed — refund",
-        p_reference_id: jobId,
-      });
-
-      if (error) {
-        lastError = error;
-        console.error(`[${jobId}] Credit refund RPC error (attempt ${attempt}/${maxRetries}):`, error);
-      } else {
-        console.log(`[${jobId}] Refunded ${amount} credits (attempt ${attempt})`);
-        return { success: true, attempts: attempt };
-      }
-    } catch (err) {
-      lastError = err;
-      console.error(`[${jobId}] Credit refund exception (attempt ${attempt}/${maxRetries}):`, err);
-    }
-
-    // Exponential backoff before next retry
-    if (attempt < maxRetries) {
-      const delayMs = Math.pow(2, attempt) * 1000;
-      await new Promise((resolve) => setTimeout(resolve, delayMs));
-    }
-  }
-
-  // All retries exhausted — CRITICAL: requires manual intervention
-  console.error(
-    `[CRITICAL] Credit refund failed after ${maxRetries} attempts. ` +
-    `userId=${userId}, amount=${amount}, jobId=${jobId}, lastError=`,
-    lastError
-  );
-  return { success: false, attempts: maxRetries };
-}
 
 async function createKieTask(
   prompt: string,
@@ -214,7 +144,7 @@ async function pollKieTask(
           signal: controller.signal,
         }
       );
-      
+
       clearTimeout(timeoutId);
 
       const result: KieTaskDetailResponse = await response.json();
