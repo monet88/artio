@@ -61,7 +61,7 @@
 **Issues**: 2.2, 2.3
 
 #### Phase 2: Credit Fixes
-**Status**: ⬜ Not Started
+**Status**: ✅ Complete
 **Objective**: CreditCheckPolicy, provider disposal on logout, stream error recovery
 **Plan**: `.gsd/phases/2/PLAN.md`
 **Issues**: 1.1, 1.3, 2.4
