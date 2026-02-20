@@ -39,17 +39,24 @@ class GalleryPage extends ConsumerWidget {
             return EmptyGalleryState(isLoggedIn: isLoggedIn);
           }
 
-          return MasonryImageGrid(
-            items: items,
-            showWatermark: showWatermark,
-            onItemTap: (item, index) {
-              GalleryImageRoute(
-                $extra: GalleryImageExtra(
-                  items: items,
-                  initialIndex: index,
-                ),
-              ).push<void>(context);
+          return RefreshIndicator(
+            onRefresh: () async {
+              ref.invalidate(galleryStreamProvider);
+              // Option 1: wait for the next value to be emitted so the indicator stays up while loading
+              // return await ref.read(galleryStreamProvider.future);
             },
+            child: MasonryImageGrid(
+              items: items,
+              showWatermark: showWatermark,
+              onItemTap: (item, index) {
+                GalleryImageRoute(
+                  $extra: GalleryImageExtra(
+                    items: items,
+                    initialIndex: index,
+                  ),
+                ).push<void>(context);
+              },
+            ),
           );
         },
       ),

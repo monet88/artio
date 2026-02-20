@@ -32,11 +32,6 @@ lib/
   theme/         # Theme management (colors, button themes, component themes)
   main.dart      # Entry point
 ```
-  routing/       # GoRouter config (app_router.dart)
-  shared/        # MainShell, ErrorPage
-  theme/         # Theme management
-  main.dart      # Entry point
-```
 
 ## Feature Status
 - Auth: Complete
@@ -47,7 +42,7 @@ lib/
 - Credits: Complete
 - Subscription: Complete
 
-## Key Files
+## Key Files (Updated)
 - Entry: lib/main.dart
 - Router: lib/routing/app_router.dart
 - Supabase provider: lib/core/providers/supabase_provider.dart

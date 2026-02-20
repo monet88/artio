@@ -119,11 +119,33 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage>
 
   Future<void> _delete() async {
     HapticService.destructive();
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Image'),
+        content: const Text('Are you sure you want to delete this image?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm != true || !mounted) return;
+
     final item = _currentItem;
     final deletedIndex = _currentIndex;
     await ref
         .read(galleryActionsNotifierProvider.notifier)
         .softDeleteImage(item.jobId);
+        
     if (!mounted) return;
     setState(() {
       _items.removeAt(deletedIndex);
@@ -135,23 +157,9 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage>
         _currentIndex = _items.length - 1;
       }
     });
+    
     if (_items.isEmpty) return;
     _pageController.jumpToPage(_currentIndex);
-    AppSnackbar.show(
-      context,
-      message: 'Image deleted',
-      actionLabel: 'Undo',
-      onAction: () {
-        HapticService.buttonTap();
-        ref
-            .read(galleryActionsNotifierProvider.notifier)
-            .restoreImage(item.jobId);
-        setState(() {
-          _items.insert(deletedIndex.clamp(0, _items.length), item);
-        });
-      },
-      duration: const Duration(seconds: 5),
-    );
   }
 
   void _copyPrompt() {
