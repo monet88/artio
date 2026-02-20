@@ -1,6 +1,6 @@
 {
     "tasks": {
-        "check": "deno check _shared/model_config.ts _shared/credit_logic.ts generate-image/index.ts reward-ad/index.ts",
+        "check": "deno check _shared/model_config.ts _shared/credit_logic.ts generate-image/index.ts reward-ad/index.ts revenuecat-webhook/index.ts",
         "test": "deno test _shared/"
     }
 }

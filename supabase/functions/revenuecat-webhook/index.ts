@@ -38,10 +38,12 @@ Deno.serve(async (req) => {
     const authValid =
         authHeader !== null &&
         authHeader.length === expectedAuth.length &&
-        crypto.subtle.timingSafeEqual(
-            encoder.encode(authHeader),
-            encoder.encode(expectedAuth),
-        );
+        // timingSafeEqual is a Deno extension to SubtleCrypto, not in Web Crypto API types
+        (crypto.subtle as unknown as { timingSafeEqual(a: BufferSource, b: BufferSource): boolean })
+            .timingSafeEqual(
+                encoder.encode(authHeader),
+                encoder.encode(expectedAuth),
+            );
     if (!authValid) {
         console.error("[revenuecat-webhook] Invalid or missing authorization header");
         return new Response(JSON.stringify({ error: "Unauthorized" }), {
