@@ -5,7 +5,7 @@ void main() {
   group('AiModels', () {
     group('all', () {
       test('contains expected number of models', () {
-        expect(AiModels.all.length, greaterThanOrEqualTo(13));
+        expect(AiModels.all.length, 16);
       });
 
       test('each model has required fields', () {

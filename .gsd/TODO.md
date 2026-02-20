@@ -1,13 +1,14 @@
 # TODO
 
 ## Technical Debt
-- [ ] Replace test AdMob IDs with production IDs (`rewarded_ad_service.dart:10`) `high` — 2026-02-19
+- [ ] Replace test AdMob IDs with production IDs (`rewarded_ad_service.dart:10`) `high` — 2026-02-19 *(production only)*
 - [x] Edge Function unit tests — model config pure functions `medium` — 2026-02-20 ✅
 - [x] PREMIUM_MODELS sync — fixed 3 drift mismatches, cross-ref comments added `medium` — 2026-02-20 ✅
-- [ ] Deno type-check CI step for Edge Functions `low` — 2026-02-20
-- [ ] Sentry alert rule for `[CRITICAL] Credit refund failed` log pattern `low` — 2026-02-20
-- [ ] Verify `_shared/` module works with `supabase functions deploy` `medium` — 2026-02-20
-- [ ] Cross-language model count assertion (Dart test: AiModels.all.length == 16) `low` — 2026-02-20
+- [ ] Deno type-check CI step for Edge Functions `low` — 2026-02-20 *(production only)*
+- [ ] Sentry alert rule for `[CRITICAL] Credit refund failed` log pattern `low` — 2026-02-20 *(production only)*
+- [x] Verify `_shared/` module works with `supabase functions deploy` `medium` — 2026-02-20 ✅
+- [x] Cross-language model count assertion (Dart test: AiModels.all.length == 16) `low` — 2026-02-20 ✅
+- [ ] Complete RevenueCat Dashboard setup checklist (see `docs/revenuecat-checklist.md`) `high` — 2026-02-20
 
 ## Completed
 - [x] Extract `app_component_themes.dart` into smaller theme files — Widget Cleanup ✅
