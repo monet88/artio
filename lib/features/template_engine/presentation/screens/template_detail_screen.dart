@@ -37,8 +37,7 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
   ProviderSubscription<AsyncValue<TemplateModel?>>? _templateErrorSub;
   ProviderSubscription<AsyncValue<GenerationJobModel?>>? _jobErrorSub;
 
-  // Placeholder for premium status - will be integrated with subscription later
-  bool get _isPremium => false;
+
 
   String _buildPrompt(TemplateModel template) {
     var prompt = template.promptTemplate;
@@ -143,6 +142,10 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
     final templateAsync = ref.watch(templateByIdProvider(widget.templateId));
     final jobAsync = ref.watch(generationViewModelProvider);
     final options = ref.watch(generationOptionsProvider);
+    final isPremium = ref.watch(authViewModelProvider).maybeMap(
+          authenticated: (state) => state.user.isPremium,
+          orElse: () => false,
+        );
 
     return Scaffold(
       appBar: AppBar(title: const Text('Generate')),
@@ -205,13 +208,13 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
                 const SizedBox(height: AppSpacing.md),
                 OutputFormatToggle(
                   value: options.outputFormat,
-                  isPremium: _isPremium,
+                  isPremium: isPremium,
                   onChanged: (format) => ref.read(generationOptionsProvider.notifier).updateOutputFormat(format),
                 ),
                 const SizedBox(height: AppSpacing.md),
                 ModelSelector(
                   selectedModelId: options.modelId,
-                  isPremium: _isPremium,
+                  isPremium: isPremium,
                   onChanged: (modelId) => ref.read(generationOptionsProvider.notifier).updateModel(modelId),
                   filterByType: 'text-to-image',
                 ),
