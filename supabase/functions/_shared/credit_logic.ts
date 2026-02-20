@@ -5,8 +5,9 @@
  * Checks user credits and deducts if sufficient.
  * Uses the `deduct_credits` RPC which atomically validates + deducts.
  */
+// deno-lint-ignore no-explicit-any
 export async function checkAndDeductCredits(
-  supabase: { rpc: (fn: string, params: Record<string, unknown>) => Promise<{ data: unknown; error: unknown }> },
+  supabase: any,
   userId: string,
   amount: number,
   jobId: string
@@ -35,8 +36,9 @@ export async function checkAndDeductCredits(
  * Refunds credits with exponential backoff retry.
  * Logs [CRITICAL] if all retries exhausted — requires manual intervention.
  */
+// deno-lint-ignore no-explicit-any
 export async function refundCreditsOnFailure(
-  supabase: { rpc: (fn: string, params: Record<string, unknown>) => Promise<{ data: unknown; error: unknown }> },
+  supabase: any,
   userId: string,
   amount: number,
   jobId: string,
