@@ -1,8 +1,8 @@
 # Project Overview & Product Development Requirements
 
 **Project**: Artio - AI Image Generation SaaS
-**Updated**: 2026-02-19
-**Version**: 1.3
+**Updated**: 2026-02-20
+**Version**: 1.5
 
 ---
 
@@ -159,12 +159,12 @@ Democratize AI image generation through intuitive templates and flexible text pr
 - As a mobile user, I want to watch rewarded ads to earn free credits
 
 **Acceptance Criteria:**
-- [ ] Free tier: 10 credits on signup, 1 credit per generation
+- [ ] Free tier: 20 credits on signup (welcome bonus), cost per generation varies by model
 - [ ] Pro tier: $9.99/month, unlimited generations
 - [ ] Credit purchase packs: 50 credits ($4.99), 100 credits ($8.99)
-- [ ] RevenueCat integration (iOS/Android)
+- [x] RevenueCat SDK integration (iOS/Android) - initialized + user identity linked
 - [ ] Stripe integration (Web)
-- [ ] Rewarded ads (AdMob - mobile only)
+- [x] Rewarded ads with SSV (AdMob + `reward-ad` Edge Function)
 - [ ] Real-time subscription sync across devices
 
 **Implementation:**
@@ -340,25 +340,29 @@ Democratize AI image generation through intuitive templates and flexible text pr
 
 ## Technical Debt & Known Issues
 
-### High Priority
+### Phase 1 Complete - Tech Debt Cleanup (2026-02-20)
 
 | Issue | Impact | Mitigation Plan |
 |-------|--------|-----------------|
-| Test coverage gap | Production readiness | Verify current coverage; expand tests as needed |
-| ~~GoRouter raw strings~~ | ~~Type safety~~ | ✓ Resolved (TypedGoRoute implemented) |
-### Medium Priority
+| ~~Test coverage gap~~ | ~~Production readiness~~ | ✓ Resolved (651+15 tests) |
+| ~~GoRouter raw strings~~ | ~~Type safety~~ | ✓ Resolved (TypedGoRoute) |
+| ~~ImagePicker unused provider~~ | ~~Code bloat~~ | ✓ Resolved (removed) |
+| ~~Model sync tests~~ | ~~Weak validation~~ | ✓ Resolved (exact ID + cost) |
+| ~~timingSafeEqual error~~ | ~~Deno check failure~~ | ✓ Resolved (added webhook) |
+| ~~Large files~~ | ~~Maintainability~~ | ✓ Resolved (refactored) |
+
+### Remaining
 
 | Issue | Impact | Mitigation Plan |
 |-------|--------|-----------------|
 | DTO leakage in domain entities | Architecture purity | Split to Entity + DTO when scaling |
 | No DataSource layer | Backend coupling | Add abstraction if backend swap needed |
-| Placeholder features not 3-layer | Consistency | Restructure when implementing |
+| Repository methods lack dartdocs | API clarity | Add docs when implementing |
 
 ### Accepted Trade-offs
 
 - **Pragmatic Architecture:** Domain entities have JSON logic (acceptable for MVP velocity)
-- **Manual Testing:** Comprehensive test suite deferred to post-MVP
-- **Raw Navigation:** Awaiting go_router_builder stability
+- **No DataSource Layer:** YAGNI until backend diversity required
 
 ---
 
@@ -411,23 +415,43 @@ Democratize AI image generation through intuitive templates and flexible text pr
 - Image viewer, download/share/delete
 
 ### Phase 6: Subscription & Credits (8h)
-**Status:** Pending
-- Subscription tiers (Free/Pro)
-- RevenueCat + Stripe integration
-- Credits system, rewarded ads
+**Status:** In Progress (60%)
+- Credits system (user_credits, credit_transactions) - ✓ Complete
+- Premium model gating (insufficient credit sheets) - ✓ Complete
+- Rewarded ads with SSV (AdMob + Edge Function) - ✓ Complete
+- RevenueCat SDK initialized + user identity - ✓ Complete
+- Subscription tiers (Free/Pro) - Pending
+- Stripe integration (Web) - Pending
 
 ### Phase 7: Settings Feature (3h)
 **Status:** ✓ Complete (2026-01-28)
 - Theme switcher, account management
 - Sign out, delete account
 
+### Phase 1: Tech Debt Cleanup (8h) - *2026-02-20*
+**Status:** ✓ Complete
+- TypedGoRoute navigation (resolved)
+- Removed unused ImagePicker provider
+- Strengthened model sync tests (exact ID + cost validation)
+- Fixed timingSafeEqual type error (added revenuecat-webhook)
+- Refactored large files (>200 LOC)
+- Test coverage: 651+15 tests
+- **Result:** 7 technical debts resolved
+
 ### Phase 8: Admin App (3h)
-**Status:** 50% In Progress
-- Admin web app for template CRUD
+**Status:** 70% In Progress
+- Admin web app for template CRUD (17 Dart files)
 - Visual JSON editor
 
-**Total Estimated Effort:** 48.5h
-**Current Progress:** 81% (39.5h complete)
+### Post-Phase Quality Milestones
+**Status:** ✓ Complete (10 milestones)
+- Codebase Improvement, Test Coverage, Widget Cleanup
+- Model Sync, Data Integrity, UI & Concurrency Polish
+- Edge Case Fixes 2, Edge Case Hardening
+- Reward Ad SSV, Edge Case Resilience
+
+**Total Estimated Effort:** 48.5h + ~20h quality milestones
+**Current Progress:** ~88% (core features + quality milestones complete)
 
 ---
 
@@ -564,6 +588,6 @@ See: `docs/code-standards.md` for detailed conventions
 
 ---
 
-**Document Version:** 1.4
-**Last Updated:** 2026-02-19
-**Next Review:** Post-Phase 6 (Subscription implementation)
+**Document Version:** 1.5
+**Last Updated:** 2026-02-20
+**Next Review:** Post-Phase 6 (Subscription purchases implementation)

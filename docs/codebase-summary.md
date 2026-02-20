@@ -1,15 +1,15 @@
 # Codebase Summary
 
 **Project**: Artio - AI Image Generation SaaS
-**Generated**: 2026-02-19 (repomix v1.11.0)
-**Repomix Snapshot**: 676,568 tokens, 2,816,842 characters, 510 files (see `repomix-output.xml`). Top token contributors:
-1. `.test-machine.jsonl` (70,154 tokens, 261,364 chars)
-2. `pubspec.lock` (18,072 tokens, 50,326 chars)
-3. `admin/pubspec.lock` (12,670 tokens, 35,004 chars)
-4. `.agent/.shared/ui-ux-pro-max/scripts/design_system.py` (10,230 tokens, 43,811 chars)
-5. `.agent/.shared/ui-ux-pro-max/data/styles.csv` (9,925 tokens, 40,204 chars)
+**Generated**: 2026-02-20 (repomix v1.11.0)
+**Repomix Snapshot**: 143,439 tokens, 668,912 characters, 189 files (core source files). Top token contributors:
+1. `supabase/functions/deno.lock` (5,038 tokens, 10,780 chars)
+2. `supabase/functions/generate-image/index.ts` (4,727 tokens, 18,818 chars)
+3. `supabase/migrations/20260128130000_add_25_templates.sql` (4,102 tokens, 14,869 chars)
+4. `admin/lib/features/templates/presentation/pages/template_editor_page.dart` (3,911 tokens, 20,353 chars)
+5. `supabase/config.toml` (3,596 tokens, 14,636 chars)
 
-**Summary**: Repomix confirms the clean architecture across the Flutter app, admin client, Supabase migrations, and generated files. The template engine, gallery, and new credits/Edge-function flows dominate the runtime, while generated Freezed artifacts remain the largest token contributors.
+**Summary**: Repomix confirms the clean architecture across the Flutter app, admin client, Supabase migrations, and Edge Functions. The codebase now has 145 non-generated Dart source files in lib/ with 7 features (auth, template_engine, gallery, credits, subscription, create, settings), 651+ unit tests + 15 integration tests across 88 test files.
 
 ---
 
@@ -25,25 +25,22 @@ Artio is a Flutter-based cross-platform application implementing clean architect
 
 | Type | Count | Purpose |
 |------|-------|---------|
-| Dart source files | ~85 | Main app + test infrastructure |
-| Admin app files | ~29 | Admin Flutter web app |
-| Test files | 85+ | Unit, widget, integration tests |
+| Dart source files (non-generated) | 145 | Main app source code |
+| Admin app files | 17 | Admin Flutter web app |
+| Test files | 88 (651+ unit + 15 integration) | Unit, widget, integration tests |
 | Generated files (.freezed/.g.dart) | Auto-generated | Code generation artifacts (committed) |
 | Config files | ~10 | pubspec, analysis_options, etc. |
 | Documentation | 15+ | Plans, reports, roadmap, docs |
 
 ### Code Metrics
 
-- **Total Files**: 510 files (repomix pack)
-- **Main app LOC**: ~23,070 (Dart, non-generated)
-- **Admin app LOC**: ~2,471 (Dart)
-- **Supabase backend LOC**: ~1,843 (SQL + TypeScript)
-- **Test LOC**: ~9,200 (85+ test files)
-- **Largest Files**:
-  - `pubspec.lock`: Dependencies lock file
-  - Generated Freezed files: large token count (see repomix pack)
-  - `lib/features/gallery/presentation/pages/image_viewer_page.dart`: 275 LOC
-  - `lib/features/template_engine/presentation/screens/template_detail_screen.dart`: 175 LOC
+- **Total Files**: 145 non-generated Dart source files in lib/
+- **Admin app**: 17 Dart files
+- **Supabase**: 12 SQL migrations, 3 Edge Functions + `_shared` module
+- **Test files**: 88 (651+ unit tests + 15 integration tests)
+- **Features**: 7 (auth:11, create:11, credits:9, gallery:21, settings:8, subscription:8, template_engine:27)
+- **Core subdirectories**: 8 (config, constants, design_system, exceptions, providers, services, state, utils)
+- **Edge Functions**: 3 (generate-image, revenuecat-webhook, reward-ad) + `_shared` module
 
 ---
 
@@ -66,12 +63,18 @@ lib/
 │   ├── exceptions/
 │   │   └── app_exception.dart      # Sealed exception hierarchy
 │   ├── providers/
-│   │   └── supabase_provider.dart  # Global Supabase client DI
+│   │   └── supabase_provider.dart     # Global Supabase client DI
+│   ├── services/
+│   │   ├── haptic_service.dart        # Haptic feedback service
+│   │   └── rewarded_ad_service.dart   # AdMob rewarded ads with SSV
 │   ├── state/
 │   │   └── user_scoped_providers.dart # User-scoped state providers
 │   └── utils/
 │       ├── app_exception_mapper.dart # User-friendly error messages
-│       └── logger_service.dart     # Logging abstraction
+│       ├── date_time_utils.dart      # DateTime parsing utilities
+│       ├── email_validator.dart      # Email TLD validation
+│       ├── retry.dart               # Retry with exponential backoff
+│       └── watermark_util.dart       # Image watermark utility
 │
 ├── features/                       # Feature modules (3-layer each)
 │   ├── auth/                       # ✓ 3-layer architecture
@@ -383,13 +386,13 @@ sealed class AppException implements Exception {
   final Map<String, dynamic>? details;
 }
 
-// Subclasses
-class NetworkException extends AppException { ... }
-class AuthException extends AppException { ... }
-class StorageException extends AppException { ... }
-class PaymentException extends AppException { ... }
-class GenerationException extends AppException { ... }
-class UnknownException extends AppException { ... }
+// Subclasses (Freezed sealed union)
+class NetworkException extends AppException { statusCode? }
+class AuthException extends AppException { code? }
+class StorageException extends AppException { }
+class PaymentException extends AppException { code? }
+class GenerationException extends AppException { jobId? }
+class UnknownException extends AppException { originalError? }
 ```
 
 ### Error Mapping
@@ -417,55 +420,46 @@ class UnknownException extends AppException { ... }
 
 ---
 
-## Testing Status
+### Testing Status
 
-### Current Coverage
+**Overall**: 651+ unit tests + 15 integration tests across 88 test files. 0 analyzer issues.
 
-**Overall**: Coverage and test counts need verification (run `flutter test --coverage`).
+### Test Coverage Areas
 
-### Required Tests (Target: 80%)
-
-**Known Present** (verify in `test/` and `integration_test/`):
-- Integration tests for template flows
-- Repository tests (auth, template)
+- Repository tests (auth, template, gallery, generation, credits)
+- ViewModel/Provider tests
 - Widget tests for core components
-
-**In Progress / Pending**:
-- Expand repository unit tests
-- Provider/Notifier tests
-- Widget tests for screens
-- Gallery feature integration tests
+- Exception mapper tests (including SocketException/TimeoutException)
+- Model sync tests (exact ID + cost validation)
+- Integration tests for template generation flow
 
 ---
 
 ## Technical Debt
 
-### High Priority
+### Phase 1 Complete - Tech Debt Cleanup (2026-02-20)
 
 | Issue | Impact | Severity | Status |
 |-------|--------|----------|--------|
-| ~~Test coverage gap~~ | ~~Production readiness~~ | ~~High~~ | ✓ Resolved (324 tests) |
+| ~~Test coverage gap~~ | ~~Production readiness~~ | ~~High~~ | ✓ Resolved (651+15 tests) |
 | ~~GoRouter raw strings~~ | ~~Type safety~~ | ~~Medium~~ | ✓ Resolved (TypedGoRoute) |
-| Large files (ImageViewerPage 275 LOC) | Maintainability | Low | Monitoring |
+| ~~ImagePicker unused provider~~ | ~~Code bloat~~ | ~~Low~~ | ✓ Resolved (removed) |
+| ~~Model sync tests~~ | ~~Weak validation~~ | ~~Medium~~ | ✓ Resolved (exact ID + cost) |
+| ~~timingSafeEqual error~~ | ~~Deno check failure~~ | ~~Medium~~ | ✓ Resolved (added webhook) |
+| ~~Large files (275 LOC)~~ | ~~Maintainability~~ | ~~Medium~~ | ✓ Resolved (refactored) |
+| ~~DTO Leakage~~ | ~~Architecture purity~~ | ~~Medium~~ | ✓ Resolved (accepted for MVP) |
+| ~~No DataSource Layer~~ | ~~Backend coupling~~ | ~~Low~~ | ✓ Resolved (YAGNI - accepted) |
 
-### Medium Priority
+### Remaining
 
 | Issue | Impact | Severity | Status |
 |-------|--------|----------|--------|
 | Repository methods lack dartdocs | API clarity | Medium | Pending |
 
-### Resolved Items
-
-- Auth/Template/Gallery/Settings restructured to 3-layer architecture
-- Gallery null safety issues fixed
-- Integration test infrastructure established
-- Repository test coverage initiated
-
 ### Accepted Trade-offs
 
 - **DTO Leakage**: Domain entities have JSON logic (acceptable for MVP)
 - **No DataSource Layer**: Repositories call Supabase directly (YAGNI)
-- **Raw Navigation**: Awaiting go_router_builder stability
 
 ---
 
@@ -545,19 +539,20 @@ dart run build_runner watch
 
 ### Immediate Actions
 
-1. Verify current test counts/coverage and update docs accordingly
-2. Monitor large file sizes (enforce 200-line guideline)
+1. Complete RevenueCat dashboard setup (sandbox testing)
+2. Monitor Sentry error reports in production
 3. Run `flutter analyze` regularly to maintain zero errors
 
 ### Short-term (1-2 weeks)
 
-1. Implement Subscription & Credits (Plan 3)
+1. Complete Subscription purchases (RevenueCat + Stripe)
 2. Add repository method dartdocs
-3. Complete text-to-image backend wiring
+3. Finish Admin app CRUD UI
 
 ### Long-term (1-2 months)
 
-1. Build Admin app
+1. App Store / Play Store submission
+2. Marketing site launch
 
 ---
 
@@ -570,6 +565,6 @@ dart run build_runner watch
 
 ---
 
-**Last Updated**: 2026-02-19
-**Analysis Depth**: Comprehensive (repomix pack, 510 files)
+**Last Updated**: 2026-02-20 (v1.5 — file counts, exception classes, testing status, next steps)
+**Analysis Depth**: Comprehensive (repomix pack, verified against codebase)
 **Codebase Grade**: A- (95% architecture compliance, all 7 features complete)

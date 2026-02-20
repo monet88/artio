@@ -1,8 +1,8 @@
 # System Architecture
 
 **Project**: Artio - AI Image Generation SaaS
-**Updated**: 2026-02-19
-**Version**: 1.3
+**Updated**: 2026-02-20
+**Version**: 1.5
 
 ---
 
@@ -17,32 +17,46 @@ Both flows now post to `supabase/functions/generate-image/index.ts`, which deduc
 ```
 ┌─────────────────────────────────────────────────────┐
 │                   Flutter App                       │
-│  (Android, iOS, Web, Windows - Single Codebase)     │
+│  (Android, iOS, Web, Windows - Single Codebase)    │
 │  • Riverpod State Management                        │
-│  • GoRouter Navigation                              │
-│  • Freezed + JSON Serializable                      │
+│  • GoRouter Navigation                             │
+│  • Freezed + JSON Serializable                     │
 └─────────────────────────────────────────────────────┘
-                        ↓↑
+                         ↓↑
+┌─────────────────────────────────────────────────────┐
+│              Admin Flutter App                      │
+│  (Web - Separate Codebase at /admin)               │
+│  • Template CRUD Management                         │
+│  • Admin role via RLS                              │
+└─────────────────────────────────────────────────────┘
+                         ↓↑
 ┌─────────────────────────────────────────────────────┐
 │               Supabase Backend                      │
-│  • PostgreSQL (templates, jobs, profiles)           │
-│  • Auth (email/password, Google, Apple OAuth)       │
-│  • Storage (user uploads, generated images)         │
-│  • Realtime (job progress updates)                  │
-│  • Edge Functions (KIE API integration)             │
+│  • PostgreSQL (templates, jobs, profiles)          │
+│  • Auth (email/password, Google, Apple OAuth)      │
+│  • Storage (user uploads, generated images)        │
+│  • Realtime (job progress updates)                 │
+│  • Edge Functions (KIE API integration)            │
 └─────────────────────────────────────────────────────┘
-                        ↓↑
+                         ↓↑
 ┌─────────────────────────────────────────────────────┐
-│           Kie API (Primary AI Provider)             │
-│  • Google Imagen 4 & Nano Banana                    │
-│  • Flux-2 (Flex & Pro variants)                     │
-│  • GPT Image 1.5                                    │
-│  • Seedream 4.5                                     │
+│            RevenueCat (Mobile Subscriptions)        │
+│  • App Store & Play Store integration             │
+│  • Subscription tier management                    │
+│  • Cross-platform entitlement sync                 │
 └─────────────────────────────────────────────────────┘
-                        ↓↑
+                         ↓↑
 ┌─────────────────────────────────────────────────────┐
-│         Gemini API (Fallback AI Provider)           │
-│  • Multimodal image analysis and generation         │
+│              Kie API (Primary AI Provider)         │
+│  • Google Imagen 4 & Nano Banana                   │
+│  • Flux-2 (Flex & Pro variants)                    │
+│  • GPT Image 1.5                                   │
+│  • Seedream 4.5                                    │
+└─────────────────────────────────────────────────────┘
+                         ↓↑
+┌─────────────────────────────────────────────────────┐
+│           Gemini API (Fallback AI Provider)         │
+│  • Multimodal image analysis and generation        │
 └─────────────────────────────────────────────────────┘
 
 **AI Model Reference**: See `docs/kie-api/` for complete model specifications
@@ -62,8 +76,9 @@ lib/
 │   ├── design_system/       # Design tokens (spacing, dimensions)
 │   ├── exceptions/          # Exception hierarchy
 │   ├── providers/           # Global dependencies (Supabase)
+│   ├── services/            # App services (haptic, rewarded ads)
 │   ├── state/               # User-scoped state providers
-│   └── utils/               # Helpers (error mapper, logger)
+│   └── utils/               # Helpers (error mapper, retry, validation)
 ├── features/                # Feature modules
 │   ├── auth/                # Authentication feature
 │   │   ├── domain/          # Business logic
@@ -250,6 +265,29 @@ CREATE TABLE generation_jobs (
 
 CREATE INDEX idx_jobs_user_id ON generation_jobs(user_id);
 CREATE INDEX idx_jobs_status ON generation_jobs(status);
+
+-- User credits (one row per user)
+CREATE TABLE user_credits (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE UNIQUE,
+  balance INTEGER NOT NULL DEFAULT 0,
+  is_premium BOOLEAN DEFAULT false,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Credit transactions (audit log)
+CREATE TABLE credit_transactions (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  amount INTEGER NOT NULL,
+  transaction_type TEXT NOT NULL CHECK (transaction_type IN ('welcome_bonus', 'generation', 'purchase', 'refund', 'subscription')),
+  description TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX idx_credits_user_id ON user_credits(user_id);
+CREATE INDEX idx_transactions_user_id ON credit_transactions(user_id);
 ```
 
 ### Row Level Security (RLS)
@@ -275,6 +313,16 @@ CREATE POLICY "Users can insert own jobs"
   ON generation_jobs FOR INSERT WITH CHECK (auth.uid() = user_id);
 CREATE POLICY "Users can update own jobs"
   ON generation_jobs FOR UPDATE USING (auth.uid() = user_id);
+
+-- User credits: Users can read own, service role manages
+ALTER TABLE user_credits ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users can view own credits"
+  ON user_credits FOR SELECT USING (auth.uid() = user_id);
+
+-- Credit transactions: Users can view own, service role manages
+ALTER TABLE credit_transactions ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users can view own transactions"
+  ON credit_transactions FOR SELECT USING (auth.uid() = user_id);
 ```
 
 ---
@@ -448,18 +496,15 @@ redirect: (context, state) {
 ### Exception Hierarchy
 
 ```dart
-sealed class AppException {
-  const AppException({required this.message, this.code, this.details});
-  final String message;
-  final String? code;
-  final Map<String, dynamic>? details;
+@freezed
+sealed class AppException with _$AppException implements Exception {
+  const factory AppException.network({required String message, int? statusCode}) = NetworkException;
+  const factory AppException.auth({required String message, String? code}) = AuthException;
+  const factory AppException.storage({required String message}) = StorageException;
+  const factory AppException.payment({required String message, String? code}) = PaymentException;
+  const factory AppException.generation({required String message, String? jobId}) = GenerationException;
+  const factory AppException.unknown({required String message, Object? originalError}) = UnknownException;
 }
-
-class AuthException extends AppException { ... }      // Auth failures
-class NetworkException extends AppException { ... }   // HTTP errors
-class ValidationException extends AppException { ... } // Input validation
-class StorageException extends AppException { ... }   // File upload/download
-class UnknownException extends AppException { ... }   // Unexpected errors
 ```
 
 ### Error Propagation
@@ -478,10 +523,14 @@ UI (Screen/Widget)
 
 **User-Facing Messages:**
 ```dart
-AppExceptionMapper.toUserMessage(exception) →
+// Also handles non-AppException types:
+AppExceptionMapper.toUserMessage(error) →
+  SocketException → "No internet connection. Please check your network."
+  TimeoutException → "Request timed out. Please try again."
   AuthException('invalid_credentials') → "Invalid email or password."
   NetworkException(statusCode: 500) → "Server error. Please try again later."
-  StorageException() → "Failed to upload image. Check your connection."
+  PaymentException('cancelled') → "Payment was cancelled."
+  GenerationException() → (message passed through)
 ```
 
 ---
@@ -669,12 +718,12 @@ ref.listen(generationJobProvider(jobId), (prev, next) {
 - Error rate by exception type
 - User retention (DAU/MAU)
 
-### Tools (not all verified in code)
+### Active Tools
 
-- Sentry: Error tracking (client + Edge Functions)
+- Sentry: Error tracking (active in `main.dart` via `SentryConfig.init()`, non-blocking try-catch)
 - Supabase Analytics: Database query performance
-- Firebase Analytics: User behavior (mobile)
-- PostHog: Product analytics (web)
+- RevenueCat: Subscription analytics (debug logging enabled in dev)
+- AdMob: Rewarded ads with server-side verification (SSV)
 
 ---
 
@@ -709,4 +758,4 @@ ref.listen(generationJobProvider(jobId), (prev, next) {
 
 **AI Model Documentation**: `docs/kie-api/` (source of truth for model specs, parameters, Edge Function integration)
 
-**Last Updated**: 2026-02-19
+**Last Updated**: 2026-02-20 (v1.5 — exception hierarchy, init resilience, monitoring status)

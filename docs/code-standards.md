@@ -1,8 +1,8 @@
 # Code Standards
 
 **Project**: Artio - AI Image Generation SaaS
-**Updated**: 2026-02-19
-**Version**: 1.3
+**Updated**: 2026-02-20
+**Version**: 1.5
 
 ---
 
@@ -58,11 +58,17 @@ lib/
 │   │   └── app_exception.dart         # Sealed exception hierarchy
 │   ├── providers/
 │   │   └── supabase_provider.dart     # Global dependencies
+│   ├── services/
+│   │   ├── haptic_service.dart        # Haptic feedback
+│   │   └── rewarded_ad_service.dart   # AdMob SSV
 │   ├── state/
 │   │   └── user_scoped_providers.dart # User-scoped state providers
 │   └── utils/
 │       ├── app_exception_mapper.dart  # User-friendly error messages
-│       └── logger_service.dart        # Logging abstraction
+│       ├── date_time_utils.dart       # DateTime utilities
+│       ├── email_validator.dart       # Email validation
+│       ├── retry.dart                # Retry with backoff
+│       └── watermark_util.dart        # Image watermark
 ├── features/
 │   ├── auth/                          # ✓ 3-layer structure
 │   │   ├── domain/
@@ -107,11 +113,19 @@ lib/
     │   │   ├── domain/
     │   │   ├── data/
     │   │   └── presentation/
+    │   ├── credits/                       # ✓ 3-layer structure
+    │   │   ├── domain/
+    │   │   ├── data/
+    │   │   └── presentation/
     │   ├── gallery/                       # ✓ 3-layer structure
     │   │   ├── domain/
     │   │   ├── data/
     │   │   └── presentation/
-    │   └── settings/                      # ✓ 3-layer structure
+    │   ├── settings/                      # ✓ 3-layer structure
+    │   │   ├── domain/
+    │   │   ├── data/
+    │   │   └── presentation/
+    │   └── subscription/                  # ✓ 3-layer structure
     │       ├── domain/
     │       ├── data/
     │       └── presentation/
@@ -262,8 +276,9 @@ sealed class AppException implements Exception {
 
 class AuthException extends AppException { ... }
 class NetworkException extends AppException { ... }
-class ValidationException extends AppException { ... }
 class StorageException extends AppException { ... }
+class PaymentException extends AppException { ... }
+class GenerationException extends AppException { ... }
 class UnknownException extends AppException { ... }
 ```
 
@@ -274,11 +289,21 @@ class UnknownException extends AppException { ... }
 ```dart
 // core/utils/app_exception_mapper.dart
 class AppExceptionMapper {
-  static String toUserMessage(AppException exception) {
-    return switch (exception) {
-      AuthException(code: 'invalid_credentials') => 'Invalid email or password.',
+  AppExceptionMapper._(); // Private constructor, static methods only
+
+  /// Converts an error to a user-displayable message.
+  /// Handles SocketException, TimeoutException, and all AppException variants.
+  static String toUserMessage(Object error) {
+    if (error is SocketException) return 'No internet connection...';
+    if (error is TimeoutException) return 'Request timed out...';
+    if (error is! AppException) return 'An unexpected error occurred...';
+    return switch (error) {
       NetworkException(statusCode: int status) when status >= 500 =>
         'Server error. Please try again later.',
+      AuthException(code: 'invalid_credentials') =>
+        'Invalid email or password.',
+      PaymentException() => error.message,
+      GenerationException() => error.message,
       _ => 'Something went wrong. Please try again.',
     };
   }
@@ -286,9 +311,7 @@ class AppExceptionMapper {
 
 // Usage in UI
 catch (e) {
-  if (e is AppException) {
-    showSnackbar(AppExceptionMapper.toUserMessage(e));
-  }
+  showSnackbar(AppExceptionMapper.toUserMessage(e));
 }
 ```
 
@@ -417,19 +440,23 @@ class AppConstants {
 
 ---
 
-## Testing (Pending)
+## Testing
 
 ### Current Status
 
-- **Coverage:** Needs verification (run `flutter test --coverage`)
-- **Target:** 80%+ for production readiness
+- **Test files**: 88 across `test/` and `integration_test/`
+- **Test count**: 651+ unit tests + 15 integration tests
+- **Analyzer**: 0 errors
+- **Target**: 80%+ line coverage for production readiness
 
-### Recent Improvements
+### Test Coverage Areas
 
-- Integration test infrastructure present
-- Repository tests present (auth, template)
+- Repository tests (auth, template, gallery, generation, credits)
+- ViewModel/Provider tests
 - Widget tests for core components
-- E2E test for template generation flow
+- Exception mapper tests (SocketException, TimeoutException)
+- Model sync tests (exact ID + cost validation)
+- Integration tests for template generation flow
 
 ### Required Test Structure
 
@@ -537,15 +564,23 @@ void main() {
 
 ## Known Technical Debt
 
+### Phase 1 Completed (Tech Debt Cleanup - 2026-02-20)
+
+| Issue | Description | Priority | Status |
+|-------|-------------|----------|--------|
+| ~~Navigation Type Safety~~ | ~~Raw goRouter strings~~ | ~~Medium~~ | ✓ Resolved (TypedGoRoute) |
+| ~~ImagePicker Provider~~ | ~~Unused provider in codebase~~ | ~~Low~~ | ✓ Resolved (removed) |
+| ~~Model Sync Tests~~ | ~~Count-only validation~~ | ~~Medium~~ | ✓ Resolved (exact ID + cost validation) |
+| ~~timingSafeEqual Type Error~~ | ~~revenuecat-webhook missing~~ | ~~Medium~~ | ✓ Resolved (added to deno check) |
+| ~~Large Files~~ | ~~image_viewer_page >200 LOC~~ | ~~Medium~~ | ✓ Resolved (refactored) |
+| ~~DTO Leakage~~ | ~~Domain entities have JSON logic~~ | ~~Medium~~ | ✓ Resolved (accepted for MVP) |
+| ~~DataSource Layer~~ | ~~Repos call Supabase directly~~ | ~~Low~~ | ✓ Resolved (YAGNI - accepted) |
+
 ### Deferred Items
 
 | Issue | Description | Priority | Future Action |
 |-------|-------------|----------|---------------|
-| Test Coverage | Coverage level needs verification | High | Pending verification |
-| ~~Navigation Type Safety~~ | ~~Raw strings~~ | ~~Medium~~ | ✓ Resolved (TypedGoRoute) |
-| File Size | Some files >200 LOC | Medium | Refactor large files (image_viewer_page) |
-| DTO Leakage | Domain entities have JSON logic | Medium | Split to Entity + DTO + mapper when scaling |
-| DataSource Layer | Repos call Supabase directly | Low | Add DataSource abstraction if backend swap needed |
+| Repository methods lack dartdocs | API clarity | Medium | Pending |
 
 ### Accepted Trade-offs
 
@@ -604,12 +639,10 @@ flutter pub outdated
 
 ## References
 
-- **Architecture Guide:** `.claude/skills/flutter/feature-based-clean-architecture/skill.md`
-- **Riverpod Patterns:** `.claude/skills/flutter/riverpod-state-management/skill.md`
+- **Architecture Guide:** `.agent/skills/flutter-expert/SKILL.md`
 - **Error Handling:** `lib/core/exceptions/app_exception.dart`
 - **Constants:** `lib/core/constants/app_constants.dart`
-- **Phase 4.6 Plan:** `plans/260125-1516-phase46-architecture-hardening/plan.md`
 
 ---
 
-**Last Updated**: 2026-02-19
+**Last Updated**: 2026-02-20

@@ -1,8 +1,8 @@
 # Development Roadmap
 
 **Project**: Artio - AI Image Generation SaaS
-**Updated**: 2026-02-19
-**Status**: Phase 1-5,7 complete; Phase 6 started (50%); Phase 8 in progress (70%)
+**Updated**: 2026-02-20
+**Status**: Phase 6 in progress (60%); Phase 8 in progress (70%); 10 post-phase milestones complete
 
 ---
 
@@ -95,13 +95,13 @@
 
 ### ⏸ Pending
 
-**Phase 6: Subscription & Credits** (8h) - *IN PROGRESS (50% complete)*
+**Phase 6: Subscription & Credits** (8h) - *IN PROGRESS (60% complete)*
 - ✓ Credits system for free users (`user_credits`, `deduct_credits`/`refund_credits`, Edge Function + UI handling complete)
 - ✓ Premium-model gating (insufficient credit + premium sheets implemented)
-- Subscription model (Free/Pro tiers) - pending
-- RevenueCat integration (iOS/Android) - pending
+- ✓ Rewarded ads with SSV (AdMob + `reward-ad` Edge Function)
+- ✓ RevenueCat SDK initialized + user identity linked
+- Subscription tiers (Free/Pro purchases) - pending
 - Stripe integration (Web) - pending
-- Rewarded ads (mobile) - pending
 
 **Plan 2: Credit, Premium & Rate Limit** (6h) - *Merged into Phase 6*
 - Database schema for credits/limits (complete)
@@ -109,13 +109,32 @@
 - Rate limiting & cooldown (pending)
 
 **Phase 8: Admin App** (~0.9h remaining - 70% complete)
-- ✓ Separate Flutter web app for template management
+- ✓ Separate Flutter web app for template management (17 Dart files)
 - ✓ Admin role enforcement via RLS
 - ✓ Template model and router setup
 - Template CRUD UI (pending)
 - Visual JSON editor for input fields (pending)
 - Drag-to-reorder templates (pending)
 - Deployment to admin.artio.app (pending)
+
+### ✓ Post-Phase Milestones (Complete)
+
+The following milestones were completed after the initial phase plan:
+
+| # | Milestone | Date | Key Deliverables |
+|---|-----------|------|------------------|
+| 1 | **Codebase Improvement** | 2026-02 | Large file refactoring, code quality |
+| 2 | **Test Coverage & Prod Readiness** | 2026-02 | 651+ unit + 15 integration tests |
+| 3 | **Widget Cleanup** | 2026-02 | Widget refactoring, UI polish |
+| 4 | **Model Sync** | 2026-02 | 16 AI models, exact ID + cost validation |
+| 5 | **Data Integrity & Performance** | 2026-02 | Database optimization, query tuning |
+| 6 | **UI & Concurrency Polish** | 2026-02 | UI consistency, async flow improvements |
+| 7 | **Edge Case Fixes 2** | 2026-02 | Error handling edge cases |
+| 8 | **Edge Case Hardening** | 2026-02 | Defensive coding improvements |
+| 9 | **Reward Ad SSV** | 2026-02 | AdMob rewarded ads + Edge Function SSV |
+| 10 | **Edge Case Resilience** | 2026-02-20 | Init try-catch, SocketException/Timeout, select validation |
+
+All milestone summaries archived in `.gsd/milestones/{name}/SUMMARY.md`.
 
 ---
 
@@ -198,11 +217,12 @@
 | **Generation Engine** | 100% | ✓ Complete (Phase 4) |
 | **Architecture Quality** | 100% | ✓ Complete (Phase 4.6) |
 | **User Features** | 100% | ✓ Complete (Phase 5, 7) |
-| **Monetization** | 50% | In Progress (Phase 6) - Credit system done, purchases pending |
-| **Admin Tools** | 70% | In Progress (Phase 8) - Auth + CRUD done, drag-drop + deployment pending |
-| **Documentation** | 100% | ✓ Current (2026-02-19 refresh) |
+| **Monetization** | 60% | In Progress (Phase 6) - Credits + ads done, purchases pending |
+| **Admin Tools** | 70% | In Progress (Phase 8) - Auth + model done, CRUD + deploy pending |
+| **Post-Phase Quality** | 100% | ✓ Complete (10 milestones: testing, edge cases, resilience) |
+| **Documentation** | 100% | ✓ Current (2026-02-20 v1.5 refresh) |
 
-**Total Project**: 84% (40.8h / 48.5h total estimated)
+**Total Project**: ~88% (core features + quality milestones complete)
 
 ---
 
@@ -286,6 +306,8 @@
 | 2026-02-03 | 1.1.1 | Fix TemplateDetailScreen listener lifecycle (tests) |
 | 2026-02-10 | 1.2 | Documentation accuracy sync - updated file counts, schemas, navigation patterns |
 | 2026-02-19 | 1.3 | Phase progress update (Phase 6: 50%, Phase 8: 70%), date refresh, metrics verification |
+| 2026-02-20 | 1.4 | Tech Debt Cleanup (7 debts resolved, 651+15 tests) |
+| 2026-02-20 | 1.5 | Edge Case Resilience (init try-catch, SocketException/Timeout), Reward Ad SSV, 10 post-phase milestones documented |
 
 ---
 
@@ -298,4 +320,4 @@
 
 ---
 
-**Last Updated**: 2026-02-19
+**Last Updated**: 2026-02-20
