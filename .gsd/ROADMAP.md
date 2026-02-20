@@ -1,11 +1,15 @@
 # ROADMAP.md
 
-> **Current Milestone**: Edge Case Hardening
-> **Last Completed**: Security — Reward Ad SSV (2026-02-20)
+> **Current Milestone**: Test Coverage & Production Readiness
+> **Last Completed**: UI & Concurrency Polish (2026-02-20)
 
 ---
 
 ## Completed Milestones
+
+### UI & Concurrency Polish ✅
+- Concurrent request deduplication, atomic credits, OAuth cancel, template resilience, gallery UX, image size validation
+- 4 phases, 17 commits, 478 tests passing, 0 analyzer issues
 
 ### Security — Reward Ad SSV ✅
 - Nonce-based ad reward validation, `pending_ad_rewards` table, 2-action Edge Function, Flutter 2-step flow
@@ -51,17 +55,41 @@
 
 ---
 
-## Completed Milestones
-- **UI & Concurrency Polish** — 2026-02-20 (tag: `ui-concurrency-polish`)
-- **Model Sync & Edge Function Tests** (tag: `model-sync`)
-- **Data Integrity & Performance** (tag: `data-integrity-performance`)
-- **Widget Cleanup** (tag: `widget-cleanup`)
+## Current Milestone: Test Coverage & Production Readiness
 
----
+**Goal:** Đóng tất cả audit gaps, bổ sung test coverage cho untested paths, cấu hình AdMob theo build flavor, và thiết lập CI/monitoring cho production.
 
-## Current Milestone: (none)
+### Must-Haves
+- [ ] 🔴 Unit test cho `ImagePickerNotifier` >10MB rejection path (audit gap)
+- [ ] AdMob ID theo build flavor (test IDs cho debug, real IDs cho release)
+- [ ] Edge Function integration tests (refund retry, premium enforcement, concurrency)
 
-*Use `/new-milestone` to start the next milestone.*
+### Nice-to-Haves
+- [ ] PREMIUM_MODELS shared source of truth (`ai_models.dart` ↔ `index.ts`)
+- [ ] Deno type-check CI step cho Edge Functions
+- [ ] Sentry alert rule cho `[CRITICAL] Credit refund failed`
+
+### Phases
+
+### Phase 1: Audit Gap Closure
+**Status**: ⬜ Not Started
+**Objective**: Fix 🔴 gap — thêm unit test cho `ImagePickerNotifier.pickImage()` với mock file >10MB để verify rejection path.
+
+### Phase 2: Edge Function Integration Tests
+**Status**: ⬜ Not Started
+**Objective**: Viết integration tests cho Edge Function: refund retry, premium model enforcement, concurrent request handling.
+
+### Phase 3: AdMob Production Config
+**Status**: ⬜ Not Started
+**Objective**: Cấu hình AdMob ID theo build mode — `kDebugMode` dùng test IDs, release dùng real IDs. Thêm test device registration cho QA.
+
+### Phase 4: CI & Monitoring
+**Status**: ⬜ Not Started
+**Objective**: Deno type-check CI step, Sentry alert rule, PREMIUM_MODELS sync verification.
+
+### Phase 5: Verification
+**Status**: ⬜ Not Started
+**Objective**: Analyzer zero, full test suite pass, milestone audit.
 
 ---
 
@@ -73,11 +101,3 @@
 - [ ] Credit history / transaction log UI
 - [ ] Subscription management settings page
 - [ ] Referral / affiliate system
-
-### Technical Debt
-- [ ] 🔴 Unit test for `ImagePickerNotifier` >10MB rejection path (audit gap)
-- [ ] 🟡 Edge Function integration tests (refund retry, premium enforcement, concurrency)
-- [ ] 🟡 PREMIUM_MODELS sync between `ai_models.dart` and `index.ts` — shared source of truth
-- [ ] 🟡 Replace test AdMob IDs with production IDs (TODO in `rewarded_ad_service.dart`)
-- [ ] 🟢 Deno type-check CI step for Edge Functions
-- [ ] 🟢 Sentry alert rule for `[CRITICAL] Credit refund failed`
