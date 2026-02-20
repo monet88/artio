@@ -1,18 +1,13 @@
 # STATE.md
 
 ## Current Position
-- **Milestone**: UI/UX Polish
-- **Phase**: 1 (UI/UX Polish)
-- **Plan**: All 6 plans completed
-- **Status**: ✅ Complete — all waves executed
+- **Milestone**: None — UI/UX Polish completed
+- **Phase**: —
+- **Plan**: —
+- **Status**: Ready for next milestone
 
 ## Last Session Summary
-UI/UX Polish milestone executed in full.
-- 7 commits across 3 waves (+ 1 test fix)
-- P0 _isPremium bug fixed
-- Reduced-motion support added to splash/loading/error/skeleton
-- PaywallScreen upgraded to branded widgets
-- HomeScreen cleaned (emojis, search bar removed)
-- Accessibility: Semantics labels + navigation tooltips added
-- Dead code removed from LoginScreen
-- All 445+ tests passing, 0 analyze errors
+UI/UX Polish milestone completed and archived (2026-02-21).
+- 8 commits, 14 files changed, +758/-174 lines
+- All 446 tests passing, 0 analyzer errors
+- Archive: `.gsd/milestones/ui-ux-polish/`

@@ -80,18 +80,15 @@
 
 ---
 
-## Current Milestone: UI/UX Polish
+## Completed Milestones
 
-**Goal:** Fix 8 UI/UX issues from frontend review (P0-P3). Strengthen accessibility, brand consistency, and code quality.
+- ✅ **UI/UX Polish** — 2026-02-21 (8 commits, 14 files, 446 tests green)
+  - Archive: `.gsd/milestones/ui-ux-polish/`
 
-### Phase 1: UI/UX Polish (6 plans, 3 waves)
-- **Wave 1 (parallel):** Fix _isPremium bug, upgrade PaywallScreen widgets, remove dead LoginScreen mixin
-- **Wave 2 (parallel):** Home screen emoji/search cleanup, reduced-motion support + spacing
-- **Wave 3:** Semantics & accessibility labels
+## Current Milestone
 
-**Plan**: `.gsd/phases/ui-ux-polish/PLAN.md`
+_No active milestone. Use `/new-milestone` to start one._
 
----
 
 ## Backlog
 
