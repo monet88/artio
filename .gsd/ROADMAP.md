@@ -63,7 +63,7 @@
 - [ ] Email TLD validation in auth form
 
 ### Phase 1: Backend Hardening
-**Status**: ⬜ Not Started
+**Status**: ✅ Complete
 **Objective**: Add rate limiting, server-side input validation, and storage cleanup to `generate-image` Edge Function
 - Rate limiting: per-user sliding window (e.g., max N requests per minute)
 - Validate `imageCount` param is integer in [1, 4] range
