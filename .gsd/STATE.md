@@ -1,20 +1,13 @@
 # STATE.md
 
 ## Current Position
-- **Milestone**: Edge Case Fixes
-- **Phase**: 3 (verified)
-- **Status**: ✅ All phases complete and verified
+- **Milestone**: None — ready for next milestone
+- **Last Completed**: Edge Case Fixes Phase 2 (2026-02-20)
+- **Status**: 🎉 Milestone complete
 
-## Plans Ready
-1. ~~Phase 1: Auth Fixes~~ → ✅ Verified
-2. ~~Phase 2: Credit Fixes~~ → ✅ Verified
-3. ~~Phase 3: Edge Func Fixes~~ → ✅ Verified
-
-## Last Completed
-- **Phase**: 3 — Edge Function Fixes
-- **Tasks**: Refund retry with 3x backoff, premium model enforcement
-- **Date**: 2026-02-20
-- **Verification**: PASS (6/6 must-haves)
-
-## Next Steps
-1. `/complete-milestone` — Complete Edge Case Fixes milestone
+## Summary
+Edge Case Fixes (Phase 2) delivered all 7 must-haves:
+- Auth input validation + OAuth timeout
+- CreditCheckPolicy + provider disposal + stream recovery
+- Refund retry + premium model enforcement
+- 638 tests passing, 0 analyzer errors

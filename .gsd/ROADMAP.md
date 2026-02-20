@@ -1,12 +1,15 @@
 # ROADMAP.md
 
-> **Current Milestone**: Edge Case Fixes (Phase 2)
-> **Goal**: Fix 7 edge cases from code review — auth, credits, edge function
-> **Last Completed**: Data Integrity & Performance (2026-02-19)
+> **Current Milestone**: None — ready for next milestone
+> **Last Completed**: Edge Case Fixes Phase 2 (2026-02-20)
 
 ---
 
 ## Completed Milestones
+
+### Edge Case Fixes (Phase 2) ✅
+- Auth validation, OAuth timeout, CreditCheckPolicy, provider disposal, stream recovery, refund retry, premium enforcement
+- 3 phases, 8 tasks, 22 commits, 638 tests passing
 
 ### Edge Case Fixes (Phase 1) ✅
 - DateTime parsing, concurrent sign-in guards, profile TOCTOU race, 429 retry, timeout, TLS retry, router notify, file error handling
@@ -36,41 +39,9 @@
 
 ---
 
-## Current Milestone: Edge Case Fixes (Phase 2)
+## Current Milestone
 
-**Goal**: Fix 7 edge cases identified during parallel code review to harden auth, credit system, and edge function reliability.
-
-### Must-Haves
-- [ ] Auth input validation — empty email/password blocked before network call
-- [ ] OAuth timeout — stuck authenticating state auto-recovers after 3 min
-- [ ] Credit pre-check — generation blocked when balance < minimum cost
-- [ ] Provider disposal — credit providers invalidated on logout
-- [ ] Credit stream recovery — empty rows return default, errors don't kill stream
-- [ ] Refund retry — 3x exponential backoff on refund failure
-- [ ] Premium enforcement — server-side 403 for non-premium users on premium models
-
-### Nice-to-Haves
-- [ ] Session expiry check (deferred — Supabase auto-refresh sufficient)
-
-### Phases
-
-#### Phase 1: Auth Fixes
-**Status**: ✅ Complete
-**Objective**: Input validation for signIn/signUp + OAuth 3-min timeout
-**Plan**: `.gsd/phases/1/PLAN.md`
-**Issues**: 2.2, 2.3
-
-#### Phase 2: Credit Fixes
-**Status**: ✅ Complete
-**Objective**: CreditCheckPolicy, provider disposal on logout, stream error recovery
-**Plan**: `.gsd/phases/2/PLAN.md`
-**Issues**: 1.1, 1.3, 2.4
-
-#### Phase 3: Edge Function Fixes
-**Status**: ✅ Complete
-**Objective**: Refund retry with exponential backoff, premium model enforcement
-**Plan**: `.gsd/phases/3/PLAN.md`
-**Issues**: 1.2, 2.1
+No active milestone. Run `/new-milestone` to start.
 
 ---
 
