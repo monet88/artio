@@ -2,7 +2,7 @@
 description: Plan and implement UI using Stitch MCP with enhance-prompt and design-md skills
 ---
 
-# UI/UX Pro Max — Stitch MCP Workflow
+# Stitch MCP Design Workflow
 
 Design, generate, and iterate on UI screens using Stitch MCP server with design system consistency.
 
