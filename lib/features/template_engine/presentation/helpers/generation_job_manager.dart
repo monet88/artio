@@ -24,12 +24,7 @@ class GenerationJobManager {
   /// Default timeout for generation jobs, in minutes.
   static const defaultTimeoutMinutes = 5;
 
-  // Stored arguments for resubscription on retry.
-  Stream<GenerationJobModel>? _lastJobStream;
-  void Function(GenerationJobModel)? _lastOnData;
-  void Function(Object, StackTrace)? _lastOnError;
-  void Function()? _lastOnTimeout;
-  int _lastTimeoutMinutes = defaultTimeoutMinutes;
+
 
   /// Subscribe to a job stream with timeout and error handling.
   ///
@@ -45,13 +40,6 @@ class GenerationJobManager {
     int timeoutMinutes = defaultTimeoutMinutes,
   }) {
     cancel();
-
-    // Store for potential retry
-    _lastJobStream = jobStream;
-    _lastOnData = onData;
-    _lastOnError = onError;
-    _lastOnTimeout = onTimeout;
-    _lastTimeoutMinutes = timeoutMinutes;
     _retryCount = 0;
 
     _startListening(jobStream, onData, onError, onTimeout, timeoutMinutes);
@@ -88,12 +76,12 @@ class GenerationJobManager {
         if (_retryCount < maxRetries) {
           _retryCount++;
           final delay = retryDelayMs * _retryCount;
-          // ignore: avoid_print
+          // ignore: avoid_print, intentional for debugging stream retry issues in dev
           print(
             '[GenerationJobManager] Stream error, retrying '
             '($_retryCount/$maxRetries) in ${delay}ms...',
           );
-          _jobSubscription?.cancel();
+          unawaited(_jobSubscription?.cancel());
           _jobSubscription = null;
           _retryTimer = Timer(Duration(milliseconds: delay), () {
             _startListening(jobStream, onData, onError, onTimeout, timeoutMinutes);
@@ -122,10 +110,6 @@ class GenerationJobManager {
     cancel();
     _lastErrorSignature = null;
     _retryCount = 0;
-    _lastJobStream = null;
-    _lastOnData = null;
-    _lastOnError = null;
-    _lastOnTimeout = null;
   }
 
   /// Clear current error dedup signature for a new generation attempt.

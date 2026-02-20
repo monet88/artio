@@ -80,11 +80,11 @@ class TemplateRepository implements ITemplateRepository {
           .eq('is_active', true)
           .order('order', ascending: true);
 
-      final List<TemplateModel> results = [];
+      final results = <TemplateModel>[];
       for (final item in response) {
         try {
           results.add(TemplateModel.fromJson(item));
-        } catch (e) {
+        } on Exception catch (e) {
           // Skip the corrupted template and log the failure
           Log.w('Failed to parse a template from fetched category ($category): $e');
         }
@@ -116,11 +116,11 @@ class TemplateRepository implements ITemplateRepository {
             .eq('is_active', true)
             .order('order', ascending: true);
 
-        final List<TemplateModel> results = [];
+        final results = <TemplateModel>[];
         for (final item in response) {
           try {
             results.add(TemplateModel.fromJson(item));
-          } catch (e) {
+          } on Exception catch (e) {
             // Skip the corrupted template and log the failure
             Log.w('Failed to parse a template from network sync: $e');
           }

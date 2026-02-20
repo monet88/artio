@@ -206,8 +206,8 @@ void main() {
           overrides: [
             authRepositoryProvider.overrideWithValue(mockAuthRepo),
           ],
-        );
-        container.listen(authViewModelProvider, (_, __) {});
+        )
+          ..listen(authViewModelProvider, (_, __) {});
         // Wait for _checkAuthentication to settle
         for (var i = 0; i < 20; i++) {
           await Future<void>.delayed(Duration.zero);
@@ -294,8 +294,8 @@ void main() {
           overrides: [
             authRepositoryProvider.overrideWithValue(mockAuthRepo),
           ],
-        );
-        container.listen(authViewModelProvider, (_, __) {});
+        )
+          ..listen(authViewModelProvider, (_, __) {});
         for (var i = 0; i < 20; i++) {
           await Future<void>.delayed(Duration.zero);
           final state = container.read(authViewModelProvider);
@@ -374,17 +374,13 @@ void main() {
             overrides: [
               authRepositoryProvider.overrideWithValue(mockAuthRepo),
             ],
-          );
-          container.listen(authViewModelProvider, (_, __) {});
+          )..listen(authViewModelProvider, (_, __) {});
 
           // Let _checkAuthentication settle
           async.elapse(const Duration(milliseconds: 100));
 
-          final notifier =
-              container.read(authViewModelProvider.notifier);
-
           // Trigger Google sign in
-          notifier.signInWithGoogle();
+          container.read(authViewModelProvider.notifier).signInWithGoogle();
           async.elapse(Duration.zero);
 
           // Verify authenticating state
@@ -425,16 +421,12 @@ void main() {
             overrides: [
               authRepositoryProvider.overrideWithValue(mockAuthRepo),
             ],
-          );
-          container.listen(authViewModelProvider, (_, __) {});
+          )..listen(authViewModelProvider, (_, __) {});
 
           // Let _checkAuthentication settle
           async.elapse(const Duration(milliseconds: 100));
 
-          final notifier =
-              container.read(authViewModelProvider.notifier);
-
-          notifier.signInWithGoogle();
+          container.read(authViewModelProvider.notifier).signInWithGoogle();
           async.elapse(Duration.zero);
 
           // Simulate auth state change (user signs in via OAuth callback)
@@ -449,10 +441,10 @@ void main() {
               _FakeSession(),
             ),
           );
-          async.elapse(const Duration(milliseconds: 100));
-
-          // Advance past 3-minute mark — should NOT trigger timeout
-          async.elapse(const Duration(minutes: 3));
+          async
+            ..elapse(const Duration(milliseconds: 100))
+            // Advance past 3-minute mark — should NOT trigger timeout
+            ..elapse(const Duration(minutes: 3));
 
           // State should be authenticated, not error
           expect(

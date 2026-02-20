@@ -3,10 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ImagePickerState {
-  final File? pickedImage;
-  final String? error;
 
   const ImagePickerState({this.pickedImage, this.error});
+  final File? pickedImage;
+  final String? error;
 
   ImagePickerState copyWith({File? pickedImage, String? error, bool clearError = false}) {
     return ImagePickerState(
@@ -26,12 +26,12 @@ class ImagePickerNotifier extends StateNotifier<ImagePickerState> {
     state = state.copyWith(clearError: true);
     
     try {
-      final XFile? image = await _picker.pickImage(source: source);
+      final image = await _picker.pickImage(source: source);
       
       if (image == null) return;
       
-      final File file = File(image.path);
-      final int length = await file.length();
+      final file = File(image.path);
+      final length = await file.length();
       
       if (length > _maxFileSize) {
         state = state.copyWith(error: 'Image is too large. Maximum size is 10MB.');
@@ -39,7 +39,7 @@ class ImagePickerNotifier extends StateNotifier<ImagePickerState> {
       }
       
       state = state.copyWith(pickedImage: file);
-    } catch (e) {
+    } on Exception catch (e) {
       state = state.copyWith(error: 'Failed to pick image: $e');
     }
   }

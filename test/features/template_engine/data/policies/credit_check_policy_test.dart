@@ -21,10 +21,9 @@ void main() {
             return _FixedBalanceNotifier(balance);
           }),
         ],
-      );
-
-      // Listen to trigger the stream and wait for data
-      container.listen(creditBalanceNotifierProvider, (_, __) {});
+      )
+        // Listen to trigger the stream and wait for data
+        ..listen(creditBalanceNotifierProvider, (_, __) {});
       // Wait for the async stream to emit
       for (var i = 0; i < 20; i++) {
         await Future<void>.delayed(Duration.zero);

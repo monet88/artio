@@ -1,6 +1,6 @@
 import 'package:artio/core/design_system/app_spacing.dart';
-import 'package:artio/core/utils/email_validator.dart';
 import 'package:artio/core/utils/app_exception_mapper.dart';
+import 'package:artio/core/utils/email_validator.dart';
 import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

@@ -10,7 +10,7 @@ abstract class IAuthRepository {
   Session? get currentSession;
 
   /// Returns [UserModel] on success.
-  /// Throws [AuthException] on failure.
+  /// Throws an auth exception on failure.
   Future<UserModel> signInWithEmail(String email, String password);
 
   /// Signs up user with email and password.
