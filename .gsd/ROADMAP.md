@@ -53,43 +53,18 @@
 - Rate limiting, server/client `imageCount` validation, realtime reconnections, email TLD validation, UI guards
 - 2 phases, 4 plans, 10 commits, 651 tests passing
 
+## Completed Milestones
+- **Test Coverage & Production Readiness** — 2026-02-20 (tag: `test-coverage-prod-readiness`)
+- **UI & Concurrency Polish** — 2026-02-20 (tag: `ui-concurrency-polish`)
+- **Model Sync & Edge Function Tests** (tag: `model-sync`)
+- **Data Integrity & Performance** (tag: `data-integrity-performance`)
+- **Widget Cleanup** (tag: `widget-cleanup`)
+
 ---
 
-## Current Milestone: Test Coverage & Production Readiness
+## Current Milestone: (none)
 
-**Goal:** Đóng tất cả audit gaps, bổ sung test coverage cho untested paths, cấu hình AdMob theo build flavor, và thiết lập CI/monitoring cho production.
-
-### Must-Haves
-- [ ] 🔴 Unit test cho `ImagePickerNotifier` >10MB rejection path (audit gap)
-- [ ] AdMob ID theo build flavor (test IDs cho debug, real IDs cho release)
-- [ ] Edge Function integration tests (refund retry, premium enforcement, concurrency)
-
-### Nice-to-Haves
-- [ ] PREMIUM_MODELS shared source of truth (`ai_models.dart` ↔ `index.ts`)
-- [ ] Deno type-check CI step cho Edge Functions
-- [ ] Sentry alert rule cho `[CRITICAL] Credit refund failed`
-
-### Phases
-
-### Phase 1: Audit Gap Closure
-**Status**: ⬜ Not Started
-**Objective**: Fix 🔴 gap — thêm unit test cho `ImagePickerNotifier.pickImage()` với mock file >10MB để verify rejection path.
-
-### Phase 2: Edge Function Integration Tests
-**Status**: ⬜ Not Started
-**Objective**: Viết integration tests cho Edge Function: refund retry, premium model enforcement, concurrent request handling.
-
-### Phase 3: AdMob Production Config
-**Status**: ⬜ Not Started
-**Objective**: Cấu hình AdMob ID theo build mode — `kDebugMode` dùng test IDs, release dùng real IDs. Thêm test device registration cho QA.
-
-### Phase 4: CI & Monitoring
-**Status**: ⬜ Not Started
-**Objective**: Deno type-check CI step, Sentry alert rule, PREMIUM_MODELS sync verification.
-
-### Phase 5: Verification
-**Status**: ⬜ Not Started
-**Objective**: Analyzer zero, full test suite pass, milestone audit.
+*Use `/new-milestone` to start the next milestone.*
 
 ---
 
@@ -101,3 +76,10 @@
 - [ ] Credit history / transaction log UI
 - [ ] Subscription management settings page
 - [ ] Referral / affiliate system
+
+### Technical Debt
+- [ ] 🟡 PREMIUM_MODELS sync between `ai_models.dart` and `index.ts` — shared source of truth
+- [ ] 🟡 `revenuecat-webhook/index.ts` — `timingSafeEqual` type error (pre-existing, excluded from `deno task check`)
+- [ ] 🟢 Sentry alert rule for `[CRITICAL] Credit refund failed` (docs in `.gsd/phases/phase-4/SENTRY-ALERTS.md`)
+- [ ] 🟢 Replace AdMob placeholder IDs (`ca-app-pub-XXXXX`) with real production IDs from AdMob dashboard
+

@@ -37,7 +37,7 @@ void main() {
     notifier = ImagePickerNotifier(picker: mockPicker);
   });
 
-  tearDown(notifier.dispose);
+  tearDown(() => notifier.dispose());
 
   group('ImagePickerNotifier', () {
     test('pickImage with file >10MB sets error state', () async {
