@@ -45,37 +45,14 @@
 - Model registry sync, template data caching, gallery data caching
 - 3 phases, all verified
 
+### Edge Case Hardening ✅
+- Rate limiting, server/client `imageCount` validation, realtime reconnections, email TLD validation, UI guards
+- 2 phases, 4 plans, 10 commits, 651 tests passing
+
 ---
 
-## Current Milestone: Edge Case Hardening
+## Current Milestone: Next
 
-**Goal:** Fix remaining unhandled and partial edge cases from [review report](plans/reports/review-260220-1533-edge-cases-verification.md)
-
-### Must-Haves
-- [ ] Rate limiting for `generate-image` Edge Function (per-user throttle)
-- [ ] `imageCount` server-side bounds validation (1–4)
-- [ ] Orphaned storage file cleanup on partial upload failure
-- [ ] Realtime subscription reconnection logic in `GenerationJobManager`
-
-### Nice-to-Haves
-- [ ] Client-side `imageCount` bounds assertion in `GenerationOptionsModel`
-- [ ] Negative balance UI clamp in credit display
-- [ ] Email TLD validation in auth form
-
-### Phase 1: Backend Hardening
-**Status**: ✅ Complete
-**Objective**: Add rate limiting, server-side input validation, and storage cleanup to `generate-image` Edge Function
-- Rate limiting: per-user sliding window (e.g., max N requests per minute)
-- Validate `imageCount` param is integer in [1, 4] range
-- Add cleanup logic for orphaned storage files when `mirrorUrlsToStorage` fails mid-sequence
-
-### Phase 2: Client Resilience
-**Status**: ✅ Complete
-**Objective**: Add reconnection logic, client-side validations, and UI safety guards
-- `GenerationJobManager`: auto-reconnect on realtime subscription disconnect
-- `GenerationOptionsModel`: add `imageCount` bounds assertion (1–4)
-- `CreditBalance` display: clamp negative values to 0
-- Auth email validator: add TLD check
 
 ---
 

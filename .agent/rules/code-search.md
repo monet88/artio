@@ -37,6 +37,12 @@
 - Project root: `f:\CodeBase\flutter-app\artio`
 - Or relevant subdirectory: `f:\CodeBase\flutter-app\artio\lib\features\create`
 
+### `grep_search` Quirks ⚠️
+When using the built-in `grep_search` tool:
+- **Always provide a directory path** for `SearchPath`.
+- Passing a direct file path to a single file causes the tool to silently fail and return 'No results found'.
+- To search within a specific single file, set `SearchPath` to its parent directory and use the `Includes` parameter, or grep the directory and filter results yourself.
+
 ## Serena MCP — Correct Parameters
 
 | Tool | Correct Param | WRONG (will error) |
