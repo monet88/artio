@@ -48,7 +48,10 @@ credit balance stream. Three related credit-system fixes in one PR.
     3. Delete `free_beta_policy.dart`
 
     4. Search codebase for any remaining imports of `free_beta_policy.dart` and remove them.
-       Check: generation_policy_provider.dart, any test files.
+       Known references:
+       - `generation_policy_provider.dart` (import)
+       - `test/.../generation_policy_provider_test.dart` (import + test assertions)
+       - `test/.../free_beta_policy_test.dart` (entire file — DELETE)
 
     5. Run `dart run build_runner build --delete-conflicting-outputs` to regenerate
        provider code (generation_policy_provider.g.dart).
@@ -95,7 +98,12 @@ credit balance stream. Three related credit-system fixes in one PR.
 
     2. Update `watchBalance()` method:
        - Change the `if (rows.isEmpty)` block from throwing `AppException` to
-         returning `const CreditBalance(balance: 0)` — the row may not exist
+         returning a default CreditBalance:
+         ```dart
+         return CreditBalance(userId: '', balance: 0, updatedAt: DateTime.now());
+         ```
+         Note: CreditBalance requires userId, balance, updatedAt (all required).
+         The row may not exist
          yet due to race condition between signup trigger and first stream event.
        - Chain `.handleError()` after `.map()`:
          ```dart
