@@ -55,7 +55,7 @@
 ### Phases
 
 #### Phase 1: Auth Fixes
-**Status**: ⬜ Not Started
+**Status**: ✅ Complete
 **Objective**: Input validation for signIn/signUp + OAuth 3-min timeout
 **Plan**: `.gsd/phases/1/PLAN.md`
 **Issues**: 2.2, 2.3
