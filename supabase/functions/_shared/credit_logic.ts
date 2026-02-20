@@ -1,5 +1,4 @@
-// ⚠️ SYNC: Must match lib/core/constants/ai_models.dart
-// Shared credit logic for Edge Functions
+// Shared credit deduction/refund logic for Edge Functions
 
 /**
  * Checks user credits and deducts if sufficient.
