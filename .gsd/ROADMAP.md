@@ -1,12 +1,15 @@
 # ROADMAP.md
 
-> **Current Milestone**: Model Sync & Edge Function Tests
-> **Goal**: Fix model config drift between Dart and TS, add unit tests for Edge Function logic
-> **Last Completed**: Edge Case Fixes Phase 2 (2026-02-20)
+> **Current Milestone**: None — ready for next milestone
+> **Last Completed**: Model Sync & Edge Function Tests (2026-02-20)
 
 ---
 
 ## Completed Milestones
+
+### Model Sync & Edge Function Tests ✅
+- Fixed PREMIUM_MODELS drift (3 mismatches), synced credit costs, shared module + 8 Deno tests
+- 2 phases, 5 tasks, 9 commits, 646 tests (638 Flutter + 8 Deno)
 
 ### Edge Case Fixes (Phase 2) ✅
 - Auth validation, OAuth timeout, CreditCheckPolicy, provider disposal, stream recovery, refund retry, premium enforcement
@@ -40,29 +43,9 @@
 
 ---
 
-## Current Milestone: Model Sync & Edge Function Tests
+## Current Milestone
 
-**Goal**: Fix model config drift between Dart and TS, add unit tests for Edge Function logic.
-
-### Must-Haves
-- [ ] PREMIUM_MODELS synced — Dart `ai_models.dart` ↔ TS `index.ts` match 100%
-- [ ] MODEL_CREDIT_COSTS synced — credit costs match between both sources
-- [ ] Cross-reference comments in both files to prevent future drift
-- [ ] Edge Function unit tests — `refundCreditsOnFailure` + premium check logic
-
-### Nice-to-Haves
-- [ ] Deno type-check CI step
-- [ ] Sentry alert rule for CRITICAL refund
-
-### Phases
-
-#### Phase 1: Model Config Sync
-**Status**: ✅ Complete
-**Objective**: Fix 3 PREMIUM_MODELS mismatches, sync credit costs, add cross-reference comments
-
-#### Phase 2: Edge Function Unit Tests
-**Status**: ✅ Complete
-**Objective**: Extract logic functions from index.ts, write Deno tests for refund retry + premium check
+No active milestone. Run `/new-milestone` to start.
 
 ---
 

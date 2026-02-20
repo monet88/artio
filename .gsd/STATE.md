@@ -1,12 +1,10 @@
 # STATE.md
 
 ## Current Position
-- **Milestone**: Model Sync & Edge Function Tests
-- **Phase**: All phases complete
-- **Status**: Verified — 638 Flutter tests + 8 Deno tests pass
-
-## Last Session Summary
-Both phases executed successfully. 2 plans, 5 tasks completed.
+- **Milestone**: None — ready for next milestone
+- **Last Completed**: Model Sync & Edge Function Tests (2026-02-20)
+- **Status**: Idle
 
 ## Next Steps
-1. `/complete-milestone` — Finalize and tag
+1. `/new-milestone` — Start next milestone
+2. `/check-todos` — Review backlog
