@@ -7,14 +7,22 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'rewarded_ad_service.g.dart';
 
-/// Test ad unit IDs from Google documentation.
-// TODO(release): Replace with production ad unit IDs from AdMob dashboard.
+/// Google test ad unit IDs — used in debug/profile builds.
 const _testAdUnitIdAndroid = 'ca-app-pub-3940256099942544/5224354917';
 const _testAdUnitIdIos = 'ca-app-pub-3940256099942544/1712485313';
 
-String get _adUnitId => defaultTargetPlatform == TargetPlatform.android
-    ? _testAdUnitIdAndroid
-    : _testAdUnitIdIos;
+/// Production ad unit IDs — used in release builds only.
+// TODO(admob): Replace these with real IDs from AdMob dashboard before first release.
+const _prodAdUnitIdAndroid = 'ca-app-pub-XXXXX/YYYYY';
+const _prodAdUnitIdIos = 'ca-app-pub-XXXXX/ZZZZZ';
+
+String get _adUnitId {
+  final isAndroid = defaultTargetPlatform == TargetPlatform.android;
+  if (kReleaseMode) {
+    return isAndroid ? _prodAdUnitIdAndroid : _prodAdUnitIdIos;
+  }
+  return isAndroid ? _testAdUnitIdAndroid : _testAdUnitIdIos;
+}
 
 @riverpod
 RewardedAdService rewardedAdService(Ref ref) {
@@ -24,6 +32,16 @@ RewardedAdService rewardedAdService(Ref ref) {
 }
 
 /// Manages loading, showing, and disposing of Google AdMob rewarded ads.
+///
+/// ## QA Testing with Real Ads
+///
+/// To test with real ad units without triggering invalid traffic:
+/// ```dart
+/// MobileAds.instance.updateRequestConfiguration(
+///   RequestConfiguration(testDeviceIds: ['YOUR_DEVICE_ID']),
+/// );
+/// ```
+/// Get device ID from logcat/console output when running with real ad units.
 ///
 /// Extends [ChangeNotifier] so widgets can reactively rebuild when
 /// [isAdLoaded] changes (e.g., after preloading completes).
