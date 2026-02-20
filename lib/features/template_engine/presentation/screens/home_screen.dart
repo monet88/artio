@@ -66,8 +66,6 @@ class HomeScreen extends ConsumerWidget {
                         ],
                       ),
 
-
-
                       const SizedBox(height: AppSpacing.md),
 
                       // Category chips

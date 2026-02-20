@@ -34,7 +34,22 @@ class _LoadingStateWidgetState extends State<LoadingStateWidget>
     _pulseController = AnimationController(
       vsync: this,
       duration: AppAnimations.ambient,
-    )..repeat(reverse: true);
+    );
+  }
+
+  bool _animationStarted = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_animationStarted) return;
+    _animationStarted = true;
+
+    if (MediaQuery.of(context).disableAnimations) {
+      _pulseController.value = 0.5;
+    } else {
+      _pulseController.repeat(reverse: true);
+    }
   }
 
   @override
@@ -189,7 +204,20 @@ class _SkeletonLoaderState extends State<SkeletonLoader>
     _shimmerController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1500),
-    )..repeat();
+    );
+  }
+
+  bool _animationStarted = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_animationStarted) return;
+    _animationStarted = true;
+
+    if (!MediaQuery.of(context).disableAnimations) {
+      _shimmerController.repeat();
+    }
   }
 
   @override

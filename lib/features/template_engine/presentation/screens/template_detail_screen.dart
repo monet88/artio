@@ -4,6 +4,7 @@ import 'package:artio/core/config/sentry_config.dart';
 import 'package:artio/core/design_system/app_spacing.dart';
 import 'package:artio/core/state/auth_view_model_provider.dart';
 import 'package:artio/core/utils/app_exception_mapper.dart';
+import 'package:artio/features/auth/presentation/state/auth_state.dart';
 import 'package:artio/features/template_engine/domain/entities/generation_job_model.dart';
 import 'package:artio/features/template_engine/domain/entities/input_field_model.dart';
 import 'package:artio/features/template_engine/domain/entities/template_model.dart';
@@ -23,12 +24,12 @@ import 'package:go_router/go_router.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 class TemplateDetailScreen extends ConsumerStatefulWidget {
-
   const TemplateDetailScreen({required this.templateId, super.key});
   final String templateId;
 
   @override
-  ConsumerState<TemplateDetailScreen> createState() => _TemplateDetailScreenState();
+  ConsumerState<TemplateDetailScreen> createState() =>
+      _TemplateDetailScreenState();
 }
 
 class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
@@ -37,29 +38,27 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
   final _formKey = GlobalKey<FormState>();
   ProviderSubscription<AsyncValue<TemplateModel?>>? _templateErrorSub;
   ProviderSubscription<AsyncValue<GenerationJobModel?>>? _jobErrorSub;
-
-
+  ProviderSubscription? _premiumSub;
 
   String _buildPrompt(TemplateModel template) {
     var prompt = template.promptTemplate;
     for (final entry in _inputValues.entries) {
       prompt = prompt.replaceAll('{${entry.key}}', entry.value);
     }
-    
+
     // Append otherIdeas if non-empty
     final otherIdeas = _inputValues['otherIdeas']?.trim() ?? '';
     if (otherIdeas.isNotEmpty) {
       prompt += '\n\nAdditional details: $otherIdeas';
     }
-    
+
     return prompt;
   }
 
   void _handleGenerate(TemplateModel template) {
-    final userId = ref.read(authViewModelProvider).maybeMap(
-          authenticated: (s) => s.user.id,
-          orElse: () => null,
-        );
+    final userId = ref
+        .read(authViewModelProvider)
+        .maybeMap(authenticated: (s) => s.user.id, orElse: () => null);
 
     if (userId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -88,8 +87,10 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
       );
       return;
     }
-    
-    ref.read(generationViewModelProvider.notifier).generate(
+
+    ref
+        .read(generationViewModelProvider.notifier)
+        .generate(
           templateId: template.id,
           prompt: prompt,
           userId: userId,
@@ -129,12 +130,27 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
         );
       },
     );
+
+    // Tag Sentry events with premium status (fires only on change)
+    _premiumSub = ref.listenManual<AuthState>(
+      authViewModelProvider,
+      (_, AuthState next) {
+        final isPremium = next.maybeMap(
+          authenticated: (s) => s.user.isPremium,
+          orElse: () => false,
+        );
+        Sentry.configureScope(
+          (scope) => scope.setTag('isPremium', isPremium.toString()),
+        );
+      },
+    );
   }
 
   @override
   void dispose() {
     _templateErrorSub?.close();
     _jobErrorSub?.close();
+    _premiumSub?.close();
     super.dispose();
   }
 
@@ -143,21 +159,19 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
     final templateAsync = ref.watch(templateByIdProvider(widget.templateId));
     final jobAsync = ref.watch(generationViewModelProvider);
     final options = ref.watch(generationOptionsProvider);
-    final isPremium = ref.watch(authViewModelProvider).maybeMap(
+    final isPremium = ref
+        .watch(authViewModelProvider)
+        .maybeMap(
           authenticated: (state) => state.user.isPremium,
           orElse: () => false,
         );
-
-    // Tag Sentry events with premium status for post-deploy monitoring
-    Sentry.configureScope(
-      (scope) => scope.setTag('isPremium', isPremium.toString()),
-    );
 
     return Scaffold(
       appBar: AppBar(title: const Text('Generate')),
       body: templateAsync.when(
         loading: () => const LoadingStateWidget(),
-        error: (e, _) => Center(child: Text(AppExceptionMapper.toUserMessage(e))),
+        error: (e, _) =>
+            Center(child: Text(AppExceptionMapper.toUserMessage(e))),
         data: (template) {
           if (template == null) {
             return const Center(child: Text('Template not found'));
@@ -177,7 +191,8 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
                       for (final field in template.inputFields) ...[
                         InputFieldBuilder(
                           field: field,
-                          onChanged: (value) => _inputValues[field.name] = value,
+                          onChanged: (value) =>
+                              _inputValues[field.name] = value,
                         ),
                         const SizedBox(height: AppSpacing.md),
                       ],
@@ -204,32 +219,43 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
                 AspectRatioSelector(
                   selectedRatio: options.aspectRatio,
                   selectedModelId: options.modelId,
-                  onChanged: (ratio) => ref.read(generationOptionsProvider.notifier).updateAspectRatio(ratio),
+                  onChanged: (ratio) => ref
+                      .read(generationOptionsProvider.notifier)
+                      .updateAspectRatio(ratio),
                 ),
                 const SizedBox(height: AppSpacing.md),
                 ImageCountDropdown(
                   value: options.imageCount,
-                  onChanged: (count) => ref.read(generationOptionsProvider.notifier).updateImageCount(count),
+                  onChanged: (count) => ref
+                      .read(generationOptionsProvider.notifier)
+                      .updateImageCount(count),
                 ),
                 const SizedBox(height: AppSpacing.md),
                 OutputFormatToggle(
                   value: options.outputFormat,
                   isPremium: isPremium,
-                  onChanged: (format) => ref.read(generationOptionsProvider.notifier).updateOutputFormat(format),
+                  onChanged: (format) => ref
+                      .read(generationOptionsProvider.notifier)
+                      .updateOutputFormat(format),
                 ),
                 const SizedBox(height: AppSpacing.md),
                 ModelSelector(
                   selectedModelId: options.modelId,
                   isPremium: isPremium,
-                  onChanged: (modelId) => ref.read(generationOptionsProvider.notifier).updateModel(modelId),
+                  onChanged: (modelId) => ref
+                      .read(generationOptionsProvider.notifier)
+                      .updateModel(modelId),
                   filterByType: 'text-to-image',
                 ),
                 const SizedBox(height: AppSpacing.lg),
                 GenerationStateSection(
                   jobAsync: jobAsync,
-                  isGenerating: ref.read(generationViewModelProvider.notifier).isGenerating,
+                  isGenerating: ref
+                      .read(generationViewModelProvider.notifier)
+                      .isGenerating,
                   onGenerate: () => _handleGenerate(template),
-                  onReset: () => ref.read(generationViewModelProvider.notifier).reset(),
+                  onReset: () =>
+                      ref.read(generationViewModelProvider.notifier).reset(),
                 ),
               ],
             ),
