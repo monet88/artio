@@ -74,9 +74,10 @@
 - [ ] Subscription management settings page
 - [ ] Referral / affiliate system
 
-### Technical Debt (from Edge Case Fixes audit)
-- [ ] Edge Function integration tests (refund retry, premium enforcement)
-- [ ] PREMIUM_MODELS sync between `ai_models.dart` and `index.ts` — shared source of truth
-- [ ] Deno type-check CI step for Edge Functions
-- [ ] Sentry alert rule for `[CRITICAL] Credit refund failed`
-- [ ] Replace test AdMob IDs with production IDs (TODO in rewarded_ad_service.dart)
+### Technical Debt
+- [ ] 🔴 Unit test for `ImagePickerNotifier` >10MB rejection path (audit gap)
+- [ ] 🟡 Edge Function integration tests (refund retry, premium enforcement, concurrency)
+- [ ] 🟡 PREMIUM_MODELS sync between `ai_models.dart` and `index.ts` — shared source of truth
+- [ ] 🟡 Replace test AdMob IDs with production IDs (TODO in `rewarded_ad_service.dart`)
+- [ ] 🟢 Deno type-check CI step for Edge Functions
+- [ ] 🟢 Sentry alert rule for `[CRITICAL] Credit refund failed`
