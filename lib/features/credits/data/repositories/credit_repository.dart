@@ -74,10 +74,61 @@ class CreditRepository implements ICreditRepository {
   }
 
   @override
-  Future<({int creditsAwarded, int newBalance, int adsRemaining})>
-      rewardAdCredits() async {
+  Future<String> requestAdNonce() async {
     try {
-      final response = await _supabase.functions.invoke('reward-ad');
+      final response = await _supabase.functions.invoke(
+        'reward-ad',
+        queryParameters: {'action': 'request-nonce'},
+      );
+
+      if (response.status == 429) {
+        throw const AppException.payment(
+          message: 'Daily ad limit reached '
+              '(${AppConstants.dailyAdLimit}/day)',
+          code: 'daily_limit_reached',
+        );
+      }
+
+      final data = response.data is String
+          ? jsonDecode(response.data as String) as Map<String, dynamic>
+          : response.data as Map<String, dynamic>;
+
+      if (data['success'] != true) {
+        throw AppException.network(
+          message: data['message'] as String? ?? 'Failed to get nonce',
+          statusCode: response.status,
+        );
+      }
+
+      return data['nonce'] as String;
+    } on FunctionException catch (e) {
+      if (e.status == 429) {
+        throw const AppException.payment(
+          message: 'Daily ad limit reached '
+              '(${AppConstants.dailyAdLimit}/day)',
+          code: 'daily_limit_reached',
+        );
+      }
+      throw AppException.network(
+        message: e.reasonPhrase ?? 'Failed to get nonce',
+        statusCode: e.status,
+      );
+    } on AppException {
+      rethrow;
+    } catch (e) {
+      throw AppException.unknown(message: e.toString(), originalError: e);
+    }
+  }
+
+  @override
+  Future<({int creditsAwarded, int newBalance, int adsRemaining})>
+      rewardAdCredits({required String nonce}) async {
+    try {
+      final response = await _supabase.functions.invoke(
+        'reward-ad',
+        queryParameters: {'action': 'claim'},
+        body: {'nonce': nonce},
+      );
 
       // Check status codes before parsing body
       if (response.status == 429) {

@@ -15,9 +15,14 @@ abstract class ICreditRepository {
     int offset = 0,
   });
 
-  /// Call the reward-ad Edge Function to award credits for watching an ad.
+  /// Request a one-time nonce for ad reward claim.
+  /// Must be called BEFORE showing the ad.
+  Future<String> requestAdNonce();
+
+  /// Claim ad reward using a previously requested nonce.
+  /// The nonce must be valid, unexpired (5 min), and unused.
   Future<({int creditsAwarded, int newBalance, int adsRemaining})>
-      rewardAdCredits();
+      rewardAdCredits({required String nonce});
 
   /// Fetch how many ads the user can still watch today.
   /// See [AppConstants.dailyAdLimit] for the maximum.

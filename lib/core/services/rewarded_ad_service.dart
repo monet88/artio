@@ -37,6 +37,20 @@ class RewardedAdService extends ChangeNotifier {
   /// Whether an ad is currently being loaded.
   bool get isLoading => _isLoading;
 
+  /// Configure server-side verification options on the loaded ad.
+  /// Call AFTER ad is loaded and BEFORE showing.
+  Future<void> setServerSideVerification({
+    required String userId,
+    required String customData,
+  }) async {
+    await _rewardedAd?.setServerSideOptions(
+      ServerSideVerificationOptions(
+        userId: userId,
+        customData: customData,
+      ),
+    );
+  }
+
   /// Loads a rewarded ad. No-op if one is already loaded or loading.
   void loadAd() {
     if (_rewardedAd != null || _isLoading) return;

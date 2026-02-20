@@ -6,11 +6,17 @@ part of 'ad_reward_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$adRewardNotifierHash() => r'fda978dff39527eba20da52cb41a56811c9fff33';
+String _$adRewardNotifierHash() => r'1ea4b6533af70bde47ea1a29d770a6f8ef7ef1d4';
 
-/// Manages the ad-watch → server-reward → UI-refresh flow.
+/// Manages the nonce-verified ad-watch → server-reward → UI-refresh flow.
 ///
 /// State is the number of ads remaining today (0–10).
+///
+/// Flow:
+/// 1. Request one-time nonce from server (validates daily limit)
+/// 2. Set SSV options on ad with nonce as custom_data
+/// 3. Show the ad — user must complete it
+/// 4. Claim reward with nonce — server validates nonce is valid + unexpired
 ///
 /// Copied from [AdRewardNotifier].
 @ProviderFor(AdRewardNotifier)

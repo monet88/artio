@@ -1,11 +1,15 @@
 # ROADMAP.md
 
 > **Current Milestone**: None — ready for next milestone
-> **Last Completed**: Model Sync & Edge Function Tests (2026-02-20)
+> **Last Completed**: Security — Reward Ad SSV (2026-02-20)
 
 ---
 
 ## Completed Milestones
+
+### Security — Reward Ad SSV ✅
+- Nonce-based ad reward validation, `pending_ad_rewards` table, 2-action Edge Function, Flutter 2-step flow
+- 1 phase, 3 plans, 640 tests passing, deployed to production
 
 ### Model Sync & Edge Function Tests ✅
 - Fixed PREMIUM_MODELS drift (3 mismatches), synced credit costs, shared module + 8 Deno tests

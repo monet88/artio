@@ -1,4 +1,5 @@
 import 'package:artio/core/exceptions/app_exception.dart';
+import 'package:artio/core/providers/supabase_provider.dart';
 import 'package:artio/core/services/rewarded_ad_service.dart';
 import 'package:artio/features/credits/domain/providers/credit_repository_provider.dart';
 import 'package:artio/features/credits/presentation/providers/credit_balance_provider.dart';
@@ -6,9 +7,15 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'ad_reward_provider.g.dart';
 
-/// Manages the ad-watch → server-reward → UI-refresh flow.
+/// Manages the nonce-verified ad-watch → server-reward → UI-refresh flow.
 ///
 /// State is the number of ads remaining today (0–10).
+///
+/// Flow:
+/// 1. Request one-time nonce from server (validates daily limit)
+/// 2. Set SSV options on ad with nonce as custom_data
+/// 3. Show the ad — user must complete it
+/// 4. Claim reward with nonce — server validates nonce is valid + unexpired
 @riverpod
 class AdRewardNotifier extends _$AdRewardNotifier {
   @override
@@ -19,10 +26,12 @@ class AdRewardNotifier extends _$AdRewardNotifier {
 
   /// Shows a rewarded ad and awards credits on completion.
   ///
+  /// Uses 2-step nonce flow for server-side validation.
   /// Returns the reward result on success, or throws on failure.
   Future<({int creditsAwarded, int newBalance, int adsRemaining})>
       watchAdAndReward() async {
     final adService = ref.read(rewardedAdServiceProvider);
+    final repo = ref.read(creditRepositoryProvider);
 
     if (!adService.isAdLoaded) {
       throw const AppException.network(
@@ -30,7 +39,19 @@ class AdRewardNotifier extends _$AdRewardNotifier {
       );
     }
 
-    // Show the ad — returns true only if user earned the reward
+    // Step 1: Request nonce from server BEFORE showing ad
+    final nonce = await repo.requestAdNonce();
+
+    // Step 2: Set SSV options with nonce as custom_data
+    final user = ref.read(supabaseClientProvider).auth.currentUser;
+    if (user != null) {
+      await adService.setServerSideVerification(
+        userId: user.id,
+        customData: nonce,
+      );
+    }
+
+    // Step 3: Show the ad — returns true only if user earned the reward
     final earned = await adService.showAd();
     if (!earned) {
       throw const AppException.network(
@@ -38,9 +59,8 @@ class AdRewardNotifier extends _$AdRewardNotifier {
       );
     }
 
-    // Call server to award credits
-    final repo = ref.read(creditRepositoryProvider);
-    final result = await repo.rewardAdCredits();
+    // Step 4: Claim reward with nonce — server validates nonce
+    final result = await repo.rewardAdCredits(nonce: nonce);
 
     // Refresh ads remaining + credit balance
     ref

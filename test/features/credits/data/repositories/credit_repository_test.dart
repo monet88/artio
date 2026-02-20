@@ -132,11 +132,13 @@ void main() {
 
     group('rewardAdCredits', () {
       test('returns reward result on success', () async {
-        when(() => mockRepository.rewardAdCredits()).thenAnswer(
+        when(() => mockRepository.rewardAdCredits(nonce: 'test-nonce'))
+            .thenAnswer(
           (_) async => (creditsAwarded: 5, newBalance: 55, adsRemaining: 7),
         );
 
-        final result = await mockRepository.rewardAdCredits();
+        final result =
+            await mockRepository.rewardAdCredits(nonce: 'test-nonce');
 
         expect(result.creditsAwarded, 5);
         expect(result.newBalance, 55);
@@ -145,7 +147,8 @@ void main() {
 
       test('throws AppException.validation when daily limit reached',
           () async {
-        when(() => mockRepository.rewardAdCredits()).thenThrow(
+        when(() => mockRepository.rewardAdCredits(nonce: 'test-nonce'))
+            .thenThrow(
           const AppException.network(
             message: 'Daily ad limit reached (10/day)',
             statusCode: 429,
@@ -153,18 +156,41 @@ void main() {
         );
 
         expect(
-          () => mockRepository.rewardAdCredits(),
+          () => mockRepository.rewardAdCredits(nonce: 'test-nonce'),
           throwsA(isA<NetworkException>()),
         );
       });
 
       test('throws AppException.network on server error', () async {
-        when(() => mockRepository.rewardAdCredits()).thenThrow(
+        when(() => mockRepository.rewardAdCredits(nonce: 'test-nonce'))
+            .thenThrow(
           const AppException.network(message: 'Server error'),
         );
 
         expect(
-          () => mockRepository.rewardAdCredits(),
+          () => mockRepository.rewardAdCredits(nonce: 'test-nonce'),
+          throwsA(isA<NetworkException>()),
+        );
+      });
+    });
+
+    group('requestAdNonce', () {
+      test('returns nonce string on success', () async {
+        when(() => mockRepository.requestAdNonce())
+            .thenAnswer((_) async => 'abc-123-nonce');
+
+        final result = await mockRepository.requestAdNonce();
+
+        expect(result, 'abc-123-nonce');
+      });
+
+      test('throws AppException on error', () async {
+        when(() => mockRepository.requestAdNonce()).thenThrow(
+          const AppException.network(message: 'Failed to request nonce'),
+        );
+
+        expect(
+          () => mockRepository.requestAdNonce(),
           throwsA(isA<NetworkException>()),
         );
       });
