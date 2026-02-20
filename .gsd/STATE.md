@@ -1,14 +1,12 @@
 # STATE.md
 
 ## Current Position
-- **Milestone**: Next
+- **Milestone**: UI & Concurrency Polish
 - **Phase**: Not started
-- **Task**: Planning needed
-- **Status**: Idle — Complete
+- **Status**: Milestone planned
 
 ## Last Session Summary
-Archived and tagged "Edge Case Hardening".
-Completed 2 phases with rate limiting, input validation, cleanups, and reconnection. 651 tests passing.
+Archived and tagged "Edge Case Hardening". Planned out the new "UI & Concurrency Polish" milestone based on the remaining partial edge cases from the 2026-02-20 verification report.
 
 ## Next Steps
-1. /new-milestone — Plan the next milestone based on the backlog.
+1. /plan 1 — Create execution plans for Phase 1: Concurrency & Backend Limits

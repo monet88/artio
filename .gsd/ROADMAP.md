@@ -51,8 +51,28 @@
 
 ---
 
-## Current Milestone: Next
+## Current Milestone: UI & Concurrency Polish
 
+**Goal:** Handle remaining "Partial Handling" edge cases from the 2026-02-20 verification report related to UI UX components and concurrent behaviors.
+
+### Must-Haves
+- [ ] Concurrent request processing & credit deductions (deduplication & locks)
+- [ ] Better error UX for Gallery (size validation, confirm deletes, pull-to-refresh)
+- [ ] Refined Auth flows (OAuth cancel logic, safe password reset feedback)
+- [ ] Resilient parsing (Missing template fields don't fail entire list)
+- [ ] Adjust and verify 120s timeout expectation for AI provider polling
+
+### Phase 1: Concurrency & Backend Limits
+**Status**: ⬜ Not Started
+**Objective**: Fix concurrent generation requests (deduplication), concurrent credit deductions (atomic UPDATE/INSERT), and Edge Function locking for job processing. Also refine KIE timeout logic.
+
+### Phase 2: Auth & Template Resilience
+**Status**: ⬜ Not Started
+**Objective**: Detect and handle OAuth cancellation securely. Update password reset UX to not reveal email existence. Implement resilient parsing for Freezed template models (skip defective items rather than failing whole list).
+
+### Phase 3: Gallery UX & Guards
+**Status**: ⬜ Not Started
+**Objective**: Add size validation for image uploads (>10MB). Implement manual pull-to-refresh for Gallery. Replace Delete undo with a explicit confirmation dialog.
 
 ---
 
