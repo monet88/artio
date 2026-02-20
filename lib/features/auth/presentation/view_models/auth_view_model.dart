@@ -186,12 +186,14 @@ class AuthViewModel extends _$AuthViewModel implements Listenable {
     if (trimmed.isEmpty || !RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(trimmed)) {
       throw const AppException.auth(message: 'Please enter a valid email address');
     }
+    // Generic UI handler: Even on failure, mask it so we do not expose valid/invalid emails.
     try {
       final authRepo = ref.read(authRepositoryProvider);
       await authRepo.resetPassword(trimmed);
     } on Exception catch (e) {
-      if (e is AppException) rethrow;
-      throw const AppException.auth(message: 'Failed to send reset email');
+      if (e is AppException && e.message == 'Please enter a valid email address') rethrow;
+      // We log but DO NOT leak errors about user not existing to the UI
+      Log.i('Failed to send reset email non-fatally: $e');
     }
   }
 
