@@ -3,6 +3,8 @@ import 'package:artio/features/subscription/domain/entities/subscription_package
 import 'package:artio/features/subscription/domain/entities/subscription_status.dart';
 import 'package:artio/features/subscription/presentation/providers/subscription_provider.dart';
 import 'package:artio/features/subscription/presentation/widgets/tier_comparison_card.dart';
+import 'package:artio/shared/widgets/error_state_widget.dart';
+import 'package:artio/shared/widgets/loading_state_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -32,28 +34,11 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
         ),
       ),
       body: offerings.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.lg),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.error_outline, size: 48, color: theme.colorScheme.error),
-                const SizedBox(height: AppSpacing.md),
-                Text(
-                  'Unable to load subscription options',
-                  style: theme.textTheme.titleMedium,
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                TextButton(
-                  onPressed: () => ref.invalidate(offeringsProvider),
-                  child: const Text('Retry'),
-                ),
-              ],
-            ),
-          ),
+        loading: () => const LoadingStateWidget(compact: true),
+        error: (e, _) => ErrorStateWidget.fromError(
+          error: e,
+          message: 'Unable to load subscription options',
+          onRetry: () => ref.invalidate(offeringsProvider),
         ),
         data: (packages) => _buildContent(context, packages, subscription),
       ),
