@@ -70,7 +70,7 @@
 - Add cleanup logic for orphaned storage files when `mirrorUrlsToStorage` fails mid-sequence
 
 ### Phase 2: Client Resilience
-**Status**: ⬜ Not Started
+**Status**: ✅ Complete
 **Objective**: Add reconnection logic, client-side validations, and UI safety guards
 - `GenerationJobManager`: auto-reconnect on realtime subscription disconnect
 - `GenerationOptionsModel`: add `imageCount` bounds assertion (1–4)
