@@ -182,7 +182,10 @@ class _$GenerationOptionsModelImpl implements _GenerationOptionsModel {
     this.outputFormat = 'jpg',
     this.modelId = 'google/imagen4',
     this.otherIdeas = '',
-  });
+  }) : assert(
+         imageCount >= 1 && imageCount <= 4,
+         'imageCount must be between 1 and 4',
+       );
 
   factory _$GenerationOptionsModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$GenerationOptionsModelImplFromJson(json);

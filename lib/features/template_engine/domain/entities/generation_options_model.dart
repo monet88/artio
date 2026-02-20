@@ -5,6 +5,10 @@ part 'generation_options_model.g.dart';
 
 @freezed
 class GenerationOptionsModel with _$GenerationOptionsModel {
+  @Assert(
+    'imageCount >= 1 && imageCount <= 4',
+    'imageCount must be between 1 and 4',
+  )
   const factory GenerationOptionsModel({
     @Default('1:1') String aspectRatio,
     @Default(1) int imageCount,
