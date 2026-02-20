@@ -57,19 +57,19 @@
 #### Phase 1: Auth Fixes
 **Status**: ⬜ Not Started
 **Objective**: Input validation for signIn/signUp + OAuth 3-min timeout
-**Plan**: `plans/260220-0845-edge-case-fixes/1-PLAN-auth-fixes.md`
+**Plan**: `.gsd/phases/1/PLAN.md`
 **Issues**: 2.2, 2.3
 
 #### Phase 2: Credit Fixes
 **Status**: ⬜ Not Started
 **Objective**: CreditCheckPolicy, provider disposal on logout, stream error recovery
-**Plan**: `plans/260220-0845-edge-case-fixes/2-PLAN-credit-fixes.md`
+**Plan**: `.gsd/phases/2/PLAN.md`
 **Issues**: 1.1, 1.3, 2.4
 
 #### Phase 3: Edge Function Fixes
 **Status**: ⬜ Not Started
 **Objective**: Refund retry with exponential backoff, premium model enforcement
-**Plan**: `plans/260220-0845-edge-case-fixes/3-PLAN-edge-func-fixes.md`
+**Plan**: `.gsd/phases/3/PLAN.md`
 **Issues**: 1.2, 2.1
 
 ---
