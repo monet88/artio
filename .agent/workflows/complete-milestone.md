@@ -73,23 +73,36 @@ Create `.gsd/milestones/{name}-SUMMARY.md`:
 
 ## 4. Archive Current State
 
+> **IMPORTANT:** Use `Move-Item` / `mv` (NOT `Copy-Item` / `cp`).
+> Moving deletes the originals automatically — NO separate cleanup step needed.
+
+// turbo
 **PowerShell:**
 ```powershell
 # Create milestone archive
 New-Item -ItemType Directory -Force ".gsd/milestones/{name}"
 
-# Move phase-specific files
+# Move phase files (plans, summaries, verifications)
 Move-Item ".gsd/phases/*" ".gsd/milestones/{name}/"
+
+# Move AUDIT.md if present
+if (Test-Path ".gsd/AUDIT.md") { Move-Item ".gsd/AUDIT.md" ".gsd/milestones/{name}/" }
 ```
 
+// turbo
 **Bash:**
 ```bash
 # Create milestone archive
 mkdir -p ".gsd/milestones/{name}"
 
-# Move phase-specific files
+# Move phase files (plans, summaries, verifications)
 mv .gsd/phases/* ".gsd/milestones/{name}/"
+
+# Move AUDIT.md if present
+[ -f ".gsd/AUDIT.md" ] && mv ".gsd/AUDIT.md" ".gsd/milestones/{name}/"
 ```
+
+After this step, `.gsd/phases/` should be **empty** and ready for the next milestone.
 
 ---
 
