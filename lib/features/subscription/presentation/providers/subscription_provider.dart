@@ -1,3 +1,5 @@
+import 'package:artio/features/auth/presentation/state/auth_state.dart';
+import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
 import 'package:artio/features/subscription/domain/entities/subscription_package.dart';
 import 'package:artio/features/subscription/domain/entities/subscription_status.dart';
 import 'package:artio/features/subscription/domain/providers/subscription_repository_provider.dart';
@@ -10,6 +12,20 @@ part 'subscription_provider.g.dart';
 class SubscriptionNotifier extends _$SubscriptionNotifier {
   @override
   Future<SubscriptionStatus> build() async {
+    // Admin/DB-premium users bypass RevenueCat and get Ultra status.
+    final authState = ref.watch(authViewModelProvider);
+    final isDbPremium = switch (authState) {
+      AuthStateAuthenticated(user: final u) => u.isPremium,
+      _ => false,
+    };
+    if (isDbPremium) {
+      return const SubscriptionStatus(
+        tier: SubscriptionTiers.ultra,
+        isActive: true,
+        willRenew: true,
+      );
+    }
+
     final repo = ref.watch(subscriptionRepositoryProvider);
     return repo.getStatus();
   }
