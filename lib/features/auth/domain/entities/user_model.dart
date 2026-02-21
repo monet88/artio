@@ -11,6 +11,11 @@ DateTime? _tryParseDateTime(String? value) {
   return DateTime.tryParse(value);
 }
 
+/// String constants for user role identifiers.
+abstract final class UserRoles {
+  static const admin = 'admin';
+}
+
 @freezed
 class UserModel with _$UserModel {
   const factory UserModel({
@@ -42,7 +47,7 @@ class UserModel with _$UserModel {
           (metadata?['avatar_url'] as String?),
       credits: (profile?['credits'] as num?)?.toInt() ?? 0,
       isPremium: (profile?['is_premium'] as bool? ?? false) ||
-          profile?['role'] == 'admin',
+          profile?['role'] == UserRoles.admin,
       premiumExpiresAt: _tryParseDateTime(
         profile?['premium_expires_at'] as String?,
       ),
