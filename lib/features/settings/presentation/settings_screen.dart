@@ -87,9 +87,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            style: TextButton.styleFrom(
-              foregroundColor: AppColors.error,
-            ),
+            style: TextButton.styleFrom(foregroundColor: AppColors.error),
             child: const Text('Logout'),
           ),
         ],
@@ -123,6 +121,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       authenticated: (s) => s.user.email,
       orElse: () => '',
     );
+    final isPremium = authState.maybeMap(
+      authenticated: (s) => s.user.isPremium,
+      orElse: () => false,
+    );
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
@@ -133,7 +135,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               padding: const EdgeInsets.all(AppSpacing.md),
               children: [
                 if (isLoggedIn)
-                  UserProfileCard(email: email, isDark: isDark)
+                  UserProfileCard(
+                    email: email,
+                    isDark: isDark,
+                    isPremium: isPremium,
+                  )
                 else
                   SignInPromptCard(isDark: isDark),
                 if (isLoggedIn) ...[

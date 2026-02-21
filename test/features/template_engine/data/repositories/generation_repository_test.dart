@@ -45,6 +45,7 @@ void main() {
             ));
 
         final result = await repository.startGeneration(
+          userId: 'test-user-id',
           templateId: 'template-1',
           prompt: 'A beautiful sunset',
         );
@@ -71,6 +72,7 @@ void main() {
             ));
 
         final result = await repository.startGeneration(
+          userId: 'test-user-id',
           templateId: 'template-1',
           prompt: 'A beautiful sunset',
         );
@@ -89,6 +91,7 @@ void main() {
 
         expect(
           () => repository.startGeneration(
+            userId: 'test-user-id',
             templateId: 'template-1',
             prompt: 'test',
           ),
@@ -111,6 +114,7 @@ void main() {
 
         expect(
           () => repository.startGeneration(
+            userId: 'test-user-id',
             templateId: 'template-1',
             prompt: 'test',
           ),
@@ -129,6 +133,7 @@ void main() {
 
         expect(
           () => repository.startGeneration(
+            userId: 'test-user-id',
             templateId: 'template-1',
             prompt: 'test',
           ),
@@ -152,6 +157,7 @@ void main() {
 
         expect(
           () => repository.startGeneration(
+            userId: 'test-user-id',
             templateId: 'template-1',
             prompt: 'test',
           ),
@@ -182,6 +188,7 @@ void main() {
 
         expect(
           () => repository.startGeneration(
+            userId: 'test-user-id',
             templateId: 'template-1',
             prompt: 'test',
           ),
@@ -203,6 +210,7 @@ void main() {
             ));
 
         await repository.startGeneration(
+          userId: 'test-user-id',
           templateId: 'template-1',
           prompt: '  A beautiful sunset  ',
         );
@@ -228,6 +236,7 @@ void main() {
             ));
 
         await repository.startGeneration(
+          userId: 'test-user-id',
           templateId: 'template-1',
           prompt: 'test',
           aspectRatio: '16:9',

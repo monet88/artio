@@ -7,6 +7,7 @@ import 'package:artio/features/auth/presentation/widgets/social_login_buttons.da
 import 'package:artio/routing/routes/app_routes.dart';
 import 'package:artio/shared/widgets/gradient_button.dart';
 import 'package:artio/theme/app_colors.dart';
+import 'package:artio/utils/logger_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -34,11 +35,21 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
   }
 
   void _handleLogin() {
+    final isAuthenticating =
+        ref.read(authViewModelProvider) is AuthStateAuthenticating;
+    Log.d(
+      '[LoginScreen] Sign In tapped — isAuthenticating=$isAuthenticating, validating form...',
+    );
     if (_formKey.currentState!.validate()) {
-      ref.read(authViewModelProvider.notifier).signInWithEmail(
+      Log.d('[LoginScreen] Form valid → calling signInWithEmail');
+      ref
+          .read(authViewModelProvider.notifier)
+          .signInWithEmail(
             _emailController.text.trim(),
             _passwordController.text,
           );
+    } else {
+      Log.d('[LoginScreen] Form invalid → validation errors shown');
     }
   }
 
@@ -46,7 +57,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
   Widget build(BuildContext context) {
     final authState = ref.watch(authViewModelProvider);
     final isLoading = authState is AuthStateAuthenticating;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    Log.d('[LoginScreen] build — authState: $authState, isLoading: $isLoading');
 
     ref.listen<AuthState>(authViewModelProvider, (_, state) {
       if (state is AuthStateError) {
@@ -60,10 +71,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
     });
 
     return Scaffold(
+      backgroundColor: AppColors.darkBackground,
       body: DecoratedBox(
-        decoration: BoxDecoration(
-          gradient: isDark ? AppGradients.backgroundGradient : null,
-          color: isDark ? null : AppColors.lightBackground,
+        decoration: const BoxDecoration(
+          gradient: AppGradients.backgroundGradient,
         ),
         child: SafeArea(
           child: SingleChildScrollView(
@@ -156,8 +167,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                               ? Icons.visibility_outlined
                               : Icons.visibility_off_outlined,
                         ),
-                        onPressed: () =>
-                            setState(() => _obscurePassword = !_obscurePassword),
+                        onPressed: () => setState(
+                          () => _obscurePassword = !_obscurePassword,
+                        ),
                       ),
                     ),
                     validator: (value) {
@@ -205,7 +217,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                         style: AppTypography.bodySecondary(context),
                       ),
                       TextButton(
-                        onPressed: () => const RegisterRoute().push<void>(context),
+                        onPressed: () =>
+                            const RegisterRoute().push<void>(context),
                         child: const Text('Sign Up'),
                       ),
                     ],

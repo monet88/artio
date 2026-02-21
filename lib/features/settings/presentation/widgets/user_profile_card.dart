@@ -5,10 +5,16 @@ import 'package:flutter/material.dart';
 
 /// User profile card showing avatar, email, and plan badge.
 class UserProfileCard extends StatelessWidget {
-  const UserProfileCard({required this.email, required this.isDark, super.key});
+  const UserProfileCard({
+    required this.email,
+    required this.isDark,
+    this.isPremium = false,
+    super.key,
+  });
 
   final String email;
   final bool isDark;
+  final bool isPremium;
 
   @override
   Widget build(BuildContext context) {
@@ -63,9 +69,9 @@ class UserProfileCard extends StatelessWidget {
               children: [
                 Text(
                   email,
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -76,13 +82,17 @@ class UserProfileCard extends StatelessWidget {
                     vertical: 3,
                   ),
                   decoration: BoxDecoration(
-                    color: AppColors.primaryCta.withValues(alpha: 0.12),
+                    color: isPremium
+                        ? const Color(0xFFFFA500).withValues(alpha: 0.15)
+                        : AppColors.primaryCta.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Text(
-                    'FREE PLAN',
+                    isPremium ? 'PREMIUM' : 'FREE PLAN',
                     style: AppTypography.labelBadge.copyWith(
-                      color: AppColors.primaryCta,
+                      color: isPremium
+                          ? const Color(0xFFFFA500)
+                          : AppColors.primaryCta,
                     ),
                   ),
                 ),
