@@ -3,12 +3,19 @@ import 'package:artio/features/subscription/data/repositories/subscription_repos
 import 'package:artio/features/subscription/domain/entities/subscription_package.dart';
 import 'package:artio/features/subscription/domain/entities/subscription_status.dart';
 import 'package:artio/features/subscription/presentation/providers/subscription_provider.dart';
+import 'package:artio/features/auth/presentation/state/auth_state.dart';
+import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockSubscriptionRepository extends Mock
     implements SubscriptionRepository {}
+
+class _FakeAuthViewModel extends AuthViewModel {
+  @override
+  AuthState build() => const AuthState.unauthenticated();
+}
 
 void main() {
   late MockSubscriptionRepository mockRepo;
@@ -32,6 +39,9 @@ void main() {
     return ProviderContainer(
       overrides: [
         subscriptionRepositoryProvider.overrideWithValue(mockRepo),
+        authViewModelProvider.overrideWith(
+          () => _FakeAuthViewModel(),
+        ),
       ],
     );
   }

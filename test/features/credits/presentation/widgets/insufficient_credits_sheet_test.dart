@@ -3,6 +3,8 @@ import 'package:artio/features/credits/data/repositories/credit_repository.dart'
 import 'package:artio/features/credits/presentation/widgets/insufficient_credits_sheet.dart';
 import 'package:artio/features/subscription/data/repositories/subscription_repository.dart';
 import 'package:artio/features/subscription/domain/entities/subscription_status.dart';
+import 'package:artio/features/auth/presentation/state/auth_state.dart';
+import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -14,6 +16,11 @@ class MockSubscriptionRepository extends Mock
     implements SubscriptionRepository {}
 
 class MockRewardedAdService extends Mock implements RewardedAdService {}
+
+class _FakeAuthViewModel extends AuthViewModel {
+  @override
+  AuthState build() => const AuthState.unauthenticated();
+}
 
 void main() {
   late MockCreditRepository mockCreditRepo;
@@ -44,6 +51,9 @@ void main() {
         subscriptionRepositoryProvider.overrideWithValue(mockSubRepo),
         creditRepositoryProvider.overrideWithValue(mockCreditRepo),
         rewardedAdServiceProvider.overrideWithValue(mockAdService),
+        authViewModelProvider.overrideWith(
+          () => _FakeAuthViewModel(),
+        ),
       ],
       child: MaterialApp(
         home: Scaffold(

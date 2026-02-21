@@ -3,6 +3,8 @@ import 'package:artio/features/gallery/domain/entities/gallery_item.dart';
 import 'package:artio/features/gallery/presentation/pages/image_viewer_page.dart';
 import 'package:artio/features/subscription/data/repositories/subscription_repository.dart';
 import 'package:artio/features/subscription/domain/entities/subscription_status.dart';
+import 'package:artio/features/auth/presentation/state/auth_state.dart';
+import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -12,6 +14,11 @@ import '../../../../core/fixtures/fixtures.dart';
 
 class MockGalleryRepository extends Mock implements GalleryRepository {}
 class MockSubscriptionRepository extends Mock implements SubscriptionRepository {}
+
+class _FakeAuthViewModel extends AuthViewModel {
+  @override
+  AuthState build() => const AuthState.unauthenticated();
+}
 
 void main() {
   group('ImageViewerPage', () {
@@ -38,6 +45,9 @@ void main() {
           galleryRepositoryProvider.overrideWithValue(mockRepository),
           subscriptionRepositoryProvider
               .overrideWithValue(mockSubscriptionRepository),
+          authViewModelProvider.overrideWith(
+            () => _FakeAuthViewModel(),
+          ),
         ],
         child: MaterialApp(
           home: ImageViewerPage(

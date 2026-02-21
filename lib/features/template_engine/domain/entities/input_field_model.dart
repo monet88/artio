@@ -10,7 +10,7 @@ class InputFieldModel with _$InputFieldModel {
     required String label,
     required String type, // text, select, slider, toggle
     String? placeholder,
-    String? defaultValue,
+    @JsonKey(name: 'default_value') String? defaultValue,
     List<String>? options,
     double? min,
     double? max,
