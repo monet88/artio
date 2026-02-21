@@ -11,7 +11,6 @@ import {
 Deno.test("isPremiumModel returns true for all premium models", () => {
     const expected = [
         "google/imagen4-ultra",
-        "google/pro-image-to-image",
         "flux-2/pro-text-to-image",
         "flux-2/pro-image-to-image",
         "gpt-image/1.5-text-to-image",
@@ -43,11 +42,11 @@ Deno.test("isPremiumModel returns false for unknown model", () => {
 // ── getModelCreditCost ──
 
 Deno.test("getModelCreditCost returns correct costs", () => {
-    assertEquals(getModelCreditCost("google/imagen4"), 6);
-    assertEquals(getModelCreditCost("google/imagen4-fast"), 4);
-    assertEquals(getModelCreditCost("google/imagen4-ultra"), 12);
-    assertEquals(getModelCreditCost("flux-2/pro-text-to-image"), 16);
-    assertEquals(getModelCreditCost("gpt-image/1.5-text-to-image"), 15);
+    assertEquals(getModelCreditCost("google/imagen4"), 16);
+    assertEquals(getModelCreditCost("google/imagen4-fast"), 8);
+    assertEquals(getModelCreditCost("google/imagen4-ultra"), 24);
+    assertEquals(getModelCreditCost("flux-2/pro-text-to-image"), 10);
+    assertEquals(getModelCreditCost("gpt-image/1.5-text-to-image"), 8);
     assertEquals(getModelCreditCost("gemini-3-pro-image-preview"), 15);
 });
 
@@ -61,7 +60,6 @@ Deno.test("getModelCreditCost returns undefined for unknown model", () => {
 Deno.test("PREMIUM_MODELS matches Dart ai_models.dart premium IDs", () => {
     const dartPremiumIds = [
         "google/imagen4-ultra",
-        "google/pro-image-to-image",
         "flux-2/pro-text-to-image",
         "flux-2/pro-image-to-image",
         "gpt-image/1.5-text-to-image",
@@ -80,7 +78,6 @@ Deno.test("MODEL_CREDIT_COSTS keys match Dart ai_models.dart model IDs", () => {
         "google/imagen4-ultra",
         "google/nano-banana-edit",
         "nano-banana-pro",
-        "google/pro-image-to-image",
         "flux-2/flex-text-to-image",
         "flux-2/flex-image-to-image",
         "flux-2/pro-text-to-image",
@@ -100,18 +97,17 @@ Deno.test("MODEL_CREDIT_COSTS keys match Dart ai_models.dart model IDs", () => {
 Deno.test("MODEL_CREDIT_COSTS values match Dart ai_models.dart creditCost", () => {
     // id → creditCost from Dart ai_models.dart
     const dartCosts: Record<string, number> = {
-        "google/imagen4": 6,
-        "google/imagen4-fast": 4,
-        "google/imagen4-ultra": 12,
-        "google/nano-banana-edit": 10,
-        "nano-banana-pro": 10,
-        "google/pro-image-to-image": 15,
-        "flux-2/flex-text-to-image": 8,
-        "flux-2/flex-image-to-image": 10,
-        "flux-2/pro-text-to-image": 16,
-        "flux-2/pro-image-to-image": 20,
-        "gpt-image/1.5-text-to-image": 15,
-        "gpt-image/1.5-image-to-image": 18,
+        "google/imagen4": 16,
+        "google/imagen4-fast": 8,
+        "google/imagen4-ultra": 24,
+        "google/nano-banana-edit": 8,
+        "nano-banana-pro": 36,
+        "flux-2/flex-text-to-image": 28,
+        "flux-2/flex-image-to-image": 28,
+        "flux-2/pro-text-to-image": 10,
+        "flux-2/pro-image-to-image": 10,
+        "gpt-image/1.5-text-to-image": 8,
+        "gpt-image/1.5-image-to-image": 8,
         "seedream/4.5-text-to-image": 8,
         "seedream/4.5-edit": 10,
         "gemini-3-pro-image-preview": 15,

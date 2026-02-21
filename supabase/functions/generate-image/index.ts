@@ -20,7 +20,6 @@ const KIE_MODELS = [
   "google/imagen4-ultra",
   "nano-banana-pro", // NOTE: no google/ prefix per KIE API spec
   "google/nano-banana-edit",
-  "google/pro-image-to-image",
   // Flux-2
   "flux-2/flex-text-to-image",
   "flux-2/flex-image-to-image",
@@ -59,14 +58,18 @@ interface KieCreateTaskResponse {
   data?: { taskId: string };
 }
 
-interface KieTaskDetailResponse {
+interface KieRecordInfoResponse {
   code: number;
-  msg: string;
+  message: string;
   data?: {
     taskId: string;
-    status: "pending" | "processing" | "completed" | "failed";
-    output?: { images?: string[]; image_url?: string };
-    error?: string;
+    model: string;
+    state: "pending" | "processing" | "success" | "failed";
+    resultJson?: string; // JSON string like {"resultUrls":["..."]}
+    failCode?: string;
+    failMsg?: string;
+    completeTime?: number;
+    createTime?: number;
   };
 }
 
@@ -83,22 +86,139 @@ function getProvider(model: string): "kie" | "gemini" {
 }
 
 
+const STORAGE_BUCKET = "generated-images";
+const SIGNED_URL_EXPIRY_SECONDS = 3600; // 1 hour
+
+/**
+ * Resolve image inputs to publicly accessible URLs.
+ * - Supabase storage paths (no protocol) → signed URLs
+ * - Already full URLs (http/https) → passed through unchanged
+ */
+async function resolveImageUrls(
+  supabase: ReturnType<typeof createClient>,
+  imageInputs: string[]
+): Promise<string[]> {
+  const resolved: string[] = [];
+  for (const input of imageInputs) {
+    if (input.startsWith("http://") || input.startsWith("https://")) {
+      resolved.push(input);
+    } else {
+      // Treat as Supabase storage path — generate signed URL
+      const { data, error } = await supabase.storage
+        .from(STORAGE_BUCKET)
+        .createSignedUrl(input, SIGNED_URL_EXPIRY_SECONDS);
+      if (error || !data?.signedUrl) {
+        console.error(`[storage] Failed to sign URL for "${input}":`, error?.message);
+        // Fallback: construct public URL (may fail if bucket is private)
+        resolved.push(`${SUPABASE_URL}/storage/v1/object/public/${STORAGE_BUCKET}/${input}`);
+      } else {
+        resolved.push(data.signedUrl);
+      }
+    }
+  }
+  return resolved;
+}
+
+/**
+ * Build model-specific input payload per KIE API OpenAPI specs.
+ * Each model family has different field names and supported parameters.
+ */
+function buildKieInput(
+  prompt: string,
+  model: string,
+  aspectRatio: string,
+  imageInputs?: string[]
+): Record<string, unknown> {
+  const ratio = aspectRatio || "1:1";
+
+  // Google Imagen models: aspect_ratio, negative_prompt, seed
+  if (model.startsWith("google/imagen4")) {
+    return { prompt, aspect_ratio: ratio };
+  }
+
+  // Nano Banana Edit (image-editing): image_size, image_urls (required), output_format
+  if (model === "google/nano-banana-edit") {
+    return {
+      prompt,
+      image_urls: imageInputs || [],
+      image_size: ratio,
+      output_format: "png",
+    };
+  }
+
+  // Nano Banana Pro (text-to-image + optional image_input): aspect_ratio, resolution, output_format
+  if (model === "nano-banana-pro") {
+    const input: Record<string, unknown> = {
+      prompt,
+      aspect_ratio: ratio,
+      resolution: "1K",
+      output_format: "png",
+    };
+    if (imageInputs?.length) input.image_input = imageInputs;
+    return input;
+  }
+
+  // Flux-2 models: aspect_ratio, resolution, input_urls (image-to-image)
+  if (model.startsWith("flux-2/")) {
+    const input: Record<string, unknown> = {
+      prompt,
+      aspect_ratio: ratio,
+      resolution: "1K",
+    };
+    if (imageInputs?.length && model.includes("image-to-image")) {
+      input.input_urls = imageInputs;
+    }
+    return input;
+  }
+
+  // GPT Image models: aspect_ratio, quality, input_urls (image-to-image)
+  // GPT Image only supports 1:1, 2:3, 3:2 — auto-map universal ratios
+  if (model.startsWith("gpt-image/")) {
+    const gptRatioMap: Record<string, string> = {
+      "3:4": "2:3",
+      "9:16": "2:3",
+      "4:3": "3:2",
+      "16:9": "3:2",
+    };
+    const mappedRatio = gptRatioMap[ratio] || ratio;
+    const input: Record<string, unknown> = {
+      prompt,
+      aspect_ratio: mappedRatio,
+      quality: "medium",
+    };
+    if (imageInputs?.length && model.includes("image-to-image")) {
+      input.input_urls = imageInputs;
+    }
+    return input;
+  }
+
+  // Seedream models: aspect_ratio, quality, image_urls (edit)
+  if (model.startsWith("seedream/")) {
+    const input: Record<string, unknown> = {
+      prompt,
+      aspect_ratio: ratio,
+      quality: "basic",
+    };
+    if (imageInputs?.length && model.includes("edit")) {
+      input.image_urls = imageInputs;
+    }
+    return input;
+  }
+
+  // Fallback: generic payload
+  return { prompt, aspect_ratio: ratio };
+}
+
 async function createKieTask(
   prompt: string,
   model: string,
   aspectRatio: string,
-  imageCount: number,
+  _imageCount: number,
   imageInputs?: string[]
 ): Promise<{ taskId: string } | { error: string }> {
-  const input: Record<string, unknown> = {
-    prompt,
-    aspect_ratio: aspectRatio || "1:1",
-    num_images: imageCount || 1,
-  };
+  const input = buildKieInput(prompt, model, aspectRatio, imageInputs);
 
-  if (imageInputs?.length) {
-    input.image_input = imageInputs;
-  }
+  console.log(`[KIE] Creating task: model=${model}, input keys=${Object.keys(input).join(",")}`);
 
   const response = await fetch(`${KIE_API_BASE}/api/v1/jobs/createTask`, {
     method: "POST",
@@ -112,6 +232,7 @@ async function createKieTask(
   const result: KieCreateTaskResponse = await response.json();
 
   if (result.code !== 200 || !result.data?.taskId) {
+    console.error(`[KIE] Create task failed:`, JSON.stringify(result));
     return { error: result.msg || "Failed to create Kie task" };
   }
 
@@ -137,7 +258,7 @@ async function pollKieTask(
       const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout per req
 
       const response = await fetch(
-        `${KIE_API_BASE}/api/v1/jobs/getTaskDetail?taskId=${taskId}`,
+        `${KIE_API_BASE}/api/v1/jobs/recordInfo?taskId=${taskId}`,
         {
           method: "GET",
           headers: { Authorization: `Bearer ${KIE_API_KEY}` },
@@ -147,26 +268,34 @@ async function pollKieTask(
 
       clearTimeout(timeoutId);
 
-      const result: KieTaskDetailResponse = await response.json();
+      const result: KieRecordInfoResponse = await response.json();
 
       if (result.code !== 200) {
-        return { error: result.msg || "Failed to get task status" };
-      }
+        console.warn(`[${taskId}] KIE poll non-200 (attempt ${attempt}):`, JSON.stringify(result));
+      } else {
+        const state = result.data?.state;
 
-      const status = result.data?.status;
-
-      if (status === "completed") {
-        const images: string[] = [];
-        if (result.data?.output?.images) {
-          images.push(...result.data.output.images);
-        } else if (result.data?.output?.image_url) {
-          images.push(result.data.output.image_url);
+        if (state === "success") {
+          const images: string[] = [];
+          if (result.data?.resultJson) {
+            try {
+              const parsed = JSON.parse(result.data.resultJson);
+              if (parsed.resultUrls?.length) {
+                images.push(...parsed.resultUrls);
+              }
+            } catch (e) {
+              console.error(`[${taskId}] Failed to parse resultJson:`, e);
+            }
+          }
+          if (images.length === 0) {
+            return { error: "Generation completed but no images returned" };
+          }
+          return { images };
         }
-        return { images };
-      }
 
-      if (status === "failed") {
-        return { error: result.data?.error || "Generation failed" };
+        if (state === "failed") {
+          return { error: result.data?.failMsg || "Generation failed" };
+        }
       }
     } catch (err) {
       console.error(`[${taskId}] Poll loop error:`, err);
@@ -406,7 +535,10 @@ Deno.serve(async (req) => {
 
     if (rateLimitError) {
       console.error(`Rate limit check failed for ${userId}:`, rateLimitError);
-      // Fail open: allow request if rate limit check fails
+      return new Response(
+        JSON.stringify({ error: "Rate limit service unavailable. Please try again." }),
+        { status: 503, headers: { ...headers, "Content-Type": "application/json" } }
+      );
     } else if (rateLimit?.allowed === false) {
       console.warn(`[rate-limit] User ${userId} exceeded limit. Retry after ${rateLimit.retry_after}s`);
       return new Response(
@@ -517,7 +649,12 @@ Deno.serve(async (req) => {
       if (provider === "kie") {
         console.log(`[${jobId}] Kie.ai generation: ${model}, count: ${imageCount}, format: ${outputFormat}`);
 
-        const createResult = await createKieTask(prompt, model, aspectRatio, imageCount, imageInputs);
+        // Resolve Supabase storage paths to signed URLs for KIE access
+        const resolvedImages = imageInputs?.length
+          ? await resolveImageUrls(supabase, imageInputs)
+          : undefined;
+
+        const createResult = await createKieTask(prompt, model, aspectRatio, imageCount, resolvedImages);
 
         if ("error" in createResult) {
           const errorMsg = await refundAndBuildErrorMsg(supabase, userId, creditCost, jobId, createResult.error);
