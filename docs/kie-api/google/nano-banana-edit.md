@@ -2,9 +2,9 @@
 > Fetch the complete documentation index at: https://docs.kie.ai/llms.txt
 > Use this file to discover all available pages before exploring further.
 
-# Google - Nano Banana Pro
+# Google - Nano Banana Edit
 
-> Image generation using Google's Pro Image to Image model
+> Image editing using Google's Nano Banana Edit model
 
 ## Query Task Status
 
@@ -33,11 +33,11 @@ After submitting a task, use the unified query endpoint to check progress and re
 
 ## OpenAPI
 
-````yaml market/google/pro-image-to-image.json post /api/v1/jobs/createTask
+````yaml market/google/nano-banana-edit.json post /api/v1/jobs/createTask
 openapi: 3.0.0
 info:
-  title: Nano-banana-pro API
-  description: kie.ai Nano-banana-pro API Documentation
+  title: Google API
+  description: kie.ai Google API Documentation
   version: 1.0.0
   contact:
     name: Technical Support
@@ -50,8 +50,8 @@ security:
 paths:
   /api/v1/jobs/createTask:
     post:
-      summary: Generate content using nano-banana-pro
-      operationId: nano-banana-pro
+      summary: Generate content using google/nano-banana-edit
+      operationId: google-nano-banana-edit
       requestBody:
         required: true
         content:
@@ -64,13 +64,13 @@ paths:
                 model:
                   type: string
                   enum:
-                    - nano-banana-pro
-                  default: nano-banana-pro
+                    - google/nano-banana-edit
+                  default: google/nano-banana-edit
                   description: |-
                     The model name to use for generation. Required field.
 
-                    - Must be `nano-banana-pro` for this endpoint
-                  example: nano-banana-pro
+                    - Must be `google/nano-banana-edit` for this endpoint
+                  example: google/nano-banana-edit
                 callBackUrl:
                   type: string
                   format: uri
@@ -90,6 +90,10 @@ paths:
 
                     - Alternatively, use the Get Task Details endpoint to poll
                     task status
+
+                    - To ensure callback security, see [Webhook Verification
+                    Guide](/common-api/webhook-verification) for signature
+                    verification implementation
                   example: https://your-domain.com/api/callback
                 input:
                   type: object
@@ -97,83 +101,74 @@ paths:
                   properties:
                     prompt:
                       description: >-
-                        A text description of the image you want to generate
-                        (Max length: 10000 characters)
+                        The prompt for image editing (Max length: 5000
+                        characters)
                       type: string
-                      maxLength: 10000
+                      maxLength: 5000
                       example: >-
-                        Comic poster: cool banana hero in shades leaps from
-                        sci-fi pad. Six panels: 1) 4K mountain landscape, 2)
-                        banana holds page of long multilingual text with auto
-                        translation, 3) Gemini 3 hologram for
-                        search/knowledge/reasoning, 4) camera UI sliders for
-                        angle focus color, 5) frame trio 1:1-9:16, 6) consistent
-                        banana poses. Footer shows Google icons. Tagline: Nano
-                        Banana Pro now on Kie AI.
-                    image_input:
+                        turn this photo into a character figure. Behind it,
+                        place a box with the character’s image printed on it,
+                        and a computer showing the Blender modeling process on
+                        its screen. In front of the box, add a round plastic
+                        base with the character figure standing on it. set the
+                        scene indoors if possible
+                    image_urls:
                       description: >-
-                        Input images to transform or use as reference (supports
-                        up to 8 images) (File URL after upload, not file
-                        content; Accepted types: image/jpeg, image/png,
-                        image/webp; Max size: 30.0MB)
+                        List of URLs of input images for editing,up to 10
+                        images. (File URL after upload, not file content;
+                        Accepted types: image/jpeg, image/png, image/webp; Max
+                        size: 10.0MB)
                       type: array
                       items:
                         type: string
                         format: uri
-                      maxItems: 8
-                      example: []
-                    aspect_ratio:
-                      description: Aspect ratio of the generated image
+                      maxItems: 10
+                      example:
+                        - >-
+                          https://file.aiquickdraw.com/custom-page/akr/section-images/1756223420389w8xa2jfe.png
+                    output_format:
+                      description: Output format for the images
+                      type: string
+                      enum:
+                        - png
+                        - jpeg
+                      default: png
+                      example: png
+                    image_size:
+                      description: Radio description
                       type: string
                       enum:
                         - '1:1'
-                        - '2:3'
-                        - '3:2'
-                        - '3:4'
-                        - '4:3'
-                        - '4:5'
-                        - '5:4'
                         - '9:16'
                         - '16:9'
+                        - '3:4'
+                        - '4:3'
+                        - '3:2'
+                        - '2:3'
+                        - '5:4'
+                        - '4:5'
                         - '21:9'
                         - auto
                       default: '1:1'
                       example: '1:1'
-                    resolution:
-                      description: Resolution of the generated image
-                      type: string
-                      enum:
-                        - 1K
-                        - 2K
-                        - 4K
-                      default: 1K
-                      example: 1K
-                    output_format:
-                      description: Format of the output image
-                      type: string
-                      enum:
-                        - png
-                        - jpg
-                      default: png
-                      example: png
                   required:
                     - prompt
+                    - image_urls
             example:
-              model: nano-banana-pro
+              model: google/nano-banana-edit
               callBackUrl: https://your-domain.com/api/callback
               input:
                 prompt: >-
-                  Comic poster: cool banana hero in shades leaps from sci-fi
-                  pad. Six panels: 1) 4K mountain landscape, 2) banana holds
-                  page of long multilingual text with auto translation, 3)
-                  Gemini 3 hologram for search/knowledge/reasoning, 4) camera UI
-                  sliders for angle focus color, 5) frame trio 1:1-9:16, 6)
-                  consistent banana poses. Footer shows Google icons. Tagline:
-                  Nano Banana Pro now on Kie AI.
-                image_input: []
-                aspect_ratio: '1:1'
-                resolution: 1K
+                  turn this photo into a character figure. Behind it, place a
+                  box with the character’s image printed on it, and a computer
+                  showing the Blender modeling process on its screen. In front
+                  of the box, add a round plastic base with the character figure
+                  standing on it. set the scene indoors if possible
+                image_urls:
+                  - >-
+                    https://file.aiquickdraw.com/custom-page/akr/section-images/1756223420389w8xa2jfe.png
                 output_format: png
+                image_size: '1:1'
       responses:
         '200':
           description: Request successful
@@ -192,12 +187,12 @@ paths:
                             description: >-
                               Task ID, can be used with Get Task Details
                               endpoint to query task status
-                            example: task_nano-banana-pro_1765178625768
+                            example: task_google_1765178615729
               example:
                 code: 200
                 msg: success
                 data:
-                  taskId: task_nano-banana-pro_1765178625768
+                  taskId: task_google_1765178615729
         '500':
           $ref: '#/components/responses/Error'
 components:
