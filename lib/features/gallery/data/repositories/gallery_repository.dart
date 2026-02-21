@@ -14,7 +14,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_gallery_saver_plus/image_gallery_saver_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:storage_client/storage_client.dart' as storage_client;
 import 'package:supabase_flutter/supabase_flutter.dart' hide StorageException;
 
@@ -66,7 +66,14 @@ class GalleryRepository implements IGalleryRepository {
       // Network error: fallback to stale cache for first page.
       if (_isCacheableQuery(offset, templateId)) {
         final stale = await _cache.getCachedItems();
-        if (stale != null) return stale;
+        if (stale != null) {
+          unawaited(Future(() => Sentry.addBreadcrumb(Breadcrumb(
+            message: 'Serving stale gallery cache due to network error',
+            category: 'gallery.cache',
+            level: SentryLevel.warning,
+          ))));
+          return stale;
+        }
       }
       rethrow;
     }
@@ -274,7 +281,11 @@ class GalleryRepository implements IGalleryRepository {
             (defaultTargetPlatform == TargetPlatform.android ||
                 defaultTargetPlatform == TargetPlatform.iOS)) {
           final result = await ImageGallerySaverPlus.saveFile(file.path);
-          await file.delete().catchError((_) => file);
+          try {
+            await file.delete();
+          } on FileSystemException catch (e) {
+            debugPrint('Temp file cleanup failed: $e');
+          }
           if (result is Map && result['isSuccess'] == true) {
             return 'Photos';
           }
