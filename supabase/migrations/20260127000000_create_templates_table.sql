@@ -24,20 +24,12 @@ CREATE INDEX IF NOT EXISTS idx_templates_is_premium ON templates(is_premium);
 ALTER TABLE templates ENABLE ROW LEVEL SECURITY;
 
 -- Public users can view active templates
+DROP POLICY IF EXISTS "Public can view active templates" ON templates;
 CREATE POLICY "Public can view active templates"
 ON templates FOR SELECT
 USING (is_active = true);
 
--- Admins can manage all templates (created in admin migration)
-CREATE POLICY "Admins can manage templates"
-ON templates FOR ALL
-USING (
-  EXISTS (
-    SELECT 1 FROM profiles
-    WHERE profiles.id = auth.uid()
-    AND profiles.role = 'admin'
-  )
-);
+-- NOTE: Admin policy moved to 20260128000000 (after profiles table exists)
 
 -- Function to update updated_at timestamp
 CREATE OR REPLACE FUNCTION update_templates_updated_at()
