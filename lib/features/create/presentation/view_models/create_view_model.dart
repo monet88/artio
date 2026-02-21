@@ -5,7 +5,6 @@ import 'package:artio/core/constants/app_constants.dart';
 import 'package:artio/core/constants/generation_constants.dart';
 import 'package:artio/core/exceptions/app_exception.dart';
 import 'package:artio/core/state/credit_balance_state_provider.dart';
-import 'package:artio/core/utils/retry.dart';
 import 'package:artio/features/create/domain/entities/create_form_state.dart';
 import 'package:artio/features/gallery/data/services/gallery_cache_service.dart';
 import 'package:artio/features/template_engine/domain/entities/generation_job_model.dart';
@@ -51,7 +50,9 @@ class CreateViewModel extends _$CreateViewModel {
     final trimmedPrompt = formState.prompt.trim();
     if (trimmedPrompt.length < 3) {
       state = AsyncError(
-        const AppException.generation(message: 'Prompt must be at least 3 characters'),
+        const AppException.generation(
+          message: 'Prompt must be at least 3 characters',
+        ),
         StackTrace.current,
       );
       return;
@@ -60,7 +61,8 @@ class CreateViewModel extends _$CreateViewModel {
     if (trimmedPrompt.length > AppConstants.maxPromptLength) {
       state = AsyncError(
         const AppException.generation(
-          message: 'Prompt must be at most ${AppConstants.maxPromptLength} characters',
+          message:
+              'Prompt must be at most ${AppConstants.maxPromptLength} characters',
         ),
         StackTrace.current,
       );
@@ -70,7 +72,9 @@ class CreateViewModel extends _$CreateViewModel {
     final selectedModel = AiModels.getById(formState.modelId);
     if (selectedModel == null) {
       state = AsyncError(
-        const AppException.generation(message: 'Selected model is not supported'),
+        const AppException.generation(
+          message: 'Selected model is not supported',
+        ),
         StackTrace.current,
       );
       return;
@@ -100,7 +104,8 @@ class CreateViewModel extends _$CreateViewModel {
     // If the stream is still loading or errored, let the Edge Function enforce.
     final creditState = ref.read(creditBalanceNotifierProvider);
     final confirmedBalance = creditState.valueOrNull?.balance;
-    if (confirmedBalance != null && confirmedBalance < selectedModel.creditCost) {
+    if (confirmedBalance != null &&
+        confirmedBalance < selectedModel.creditCost) {
       state = AsyncError(
         const AppException.payment(
           message: 'Insufficient credits',
@@ -134,14 +139,15 @@ class CreateViewModel extends _$CreateViewModel {
 
       final params = formState.toGenerationParams();
       final repo = ref.read(generationRepositoryProvider);
-      final jobId = await retry(() => repo.startGeneration(
+      final jobId = await repo.startGeneration(
+        userId: userId,
         templateId: params.templateId,
         prompt: params.prompt,
         aspectRatio: params.aspectRatio,
         imageCount: params.imageCount,
         outputFormat: params.outputFormat,
         modelId: params.modelId,
-      ));
+      );
 
       _jobManager.watchJob(
         jobStream: repo.watchJob(jobId),
@@ -154,7 +160,8 @@ class CreateViewModel extends _$CreateViewModel {
         onError: (e, st) => state = AsyncError(e, st),
         onTimeout: () => state = AsyncError(
           const AppException.generation(
-            message: 'Generation timed out after '
+            message:
+                'Generation timed out after '
                 '${GenerationJobManager.defaultTimeoutMinutes} minutes',
           ),
           StackTrace.current,

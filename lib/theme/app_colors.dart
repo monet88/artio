@@ -88,6 +88,10 @@ abstract class AppColors {
   static const warning = Color(0xFFFFB74D);
   static const info = Color(0xFF42A5F5);
 
+  /// Premium badge accent
+  static const premium = Color(0xFFFFA500);
+  static const premiumBadgeBackground = Color(0x26FFA500);
+
   /// Semantic colors with better contrast for dark backgrounds
   static const errorDark = Color(0xFFEF9A9A);
   static const successDark = Color(0xFFA5D6A7);

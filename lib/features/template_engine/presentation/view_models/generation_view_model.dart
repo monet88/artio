@@ -56,6 +56,7 @@ class GenerationViewModel extends _$GenerationViewModel {
 
       final repo = ref.read(generationRepositoryProvider);
       final jobId = await repo.startGeneration(
+        userId: userId,
         templateId: templateId,
         prompt: prompt,
         aspectRatio: aspectRatio,
