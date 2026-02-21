@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:artio/core/constants/generation_constants.dart';
 import 'package:artio/core/exceptions/app_exception.dart';
+import 'package:artio/core/utils/prompt_validator.dart';
 import 'package:artio/features/gallery/data/services/gallery_cache_service.dart';
 import 'package:artio/features/template_engine/domain/entities/generation_job_model.dart';
 import 'package:artio/features/template_engine/domain/providers/generation_repository_provider.dart';

@@ -4,6 +4,7 @@ import 'package:artio/core/constants/ai_models.dart';
 import 'package:artio/core/constants/generation_constants.dart';
 import 'package:artio/core/exceptions/app_exception.dart';
 import 'package:artio/core/state/credit_balance_state_provider.dart';
+import 'package:artio/core/utils/prompt_validator.dart';
 import 'package:artio/features/create/domain/entities/create_form_state.dart';
 import 'package:artio/features/gallery/data/services/gallery_cache_service.dart';
 import 'package:artio/features/template_engine/domain/entities/generation_job_model.dart';
@@ -46,6 +47,7 @@ class CreateViewModel extends _$CreateViewModel {
       return;
     }
 
+    // Validate only — toGenerationParams() handles trimming + negative prompt merging
     try {
       validateGenerationPrompt(formState.prompt);
     } on AppException catch (e, st) {

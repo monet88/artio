@@ -168,11 +168,13 @@ class GalleryRepository implements IGalleryRepository {
       final urls = (job['result_urls'] as List?) ?? [];
 
       // Use stored result_urls directly (they are storage-relative paths)
-      for (final path in urls) {
+      for (final entry in urls) {
+        final path = entry as String?;
+        if (path == null || path.isEmpty) continue;
         try {
           await _supabase.storage
               .from('generated-images')
-              .remove([path as String]);
+              .remove([path]);
         } on storage_client.StorageException catch (e) {
           debugPrint('Storage delete failed for $path: $e');
           // Report to Sentry for production visibility
@@ -222,7 +224,13 @@ class GalleryRepository implements IGalleryRepository {
           .from('generation_jobs')
           .select('prompt')
           .eq('id', jobId)
-          .single();
+          .maybeSingle();
+
+      if (job == null) {
+        throw const AppException.generation(
+          message: 'Cannot retry: job not found',
+        );
+      }
 
       final prompt = job['prompt'] as String?;
       if (prompt == null || prompt.trim().isEmpty) {
