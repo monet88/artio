@@ -1,5 +1,8 @@
 import 'dart:async';
 
+import 'package:artio/core/constants/app_constants.dart';
+import 'package:artio/core/constants/generation_constants.dart';
+import 'package:artio/core/exceptions/app_exception.dart';
 import 'package:artio/features/gallery/data/services/gallery_cache_service.dart';
 import 'package:artio/features/template_engine/domain/entities/generation_job_model.dart';
 import 'package:artio/features/template_engine/domain/providers/generation_repository_provider.dart';
@@ -37,6 +40,19 @@ class GenerationViewModel extends _$GenerationViewModel {
       return;
     }
 
+    final trimmedPrompt = prompt.trim();
+    final validationError = validateGenerationPrompt(
+      trimmedPrompt,
+      maxLength: AppConstants.maxPromptLength,
+    );
+    if (validationError != null) {
+      state = AsyncError(
+        AppException.generation(message: validationError),
+        StackTrace.current,
+      );
+      return;
+    }
+
     state = const AsyncLoading();
 
     try {
@@ -58,7 +74,7 @@ class GenerationViewModel extends _$GenerationViewModel {
       final jobId = await repo.startGeneration(
         userId: userId,
         templateId: templateId,
-        prompt: prompt,
+        prompt: trimmedPrompt,
         aspectRatio: aspectRatio,
         imageCount: imageCount,
       );

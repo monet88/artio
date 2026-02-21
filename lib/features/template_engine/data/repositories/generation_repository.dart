@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:artio/core/constants/generation_constants.dart';
 import 'package:artio/core/exceptions/app_exception.dart';
 import 'package:artio/core/providers/supabase_provider.dart';
 import 'package:artio/core/utils/retry.dart';
@@ -65,7 +66,7 @@ class GenerationRepository implements IGenerationRepository {
                   if (modelId != null) 'model': modelId,
                 },
               )
-              .timeout(const Duration(seconds: 90)),
+              .timeout(const Duration(seconds: kGenerationRequestTimeoutSeconds)),
         );
 
         if (response.status == 429) {
