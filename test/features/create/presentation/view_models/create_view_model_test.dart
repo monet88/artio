@@ -136,7 +136,7 @@ void main() {
           templateId: any(named: 'templateId'),
         ));
         verifyNever(() => mockRepository.startGeneration(
-          userId: 'test-user-id',
+          userId: any(named: 'userId'),
           templateId: any(named: 'templateId'),
           prompt: any(named: 'prompt'),
           aspectRatio: any(named: 'aspectRatio'),
@@ -183,7 +183,7 @@ void main() {
         )).thenAnswer((_) async => const GenerationEligibility.allowed());
 
         when(() => mockRepository.startGeneration(
-          userId: 'test-user-id',
+          userId: any(named: 'userId'),
           templateId: any(named: 'templateId'),
           prompt: any(named: 'prompt'),
           aspectRatio: any(named: 'aspectRatio'),
@@ -215,7 +215,7 @@ void main() {
         )).thenAnswer((_) async => const GenerationEligibility.allowed());
 
         when(() => mockRepository.startGeneration(
-          userId: 'test-user-id',
+          userId: any(named: 'userId'),
           templateId: any(named: 'templateId'),
           prompt: any(named: 'prompt'),
           aspectRatio: any(named: 'aspectRatio'),
@@ -250,7 +250,7 @@ void main() {
         )).thenAnswer((_) async => const GenerationEligibility.allowed());
 
         when(() => mockRepository.startGeneration(
-          userId: 'test-user-id',
+          userId: any(named: 'userId'),
           templateId: any(named: 'templateId'),
           prompt: any(named: 'prompt'),
           aspectRatio: any(named: 'aspectRatio'),
@@ -277,7 +277,7 @@ void main() {
         await Future<void>.delayed(const Duration(milliseconds: 10));
 
         verify(() => mockRepository.startGeneration(
-          userId: 'test-user-id',
+          userId: 'user-123',
           templateId: 'free-text',
           prompt: 'A beautiful landscape',
           aspectRatio: '16:9',
@@ -294,7 +294,7 @@ void main() {
         )).thenAnswer((_) async => const GenerationEligibility.allowed());
 
         when(() => mockRepository.startGeneration(
-          userId: 'test-user-id',
+          userId: any(named: 'userId'),
           templateId: any(named: 'templateId'),
           prompt: any(named: 'prompt'),
           aspectRatio: any(named: 'aspectRatio'),
@@ -321,7 +321,7 @@ void main() {
         await Future<void>.delayed(const Duration(milliseconds: 10));
 
         verify(() => mockRepository.startGeneration(
-          userId: 'test-user-id',
+          userId: 'user-123',
           templateId: 'free-text',
           prompt: 'A beautiful landscape',
           outputFormat: 'png',
@@ -356,7 +356,7 @@ void main() {
         )).thenAnswer((_) async => const GenerationEligibility.allowed());
 
         when(() => mockRepository.startGeneration(
-          userId: 'test-user-id',
+          userId: any(named: 'userId'),
           templateId: any(named: 'templateId'),
           prompt: any(named: 'prompt'),
           aspectRatio: any(named: 'aspectRatio'),
@@ -389,7 +389,7 @@ void main() {
         );
 
         verify(() => mockRepository.startGeneration(
-          userId: 'test-user-id',
+          userId: any(named: 'userId'),
           templateId: any(named: 'templateId'),
           prompt: any(named: 'prompt'),
           aspectRatio: any(named: 'aspectRatio'),
@@ -406,7 +406,7 @@ void main() {
         )).thenAnswer((_) async => const GenerationEligibility.allowed());
 
         when(() => mockRepository.startGeneration(
-          userId: 'test-user-id',
+          userId: any(named: 'userId'),
           templateId: any(named: 'templateId'),
           prompt: any(named: 'prompt'),
           aspectRatio: any(named: 'aspectRatio'),
@@ -436,7 +436,7 @@ void main() {
         )).thenAnswer((_) async => const GenerationEligibility.allowed());
 
         when(() => mockRepository.startGeneration(
-          userId: 'test-user-id',
+          userId: any(named: 'userId'),
           templateId: any(named: 'templateId'),
           prompt: any(named: 'prompt'),
           aspectRatio: any(named: 'aspectRatio'),

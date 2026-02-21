@@ -57,6 +57,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
   Widget build(BuildContext context) {
     final authState = ref.watch(authViewModelProvider);
     final isLoading = authState is AuthStateAuthenticating;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     Log.d('[LoginScreen] build — authState: $authState, isLoading: $isLoading');
 
     ref.listen<AuthState>(authViewModelProvider, (_, state) {
@@ -71,10 +72,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
     });
 
     return Scaffold(
-      backgroundColor: AppColors.darkBackground,
+      backgroundColor: isDark ? AppColors.darkBackground : AppColors.lightBackground,
       body: DecoratedBox(
-        decoration: const BoxDecoration(
-          gradient: AppGradients.backgroundGradient,
+        decoration: BoxDecoration(
+          gradient: isDark ? AppGradients.backgroundGradient : null,
+          color: isDark ? null : AppColors.lightBackground,
         ),
         child: SafeArea(
           child: SingleChildScrollView(

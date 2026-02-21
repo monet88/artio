@@ -83,7 +83,7 @@ class UserProfileCard extends StatelessWidget {
                   ),
                   decoration: BoxDecoration(
                     color: isPremium
-                        ? const Color(0xFFFFA500).withValues(alpha: 0.15)
+                        ? AppColors.premiumBadgeBackground
                         : AppColors.primaryCta.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(6),
                   ),
@@ -91,7 +91,7 @@ class UserProfileCard extends StatelessWidget {
                     isPremium ? 'PREMIUM' : 'FREE PLAN',
                     style: AppTypography.labelBadge.copyWith(
                       color: isPremium
-                          ? const Color(0xFFFFA500)
+                          ? AppColors.premium
                           : AppColors.primaryCta,
                     ),
                   ),
