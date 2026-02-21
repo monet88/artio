@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:artio/core/constants/ai_models.dart';
-import 'package:artio/core/constants/app_constants.dart';
 import 'package:artio/core/constants/generation_constants.dart';
 import 'package:artio/core/exceptions/app_exception.dart';
 import 'package:artio/core/state/credit_balance_state_provider.dart';
@@ -47,25 +46,10 @@ class CreateViewModel extends _$CreateViewModel {
       return;
     }
 
-    final trimmedPrompt = formState.prompt.trim();
-    if (trimmedPrompt.length < 3) {
-      state = AsyncError(
-        const AppException.generation(
-          message: 'Prompt must be at least 3 characters',
-        ),
-        StackTrace.current,
-      );
-      return;
-    }
-
-    if (trimmedPrompt.length > AppConstants.maxPromptLength) {
-      state = AsyncError(
-        const AppException.generation(
-          message:
-              'Prompt must be at most ${AppConstants.maxPromptLength} characters',
-        ),
-        StackTrace.current,
-      );
+    try {
+      validateGenerationPrompt(formState.prompt);
+    } on AppException catch (e, st) {
+      state = AsyncError(e, st);
       return;
     }
 
