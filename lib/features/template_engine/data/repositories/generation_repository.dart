@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:artio/core/exceptions/app_exception.dart';
 import 'package:artio/core/providers/supabase_provider.dart';
+import 'package:artio/core/utils/retry.dart';
 import 'package:artio/features/template_engine/domain/entities/generation_job_model.dart';
 import 'package:artio/features/template_engine/domain/repositories/i_generation_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -47,47 +48,60 @@ class GenerationRepository implements IGenerationRepository {
 
       final jobId = jobInsert['id'] as String;
 
-      // Step 2: Call Edge Function with jobId + userId in body
-      final response = await _supabase.functions
-          .invoke(
-            'generate-image',
-            body: {
-              'jobId': jobId,
-              'userId': userId,
-              'template_id': templateId,
-              'prompt': prompt.trim(),
-              'aspect_ratio': aspectRatio,
-              'image_count': imageCount,
-              if (outputFormat != null) 'outputFormat': outputFormat,
-              if (modelId != null) 'model': modelId,
-            },
-          )
-          .timeout(const Duration(seconds: 90));
-
-      if (response.status == 429) {
-        throw const AppException.network(
-          message: 'Too many requests. Please wait a moment and try again.',
-          statusCode: 429,
+      // Step 2: Call Edge Function — retry only this step, cleanup on failure
+      try {
+        final response = await retry(
+          () => _supabase.functions
+              .invoke(
+                'generate-image',
+                body: {
+                  'jobId': jobId,
+                  'userId': userId,
+                  'template_id': templateId,
+                  'prompt': prompt.trim(),
+                  'aspect_ratio': aspectRatio,
+                  'image_count': imageCount,
+                  if (outputFormat != null) 'outputFormat': outputFormat,
+                  if (modelId != null) 'model': modelId,
+                },
+              )
+              .timeout(const Duration(seconds: 90)),
         );
-      }
 
-      if (response.status == 402) {
-        throw const AppException.payment(
-          message: 'Insufficient credits',
-          code: 'insufficient_credits',
-        );
-      }
+        if (response.status == 429) {
+          throw const AppException.network(
+            message: 'Too many requests. Please wait a moment and try again.',
+            statusCode: 429,
+          );
+        }
 
-      if (response.status != 200) {
-        final errorMsg = response.data is Map<String, dynamic>
-            ? ((response.data as Map<String, dynamic>)['error'] as String?) ??
-                  'Generation failed'
-            : 'Generation failed';
-        throw AppException.generation(message: errorMsg);
-      }
+        if (response.status == 402) {
+          throw const AppException.payment(
+            message: 'Insufficient credits',
+            code: 'insufficient_credits',
+          );
+        }
 
-      // Edge Function succeeded — return the job ID we already created in DB
-      return jobId;
+        if (response.status != 200) {
+          final errorMsg = response.data is Map<String, dynamic>
+              ? ((response.data as Map<String, dynamic>)['error']
+                        as String?) ??
+                    'Generation failed'
+              : 'Generation failed';
+          throw AppException.generation(message: errorMsg);
+        }
+
+        return jobId;
+      } on Object {
+        // Best-effort cleanup — mark orphaned job as failed
+        try {
+          await _supabase
+              .from('generation_jobs')
+              .update({'status': 'failed'})
+              .eq('id', jobId);
+        } on Object catch (_) {}
+        rethrow;
+      }
     } on FunctionException catch (e) {
       if (e.status == 429) {
         throw const AppException.network(

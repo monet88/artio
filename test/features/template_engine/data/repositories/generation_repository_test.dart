@@ -9,6 +9,45 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/mocks/mock_supabase_client.dart';
 
+/// Fake that resolves to a fixed Map when awaited (via PostgrestBuilder.then).
+class _FakePostgrestSingleResponse extends Fake
+    implements PostgrestTransformBuilder<Map<String, dynamic>> {
+  _FakePostgrestSingleResponse(this._data);
+  final Map<String, dynamic> _data;
+
+  @override
+  Future<R> then<R>(
+    FutureOr<R> Function(Map<String, dynamic>) onValue, {
+    Function? onError,
+  }) =>
+      Future<Map<String, dynamic>>.value(_data)
+          .then(onValue, onError: onError);
+
+  @override
+  Future<Map<String, dynamic>> catchError(
+    Function onError, {
+    bool Function(Object)? test,
+  }) =>
+      Future<Map<String, dynamic>>.value(_data)
+          .catchError(onError, test: test);
+
+  @override
+  Future<Map<String, dynamic>> whenComplete(
+    FutureOr<void> Function() action,
+  ) =>
+      Future<Map<String, dynamic>>.value(_data).whenComplete(action);
+
+  @override
+  Stream<Map<String, dynamic>> asStream() => Stream.value(_data);
+
+  @override
+  Future<Map<String, dynamic>> timeout(
+    Duration timeLimit, {
+    FutureOr<Map<String, dynamic>> Function()? onTimeout,
+  }) =>
+      Future<Map<String, dynamic>>.value(_data)
+          .timeout(timeLimit, onTimeout: onTimeout);
+}
 
 void main() {
   late GenerationRepository repository;
@@ -35,12 +74,34 @@ void main() {
 
   group('GenerationRepository', () {
     group('startGeneration', () {
-      test('returns job ID on successful edge function call', () async {
+      late MockSupabaseQueryBuilder mockJobQueryBuilder;
+      late MockPostgrestFilterBuilder<List<Map<String, dynamic>>>
+          mockInsertBuilder;
+
+      /// Stubs the DB insert chain:
+      /// from('generation_jobs').insert({...}).select('id').single()
+      void stubDbInsert({String jobId = 'job-123'}) {
+        mockJobQueryBuilder = MockSupabaseQueryBuilder();
+        mockInsertBuilder =
+            MockPostgrestFilterBuilder<List<Map<String, dynamic>>>();
+
+        when(() => mockClient.from('generation_jobs'))
+            .thenAnswer((_) => mockJobQueryBuilder);
+        when(() => mockJobQueryBuilder.insert(any()))
+            .thenAnswer((_) => mockInsertBuilder);
+        when(() => mockInsertBuilder.select(any()))
+            .thenAnswer((_) => mockInsertBuilder);
+        when(() => mockInsertBuilder.single())
+            .thenAnswer((_) => _FakePostgrestSingleResponse({'id': jobId}));
+      }
+
+      test('returns job ID from DB insert on success', () async {
+        stubDbInsert();
         when(() => mockFunctions.invoke(
               'generate-image',
               body: any(named: 'body'),
             )).thenAnswer((_) async => FunctionResponse(
-              data: {'job_id': 'job-123'},
+              data: {'status': 'ok'},
               status: 200,
             ));
 
@@ -54,6 +115,8 @@ void main() {
         verify(() => mockFunctions.invoke(
               'generate-image',
               body: {
+                'jobId': 'job-123',
+                'userId': 'test-user-id',
                 'template_id': 'template-1',
                 'prompt': 'A beautiful sunset',
                 'aspect_ratio': '1:1',
@@ -62,25 +125,8 @@ void main() {
             )).called(1);
       });
 
-      test('accepts camelCase jobId in response', () async {
-        when(() => mockFunctions.invoke(
-              'generate-image',
-              body: any(named: 'body'),
-            )).thenAnswer((_) async => FunctionResponse(
-              data: {'jobId': 'job-camel'},
-              status: 200,
-            ));
-
-        final result = await repository.startGeneration(
-          userId: 'test-user-id',
-          templateId: 'template-1',
-          prompt: 'A beautiful sunset',
-        );
-
-        expect(result, equals('job-camel'));
-      });
-
       test('throws AppException.network on 429 rate limit', () async {
+        stubDbInsert();
         when(() => mockFunctions.invoke(
               'generate-image',
               body: any(named: 'body'),
@@ -104,6 +150,7 @@ void main() {
       });
 
       test('throws AppException.generation on server error', () async {
+        stubDbInsert();
         when(() => mockFunctions.invoke(
               'generate-image',
               body: any(named: 'body'),
@@ -122,31 +169,9 @@ void main() {
         );
       });
 
-      test('throws AppException.generation when job id missing', () async {
-        when(() => mockFunctions.invoke(
-              'generate-image',
-              body: any(named: 'body'),
-            )).thenAnswer((_) async => FunctionResponse(
-              data: {'success': true},
-              status: 200,
-            ));
-
-        expect(
-          () => repository.startGeneration(
-            userId: 'test-user-id',
-            templateId: 'template-1',
-            prompt: 'test',
-          ),
-          throwsA(isA<AppException>().having(
-            (e) => e.message,
-            'message',
-            contains('Invalid response'),
-          )),
-        );
-      });
-
       test('throws AppException.network on FunctionException with 429',
           () async {
+        stubDbInsert();
         when(() => mockFunctions.invoke(
               'generate-image',
               body: any(named: 'body'),
@@ -170,17 +195,7 @@ void main() {
       });
 
       test('throws AppException.network on timeout', () async {
-        when(() => mockFunctions.invoke(
-              'generate-image',
-              body: any(named: 'body'),
-            )).thenAnswer((_) async {
-          await Future<void>.delayed(const Duration(seconds: 120));
-          return FunctionResponse(data: {'job_id': 'late'}, status: 200);
-        });
-
-        // The actual production code uses .timeout(Duration(seconds: 90)),
-        // but in tests mocking the FunctionException is more reliable.
-        // Instead, test that TimeoutException is caught correctly:
+        stubDbInsert();
         when(() => mockFunctions.invoke(
               'generate-image',
               body: any(named: 'body'),
@@ -201,11 +216,12 @@ void main() {
       });
 
       test('trims whitespace from prompt', () async {
+        stubDbInsert();
         when(() => mockFunctions.invoke(
               'generate-image',
               body: any(named: 'body'),
             )).thenAnswer((_) async => FunctionResponse(
-              data: {'job_id': 'job-456'},
+              data: {'status': 'ok'},
               status: 200,
             ));
 
@@ -218,6 +234,8 @@ void main() {
         verify(() => mockFunctions.invoke(
               'generate-image',
               body: {
+                'jobId': 'job-123',
+                'userId': 'test-user-id',
                 'template_id': 'template-1',
                 'prompt': 'A beautiful sunset',
                 'aspect_ratio': '1:1',
@@ -227,11 +245,12 @@ void main() {
       });
 
       test('uses custom aspect ratio and image count', () async {
+        stubDbInsert();
         when(() => mockFunctions.invoke(
               'generate-image',
               body: any(named: 'body'),
             )).thenAnswer((_) async => FunctionResponse(
-              data: {'job_id': 'job-789'},
+              data: {'status': 'ok'},
               status: 200,
             ));
 
@@ -246,6 +265,8 @@ void main() {
         verify(() => mockFunctions.invoke(
               'generate-image',
               body: {
+                'jobId': 'job-123',
+                'userId': 'test-user-id',
                 'template_id': 'template-1',
                 'prompt': 'test',
                 'aspect_ratio': '16:9',
