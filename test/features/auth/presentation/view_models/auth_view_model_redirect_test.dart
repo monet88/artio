@@ -69,24 +69,24 @@ void main() {
         expect(notifier.redirect(currentPath: '/'), '/home');
       });
 
-      test('allows access to /home (no redirect)', () async {
+      test('redirects /home to /login when unauthenticated', () async {
         final notifier = await createSettledNotifier();
-        expect(notifier.redirect(currentPath: '/home'), isNull);
+        expect(notifier.redirect(currentPath: '/home'), '/login');
       });
 
-      test('allows access to /create (no redirect)', () async {
+      test('redirects /create to /login when unauthenticated', () async {
         final notifier = await createSettledNotifier();
-        expect(notifier.redirect(currentPath: '/create'), isNull);
+        expect(notifier.redirect(currentPath: '/create'), '/login');
       });
 
-      test('allows access to /settings (no redirect)', () async {
+      test('redirects /settings to /login when unauthenticated', () async {
         final notifier = await createSettledNotifier();
-        expect(notifier.redirect(currentPath: '/settings'), isNull);
+        expect(notifier.redirect(currentPath: '/settings'), '/login');
       });
 
-      test('allows access to /gallery (no redirect)', () async {
+      test('redirects /gallery to /login when unauthenticated', () async {
         final notifier = await createSettledNotifier();
-        expect(notifier.redirect(currentPath: '/gallery'), isNull);
+        expect(notifier.redirect(currentPath: '/gallery'), '/login');
       });
 
       test('allows access to /login (no redirect)', () async {

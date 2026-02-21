@@ -162,6 +162,57 @@ void main() {
         expect(model.premiumExpiresAt, isNull);
         expect(model.createdAt, isNull);
       });
+
+      test('admin role grants isPremium even when is_premium is false', () {
+        final user = MockUser();
+        when(() => user.id).thenReturn('admin-1');
+        when(() => user.email).thenReturn('admin@example.com');
+        when(() => user.userMetadata).thenReturn({});
+        when(() => user.createdAt).thenReturn('');
+
+        final profile = {
+          'role': 'admin',
+          'is_premium': false,
+        };
+
+        final model = UserModel.fromSupabaseUser(user, profile: profile);
+
+        expect(model.isPremium, true);
+      });
+
+      test('regular user role does not grant isPremium', () {
+        final user = MockUser();
+        when(() => user.id).thenReturn('user-789');
+        when(() => user.email).thenReturn('regular@example.com');
+        when(() => user.userMetadata).thenReturn({});
+        when(() => user.createdAt).thenReturn('');
+
+        final profile = {
+          'role': 'user',
+          'is_premium': false,
+        };
+
+        final model = UserModel.fromSupabaseUser(user, profile: profile);
+
+        expect(model.isPremium, false);
+      });
+
+      test('admin role with is_premium true remains isPremium', () {
+        final user = MockUser();
+        when(() => user.id).thenReturn('admin-2');
+        when(() => user.email).thenReturn('admin2@example.com');
+        when(() => user.userMetadata).thenReturn({});
+        when(() => user.createdAt).thenReturn('');
+
+        final profile = {
+          'role': 'admin',
+          'is_premium': true,
+        };
+
+        final model = UserModel.fromSupabaseUser(user, profile: profile);
+
+        expect(model.isPremium, true);
+      });
     });
 
     group('copyWith', () {
