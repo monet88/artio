@@ -1,3 +1,4 @@
+// ignore_for_file: invalid_annotation_target — @JsonKey on Freezed constructor params is the recommended pattern
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'input_field_model.freezed.dart';
