@@ -59,7 +59,9 @@ class AppTheme {
     final isDark = brightness == Brightness.dark;
     return InputDecorationTheme(
       filled: true,
-      fillColor: isDark ? AdminColors.surfaceContainer : AdminColors.lightSurfaceContainer,
+      fillColor: isDark
+          ? AdminColors.surfaceContainer
+          : AdminColors.lightSurfaceContainer,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
         borderSide: BorderSide(
@@ -134,7 +136,9 @@ class AppTheme {
   static ChipThemeData _chipTheme(Brightness brightness) {
     final isDark = brightness == Brightness.dark;
     return ChipThemeData(
-      backgroundColor: isDark ? AdminColors.surfaceContainer : AdminColors.lightSurfaceContainer,
+      backgroundColor: isDark
+          ? AdminColors.surfaceContainer
+          : AdminColors.lightSurfaceContainer,
       selectedColor: AdminColors.primary.withValues(alpha: 0.2),
       side: BorderSide(
         color: isDark ? AdminColors.borderSubtle : Colors.grey.shade300,
@@ -152,7 +156,9 @@ class AppTheme {
     return TabBarThemeData(
       indicatorColor: AdminColors.primary,
       labelColor: AdminColors.primary,
-      unselectedLabelColor: isDark ? AdminColors.textMuted : Colors.grey.shade600,
+      unselectedLabelColor: isDark
+          ? AdminColors.textMuted
+          : Colors.grey.shade600,
       indicatorSize: TabBarIndicatorSize.label,
       dividerHeight: 1,
       dividerColor: isDark ? AdminColors.borderSubtle : Colors.grey.shade200,

@@ -48,9 +48,9 @@ class _CreateScreenState extends ConsumerState<CreateScreen> {
               : 'Generation failed. Please try again.';
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (!mounted) return;
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(failedMessage)),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(failedMessage)));
           });
         }
 
@@ -67,15 +67,16 @@ class _CreateScreenState extends ConsumerState<CreateScreen> {
                 return;
               }
               if (error is GenerationException &&
-                  error.message == 'This model requires a premium subscription') {
+                  error.message ==
+                      'This model requires a premium subscription') {
                 _showPremiumModelSheet();
                 return;
               }
 
               final message = AppExceptionMapper.toUserMessage(error);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(message)),
-              );
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text(message)));
             });
           },
         );
@@ -89,25 +90,30 @@ class _CreateScreenState extends ConsumerState<CreateScreen> {
     super.dispose();
   }
 
-  void _handleGenerate(CreateFormState formState, {required bool isGenerating}) {
+  void _handleGenerate(
+    CreateFormState formState, {
+    required bool isGenerating,
+  }) {
     if (isGenerating) return;
 
     final authState = ref.read(authViewModelProvider);
     final userId = authState.maybeMap(
-          authenticated: (state) => state.user.id,
-          orElse: () => null,
-        );
+      authenticated: (state) => state.user.id,
+      orElse: () => null,
+    );
     if (userId == null) {
       showAuthGateSheet(context);
       return;
     }
 
     final isPremiumUser = authState.maybeMap(
-          authenticated: (state) => state.user.isPremium,
-          orElse: () => false,
-        );
+      authenticated: (state) => state.user.isPremium,
+      orElse: () => false,
+    );
 
-    ref.read(createViewModelProvider.notifier).generate(
+    ref
+        .read(createViewModelProvider.notifier)
+        .generate(
           formState: formState,
           userId: userId,
           isPremiumUser: isPremiumUser,
@@ -115,7 +121,8 @@ class _CreateScreenState extends ConsumerState<CreateScreen> {
   }
 
   void _showInsufficientCreditsSheet() {
-    final balance = ref.read(creditBalanceNotifierProvider).valueOrNull?.balance ?? 0;
+    final balance =
+        ref.read(creditBalanceNotifierProvider).valueOrNull?.balance ?? 0;
     final formState = ref.read(createFormNotifierProvider);
     final model = AiModels.getById(formState.modelId);
     showModalBottomSheet<void>(
@@ -132,9 +139,8 @@ class _CreateScreenState extends ConsumerState<CreateScreen> {
     final model = AiModels.getById(formState.modelId);
     showModalBottomSheet<void>(
       context: context,
-      builder: (_) => PremiumModelSheet(
-        modelName: model?.displayName ?? 'This model',
-      ),
+      builder: (_) =>
+          PremiumModelSheet(modelName: model?.displayName ?? 'This model'),
     );
   }
 
@@ -147,7 +153,9 @@ class _CreateScreenState extends ConsumerState<CreateScreen> {
       createViewModelProvider.select(CreateViewModel.isJobActive),
     );
 
-    final isPremium = ref.watch(authViewModelProvider).maybeMap(
+    final isPremium = ref
+        .watch(authViewModelProvider)
+        .maybeMap(
           authenticated: (state) => state.user.isPremium,
           orElse: () => false,
         );
@@ -224,9 +232,8 @@ class _CreateScreenState extends ConsumerState<CreateScreen> {
                   ),
                   const SizedBox(height: AppSpacing.sm),
                   FilledButton(
-                    onPressed: () => ref
-                        .read(createViewModelProvider.notifier)
-                        .reset(),
+                    onPressed: () =>
+                        ref.read(createViewModelProvider.notifier).reset(),
                     child: const Text('Generate another'),
                   ),
                 ],

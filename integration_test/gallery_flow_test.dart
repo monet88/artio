@@ -16,12 +16,12 @@ class MockGalleryRepository extends Mock implements GalleryRepository {}
 class MockAuthViewModel extends AuthViewModel {
   @override
   AuthState build() => AuthState.authenticated(
-        UserModel(
-          id: 'test-user-id',
-          email: 'test@example.com',
-          createdAt: DateTime.now(),
-        ),
-      );
+    UserModel(
+      id: 'test-user-id',
+      email: 'test@example.com',
+      createdAt: DateTime.now(),
+    ),
+  );
 }
 
 void main() {
@@ -53,8 +53,9 @@ void main() {
     }
 
     testWidgets('gallery page displays with title', (tester) async {
-      when(() => mockRepository.watchUserImages(userId: any(named: 'userId')))
-          .thenAnswer((_) => Stream.value([]));
+      when(
+        () => mockRepository.watchUserImages(userId: any(named: 'userId')),
+      ).thenAnswer((_) => Stream.value([]));
 
       await tester.pumpWidget(createTestWidget());
       await tester.pumpAndSettle();
@@ -64,8 +65,9 @@ void main() {
     });
 
     testWidgets('gallery shows empty state when no images', (tester) async {
-      when(() => mockRepository.watchUserImages(userId: any(named: 'userId')))
-          .thenAnswer((_) => Stream.value([]));
+      when(
+        () => mockRepository.watchUserImages(userId: any(named: 'userId')),
+      ).thenAnswer((_) => Stream.value([]));
 
       await tester.pumpWidget(createTestWidget());
       await tester.pumpAndSettle();
@@ -74,8 +76,9 @@ void main() {
     });
 
     testWidgets('gallery shows error state with retry button', (tester) async {
-      when(() => mockRepository.watchUserImages(userId: any(named: 'userId')))
-          .thenAnswer((_) => Stream.error(Exception('Network error')));
+      when(
+        () => mockRepository.watchUserImages(userId: any(named: 'userId')),
+      ).thenAnswer((_) => Stream.error(Exception('Network error')));
 
       await tester.pumpWidget(createTestWidget());
       await tester.pumpAndSettle();
@@ -99,9 +102,11 @@ void main() {
         ),
       ];
 
-      await tester.pumpWidget(createTestWidget(
-        home: ImageViewerPage(items: testItems, initialIndex: 0),
-      ));
+      await tester.pumpWidget(
+        createTestWidget(
+          home: ImageViewerPage(items: testItems, initialIndex: 0),
+        ),
+      );
 
       expect(find.byIcon(Icons.share), findsOneWidget);
       expect(find.byIcon(Icons.download), findsOneWidget);
@@ -123,9 +128,11 @@ void main() {
         ),
       );
 
-      await tester.pumpWidget(createTestWidget(
-        home: ImageViewerPage(items: testItems, initialIndex: 0),
-      ));
+      await tester.pumpWidget(
+        createTestWidget(
+          home: ImageViewerPage(items: testItems, initialIndex: 0),
+        ),
+      );
 
       expect(find.byType(PageView), findsOneWidget);
     });
@@ -145,9 +152,11 @@ void main() {
         ),
       ];
 
-      await tester.pumpWidget(createTestWidget(
-        home: ImageViewerPage(items: testItems, initialIndex: 0),
-      ));
+      await tester.pumpWidget(
+        createTestWidget(
+          home: ImageViewerPage(items: testItems, initialIndex: 0),
+        ),
+      );
 
       expect(find.text('Portrait Template'), findsOneWidget);
       expect(find.text('A beautiful portrait photo'), findsOneWidget);

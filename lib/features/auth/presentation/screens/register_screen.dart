@@ -39,7 +39,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
   void _handleRegister() {
     if (_formKey.currentState!.validate()) {
-      ref.read(authViewModelProvider.notifier).signUpWithEmail(
+      ref
+          .read(authViewModelProvider.notifier)
+          .signUpWithEmail(
             _emailController.text.trim(),
             _passwordController.text,
           );
@@ -158,8 +160,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                               ? Icons.visibility_outlined
                               : Icons.visibility_off_outlined,
                         ),
-                        onPressed: () =>
-                            setState(() => _obscurePassword = !_obscurePassword),
+                        onPressed: () => setState(
+                          () => _obscurePassword = !_obscurePassword,
+                        ),
                       ),
                     ),
                     validator: (value) {
@@ -188,7 +191,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                               : Icons.visibility_off_outlined,
                         ),
                         onPressed: () => setState(
-                            () => _obscureConfirmPassword = !_obscureConfirmPassword),
+                          () => _obscureConfirmPassword =
+                              !_obscureConfirmPassword,
+                        ),
                       ),
                     ),
                     validator: (value) {

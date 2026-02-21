@@ -33,51 +33,68 @@ void main() {
       }
 
       test('softDeleteImage calls repository', () async {
-        when(() => mockRepository.softDeleteImage('job-123'))
-            .thenAnswer((_) async {});
+        when(
+          () => mockRepository.softDeleteImage('job-123'),
+        ).thenAnswer((_) async {});
 
         container = createContainer();
-        await container.read(galleryActionsNotifierProvider.notifier).softDeleteImage('job-123');
+        await container
+            .read(galleryActionsNotifierProvider.notifier)
+            .softDeleteImage('job-123');
 
         verify(() => mockRepository.softDeleteImage('job-123')).called(1);
       });
 
       test('restoreImage calls repository', () async {
-        when(() => mockRepository.restoreImage('job-123'))
-            .thenAnswer((_) async {});
+        when(
+          () => mockRepository.restoreImage('job-123'),
+        ).thenAnswer((_) async {});
 
         container = createContainer();
-        await container.read(galleryActionsNotifierProvider.notifier).restoreImage('job-123');
+        await container
+            .read(galleryActionsNotifierProvider.notifier)
+            .restoreImage('job-123');
 
         verify(() => mockRepository.restoreImage('job-123')).called(1);
       });
 
       test('retryGeneration calls repository', () async {
-        when(() => mockRepository.retryGeneration('job-123'))
-            .thenAnswer((_) async {});
+        when(
+          () => mockRepository.retryGeneration('job-123'),
+        ).thenAnswer((_) async {});
 
         container = createContainer();
-        await container.read(galleryActionsNotifierProvider.notifier).retryGeneration('job-123');
+        await container
+            .read(galleryActionsNotifierProvider.notifier)
+            .retryGeneration('job-123');
 
         verify(() => mockRepository.retryGeneration('job-123')).called(1);
       });
 
       test('toggleFavorite calls repository with correct params', () async {
-        when(() => mockRepository.toggleFavorite('item-123', isFavorite: true))
-            .thenAnswer((_) async {});
+        when(
+          () => mockRepository.toggleFavorite('item-123', isFavorite: true),
+        ).thenAnswer((_) async {});
 
         container = createContainer();
-        await container.read(galleryActionsNotifierProvider.notifier).toggleFavorite('item-123', isFavorite: true);
+        await container
+            .read(galleryActionsNotifierProvider.notifier)
+            .toggleFavorite('item-123', isFavorite: true);
 
-        verify(() => mockRepository.toggleFavorite('item-123', isFavorite: true)).called(1);
+        verify(
+          () => mockRepository.toggleFavorite('item-123', isFavorite: true),
+        ).called(1);
       });
 
       test('softDeleteImage handles error gracefully', () async {
-        when(() => mockRepository.softDeleteImage('job-123'))
-            .thenThrow(Exception('Delete failed'));
+        when(
+          () => mockRepository.softDeleteImage('job-123'),
+        ).thenThrow(Exception('Delete failed'));
 
         container = createContainer();
-        await container.read(galleryActionsNotifierProvider.notifier).softDeleteImage('job-123');
+        await container
+            .read(galleryActionsNotifierProvider.notifier)
+            .softDeleteImage('job-123');
 
         final state = container.read(galleryActionsNotifierProvider);
         expect(state.hasError, true);

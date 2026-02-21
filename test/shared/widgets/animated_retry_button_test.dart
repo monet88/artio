@@ -7,10 +7,7 @@ void main() {
     Widget buildWidget({required VoidCallback onPressed}) {
       return MaterialApp(
         home: Scaffold(
-          body: AnimatedRetryButton(
-            onPressed: onPressed,
-            color: Colors.orange,
-          ),
+          body: AnimatedRetryButton(onPressed: onPressed, color: Colors.orange),
         ),
       );
     }

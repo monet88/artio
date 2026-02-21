@@ -51,8 +51,7 @@ void main() {
       expect(find.text('Change Password'), findsNothing);
     });
 
-    testWidgets('shows Appearance section with Theme label',
-        (tester) async {
+    testWidgets('shows Appearance section with Theme label', (tester) async {
       await tester.pumpWidget(buildWidget());
       await tester.pumpAndSettle();
 

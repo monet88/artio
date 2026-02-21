@@ -22,7 +22,7 @@ abstract class ICreditRepository {
   /// Claim ad reward using a previously requested nonce.
   /// The nonce must be valid, unexpired (5 min), and unused.
   Future<({int creditsAwarded, int newBalance, int adsRemaining})>
-      rewardAdCredits({required String nonce});
+  rewardAdCredits({required String nonce});
 
   /// Fetch how many ads the user can still watch today.
   /// See [AppConstants.dailyAdLimit] for the maximum.

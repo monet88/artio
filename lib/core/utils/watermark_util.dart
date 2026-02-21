@@ -36,24 +36,29 @@ class WatermarkUtil {
 
     // Draw watermark text.
     final fontSize = (width * 0.04).clamp(12.0, 48.0);
-    final paragraphBuilder = ui.ParagraphBuilder(
-      ui.ParagraphStyle(
-        textAlign: ui.TextAlign.right,
-        fontSize: fontSize,
-      ),
-    )..pushStyle(
-        ui.TextStyle(
-          color: const ui.Color.fromRGBO(255, 255, 255, 0.4),
-          fontSize: fontSize,
-          fontWeight: ui.FontWeight.w600,
-          letterSpacing: 0.5,
-          shadows: const [
-            ui.Shadow(blurRadius: 4, color: ui.Color.fromRGBO(0, 0, 0, 0.54)),
-          ],
-        ),
-      )
-      ..addText('artio')
-      ..pop();
+    final paragraphBuilder =
+        ui.ParagraphBuilder(
+            ui.ParagraphStyle(
+              textAlign: ui.TextAlign.right,
+              fontSize: fontSize,
+            ),
+          )
+          ..pushStyle(
+            ui.TextStyle(
+              color: const ui.Color.fromRGBO(255, 255, 255, 0.4),
+              fontSize: fontSize,
+              fontWeight: ui.FontWeight.w600,
+              letterSpacing: 0.5,
+              shadows: const [
+                ui.Shadow(
+                  blurRadius: 4,
+                  color: ui.Color.fromRGBO(0, 0, 0, 0.54),
+                ),
+              ],
+            ),
+          )
+          ..addText('artio')
+          ..pop();
 
     final paragraph = paragraphBuilder.build()
       ..layout(ui.ParagraphConstraints(width: width.toDouble()));
@@ -66,9 +71,7 @@ class WatermarkUtil {
     final picture = recorder.endRecording();
     final rendered = await picture.toImage(width, height);
     picture.dispose();
-    final byteData = await rendered.toByteData(
-      format: ui.ImageByteFormat.png,
-    );
+    final byteData = await rendered.toByteData(format: ui.ImageByteFormat.png);
 
     image.dispose();
     rendered.dispose();

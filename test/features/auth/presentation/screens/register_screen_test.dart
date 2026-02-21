@@ -19,8 +19,9 @@ void main() {
   ];
 
   group('RegisterScreen', () {
-    testWidgets('renders email, password, and confirm password fields',
-        (tester) async {
+    testWidgets('renders email, password, and confirm password fields', (
+      tester,
+    ) async {
       await tester.pumpApp(const RegisterScreen(), overrides: overrides);
 
       expect(find.text('Email'), findsOneWidget);
@@ -61,10 +62,7 @@ void main() {
     testWidgets('shows error on invalid email format', (tester) async {
       await tester.pumpApp(const RegisterScreen(), overrides: overrides);
 
-      await tester.enterText(
-        find.byType(TextFormField).first,
-        'invalidemail',
-      );
+      await tester.enterText(find.byType(TextFormField).first, 'invalidemail');
       await tester.tap(find.text('Create Account').last);
       await tester.pumpAndSettle();
 
@@ -91,14 +89,14 @@ void main() {
         find.byType(TextFormField).first,
         'test@example.com',
       );
-      await tester.enterText(
-        find.byType(TextFormField).at(1),
-        '12345',
-      );
+      await tester.enterText(find.byType(TextFormField).at(1), '12345');
       await tester.tap(find.text('Create Account').last);
       await tester.pumpAndSettle();
 
-      expect(find.text('Password must be at least 6 characters'), findsOneWidget);
+      expect(
+        find.text('Password must be at least 6 characters'),
+        findsOneWidget,
+      );
     });
 
     testWidgets('shows error on password mismatch', (tester) async {
@@ -108,10 +106,7 @@ void main() {
         find.byType(TextFormField).first,
         'test@example.com',
       );
-      await tester.enterText(
-        find.byType(TextFormField).at(1),
-        'password123',
-      );
+      await tester.enterText(find.byType(TextFormField).at(1), 'password123');
       await tester.enterText(
         find.byType(TextFormField).last,
         'differentpassword',
@@ -129,10 +124,7 @@ void main() {
         find.byType(TextFormField).first,
         'test@example.com',
       );
-      await tester.enterText(
-        find.byType(TextFormField).at(1),
-        'password123',
-      );
+      await tester.enterText(find.byType(TextFormField).at(1), 'password123');
       await tester.tap(find.text('Create Account').last);
       await tester.pumpAndSettle();
 

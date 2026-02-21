@@ -31,18 +31,15 @@ class AppExceptionMapper {
     }
 
     return switch (error) {
-      NetworkException(:final message, :final statusCode) =>
-        _networkMessage(message, statusCode),
-      AuthException(:final message) =>
-        _authMessage(message),
-      StorageException(:final message) =>
+      NetworkException(:final message, :final statusCode) => _networkMessage(
         message,
-      PaymentException(:final message) =>
-        _paymentMessage(message),
-      GenerationException(:final message) =>
-        message,
-      UnknownException() =>
-        'Something went wrong. Please try again.',
+        statusCode,
+      ),
+      AuthException(:final message) => _authMessage(message),
+      StorageException(:final message) => message,
+      PaymentException(:final message) => _paymentMessage(message),
+      GenerationException(:final message) => message,
+      UnknownException() => 'Something went wrong. Please try again.',
     };
   }
 
@@ -52,7 +49,8 @@ class AppExceptionMapper {
       401 => 'Your session has expired. Please sign in again.',
       403 => "You don't have permission for this action.",
       429 => 'Too many requests. Please wait a moment.',
-      final int status when status >= 500 && status < 600 => 'Server error. Please try again later.',
+      final int status when status >= 500 && status < 600 =>
+        'Server error. Please try again later.',
       _ => 'Connection error. Check your internet and try again.',
     };
   }
@@ -68,7 +66,8 @@ class AppExceptionMapper {
         lower.contains('already registered')) {
       return 'This email is already registered. Try signing in.';
     }
-    if (lower.contains('weak password') || (lower.contains('password') && lower.contains('short'))) {
+    if (lower.contains('weak password') ||
+        (lower.contains('password') && lower.contains('short'))) {
       return 'Password must be at least 6 characters.';
     }
     if (lower.contains('rate limit') || lower.contains('too many')) {

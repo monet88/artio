@@ -63,8 +63,8 @@ class _TemplateEditorPageState extends ConsumerState<TemplateEditorPage>
           "label": "Style",
           "type": "select",
           "options": ["Realistic", "Anime", "Oil Painting"],
-          "defaultValue": "Realistic"
-        }
+          "defaultValue": "Realistic",
+        },
       ]);
       return;
     }
@@ -95,14 +95,15 @@ class _TemplateEditorPageState extends ConsumerState<TemplateEditorPage>
       _isActive = data['is_active'] ?? true;
 
       if (data['input_fields'] != null) {
-        _inputFieldsController.text =
-            const JsonEncoder.withIndent('  ').convert(data['input_fields']);
+        _inputFieldsController.text = const JsonEncoder.withIndent(
+          '  ',
+        ).convert(data['input_fields']);
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error loading template: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error loading template: $e')));
       }
     } finally {
       if (mounted) setState(() => _isLoading = false);
@@ -177,9 +178,9 @@ class _TemplateEditorPageState extends ConsumerState<TemplateEditorPage>
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error saving template: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error saving template: $e')));
       }
     } finally {
       if (mounted) setState(() => _isLoading = false);
@@ -209,7 +210,8 @@ class _TemplateEditorPageState extends ConsumerState<TemplateEditorPage>
           onPressed: () => context.go('/templates'),
         ),
         title: Text(
-            widget.templateId != null ? 'Edit Template' : 'New Template'),
+          widget.templateId != null ? 'Edit Template' : 'New Template',
+        ),
         bottom: TabBar(
           controller: _tabController,
           tabs: const [
@@ -248,8 +250,10 @@ class _TemplateEditorPageState extends ConsumerState<TemplateEditorPage>
                 ? const SizedBox(
                     width: 16,
                     height: 16,
-                    child:
-                        CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: Colors.white,
+                    ),
                   )
                 : const Icon(Icons.save, size: 18),
             label: const Text('Save'),
@@ -284,9 +288,12 @@ class _TemplateEditorPageState extends ConsumerState<TemplateEditorPage>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Template Details',
-                  style: theme.textTheme.titleMedium
-                      ?.copyWith(fontWeight: FontWeight.bold)),
+              Text(
+                'Template Details',
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               const Gap(16),
               TextFormField(
                 controller: _nameController,
@@ -318,9 +325,12 @@ class _TemplateEditorPageState extends ConsumerState<TemplateEditorPage>
               const Gap(24),
 
               // Settings row
-              Text('Settings',
-                  style: theme.textTheme.titleMedium
-                      ?.copyWith(fontWeight: FontWeight.bold)),
+              Text(
+                'Settings',
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               const Gap(16),
               Row(
                 children: [
@@ -328,7 +338,8 @@ class _TemplateEditorPageState extends ConsumerState<TemplateEditorPage>
                     child: DropdownButtonFormField<String>(
                       initialValue: _selectedAspectRatio,
                       decoration: const InputDecoration(
-                          labelText: 'Default Aspect Ratio'),
+                        labelText: 'Default Aspect Ratio',
+                      ),
                       items: _aspectRatios.map((r) {
                         return DropdownMenuItem(value: r, child: Text(r));
                       }).toList(),
@@ -346,9 +357,7 @@ class _TemplateEditorPageState extends ConsumerState<TemplateEditorPage>
                       subtitle: Text(
                         _isPremium ? 'Pro users only' : 'Free for all',
                         style: theme.textTheme.bodySmall?.copyWith(
-                          color: isDark
-                              ? AdminColors.textMuted
-                              : Colors.grey,
+                          color: isDark ? AdminColors.textMuted : Colors.grey,
                         ),
                       ),
                       value: _isPremium,
@@ -361,9 +370,7 @@ class _TemplateEditorPageState extends ConsumerState<TemplateEditorPage>
                       subtitle: Text(
                         _isActive ? 'Visible to users' : 'Hidden',
                         style: theme.textTheme.bodySmall?.copyWith(
-                          color: isDark
-                              ? AdminColors.textMuted
-                              : Colors.grey,
+                          color: isDark ? AdminColors.textMuted : Colors.grey,
                         ),
                       ),
                       value: _isActive,
@@ -390,9 +397,12 @@ class _TemplateEditorPageState extends ConsumerState<TemplateEditorPage>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Prompt Template',
-                  style: theme.textTheme.titleMedium
-                      ?.copyWith(fontWeight: FontWeight.bold)),
+              Text(
+                'Prompt Template',
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               const Gap(8),
               Text(
                 'Use {{field_id}} to insert values from input fields',
@@ -415,18 +425,19 @@ class _TemplateEditorPageState extends ConsumerState<TemplateEditorPage>
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Input Fields',
-                      style: theme.textTheme.titleMedium
-                          ?.copyWith(fontWeight: FontWeight.bold)),
+                  Text(
+                    'Input Fields',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   TextButton.icon(
                     onPressed: () {
                       // Format JSON
                       try {
-                        final parsed =
-                            jsonDecode(_inputFieldsController.text);
+                        final parsed = jsonDecode(_inputFieldsController.text);
                         _inputFieldsController.text =
-                            const JsonEncoder.withIndent('  ')
-                                .convert(parsed);
+                            const JsonEncoder.withIndent('  ').convert(parsed);
                       } catch (_) {
                         // If invalid, don't crash
                       }
@@ -457,8 +468,9 @@ class _TemplateEditorPageState extends ConsumerState<TemplateEditorPage>
                 style: TextStyle(
                   fontFamily: 'monospace',
                   fontSize: 13,
-                  color:
-                      isDark ? AdminColors.textPrimary : Colors.grey.shade900,
+                  color: isDark
+                      ? AdminColors.textPrimary
+                      : Colors.grey.shade900,
                 ),
                 maxLines: 15,
                 validator: (v) {
@@ -489,9 +501,12 @@ class _TemplateEditorPageState extends ConsumerState<TemplateEditorPage>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Thumbnail',
-                  style: theme.textTheme.titleMedium
-                      ?.copyWith(fontWeight: FontWeight.bold)),
+              Text(
+                'Thumbnail',
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               const Gap(16),
               TextFormField(
                 controller: _thumbnailUrlController,
@@ -504,9 +519,12 @@ class _TemplateEditorPageState extends ConsumerState<TemplateEditorPage>
               ),
               const Gap(24),
               if (_thumbnailUrlController.text.isNotEmpty) ...[
-                Text('Preview',
-                    style: theme.textTheme.titleSmall
-                        ?.copyWith(fontWeight: FontWeight.w500)),
+                Text(
+                  'Preview',
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
                 const Gap(12),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(12),

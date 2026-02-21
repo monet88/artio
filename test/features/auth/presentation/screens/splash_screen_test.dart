@@ -5,11 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   group('SplashScreen', () {
     Widget buildWidget() {
-      return const MaterialApp(
-        home: Scaffold(
-          body: SplashScreen(),
-        ),
-      );
+      return const MaterialApp(home: Scaffold(body: SplashScreen()));
     }
 
     testWidgets('renders app logo/name', (tester) async {

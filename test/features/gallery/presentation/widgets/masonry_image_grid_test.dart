@@ -54,9 +54,7 @@ void main() {
     });
 
     testWidgets('shows loading indicator for pending items', (tester) async {
-      final pendingItems = [
-        GalleryItemFixtures.processing(),
-      ];
+      final pendingItems = [GalleryItemFixtures.processing()];
 
       await tester.pumpWidget(buildWidget(pendingItems));
 
@@ -65,9 +63,7 @@ void main() {
     });
 
     testWidgets('shows failed image card for failed items', (tester) async {
-      final failedItems = [
-        GalleryItemFixtures.failed(),
-      ];
+      final failedItems = [GalleryItemFixtures.failed()];
 
       await tester.pumpWidget(buildWidget(failedItems));
 
@@ -75,17 +71,16 @@ void main() {
     });
 
     testWidgets('renders image for completed items', (tester) async {
-      final completedItems = [
-        GalleryItemFixtures.completed(),
-      ];
+      final completedItems = [GalleryItemFixtures.completed()];
 
       await tester.pumpWidget(buildWidget(completedItems));
 
       expect(find.byType(ClipRRect), findsOneWidget);
     });
 
-    testWidgets('shows watermark overlay when showWatermark is true',
-        (tester) async {
+    testWidgets('shows watermark overlay when showWatermark is true', (
+      tester,
+    ) async {
       final completedItems = [GalleryItemFixtures.completed()];
 
       await tester.pumpWidget(buildWidget(completedItems, showWatermark: true));
@@ -94,8 +89,9 @@ void main() {
       expect(find.text('artio'), findsOneWidget);
     });
 
-    testWidgets('hides watermark text when showWatermark is false',
-        (tester) async {
+    testWidgets('hides watermark text when showWatermark is false', (
+      tester,
+    ) async {
       final completedItems = [GalleryItemFixtures.completed()];
 
       await tester.pumpWidget(buildWidget(completedItems));

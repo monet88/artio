@@ -146,11 +146,7 @@ class _AppSnackbarContent extends StatelessWidget {
                   shape: BoxShape.circle,
                   color: config.color.withValues(alpha: 0.15),
                 ),
-                child: Icon(
-                  config.icon,
-                  color: config.color,
-                  size: 18,
-                ),
+                child: Icon(config.icon, color: config.color, size: 18),
               ),
               const SizedBox(width: 12),
 
@@ -208,27 +204,26 @@ class _AppSnackbarContent extends StatelessWidget {
 
 /// Configuration per snackbar type.
 class _SnackbarConfig {
-
   const _SnackbarConfig({required this.color, required this.icon});
 
   factory _SnackbarConfig.from(AppSnackbarType type) {
     return switch (type) {
       AppSnackbarType.success => const _SnackbarConfig(
-          color: AppColors.success,
-          icon: Icons.check_circle_rounded,
-        ),
+        color: AppColors.success,
+        icon: Icons.check_circle_rounded,
+      ),
       AppSnackbarType.error => const _SnackbarConfig(
-          color: AppColors.error,
-          icon: Icons.error_rounded,
-        ),
+        color: AppColors.error,
+        icon: Icons.error_rounded,
+      ),
       AppSnackbarType.warning => const _SnackbarConfig(
-          color: AppColors.warning,
-          icon: Icons.warning_amber_rounded,
-        ),
+        color: AppColors.warning,
+        icon: Icons.warning_amber_rounded,
+      ),
       AppSnackbarType.info => const _SnackbarConfig(
-          color: AppColors.info,
-          icon: Icons.info_rounded,
-        ),
+        color: AppColors.info,
+        icon: Icons.info_rounded,
+      ),
     };
   }
   final Color color;

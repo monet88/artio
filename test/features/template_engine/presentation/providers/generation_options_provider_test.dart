@@ -25,7 +25,9 @@ void main() {
     });
 
     test('updateAspectRatio changes aspectRatio', () {
-      container.read(generationOptionsProvider.notifier).updateAspectRatio('16:9');
+      container
+          .read(generationOptionsProvider.notifier)
+          .updateAspectRatio('16:9');
 
       final state = container.read(generationOptionsProvider);
       expect(state.aspectRatio, '16:9');
@@ -39,21 +41,27 @@ void main() {
     });
 
     test('updateOutputFormat changes outputFormat', () {
-      container.read(generationOptionsProvider.notifier).updateOutputFormat('png');
+      container
+          .read(generationOptionsProvider.notifier)
+          .updateOutputFormat('png');
 
       final state = container.read(generationOptionsProvider);
       expect(state.outputFormat, 'png');
     });
 
     test('updateModel changes modelId', () {
-      container.read(generationOptionsProvider.notifier).updateModel('google/imagen4-ultra');
+      container
+          .read(generationOptionsProvider.notifier)
+          .updateModel('google/imagen4-ultra');
 
       final state = container.read(generationOptionsProvider);
       expect(state.modelId, 'google/imagen4-ultra');
     });
 
     test('updateOtherIdeas changes otherIdeas', () {
-      container.read(generationOptionsProvider.notifier).updateOtherIdeas('Add more contrast');
+      container
+          .read(generationOptionsProvider.notifier)
+          .updateOtherIdeas('Add more contrast');
 
       final state = container.read(generationOptionsProvider);
       expect(state.otherIdeas, 'Add more contrast');

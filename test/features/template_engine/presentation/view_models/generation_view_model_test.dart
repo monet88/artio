@@ -13,6 +13,7 @@ import '../../../../core/fixtures/fixtures.dart';
 
 // Mock classes
 class MockGenerationRepository extends Mock implements GenerationRepository {}
+
 class MockGenerationPolicy extends Mock implements IGenerationPolicy {}
 
 void main() {
@@ -44,10 +45,12 @@ void main() {
 
     group('initial state', () {
       test('starts with AsyncData(null)', () {
-        when(() => mockPolicy.canGenerate(
-          userId: any(named: 'userId'),
-          templateId: any(named: 'templateId'),
-        )).thenAnswer((_) async => const GenerationEligibility.allowed());
+        when(
+          () => mockPolicy.canGenerate(
+            userId: any(named: 'userId'),
+            templateId: any(named: 'templateId'),
+          ),
+        ).thenAnswer((_) async => const GenerationEligibility.allowed());
 
         container = createContainer();
         final state = container.read(generationViewModelProvider);
@@ -59,117 +62,151 @@ void main() {
 
     group('generate', () {
       test('calls policy canGenerate with correct params', () async {
-        when(() => mockPolicy.canGenerate(
-          userId: any(named: 'userId'),
-          templateId: any(named: 'templateId'),
-        )).thenAnswer((_) async => const GenerationEligibility.allowed());
+        when(
+          () => mockPolicy.canGenerate(
+            userId: any(named: 'userId'),
+            templateId: any(named: 'templateId'),
+          ),
+        ).thenAnswer((_) async => const GenerationEligibility.allowed());
 
-        when(() => mockRepository.startGeneration(
-          userId: any(named: 'userId'),
-          templateId: any(named: 'templateId'),
-          prompt: any(named: 'prompt'),
-          aspectRatio: any(named: 'aspectRatio'),
-          imageCount: any(named: 'imageCount'),
-        )).thenAnswer((_) async => 'job-123');
+        when(
+          () => mockRepository.startGeneration(
+            userId: any(named: 'userId'),
+            templateId: any(named: 'templateId'),
+            prompt: any(named: 'prompt'),
+            aspectRatio: any(named: 'aspectRatio'),
+            imageCount: any(named: 'imageCount'),
+          ),
+        ).thenAnswer((_) async => 'job-123');
 
-        when(() => mockRepository.watchJob('job-123'))
-            .thenAnswer((_) => jobStreamController.stream);
+        when(
+          () => mockRepository.watchJob('job-123'),
+        ).thenAnswer((_) => jobStreamController.stream);
 
         container = createContainer();
-        
-        unawaited(container.read(generationViewModelProvider.notifier).generate(
-          templateId: 'template-1',
-          prompt: 'A beautiful landscape',
-          userId: 'user-123',
-        ));
+
+        unawaited(
+          container
+              .read(generationViewModelProvider.notifier)
+              .generate(
+                templateId: 'template-1',
+                prompt: 'A beautiful landscape',
+                userId: 'user-123',
+              ),
+        );
 
         await Future<void>.delayed(const Duration(milliseconds: 10));
 
-        verify(() => mockPolicy.canGenerate(
-          userId: 'user-123',
-          templateId: 'template-1',
-        )).called(1);
+        verify(
+          () => mockPolicy.canGenerate(
+            userId: 'user-123',
+            templateId: 'template-1',
+          ),
+        ).called(1);
       });
 
       test('calls repository startGeneration when policy allows', () async {
-        when(() => mockPolicy.canGenerate(
-          userId: any(named: 'userId'),
-          templateId: any(named: 'templateId'),
-        )).thenAnswer((_) async => const GenerationEligibility.allowed());
+        when(
+          () => mockPolicy.canGenerate(
+            userId: any(named: 'userId'),
+            templateId: any(named: 'templateId'),
+          ),
+        ).thenAnswer((_) async => const GenerationEligibility.allowed());
 
-        when(() => mockRepository.startGeneration(
-          userId: any(named: 'userId'),
-          templateId: any(named: 'templateId'),
-          prompt: any(named: 'prompt'),
-          aspectRatio: any(named: 'aspectRatio'),
-          imageCount: any(named: 'imageCount'),
-        )).thenAnswer((_) async => 'job-123');
+        when(
+          () => mockRepository.startGeneration(
+            userId: any(named: 'userId'),
+            templateId: any(named: 'templateId'),
+            prompt: any(named: 'prompt'),
+            aspectRatio: any(named: 'aspectRatio'),
+            imageCount: any(named: 'imageCount'),
+          ),
+        ).thenAnswer((_) async => 'job-123');
 
-        when(() => mockRepository.watchJob('job-123'))
-            .thenAnswer((_) => jobStreamController.stream);
+        when(
+          () => mockRepository.watchJob('job-123'),
+        ).thenAnswer((_) => jobStreamController.stream);
 
         container = createContainer();
-        
-        unawaited(container.read(generationViewModelProvider.notifier).generate(
-          templateId: 'template-1',
-          prompt: 'A beautiful landscape',
-          userId: 'user-123',
-          aspectRatio: '16:9',
-          imageCount: 2,
-        ));
+
+        unawaited(
+          container
+              .read(generationViewModelProvider.notifier)
+              .generate(
+                templateId: 'template-1',
+                prompt: 'A beautiful landscape',
+                userId: 'user-123',
+                aspectRatio: '16:9',
+                imageCount: 2,
+              ),
+        );
 
         await Future<void>.delayed(const Duration(milliseconds: 10));
 
-        verify(() => mockRepository.startGeneration(
-          userId: 'user-123',
-          templateId: 'template-1',
-          prompt: 'A beautiful landscape',
-          aspectRatio: '16:9',
-          imageCount: 2,
-        )).called(1);
+        verify(
+          () => mockRepository.startGeneration(
+            userId: 'user-123',
+            templateId: 'template-1',
+            prompt: 'A beautiful landscape',
+            aspectRatio: '16:9',
+            imageCount: 2,
+          ),
+        ).called(1);
       });
 
       test('sets error state when policy denies generation', () async {
-        when(() => mockPolicy.canGenerate(
-          userId: any(named: 'userId'),
-          templateId: any(named: 'templateId'),
-        )).thenAnswer((_) async => const GenerationEligibility.denied(
-          reason: 'No credits remaining',
-        ));
+        when(
+          () => mockPolicy.canGenerate(
+            userId: any(named: 'userId'),
+            templateId: any(named: 'templateId'),
+          ),
+        ).thenAnswer(
+          (_) async => const GenerationEligibility.denied(
+            reason: 'No credits remaining',
+          ),
+        );
 
         container = createContainer();
-        
-        await container.read(generationViewModelProvider.notifier).generate(
-          templateId: 'template-1',
-          prompt: 'A beautiful landscape',
-          userId: 'user-123',
-        );
+
+        await container
+            .read(generationViewModelProvider.notifier)
+            .generate(
+              templateId: 'template-1',
+              prompt: 'A beautiful landscape',
+              userId: 'user-123',
+            );
 
         final state = container.read(generationViewModelProvider);
         expect(state.hasError, true);
       });
 
       test('sets error state when repository throws', () async {
-        when(() => mockPolicy.canGenerate(
-          userId: any(named: 'userId'),
-          templateId: any(named: 'templateId'),
-        )).thenAnswer((_) async => const GenerationEligibility.allowed());
+        when(
+          () => mockPolicy.canGenerate(
+            userId: any(named: 'userId'),
+            templateId: any(named: 'templateId'),
+          ),
+        ).thenAnswer((_) async => const GenerationEligibility.allowed());
 
-        when(() => mockRepository.startGeneration(
-          userId: any(named: 'userId'),
-          templateId: any(named: 'templateId'),
-          prompt: any(named: 'prompt'),
-          aspectRatio: any(named: 'aspectRatio'),
-          imageCount: any(named: 'imageCount'),
-        )).thenThrow(Exception('Network error'));
+        when(
+          () => mockRepository.startGeneration(
+            userId: any(named: 'userId'),
+            templateId: any(named: 'templateId'),
+            prompt: any(named: 'prompt'),
+            aspectRatio: any(named: 'aspectRatio'),
+            imageCount: any(named: 'imageCount'),
+          ),
+        ).thenThrow(Exception('Network error'));
 
         container = createContainer();
-        
-        await container.read(generationViewModelProvider.notifier).generate(
-          templateId: 'template-1',
-          prompt: 'A beautiful landscape',
-          userId: 'user-123',
-        );
+
+        await container
+            .read(generationViewModelProvider.notifier)
+            .generate(
+              templateId: 'template-1',
+              prompt: 'A beautiful landscape',
+              userId: 'user-123',
+            );
 
         final state = container.read(generationViewModelProvider);
         expect(state.hasError, true);
@@ -178,33 +215,42 @@ void main() {
 
     group('reset', () {
       test('resets state to AsyncData(null)', () async {
-        when(() => mockPolicy.canGenerate(
-          userId: any(named: 'userId'),
-          templateId: any(named: 'templateId'),
-        )).thenAnswer((_) async => const GenerationEligibility.allowed());
+        when(
+          () => mockPolicy.canGenerate(
+            userId: any(named: 'userId'),
+            templateId: any(named: 'templateId'),
+          ),
+        ).thenAnswer((_) async => const GenerationEligibility.allowed());
 
-        when(() => mockRepository.startGeneration(
-          userId: any(named: 'userId'),
-          templateId: any(named: 'templateId'),
-          prompt: any(named: 'prompt'),
-          aspectRatio: any(named: 'aspectRatio'),
-          imageCount: any(named: 'imageCount'),
-        )).thenAnswer((_) async => 'job-123');
+        when(
+          () => mockRepository.startGeneration(
+            userId: any(named: 'userId'),
+            templateId: any(named: 'templateId'),
+            prompt: any(named: 'prompt'),
+            aspectRatio: any(named: 'aspectRatio'),
+            imageCount: any(named: 'imageCount'),
+          ),
+        ).thenAnswer((_) async => 'job-123');
 
-        when(() => mockRepository.watchJob('job-123'))
-            .thenAnswer((_) => jobStreamController.stream);
+        when(
+          () => mockRepository.watchJob('job-123'),
+        ).thenAnswer((_) => jobStreamController.stream);
 
         container = createContainer();
-        
+
         // Start generation
-        unawaited(container.read(generationViewModelProvider.notifier).generate(
-          templateId: 'template-1',
-          prompt: 'Test',
-          userId: 'user-123',
-        ));
+        unawaited(
+          container
+              .read(generationViewModelProvider.notifier)
+              .generate(
+                templateId: 'template-1',
+                prompt: 'Test',
+                userId: 'user-123',
+              ),
+        );
 
         await Future<void>.delayed(Duration.zero);
-        
+
         // Emit a job
         jobStreamController.add(GenerationJobFixtures.processing());
         await Future<void>.delayed(Duration.zero);

@@ -4,7 +4,11 @@ import 'package:flutter/material.dart';
 
 class PromptInputField extends StatefulWidget {
   const PromptInputField({
-    required this.label, required this.hintText, required this.value, required this.onChanged, super.key,
+    required this.label,
+    required this.hintText,
+    required this.value,
+    required this.onChanged,
+    super.key,
     this.errorText,
   });
 
@@ -32,8 +36,7 @@ class _PromptInputFieldState extends State<PromptInputField> {
     super.didUpdateWidget(oldWidget);
     // Sync controller when external value changes (e.g., after reset).
     // Only update if the value actually differs to avoid cursor jumps.
-    if (widget.value != oldWidget.value &&
-        widget.value != _controller.text) {
+    if (widget.value != oldWidget.value && widget.value != _controller.text) {
       _controller.text = widget.value;
     }
   }

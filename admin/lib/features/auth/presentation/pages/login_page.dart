@@ -23,10 +23,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     setState(() => _isLoading = true);
 
     try {
-      await ref.read(adminAuthProvider.notifier).login(
-            _emailController.text.trim(),
-            _passwordController.text,
-          );
+      await ref
+          .read(adminAuthProvider.notifier)
+          .login(_emailController.text.trim(), _passwordController.text);
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -143,9 +142,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                         children: [
                           Text(
                             'Sign in',
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleLarge
+                            style: Theme.of(context).textTheme.titleLarge
                                 ?.copyWith(
                                   fontWeight: FontWeight.bold,
                                   color: AdminColors.textPrimary,
@@ -167,7 +164,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                               prefixIcon: Icon(Icons.email_outlined),
                             ),
                             keyboardType: TextInputType.emailAddress,
-                            style: const TextStyle(color: AdminColors.textPrimary),
+                            style: const TextStyle(
+                              color: AdminColors.textPrimary,
+                            ),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter your email';
@@ -183,7 +182,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                               prefixIcon: Icon(Icons.lock_outlined),
                             ),
                             obscureText: true,
-                            style: const TextStyle(color: AdminColors.textPrimary),
+                            style: const TextStyle(
+                              color: AdminColors.textPrimary,
+                            ),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter your password';
@@ -198,7 +199,10 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                             child: DecoratedBox(
                               decoration: BoxDecoration(
                                 gradient: const LinearGradient(
-                                  colors: [AdminColors.primary, AdminColors.accent],
+                                  colors: [
+                                    AdminColors.primary,
+                                    AdminColors.accent,
+                                  ],
                                 ),
                                 borderRadius: BorderRadius.circular(10),
                               ),
@@ -239,10 +243,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   // ── Footer ────────────────────────────
                   const Text(
                     '© 2026 Artio',
-                    style: TextStyle(
-                      color: AdminColors.textHint,
-                      fontSize: 12,
-                    ),
+                    style: TextStyle(color: AdminColors.textHint, fontSize: 12),
                   ),
                 ],
               ),

@@ -33,8 +33,7 @@ extension PumpApp on WidgetTester {
   /// Pumps a widget with GoRouter navigation support
   ///
   /// Use this in tests that need to verify navigation behavior.
-  Future<void> pumpAppWithRouter(
-    {
+  Future<void> pumpAppWithRouter({
     required GoRouter router,
     List<Override>? overrides,
   }) async {

@@ -35,15 +35,14 @@ void main() {
           galleryRepositoryProvider.overrideWithValue(mockRepository),
           ...?overrides,
         ],
-        child: const MaterialApp(
-          home: GalleryPage(),
-        ),
+        child: const MaterialApp(home: GalleryPage()),
       );
     }
 
     testWidgets('renders app bar with Gallery title', (tester) async {
-      when(() => mockRepository.watchUserImages(userId: any(named: 'userId')))
-          .thenAnswer((_) => Stream.value([]));
+      when(
+        () => mockRepository.watchUserImages(userId: any(named: 'userId')),
+      ).thenAnswer((_) => Stream.value([]));
 
       await tester.pumpWidget(createTestWidget());
 
@@ -52,8 +51,9 @@ void main() {
     });
 
     testWidgets('renders Scaffold', (tester) async {
-      when(() => mockRepository.watchUserImages(userId: any(named: 'userId')))
-          .thenAnswer((_) => Stream.value([]));
+      when(
+        () => mockRepository.watchUserImages(userId: any(named: 'userId')),
+      ).thenAnswer((_) => Stream.value([]));
 
       await tester.pumpWidget(createTestWidget());
 
@@ -61,8 +61,9 @@ void main() {
     });
 
     testWidgets('shows loading shimmer initially', (tester) async {
-      when(() => mockRepository.watchUserImages(userId: any(named: 'userId')))
-          .thenAnswer((_) => Stream.value([]));
+      when(
+        () => mockRepository.watchUserImages(userId: any(named: 'userId')),
+      ).thenAnswer((_) => Stream.value([]));
 
       await tester.pumpWidget(createTestWidget());
 
@@ -70,8 +71,9 @@ void main() {
     });
 
     testWidgets('displays empty state when no images', (tester) async {
-      when(() => mockRepository.watchUserImages(userId: any(named: 'userId')))
-          .thenAnswer((_) => Stream.value([]));
+      when(
+        () => mockRepository.watchUserImages(userId: any(named: 'userId')),
+      ).thenAnswer((_) => Stream.value([]));
 
       await tester.pumpWidget(createTestWidget());
       // Use pump with explicit duration since EmptyGalleryState has continuous float animation
@@ -82,8 +84,9 @@ void main() {
 
     testWidgets('displays images when gallery has items', (tester) async {
       final items = GalleryItemFixtures.list(count: 3);
-      when(() => mockRepository.watchUserImages(userId: any(named: 'userId')))
-          .thenAnswer((_) => Stream.value(items));
+      when(
+        () => mockRepository.watchUserImages(userId: any(named: 'userId')),
+      ).thenAnswer((_) => Stream.value(items));
 
       await tester.pumpWidget(createTestWidget());
       await tester.pump(const Duration(milliseconds: 500));
@@ -92,8 +95,9 @@ void main() {
     });
 
     testWidgets('shows error state with retry button on error', (tester) async {
-      when(() => mockRepository.watchUserImages(userId: any(named: 'userId')))
-          .thenAnswer((_) => Stream.error(Exception('Network error')));
+      when(
+        () => mockRepository.watchUserImages(userId: any(named: 'userId')),
+      ).thenAnswer((_) => Stream.error(Exception('Network error')));
 
       await tester.pumpWidget(createTestWidget());
       // Pump past the fade-in animation

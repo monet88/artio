@@ -39,17 +39,17 @@ void main() {
               ),
             ),
         ],
-        child: MaterialApp(
-          home: TemplateDetailScreen(templateId: templateId),
-        ),
+        child: MaterialApp(home: TemplateDetailScreen(templateId: templateId)),
       );
     }
 
     testWidgets('renders app bar with Generate title', (tester) async {
-      await tester.pumpWidget(createTestWidget(
-        templateId: 'test-template-id',
-        templateState: AsyncValue.data(TemplateFixtures.basic()),
-      ));
+      await tester.pumpWidget(
+        createTestWidget(
+          templateId: 'test-template-id',
+          templateState: AsyncValue.data(TemplateFixtures.basic()),
+        ),
+      );
       await tester.pump();
 
       expect(find.widgetWithText(AppBar, 'Generate'), findsOneWidget);
@@ -57,20 +57,24 @@ void main() {
     });
 
     testWidgets('renders Scaffold', (tester) async {
-      await tester.pumpWidget(createTestWidget(
-        templateId: 'test-template-id',
-        templateState: AsyncValue.data(TemplateFixtures.basic()),
-      ));
+      await tester.pumpWidget(
+        createTestWidget(
+          templateId: 'test-template-id',
+          templateState: AsyncValue.data(TemplateFixtures.basic()),
+        ),
+      );
       await tester.pump();
 
       expect(find.byType(Scaffold), findsOneWidget);
     });
 
     testWidgets('shows loading indicator initially', (tester) async {
-      await tester.pumpWidget(createTestWidget(
-        templateId: 'test-template-id',
-        templateState: const AsyncValue<TemplateModel?>.loading(),
-      ));
+      await tester.pumpWidget(
+        createTestWidget(
+          templateId: 'test-template-id',
+          templateState: const AsyncValue<TemplateModel?>.loading(),
+        ),
+      );
       await tester.pump();
 
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
@@ -79,10 +83,12 @@ void main() {
     testWidgets('shows template name when loaded', (tester) async {
       final template = TemplateFixtures.basic(name: 'Portrait Generator');
 
-      await tester.pumpWidget(createTestWidget(
-        templateId: 'test-template-id',
-        templateState: AsyncValue.data(template),
-      ));
+      await tester.pumpWidget(
+        createTestWidget(
+          templateId: 'test-template-id',
+          templateState: AsyncValue.data(template),
+        ),
+      );
       await tester.pumpAndSettle();
 
       expect(find.text('Portrait Generator'), findsOneWidget);
@@ -93,23 +99,30 @@ void main() {
         name: 'Template with Description',
       );
 
-      await tester.pumpWidget(createTestWidget(
-        templateId: 'test-template-id',
-        templateState: AsyncValue.data(template),
-      ));
+      await tester.pumpWidget(
+        createTestWidget(
+          templateId: 'test-template-id',
+          templateState: AsyncValue.data(template),
+        ),
+      );
       await tester.pumpAndSettle();
 
-      expect(find.text('A template with configurable input fields'), findsOneWidget);
+      expect(
+        find.text('A template with configurable input fields'),
+        findsOneWidget,
+      );
     });
 
     testWidgets('shows error message on failure', (tester) async {
-      await tester.pumpWidget(createTestWidget(
-        templateId: 'test-template-id',
-        templateState: AsyncValue.error(
-          Exception('Failed to load template'),
-          StackTrace.current,
+      await tester.pumpWidget(
+        createTestWidget(
+          templateId: 'test-template-id',
+          templateState: AsyncValue.error(
+            Exception('Failed to load template'),
+            StackTrace.current,
+          ),
         ),
-      ));
+      );
       await tester.pump();
 
       // Error is displayed via AppExceptionMapper
@@ -117,10 +130,12 @@ void main() {
     });
 
     testWidgets('shows not found message for null template', (tester) async {
-      await tester.pumpWidget(createTestWidget(
-        templateId: 'non-existent-id',
-        templateState: const AsyncValue.data(null),
-      ));
+      await tester.pumpWidget(
+        createTestWidget(
+          templateId: 'non-existent-id',
+          templateState: const AsyncValue.data(null),
+        ),
+      );
       await tester.pumpAndSettle();
 
       expect(find.text('Template not found'), findsOneWidget);

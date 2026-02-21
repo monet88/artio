@@ -1,6 +1,5 @@
 /// AI Model configurations for image generation
 class AiModelConfig {
-
   const AiModelConfig({
     required this.id,
     required this.displayName,
@@ -184,16 +183,14 @@ class AiModels {
   }
 
   /// Get default model
-  static AiModelConfig get defaultModel =>
-      getById(defaultModelId) ?? all.first;
+  static AiModelConfig get defaultModel => getById(defaultModelId) ?? all.first;
 
   /// Filter models by type
   static List<AiModelConfig> byType(String type) =>
       all.where((m) => m.type == type).toList();
 
   /// Get text-to-image models only
-  static List<AiModelConfig> get textToImageModels =>
-      byType('text-to-image');
+  static List<AiModelConfig> get textToImageModels => byType('text-to-image');
 
   /// Get free models only
   static List<AiModelConfig> get freeModels =>

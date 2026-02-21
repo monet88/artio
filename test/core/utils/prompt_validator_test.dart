@@ -21,10 +21,7 @@ void main() {
     });
 
     test('throws for empty string', () {
-      expect(
-        () => validateGenerationPrompt(''),
-        throwsA(isA<AppException>()),
-      );
+      expect(() => validateGenerationPrompt(''), throwsA(isA<AppException>()));
     });
 
     test('throws for whitespace-only string', () {

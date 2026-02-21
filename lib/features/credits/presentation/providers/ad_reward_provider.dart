@@ -29,7 +29,7 @@ class AdRewardNotifier extends _$AdRewardNotifier {
   /// Uses 2-step nonce flow for server-side validation.
   /// Returns the reward result on success, or throws on failure.
   Future<({int creditsAwarded, int newBalance, int adsRemaining})>
-      watchAdAndReward() async {
+  watchAdAndReward() async {
     final adService = ref.read(rewardedAdServiceProvider);
     final repo = ref.read(creditRepositoryProvider);
 

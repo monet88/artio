@@ -23,7 +23,7 @@ class GalleryCacheService {
 
   /// Test constructor — uses [directoryPath] directly.
   GalleryCacheService.forTesting(String directoryPath)
-      : _directoryPath = directoryPath;
+    : _directoryPath = directoryPath;
 
   static const _cacheFileName = 'gallery_cache.json';
   static const _defaultTtl = Duration(minutes: 5);

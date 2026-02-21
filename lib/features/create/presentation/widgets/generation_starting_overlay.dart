@@ -9,10 +9,7 @@ class GenerationStartingOverlay extends StatelessWidget {
   Widget build(BuildContext context) {
     return Positioned.fill(
       child: ColoredBox(
-        color: Theme.of(context)
-            .colorScheme
-            .surface
-            .withValues(alpha: 0.9),
+        color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.9),
         child: Center(
           child: Card(
             child: Padding(

@@ -25,22 +25,14 @@ void main() {
     });
 
     test('copyWith creates modified copy', () {
-      final original = CreditBalance(
-        userId: 'u1',
-        balance: 10,
-        updatedAt: now,
-      );
+      final original = CreditBalance(userId: 'u1', balance: 10, updatedAt: now);
       final modified = original.copyWith(balance: 99);
       expect(modified.balance, 99);
       expect(modified.userId, 'u1');
     });
 
     test('fromJson/toJson roundtrip', () {
-      final original = CreditBalance(
-        userId: 'u1',
-        balance: 42,
-        updatedAt: now,
-      );
+      final original = CreditBalance(userId: 'u1', balance: 42, updatedAt: now);
       final json = original.toJson();
       final restored = CreditBalance.fromJson(json);
       expect(restored, equals(original));

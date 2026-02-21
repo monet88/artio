@@ -41,9 +41,7 @@ void main() {
     });
 
     test('isPro returns false when not active', () {
-      const status = SubscriptionStatus(
-        tier: 'pro',
-      );
+      const status = SubscriptionStatus(tier: 'pro');
       expect(status.isPro, isFalse);
       expect(status.isFree, isTrue);
     });

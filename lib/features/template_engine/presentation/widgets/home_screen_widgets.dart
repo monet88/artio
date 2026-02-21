@@ -4,7 +4,6 @@ import 'package:artio/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-
 /// Template count badge shown in the home screen header.
 class TemplateCountBadge extends ConsumerWidget {
   const TemplateCountBadge({super.key});
@@ -87,14 +86,14 @@ class _CategoryChipsState extends State<CategoryChips> {
                 color: isSelected
                     ? AppColors.primaryCta
                     : isDark
-                        ? AppColors.darkSurface2
-                        : AppColors.lightSurface2,
+                    ? AppColors.darkSurface2
+                    : AppColors.lightSurface2,
                 borderRadius: BorderRadius.circular(20),
                 border: isSelected
                     ? null
                     : isDark
-                        ? Border.all(color: AppColors.white10, width: 0.5)
-                        : null,
+                    ? Border.all(color: AppColors.white10, width: 0.5)
+                    : null,
               ),
               child: Text(
                 _categories[index],
@@ -104,8 +103,8 @@ class _CategoryChipsState extends State<CategoryChips> {
                   color: isSelected
                       ? Colors.white
                       : isDark
-                          ? AppColors.textSecondary
-                          : AppColors.textSecondaryLight,
+                      ? AppColors.textSecondary
+                      : AppColors.textSecondaryLight,
                 ),
               ),
             ),

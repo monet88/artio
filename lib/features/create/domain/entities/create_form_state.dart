@@ -36,7 +36,8 @@ class CreateFormState with _$CreateFormState {
     String outputFormat,
     String modelId,
     String templateId,
-  }) toGenerationParams() {
+  })
+  toGenerationParams() {
     final trimmedPrompt = prompt.trim();
     final trimmedNegative = negativePrompt.trim();
     final fullPrompt = trimmedNegative.isEmpty

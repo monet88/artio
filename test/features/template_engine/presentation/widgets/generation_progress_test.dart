@@ -9,9 +9,7 @@ void main() {
   group('GenerationProgress', () {
     Widget buildWidget({required GenerationJobModel job}) {
       return MaterialApp(
-        home: Scaffold(
-          body: GenerationProgress(job: job),
-        ),
+        home: Scaffold(body: GenerationProgress(job: job)),
       );
     }
 
@@ -111,7 +109,10 @@ void main() {
         await tester.pumpWidget(buildWidget(job: job));
         await tester.pump();
 
-        expect(find.text('Generation failed: Internal server error'), findsOneWidget);
+        expect(
+          find.text('Generation failed: Internal server error'),
+          findsOneWidget,
+        );
       });
     });
   });

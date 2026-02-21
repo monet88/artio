@@ -36,13 +36,13 @@ class _EmptyGalleryStateState extends State<EmptyGalleryState>
       duration: const Duration(milliseconds: 3000),
     )..repeat(reverse: true);
 
-    _floatAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.02),
-      end: const Offset(0, -0.02),
-    ).animate(CurvedAnimation(
-      parent: _floatController,
-      curve: Curves.easeInOut,
-    ));
+    _floatAnimation =
+        Tween<Offset>(
+          begin: const Offset(0, 0.02),
+          end: const Offset(0, -0.02),
+        ).animate(
+          CurvedAnimation(parent: _floatController, curve: Curves.easeInOut),
+        );
 
     // Fade-in on mount
     _fadeController = AnimationController(

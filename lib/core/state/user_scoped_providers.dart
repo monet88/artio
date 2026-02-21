@@ -16,5 +16,7 @@ void invalidateUserScopedProviders(Ref ref) {
     ..invalidate(generationViewModelProvider)
     ..invalidate(createViewModelProvider)
     ..invalidate(createFormNotifierProvider)
-    ..invalidate(creditBalanceNotifierProvider); // Prevent stale credits on re-login
+    ..invalidate(
+      creditBalanceNotifierProvider,
+    ); // Prevent stale credits on re-login
 }

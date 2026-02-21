@@ -10,7 +10,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 /// All grouped settings sections rendered inside the settings screen ListView.
 class SettingsSections extends ConsumerWidget {
   const SettingsSections({
-    required this.email, required this.isDark, required this.version, required this.isLoggedIn, required this.onResetPassword, required this.onSignOut, super.key,
+    required this.email,
+    required this.isDark,
+    required this.version,
+    required this.isLoggedIn,
+    required this.onResetPassword,
+    required this.onSignOut,
+    super.key,
   });
 
   final String email;
@@ -105,9 +111,7 @@ class SettingsSections extends ConsumerWidget {
                   color: AppColors.primaryCta,
                 ),
                 title: const Text('Push Notifications'),
-                subtitle: const Text(
-                  'Receive updates about your generations',
-                ),
+                subtitle: const Text('Receive updates about your generations'),
                 value: ref.watch(notificationsNotifierProvider),
                 onChanged: (value) => ref
                     .read(notificationsNotifierProvider.notifier)

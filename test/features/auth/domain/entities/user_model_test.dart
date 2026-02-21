@@ -10,7 +10,7 @@ void main() {
     group('creation', () {
       test('creates instance with required fields', () {
         const user = UserModel(id: '123', email: 'test@example.com');
-        
+
         expect(user.id, '123');
         expect(user.email, 'test@example.com');
       });
@@ -88,10 +88,7 @@ void main() {
       });
 
       test('handles null optional fields in JSON', () {
-        final json = {
-          'id': '789',
-          'email': 'minimal@example.com',
-        };
+        final json = {'id': '789', 'email': 'minimal@example.com'};
 
         final user = UserModel.fromJson(json);
 
@@ -123,8 +120,9 @@ void main() {
           'name': 'Metadata Name',
           'avatar_url': 'https://example.com/metadata.png',
         });
-        when(() => user.createdAt)
-            .thenReturn(DateTime(2024, 1, 2).toIso8601String());
+        when(
+          () => user.createdAt,
+        ).thenReturn(DateTime(2024, 1, 2).toIso8601String());
 
         final profile = {
           'display_name': 'Profile Name',
@@ -140,7 +138,10 @@ void main() {
         expect(model.avatarUrl, 'https://example.com/profile.png');
         expect(model.credits, 10);
         expect(model.isPremium, true);
-        expect(model.premiumExpiresAt, DateTime.parse('2024-12-31T00:00:00.000Z'));
+        expect(
+          model.premiumExpiresAt,
+          DateTime.parse('2024-12-31T00:00:00.000Z'),
+        );
       });
 
       test('falls back to metadata and defaults when profile missing', () {
@@ -170,10 +171,7 @@ void main() {
         when(() => user.userMetadata).thenReturn({});
         when(() => user.createdAt).thenReturn('');
 
-        final profile = {
-          'role': 'admin',
-          'is_premium': false,
-        };
+        final profile = {'role': 'admin', 'is_premium': false};
 
         final model = UserModel.fromSupabaseUser(user, profile: profile);
 
@@ -187,10 +185,7 @@ void main() {
         when(() => user.userMetadata).thenReturn({});
         when(() => user.createdAt).thenReturn('');
 
-        final profile = {
-          'role': 'user',
-          'is_premium': false,
-        };
+        final profile = {'role': 'user', 'is_premium': false};
 
         final model = UserModel.fromSupabaseUser(user, profile: profile);
 
@@ -204,10 +199,7 @@ void main() {
         when(() => user.userMetadata).thenReturn({});
         when(() => user.createdAt).thenReturn('');
 
-        final profile = {
-          'role': 'admin',
-          'is_premium': true,
-        };
+        final profile = {'role': 'admin', 'is_premium': true};
 
         final model = UserModel.fromSupabaseUser(user, profile: profile);
 
@@ -226,7 +218,11 @@ void main() {
       });
 
       test('creates new instance with updated credits', () {
-        const original = UserModel(id: '123', email: 'test@example.com', credits: 10);
+        const original = UserModel(
+          id: '123',
+          email: 'test@example.com',
+          credits: 10,
+        );
         final updated = original.copyWith(credits: 100);
 
         expect(updated.credits, 100);
@@ -262,8 +258,16 @@ void main() {
       });
 
       test('instances with different fields are not equal', () {
-        const user1 = UserModel(id: '123', email: 'test@example.com', credits: 10);
-        const user2 = UserModel(id: '123', email: 'test@example.com', credits: 20);
+        const user1 = UserModel(
+          id: '123',
+          email: 'test@example.com',
+          credits: 10,
+        );
+        const user2 = UserModel(
+          id: '123',
+          email: 'test@example.com',
+          credits: 20,
+        );
 
         expect(user1, isNot(equals(user2)));
       });

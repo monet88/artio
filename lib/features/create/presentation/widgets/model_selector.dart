@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 
 class ModelSelector extends StatelessWidget {
   const ModelSelector({
-    required this.selectedModelId, required this.onChanged, super.key,
+    required this.selectedModelId,
+    required this.onChanged,
+    super.key,
     this.isPremium = false,
   });
 

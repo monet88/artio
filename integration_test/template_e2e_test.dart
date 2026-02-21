@@ -22,10 +22,7 @@ void main() {
         );
       }
 
-      await Supabase.initialize(
-        url: supabaseUrl,
-        anonKey: supabaseAnonKey,
-      );
+      await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
     });
 
     testWidgets('Verify all 25 templates load correctly', (tester) async {
@@ -49,13 +46,22 @@ void main() {
       expect(categories, contains('Creative & Fun'));
 
       // Verify all is_premium are false
-      final premiumTemplates = response.where((t) => t['is_premium'] == true).toList();
-      expect(premiumTemplates.length, 0, reason: 'All templates should be free');
+      final premiumTemplates = response
+          .where((t) => t['is_premium'] == true)
+          .toList();
+      expect(
+        premiumTemplates.length,
+        0,
+        reason: 'All templates should be free',
+      );
 
       // Verify order sequence (1-25)
       for (var i = 0; i < response.length; i++) {
-        expect(response[i]['order'], i + 1,
-            reason: 'Template at index $i should have order ${i + 1}');
+        expect(
+          response[i]['order'],
+          i + 1,
+          reason: 'Template at index $i should have order ${i + 1}',
+        );
       }
 
       // Verify template names in correct order
@@ -88,8 +94,11 @@ void main() {
       ];
 
       for (var i = 0; i < expectedNames.length; i++) {
-        expect(response[i]['name'], expectedNames[i],
-            reason: 'Template ${i + 1} should be ${expectedNames[i]}');
+        expect(
+          response[i]['name'],
+          expectedNames[i],
+          reason: 'Template ${i + 1} should be ${expectedNames[i]}',
+        );
       }
 
       debugPrint('✅ All 25 templates verified successfully!');

@@ -31,8 +31,8 @@ class TierComparisonCard extends StatelessWidget {
     final borderColor = isSelected
         ? colorScheme.primary
         : isCurrentPlan
-            ? colorScheme.outline
-            : colorScheme.outlineVariant;
+        ? colorScheme.outline
+        : colorScheme.outlineVariant;
 
     return Stack(
       clipBehavior: Clip.none,
@@ -41,10 +41,7 @@ class TierComparisonCard extends StatelessWidget {
           elevation: isSelected ? 4 : 1,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppSpacing.md),
-            side: BorderSide(
-              color: borderColor,
-              width: isSelected ? 2 : 1,
-            ),
+            side: BorderSide(color: borderColor, width: isSelected ? 2 : 1),
           ),
           child: InkWell(
             onTap: isCurrentPlan ? null : onTap,

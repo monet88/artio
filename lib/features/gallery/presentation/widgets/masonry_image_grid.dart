@@ -8,9 +8,11 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 /// Masonry image grid with staggered appear animations,
 /// shimmer placeholders, and long-press scale effect.
 class MasonryImageGrid extends StatefulWidget {
-
   const MasonryImageGrid({
-    required this.items, required this.onItemTap, this.showWatermark = false, super.key,
+    required this.items,
+    required this.onItemTap,
+    this.showWatermark = false,
+    super.key,
   });
   final List<GalleryItem> items;
   final void Function(GalleryItem item, int index) onItemTap;
@@ -30,7 +32,8 @@ class _MasonryImageGridState extends State<MasonryImageGrid>
     _staggerController = AnimationController(
       vsync: this,
       duration: Duration(
-        milliseconds: AppAnimations.normal.inMilliseconds +
+        milliseconds:
+            AppAnimations.normal.inMilliseconds +
             (AppAnimations.staggerDelay.inMilliseconds *
                 widget.items.length.clamp(0, AppAnimations.maxStaggerItems)),
       ),
@@ -74,11 +77,11 @@ class _MasonryImageGridState extends State<MasonryImageGrid>
             AppAnimations.normal.inMilliseconds + totalStaggerTime;
         final startFrac =
             (staggerIndex * AppAnimations.staggerDelay.inMilliseconds) /
-                totalDuration;
+            totalDuration;
         final endFrac =
             (staggerIndex * AppAnimations.staggerDelay.inMilliseconds +
-                    AppAnimations.normal.inMilliseconds) /
-                totalDuration;
+                AppAnimations.normal.inMilliseconds) /
+            totalDuration;
 
         final itemAnim = Tween<double>(begin: 0, end: 1).animate(
           CurvedAnimation(

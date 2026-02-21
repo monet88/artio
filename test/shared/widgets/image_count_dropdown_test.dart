@@ -4,10 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('ImageCountDropdown', () {
-    Widget buildWidget({
-      int value = 1,
-      ValueChanged<int>? onChanged,
-    }) {
+    Widget buildWidget({int value = 1, ValueChanged<int>? onChanged}) {
       return MaterialApp(
         home: Scaffold(
           body: ImageCountDropdown(
@@ -57,9 +54,9 @@ void main() {
 
     testWidgets('calls onChanged when selection made', (tester) async {
       int? selectedValue;
-      await tester.pumpWidget(buildWidget(
-        onChanged: (value) => selectedValue = value,
-      ));
+      await tester.pumpWidget(
+        buildWidget(onChanged: (value) => selectedValue = value),
+      );
 
       await tester.tap(find.byType(DropdownButtonFormField<int>));
       await tester.pumpAndSettle();

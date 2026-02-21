@@ -20,7 +20,10 @@ class Templates extends _$Templates {
         .from('templates')
         .stream(primaryKey: ['id'])
         .order('order', ascending: true)
-        .map((rows) => rows.map((row) => AdminTemplateModel.fromJson(row)).toList());
+        .map(
+          (rows) =>
+              rows.map((row) => AdminTemplateModel.fromJson(row)).toList(),
+        );
   }
 
   Future<void> reorder(int oldIndex, int newIndex) async {
@@ -41,10 +44,7 @@ class Templates extends _$Templates {
     for (int i = 0; i < reorderedList.length; i++) {
       final dbOrder = i + 1;
       if (reorderedList[i].order != dbOrder) {
-        updates.add({
-          'id': reorderedList[i].id,
-          'order': dbOrder,
-        });
+        updates.add({'id': reorderedList[i].id, 'order': dbOrder});
       }
     }
 
@@ -84,14 +84,18 @@ class _TemplatesPageState extends ConsumerState<TemplatesPage> {
     if (_searchQuery.isNotEmpty) {
       final query = _searchQuery.toLowerCase();
       filtered = filtered
-          .where((t) =>
-              t.name.toLowerCase().contains(query) ||
-              t.description.toLowerCase().contains(query))
+          .where(
+            (t) =>
+                t.name.toLowerCase().contains(query) ||
+                t.description.toLowerCase().contains(query),
+          )
           .toList();
     }
 
     if (_selectedCategory != null) {
-      filtered = filtered.where((t) => t.category == _selectedCategory).toList();
+      filtered = filtered
+          .where((t) => t.category == _selectedCategory)
+          .toList();
     }
 
     if (_showPremiumOnly) {
@@ -153,7 +157,8 @@ class _TemplatesPageState extends ConsumerState<TemplatesPage> {
                     children: [
                       FilterChip(
                         label: const Text('All'),
-                        selected: _selectedCategory == null &&
+                        selected:
+                            _selectedCategory == null &&
                             !_showPremiumOnly &&
                             !_showInactiveOnly,
                         onSelected: (_) => setState(() {
@@ -163,16 +168,18 @@ class _TemplatesPageState extends ConsumerState<TemplatesPage> {
                         }),
                       ),
                       const SizedBox(width: 8),
-                      ...AppConstants.templateCategories.map((cat) => Padding(
-                            padding: const EdgeInsets.only(right: 8),
-                            child: FilterChip(
-                              label: Text(cat),
-                              selected: _selectedCategory == cat,
-                              onSelected: (selected) => setState(() {
-                                _selectedCategory = selected ? cat : null;
-                              }),
-                            ),
-                          )),
+                      ...AppConstants.templateCategories.map(
+                        (cat) => Padding(
+                          padding: const EdgeInsets.only(right: 8),
+                          child: FilterChip(
+                            label: Text(cat),
+                            selected: _selectedCategory == cat,
+                            onSelected: (selected) => setState(() {
+                              _selectedCategory = selected ? cat : null;
+                            }),
+                          ),
+                        ),
+                      ),
                       FilterChip(
                         label: const Text('Premium'),
                         avatar: Icon(
@@ -183,8 +190,7 @@ class _TemplatesPageState extends ConsumerState<TemplatesPage> {
                               : (isDark ? AdminColors.textMuted : Colors.grey),
                         ),
                         selected: _showPremiumOnly,
-                        onSelected: (v) =>
-                            setState(() => _showPremiumOnly = v),
+                        onSelected: (v) => setState(() => _showPremiumOnly = v),
                       ),
                       const SizedBox(width: 8),
                       FilterChip(
@@ -212,14 +218,18 @@ class _TemplatesPageState extends ConsumerState<TemplatesPage> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.style_outlined,
-                            size: 64,
-                            color: isDark
-                                ? AdminColors.textHint
-                                : Colors.grey.shade300),
+                        Icon(
+                          Icons.style_outlined,
+                          size: 64,
+                          color: isDark
+                              ? AdminColors.textHint
+                              : Colors.grey.shade300,
+                        ),
                         const SizedBox(height: 16),
-                        Text('No templates yet',
-                            style: theme.textTheme.titleMedium),
+                        Text(
+                          'No templates yet',
+                          style: theme.textTheme.titleMedium,
+                        ),
                         const SizedBox(height: 8),
                         FilledButton.icon(
                           onPressed: () => context.go('/templates/new'),
@@ -236,14 +246,18 @@ class _TemplatesPageState extends ConsumerState<TemplatesPage> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.search_off,
-                            size: 48,
-                            color: isDark
-                                ? AdminColors.textHint
-                                : Colors.grey.shade300),
+                        Icon(
+                          Icons.search_off,
+                          size: 48,
+                          color: isDark
+                              ? AdminColors.textHint
+                              : Colors.grey.shade300,
+                        ),
                         const SizedBox(height: 12),
-                        Text('No templates match your filters',
-                            style: theme.textTheme.bodyLarge),
+                        Text(
+                          'No templates match your filters',
+                          style: theme.textTheme.bodyLarge,
+                        ),
                       ],
                     ),
                   );
@@ -257,7 +271,9 @@ class _TemplatesPageState extends ConsumerState<TemplatesPage> {
                     final allTemplates = templates;
                     final oldItem = filtered[oldIndex];
                     final newItem = newIndex < filtered.length
-                        ? filtered[newIndex > oldIndex ? newIndex - 1 : newIndex]
+                        ? filtered[newIndex > oldIndex
+                              ? newIndex - 1
+                              : newIndex]
                         : filtered.last;
                     final realOldIndex = allTemplates.indexOf(oldItem);
                     final realNewIndex = allTemplates.indexOf(newItem);
@@ -283,8 +299,7 @@ class _TemplatesPageState extends ConsumerState<TemplatesPage> {
                       margin: const EdgeInsets.only(bottom: 8),
                       child: TemplateCard(
                         template: template,
-                        onEdit: () =>
-                            context.go('/templates/${template.id}'),
+                        onEdit: () => context.go('/templates/${template.id}'),
                         onDelete: () async {
                           final confirm = await showDialog<bool>(
                             context: context,
@@ -298,10 +313,11 @@ class _TemplatesPageState extends ConsumerState<TemplatesPage> {
                                   child: const Text('Cancel'),
                                 ),
                                 TextButton(
-                                  onPressed: () =>
-                                      Navigator.pop(context, true),
-                                  child: const Text('Delete',
-                                      style: TextStyle(color: AdminColors.error)),
+                                  onPressed: () => Navigator.pop(context, true),
+                                  child: const Text(
+                                    'Delete',
+                                    style: TextStyle(color: AdminColors.error),
+                                  ),
                                 ),
                               ],
                             ),

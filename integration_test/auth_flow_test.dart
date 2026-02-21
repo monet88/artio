@@ -31,10 +31,7 @@ void main() {
       await tester.pumpWidget(createTestApp());
       await tester.pumpAndSettle();
 
-      await tester.enterText(
-        find.byType(TextFormField).first,
-        'invalidemail',
-      );
+      await tester.enterText(find.byType(TextFormField).first, 'invalidemail');
       await tester.tap(find.text('Sign In'));
       await tester.pumpAndSettle();
 
@@ -63,14 +60,14 @@ void main() {
         find.byType(TextFormField).first,
         'test@example.com',
       );
-      await tester.enterText(
-        find.byType(TextFormField).last,
-        '12345',
-      );
+      await tester.enterText(find.byType(TextFormField).last, '12345');
       await tester.tap(find.text('Sign In'));
       await tester.pumpAndSettle();
 
-      expect(find.text('Password must be at least 6 characters'), findsOneWidget);
+      expect(
+        find.text('Password must be at least 6 characters'),
+        findsOneWidget,
+      );
     });
 
     testWidgets('can navigate to register screen', (tester) async {
@@ -107,10 +104,7 @@ void main() {
         find.byType(TextFormField).first,
         'test@example.com',
       );
-      await tester.enterText(
-        find.byType(TextFormField).at(1),
-        'password123',
-      );
+      await tester.enterText(find.byType(TextFormField).at(1), 'password123');
       await tester.enterText(
         find.byType(TextFormField).last,
         'differentpassword',

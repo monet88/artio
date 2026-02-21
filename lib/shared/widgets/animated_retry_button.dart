@@ -59,11 +59,12 @@ class _AnimatedRetryButtonState extends State<AnimatedRetryButton>
       label: Text(_isRetrying ? 'Retrying...' : 'Try Again'),
       style: OutlinedButton.styleFrom(
         foregroundColor: widget.color,
-        side: BorderSide(color: widget.color.withValues(alpha: 0.5), width: 1.5),
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+        side: BorderSide(
+          color: widget.color.withValues(alpha: 0.5),
+          width: 1.5,
         ),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     );
   }

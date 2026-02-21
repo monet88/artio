@@ -112,10 +112,10 @@ class _InteractiveGalleryItemState extends State<InteractiveGalleryItem>
                     ? 'Pending'
                     : 'Generating',
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: isDark
-                          ? AppColors.textMuted
-                          : AppColors.textMutedLight,
-                    ),
+                  color: isDark
+                      ? AppColors.textMuted
+                      : AppColors.textMutedLight,
+                ),
               ),
             ],
           ),

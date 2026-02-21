@@ -8,16 +8,8 @@ abstract class AppShadows {
   // ── Card Shadows ─────────────────────────────────────────────────────
   /// Standard elevated card (used in template grid, settings cards)
   static const cardShadow = [
-    BoxShadow(
-      color: Color(0x1A000000),
-      blurRadius: 12,
-      offset: Offset(0, 4),
-    ),
-    BoxShadow(
-      color: Color(0x0D000000),
-      blurRadius: 4,
-      offset: Offset(0, 1),
-    ),
+    BoxShadow(color: Color(0x1A000000), blurRadius: 12, offset: Offset(0, 4)),
+    BoxShadow(color: Color(0x0D000000), blurRadius: 4, offset: Offset(0, 1)),
   ];
 
   /// Subtle card shadow for dark mode (colored glow effect)
@@ -28,11 +20,7 @@ abstract class AppShadows {
       offset: Offset(0, 4),
       spreadRadius: -2,
     ),
-    BoxShadow(
-      color: Color(0x40000000),
-      blurRadius: 8,
-      offset: Offset(0, 2),
-    ),
+    BoxShadow(color: Color(0x40000000), blurRadius: 8, offset: Offset(0, 2)),
   ];
 
   // ── Button Shadows ───────────────────────────────────────────────────
@@ -75,20 +63,12 @@ abstract class AppShadows {
   // ── Navigation Shadows ───────────────────────────────────────────────
   /// Bottom navigation bar — separation from content
   static const bottomNavShadow = [
-    BoxShadow(
-      color: Color(0x1A000000),
-      blurRadius: 20,
-      offset: Offset(0, -4),
-    ),
+    BoxShadow(color: Color(0x1A000000), blurRadius: 20, offset: Offset(0, -4)),
   ];
 
   /// Bottom nav shadow for dark mode
   static const bottomNavShadowDark = [
-    BoxShadow(
-      color: Color(0x40000000),
-      blurRadius: 24,
-      offset: Offset(0, -6),
-    ),
+    BoxShadow(color: Color(0x40000000), blurRadius: 24, offset: Offset(0, -6)),
   ];
 
   // ── Utility Shadows ──────────────────────────────────────────────────
@@ -100,11 +80,7 @@ abstract class AppShadows {
       offset: Offset(0, 8),
       spreadRadius: -4,
     ),
-    BoxShadow(
-      color: Color(0x0D000000),
-      blurRadius: 8,
-      offset: Offset(0, 2),
-    ),
+    BoxShadow(color: Color(0x0D000000), blurRadius: 8, offset: Offset(0, 2)),
   ];
 
   /// Subtle inner shadow for input fields

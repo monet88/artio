@@ -12,22 +12,17 @@ void main() {
         routes: [
           GoRoute(
             path: '/gallery',
-            builder: (context, state) => const Scaffold(
-              body: EmptyGalleryState(isLoggedIn: true),
-            ),
+            builder: (context, state) =>
+                const Scaffold(body: EmptyGalleryState(isLoggedIn: true)),
           ),
           GoRoute(
             path: '/home',
-            builder: (context, state) => const Scaffold(
-              body: Text('Home'),
-            ),
+            builder: (context, state) => const Scaffold(body: Text('Home')),
           ),
         ],
       );
 
-      return MaterialApp.router(
-        routerConfig: router,
-      );
+      return MaterialApp.router(routerConfig: router);
     }
 
     testWidgets('renders empty message', (tester) async {

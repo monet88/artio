@@ -8,16 +8,13 @@ void main() {
   group('retry', () {
     test('HandshakeException triggers retry', () async {
       var callCount = 0;
-      final result = await retry(
-        () async {
-          callCount++;
-          if (callCount < 3) {
-            throw const HandshakeException('TLS error');
-          }
-          return 'success';
-        },
-        initialDelay: const Duration(milliseconds: 1),
-      );
+      final result = await retry(() async {
+        callCount++;
+        if (callCount < 3) {
+          throw const HandshakeException('TLS error');
+        }
+        return 'success';
+      }, initialDelay: const Duration(milliseconds: 1));
 
       expect(result, 'success');
       expect(callCount, 3);
@@ -25,19 +22,16 @@ void main() {
 
     test('AppException.network with statusCode 429 triggers retry', () async {
       var callCount = 0;
-      final result = await retry(
-        () async {
-          callCount++;
-          if (callCount < 2) {
-            throw const AppException.network(
-              message: 'Rate limited',
-              statusCode: 429,
-            );
-          }
-          return 'ok';
-        },
-        initialDelay: const Duration(milliseconds: 1),
-      );
+      final result = await retry(() async {
+        callCount++;
+        if (callCount < 2) {
+          throw const AppException.network(
+            message: 'Rate limited',
+            statusCode: 429,
+          );
+        }
+        return 'ok';
+      }, initialDelay: const Duration(milliseconds: 1));
 
       expect(result, 'ok');
       expect(callCount, 2);
@@ -46,13 +40,10 @@ void main() {
     test('AppException.generation does NOT trigger retry', () async {
       var callCount = 0;
       await expectLater(
-        retry(
-          () async {
-            callCount++;
-            throw const AppException.generation(message: 'Gen failed');
-          },
-          initialDelay: const Duration(milliseconds: 1),
-        ),
+        retry(() async {
+          callCount++;
+          throw const AppException.generation(message: 'Gen failed');
+        }, initialDelay: const Duration(milliseconds: 1)),
         throwsA(isA<AppException>()),
       );
 

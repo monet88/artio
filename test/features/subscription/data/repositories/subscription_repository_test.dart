@@ -16,17 +16,19 @@ void main() {
 
     setUp(() {
       mockRepo = MockSubscriptionRepository();
-      registerFallbackValue(const SubscriptionPackage(
-        identifier: 'test',
-        priceString: r'$0',
-        nativePackage: 'native',
-      ));
+      registerFallbackValue(
+        const SubscriptionPackage(
+          identifier: 'test',
+          priceString: r'$0',
+          nativePackage: 'native',
+        ),
+      );
     });
 
     test('getStatus returns free status for non-subscriber', () async {
-      when(() => mockRepo.getStatus()).thenAnswer(
-        (_) async => const SubscriptionStatus(),
-      );
+      when(
+        () => mockRepo.getStatus(),
+      ).thenAnswer((_) async => const SubscriptionStatus());
 
       final status = await mockRepo.getStatus();
       expect(status.isFree, isTrue);
@@ -71,10 +73,7 @@ void main() {
         ),
       );
 
-      expect(
-        () => mockRepo.getStatus(),
-        throwsA(isA<PaymentException>()),
-      );
+      expect(() => mockRepo.getStatus(), throwsA(isA<PaymentException>()));
     });
 
     test('getOfferings returns parsed packages', () async {
@@ -99,8 +98,7 @@ void main() {
       expect(offerings[1].priceString, r'$19.99/month');
     });
 
-    test('getOfferings returns empty list when no current offering',
-        () async {
+    test('getOfferings returns empty list when no current offering', () async {
       when(() => mockRepo.getOfferings()).thenAnswer((_) async => []);
 
       final offerings = await mockRepo.getOfferings();
@@ -116,11 +114,13 @@ void main() {
         ),
       );
 
-      final result = await mockRepo.purchase(const SubscriptionPackage(
-        identifier: 'pro_monthly',
-        priceString: r'$9.99',
-        nativePackage: 'native',
-      ));
+      final result = await mockRepo.purchase(
+        const SubscriptionPackage(
+          identifier: 'pro_monthly',
+          priceString: r'$9.99',
+          nativePackage: 'native',
+        ),
+      );
 
       expect(result.isPro, isTrue);
       expect(result.isActive, isTrue);
@@ -135,11 +135,13 @@ void main() {
       );
 
       expect(
-        () => mockRepo.purchase(const SubscriptionPackage(
-          identifier: 'pro',
-          priceString: r'$9.99',
-          nativePackage: 'native',
-        )),
+        () => mockRepo.purchase(
+          const SubscriptionPackage(
+            identifier: 'pro',
+            priceString: r'$9.99',
+            nativePackage: 'native',
+          ),
+        ),
         throwsA(
           isA<PaymentException>().having(
             (e) => e.code,
@@ -152,10 +154,7 @@ void main() {
 
     test('restore returns updated status', () async {
       when(() => mockRepo.restore()).thenAnswer(
-        (_) async => const SubscriptionStatus(
-          tier: 'ultra',
-          isActive: true,
-        ),
+        (_) async => const SubscriptionStatus(tier: 'ultra', isActive: true),
       );
 
       final status = await mockRepo.restore();
@@ -170,10 +169,7 @@ void main() {
         ),
       );
 
-      expect(
-        () => mockRepo.restore(),
-        throwsA(isA<PaymentException>()),
-      );
+      expect(() => mockRepo.restore(), throwsA(isA<PaymentException>()));
     });
   });
 }

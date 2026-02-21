@@ -14,9 +14,9 @@ Stream<List<GalleryItem>> galleryStream(Ref ref) {
     authenticated: (s) => s.user.id,
     orElse: () => null,
   );
-  
+
   if (userId == null) return Stream.value([]);
-  
+
   final repository = ref.watch(galleryRepositoryProvider);
   return repository.watchUserImages(userId: userId);
 }

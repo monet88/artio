@@ -21,8 +21,7 @@ void main() {
       final container = ProviderContainer();
       addTearDown(container.dispose);
 
-      final notifier =
-          container.read(notificationsNotifierProvider.notifier);
+      final notifier = container.read(notificationsNotifierProvider.notifier);
       await notifier.setState(value: false);
 
       expect(container.read(notificationsNotifierProvider), isFalse);
@@ -32,8 +31,7 @@ void main() {
       final container = ProviderContainer();
       addTearDown(container.dispose);
 
-      final notifier =
-          container.read(notificationsNotifierProvider.notifier);
+      final notifier = container.read(notificationsNotifierProvider.notifier);
       await notifier.setState(value: false);
 
       final prefs = await SharedPreferences.getInstance();
@@ -44,8 +42,7 @@ void main() {
       final container = ProviderContainer();
       addTearDown(container.dispose);
 
-      final notifier =
-          container.read(notificationsNotifierProvider.notifier);
+      final notifier = container.read(notificationsNotifierProvider.notifier);
       // Default is true, setting to true again should be a no-op
       await notifier.setState(value: true);
 
@@ -53,32 +50,25 @@ void main() {
       expect(container.read(notificationsNotifierProvider), isTrue);
     });
 
-    test('init loads from SharedPreferences when no user toggle',
-        () async {
-      SharedPreferences.setMockInitialValues({
-        'notifications_enabled': false,
-      });
+    test('init loads from SharedPreferences when no user toggle', () async {
+      SharedPreferences.setMockInitialValues({'notifications_enabled': false});
 
       final container = ProviderContainer();
       addTearDown(container.dispose);
 
-      final notifier =
-          container.read(notificationsNotifierProvider.notifier);
+      final notifier = container.read(notificationsNotifierProvider.notifier);
       await notifier.init();
 
       expect(container.read(notificationsNotifierProvider), isFalse);
     });
 
     test('init does not overwrite user toggle', () async {
-      SharedPreferences.setMockInitialValues({
-        'notifications_enabled': false,
-      });
+      SharedPreferences.setMockInitialValues({'notifications_enabled': false});
 
       final container = ProviderContainer();
       addTearDown(container.dispose);
 
-      final notifier =
-          container.read(notificationsNotifierProvider.notifier);
+      final notifier = container.read(notificationsNotifierProvider.notifier);
       // Toggle OFF first (state changes from true→false, sets _hasUserToggled)
       await notifier.setState(value: false);
       // Then toggle back ON (user explicitly chose ON)

@@ -4,7 +4,17 @@ import 'package:flutter/material.dart';
 /// App bar for the image viewer with share, download, info, and delete actions.
 class ImageViewerAppBar extends StatelessWidget implements PreferredSizeWidget {
   const ImageViewerAppBar({
-    required this.currentIndex, required this.totalCount, required this.showInfo, required this.isSharing, required this.isDownloading, required this.hasImageUrl, required this.onToggleInfo, required this.onShare, required this.onDownload, required this.onDelete, super.key,
+    required this.currentIndex,
+    required this.totalCount,
+    required this.showInfo,
+    required this.isSharing,
+    required this.isDownloading,
+    required this.hasImageUrl,
+    required this.onToggleInfo,
+    required this.onShare,
+    required this.onDownload,
+    required this.onDelete,
+    super.key,
   });
 
   final int currentIndex;
@@ -53,7 +63,9 @@ class ImageViewerAppBar extends StatelessWidget implements PreferredSizeWidget {
                   width: 20,
                   height: 20,
                   child: CircularProgressIndicator(
-                      strokeWidth: 2, color: Colors.white),
+                    strokeWidth: 2,
+                    color: Colors.white,
+                  ),
                 )
               : const Icon(Icons.share_rounded),
           onPressed: (isSharing || !hasImageUrl) ? null : onShare,
@@ -66,7 +78,9 @@ class ImageViewerAppBar extends StatelessWidget implements PreferredSizeWidget {
                   width: 20,
                   height: 20,
                   child: CircularProgressIndicator(
-                      strokeWidth: 2, color: Colors.white),
+                    strokeWidth: 2,
+                    color: Colors.white,
+                  ),
                 )
               : const Icon(Icons.download_rounded),
           onPressed: (isDownloading || !hasImageUrl) ? null : onDownload,

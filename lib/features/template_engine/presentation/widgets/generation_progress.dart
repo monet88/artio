@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 /// Redesigned generation progress widget with animated progress bar (gradient),
 /// pulsing glow, bounce-in checkmark, shake error, and status text transitions.
 class GenerationProgress extends StatefulWidget {
-
   const GenerationProgress({required this.job, super.key});
   final GenerationJobModel job;
 
@@ -53,10 +52,7 @@ class _GenerationProgressState extends State<GenerationProgress>
       duration: AppAnimations.normal,
     );
     _shakeOffset = Tween<double>(begin: 0, end: 1).animate(
-      CurvedAnimation(
-        parent: _shakeController,
-        curve: Curves.elasticIn,
-      ),
+      CurvedAnimation(parent: _shakeController, curve: Curves.elasticIn),
     );
 
     _updateAnimations();
@@ -110,7 +106,8 @@ class _GenerationProgressState extends State<GenerationProgress>
       animation: _shakeController,
       builder: (context, child) {
         // Shake offset for error
-        final shakeX = _shakeOffset.value *
+        final shakeX =
+            _shakeOffset.value *
             8 *
             ((_shakeController.value * 6).toInt().isEven ? 1 : -1);
 
@@ -126,13 +123,15 @@ class _GenerationProgressState extends State<GenerationProgress>
           border: isDark
               ? Border.all(color: AppColors.white10, width: 0.5)
               : null,
-          boxShadow: isDark ? null : const [
-            BoxShadow(
-              color: Color(0x0D000000),
-              blurRadius: 8,
-              offset: Offset(0, 2),
-            ),
-          ],
+          boxShadow: isDark
+              ? null
+              : const [
+                  BoxShadow(
+                    color: Color(0x0D000000),
+                    blurRadius: 8,
+                    offset: Offset(0, 2),
+                  ),
+                ],
         ),
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.md),
@@ -152,9 +151,7 @@ class _GenerationProgressState extends State<GenerationProgress>
                   resultUrls: widget.job.resultUrls,
                 )
               else if (status == JobStatus.failed)
-                ErrorStatusSection(
-                  errorMessage: widget.job.errorMessage,
-                ),
+                ErrorStatusSection(errorMessage: widget.job.errorMessage),
             ],
           ),
         ),

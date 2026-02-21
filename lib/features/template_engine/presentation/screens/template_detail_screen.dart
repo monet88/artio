@@ -132,18 +132,18 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
     );
 
     // Tag Sentry events with premium status (fires only on change)
-    _premiumSub = ref.listenManual<AuthState>(
-      authViewModelProvider,
-      (_, AuthState next) {
-        final isPremium = next.maybeMap(
-          authenticated: (s) => s.user.isPremium,
-          orElse: () => false,
-        );
-        Sentry.configureScope(
-          (scope) => scope.setTag('isPremium', isPremium.toString()),
-        );
-      },
-    );
+    _premiumSub = ref.listenManual<AuthState>(authViewModelProvider, (
+      _,
+      AuthState next,
+    ) {
+      final isPremium = next.maybeMap(
+        authenticated: (s) => s.user.isPremium,
+        orElse: () => false,
+      );
+      Sentry.configureScope(
+        (scope) => scope.setTag('isPremium', isPremium.toString()),
+      );
+    });
   }
 
   @override

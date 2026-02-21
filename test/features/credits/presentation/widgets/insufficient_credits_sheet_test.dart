@@ -1,10 +1,10 @@
 import 'package:artio/core/services/rewarded_ad_service.dart';
+import 'package:artio/features/auth/presentation/state/auth_state.dart';
+import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
 import 'package:artio/features/credits/data/repositories/credit_repository.dart';
 import 'package:artio/features/credits/presentation/widgets/insufficient_credits_sheet.dart';
 import 'package:artio/features/subscription/data/repositories/subscription_repository.dart';
 import 'package:artio/features/subscription/domain/entities/subscription_status.dart';
-import 'package:artio/features/auth/presentation/state/auth_state.dart';
-import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -40,10 +40,10 @@ void main() {
     int adsRemaining = 5,
     bool adLoaded = false,
   }) {
-    when(() => mockSubRepo.getStatus())
-        .thenAnswer((_) async => subStatus);
-    when(() => mockCreditRepo.fetchAdsRemainingToday())
-        .thenAnswer((_) async => adsRemaining);
+    when(() => mockSubRepo.getStatus()).thenAnswer((_) async => subStatus);
+    when(
+      () => mockCreditRepo.fetchAdsRemainingToday(),
+    ).thenAnswer((_) async => adsRemaining);
     when(() => mockAdService.isAdLoaded).thenReturn(adLoaded);
 
     return ProviderScope(
@@ -51,9 +51,7 @@ void main() {
         subscriptionRepositoryProvider.overrideWithValue(mockSubRepo),
         creditRepositoryProvider.overrideWithValue(mockCreditRepo),
         rewardedAdServiceProvider.overrideWithValue(mockAdService),
-        authViewModelProvider.overrideWith(
-          () => _FakeAuthViewModel(),
-        ),
+        authViewModelProvider.overrideWith(_FakeAuthViewModel.new),
       ],
       child: MaterialApp(
         home: Scaffold(
@@ -70,9 +68,7 @@ void main() {
 
   group('InsufficientCreditsSheet', () {
     testWidgets('shows credit deficit info', (tester) async {
-      await tester.pumpWidget(buildWidget(
-        requiredCredits: 10,
-      ));
+      await tester.pumpWidget(buildWidget(requiredCredits: 10));
       await tester.pumpAndSettle();
 
       expect(find.text('Not enough credits'), findsOneWidget);
@@ -88,9 +84,11 @@ void main() {
     });
 
     testWidgets('subscriber sees Manage Subscription button', (tester) async {
-      await tester.pumpWidget(buildWidget(
-        subStatus: const SubscriptionStatus(tier: 'pro', isActive: true),
-      ));
+      await tester.pumpWidget(
+        buildWidget(
+          subStatus: const SubscriptionStatus(tier: 'pro', isActive: true),
+        ),
+      );
       await tester.pumpAndSettle();
 
       expect(find.text('Manage Subscription'), findsOneWidget);
@@ -104,8 +102,7 @@ void main() {
       expect(find.text('Dismiss'), findsOneWidget);
     });
 
-    testWidgets('shows ad limit reached when no ads remaining',
-        (tester) async {
+    testWidgets('shows ad limit reached when no ads remaining', (tester) async {
       await tester.pumpWidget(buildWidget(adsRemaining: 0));
       await tester.pumpAndSettle();
 

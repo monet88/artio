@@ -49,9 +49,7 @@ class TemplateGrid extends ConsumerWidget {
         }
         return _StaggeredGrid(templates: templates);
       },
-      loading: () => const SliverToBoxAdapter(
-        child: LoadingStateWidget(),
-      ),
+      loading: () => const SliverToBoxAdapter(child: LoadingStateWidget()),
       error: (error, stack) => SliverToBoxAdapter(
         child: _ErrorMessage(error: error, stackTrace: stack),
       ),
@@ -99,10 +97,13 @@ class _StaggeredGridState extends State<_StaggeredGrid>
     return AnimationController(
       vsync: this,
       duration: Duration(
-        milliseconds: AppAnimations.normal.inMilliseconds +
+        milliseconds:
+            AppAnimations.normal.inMilliseconds +
             (AppAnimations.staggerDelay.inMilliseconds *
-                widget.templates.length
-                    .clamp(0, AppAnimations.maxStaggerItems)),
+                widget.templates.length.clamp(
+                  0,
+                  AppAnimations.maxStaggerItems,
+                )),
       ),
     );
   }
@@ -133,18 +134,18 @@ class _StaggeredGridState extends State<_StaggeredGrid>
           const maxItems = AppAnimations.maxStaggerItems;
           final clampedItemCount = templates.length.clamp(0, maxItems);
           final staggerIndex = index.clamp(0, maxItems);
-          final totalStaggerTime = AppAnimations.staggerDelay.inMilliseconds *
-              clampedItemCount;
-          final totalDuration = AppAnimations.normal.inMilliseconds +
-              totalStaggerTime;
+          final totalStaggerTime =
+              AppAnimations.staggerDelay.inMilliseconds * clampedItemCount;
+          final totalDuration =
+              AppAnimations.normal.inMilliseconds + totalStaggerTime;
 
           final startFraction =
               (staggerIndex * AppAnimations.staggerDelay.inMilliseconds) /
-                  totalDuration;
+              totalDuration;
           final endFraction =
               (staggerIndex * AppAnimations.staggerDelay.inMilliseconds +
                   AppAnimations.normal.inMilliseconds) /
-                  totalDuration;
+              totalDuration;
 
           final itemAnimation = Tween<double>(begin: 0, end: 1).animate(
             CurvedAnimation(
@@ -163,15 +164,15 @@ class _StaggeredGridState extends State<_StaggeredGrid>
               return Opacity(
                 opacity: itemAnimation.value,
                 child: Transform.translate(
-                  offset: Offset(0, _kStaggerSlideOffset * (1 - itemAnimation.value)),
+                  offset: Offset(
+                    0,
+                    _kStaggerSlideOffset * (1 - itemAnimation.value),
+                  ),
                   child: child,
                 ),
               );
             },
-            child: TemplateCard(
-              template: templates[index],
-              index: index,
-            ),
+            child: TemplateCard(template: templates[index], index: index),
           );
         },
       ),
@@ -201,13 +202,16 @@ class _ErrorMessageState extends ConsumerState<_ErrorMessage> {
   void _captureOnce() {
     if (_didCapture) return;
     _didCapture = true;
-    unawaited(SentryConfig.captureException(widget.error,
-        stackTrace: widget.stackTrace));
+    unawaited(
+      SentryConfig.captureException(
+        widget.error,
+        stackTrace: widget.stackTrace,
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Center(
       child: Padding(
         padding: AppSpacing.screenPadding,

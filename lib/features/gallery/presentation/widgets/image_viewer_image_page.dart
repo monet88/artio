@@ -28,93 +28,93 @@ class ImageViewerImagePage extends StatelessWidget {
             tag: 'gallery-image-${item.id}',
             child: imageUrl != null
                 ? Image.network(
-                  imageUrl,
-                  fit: BoxFit.contain,
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) return child;
-                    final progress =
-                        loadingProgress.expectedTotalBytes != null
-                            ? loadingProgress.cumulativeBytesLoaded /
+                    imageUrl,
+                    fit: BoxFit.contain,
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      final progress =
+                          loadingProgress.expectedTotalBytes != null
+                          ? loadingProgress.cumulativeBytesLoaded /
                                 loadingProgress.expectedTotalBytes!
-                            : null;
-                    return Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          SizedBox(
-                            width: 48,
-                            height: 48,
-                            child: CircularProgressIndicator(
-                              value: progress,
-                              strokeWidth: 2.5,
-                              color: AppColors.primaryCta,
-                              backgroundColor: AppColors.white10,
-                            ),
-                          ),
-                          if (progress != null) ...[
-                            const SizedBox(height: 12),
-                            Text(
-                              '${(progress * 100).toInt()}%',
-                              style: const TextStyle(
-                                color: AppColors.textMuted,
-                                fontSize: 13,
+                          : null;
+                      return Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SizedBox(
+                              width: 48,
+                              height: 48,
+                              child: CircularProgressIndicator(
+                                value: progress,
+                                strokeWidth: 2.5,
+                                color: AppColors.primaryCta,
+                                backgroundColor: AppColors.white10,
                               ),
                             ),
+                            if (progress != null) ...[
+                              const SizedBox(height: 12),
+                              Text(
+                                '${(progress * 100).toInt()}%',
+                                style: const TextStyle(
+                                  color: AppColors.textMuted,
+                                  fontSize: 13,
+                                ),
+                              ),
+                            ],
                           ],
+                        ),
+                      );
+                    },
+                    errorBuilder: (context, error, stackTrace) {
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ShaderMask(
+                            blendMode: BlendMode.srcIn,
+                            shaderCallback: (bounds) => AppGradients
+                                .primaryGradient
+                                .createShader(bounds),
+                            child: const Icon(
+                              Icons.broken_image_rounded,
+                              size: 56,
+                            ),
+                          ),
+                          const SizedBox(height: AppSpacing.md),
+                          const Text(
+                            'Failed to load image',
+                            style: TextStyle(
+                              color: AppColors.textMuted,
+                              fontSize: 14,
+                            ),
+                          ),
                         ],
-                      ),
-                    );
-                  },
-                  errorBuilder: (context, error, stackTrace) {
-                    return Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        ShaderMask(
-                          blendMode: BlendMode.srcIn,
-                          shaderCallback: (bounds) =>
-                              AppGradients.primaryGradient
-                                  .createShader(bounds),
-                          child: const Icon(
-                            Icons.broken_image_rounded,
-                            size: 56,
-                          ),
+                      );
+                    },
+                  )
+                : Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const SizedBox(
+                        width: 48,
+                        height: 48,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2.5,
+                          color: AppColors.primaryCta,
+                          backgroundColor: AppColors.white10,
                         ),
-                        const SizedBox(height: AppSpacing.md),
-                        const Text(
-                          'Failed to load image',
-                          style: TextStyle(
-                            color: AppColors.textMuted,
-                            fontSize: 14,
-                          ),
+                      ),
+                      const SizedBox(height: AppSpacing.md),
+                      Text(
+                        item.status == GenerationStatus.pending
+                            ? 'Pending...'
+                            : 'Processing...',
+                        style: const TextStyle(
+                          color: AppColors.textMuted,
+                          fontSize: 14,
                         ),
-                      ],
-                    );
-                  },
-                )
-              : Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const SizedBox(
-                      width: 48,
-                      height: 48,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2.5,
-                        color: AppColors.primaryCta,
-                        backgroundColor: AppColors.white10,
                       ),
-                    ),
-                    const SizedBox(height: AppSpacing.md),
-                    Text(
-                      item.status == GenerationStatus.pending
-                          ? 'Pending...'
-                          : 'Processing...',
-                      style: const TextStyle(
-                        color: AppColors.textMuted,
-                        fontSize: 14,
-                      ),
-                    ),
-                  ],
-                ),
+                    ],
+                  ),
           ),
         ),
       ),

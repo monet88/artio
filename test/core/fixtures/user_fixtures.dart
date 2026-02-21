@@ -12,30 +12,26 @@ class UserFixtures {
     bool? isPremium,
     DateTime? premiumExpiresAt,
     DateTime? createdAt,
-  }) =>
-      UserModel(
-        id: id ?? 'test-user-${DateTime.now().millisecondsSinceEpoch}',
-        email: email ?? 'test@example.com',
-        displayName: displayName ?? 'Test User',
-        avatarUrl: avatarUrl ?? 'https://example.com/avatar.png',
-        credits: credits ?? 10,
-        isPremium: isPremium ?? false,
-        premiumExpiresAt: premiumExpiresAt,
-        createdAt: createdAt ?? DateTime.now().subtract(const Duration(days: 30)),
-      );
+  }) => UserModel(
+    id: id ?? 'test-user-${DateTime.now().millisecondsSinceEpoch}',
+    email: email ?? 'test@example.com',
+    displayName: displayName ?? 'Test User',
+    avatarUrl: avatarUrl ?? 'https://example.com/avatar.png',
+    credits: credits ?? 10,
+    isPremium: isPremium ?? false,
+    premiumExpiresAt: premiumExpiresAt,
+    createdAt: createdAt ?? DateTime.now().subtract(const Duration(days: 30)),
+  );
 
   /// Creates a guest/unauthenticated user
   static UserModel guest() => const UserModel(
-        id: 'guest-user-id',
-        email: 'guest@example.com',
-        displayName: 'Guest',
-      );
+    id: 'guest-user-id',
+    email: 'guest@example.com',
+    displayName: 'Guest',
+  );
 
   /// Creates a premium user
-  static UserModel premium({
-    String? id,
-    String? email,
-  }) =>
+  static UserModel premium({String? id, String? email}) =>
       UserFixtures.authenticated(
         id: id,
         email: email,
@@ -45,10 +41,7 @@ class UserFixtures {
       );
 
   /// Creates a user with zero credits
-  static UserModel noCredits({
-    String? id,
-    String? email,
-  }) =>
+  static UserModel noCredits({String? id, String? email}) =>
       UserFixtures.authenticated(
         id: id,
         email: email,

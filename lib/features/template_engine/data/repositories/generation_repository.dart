@@ -68,7 +68,9 @@ class GenerationRepository implements IGenerationRepository {
                   if (modelId != null) 'model': modelId,
                 },
               )
-              .timeout(const Duration(seconds: kGenerationRequestTimeoutSeconds)),
+              .timeout(
+                const Duration(seconds: kGenerationRequestTimeoutSeconds),
+              ),
         );
 
         if (response.status == 429) {
@@ -87,8 +89,7 @@ class GenerationRepository implements IGenerationRepository {
 
         if (response.status != 200) {
           final errorMsg = response.data is Map<String, dynamic>
-              ? ((response.data as Map<String, dynamic>)['error']
-                        as String?) ??
+              ? ((response.data as Map<String, dynamic>)['error'] as String?) ??
                     'Generation failed'
               : 'Generation failed';
           throw AppException.generation(message: errorMsg);

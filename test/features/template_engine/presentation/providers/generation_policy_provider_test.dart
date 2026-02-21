@@ -23,9 +23,7 @@ void main() {
     test('can override policy in tests', () async {
       final customPolicy = _MockDeniedPolicy();
       container = ProviderContainer(
-        overrides: [
-          generationPolicyProvider.overrideWithValue(customPolicy),
-        ],
+        overrides: [generationPolicyProvider.overrideWithValue(customPolicy)],
       );
 
       final policy = container.read(generationPolicyProvider);

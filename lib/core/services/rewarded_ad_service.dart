@@ -62,10 +62,7 @@ class RewardedAdService extends ChangeNotifier {
     required String customData,
   }) async {
     await _rewardedAd?.setServerSideOptions(
-      ServerSideVerificationOptions(
-        userId: userId,
-        customData: customData,
-      ),
+      ServerSideVerificationOptions(userId: userId, customData: customData),
     );
   }
 

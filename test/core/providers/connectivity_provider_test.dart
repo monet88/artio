@@ -7,8 +7,7 @@ void main() {
     test('emits true when overridden with online stream', () async {
       final container = ProviderContainer(
         overrides: [
-          connectivityProvider
-              .overrideWith((_) => Stream.value(true)),
+          connectivityProvider.overrideWith((_) => Stream.value(true)),
         ],
       );
       addTearDown(container.dispose);
@@ -20,8 +19,7 @@ void main() {
     test('emits false when overridden with offline stream', () async {
       final container = ProviderContainer(
         overrides: [
-          connectivityProvider
-              .overrideWith((_) => Stream.value(false)),
+          connectivityProvider.overrideWith((_) => Stream.value(false)),
         ],
       );
       addTearDown(container.dispose);

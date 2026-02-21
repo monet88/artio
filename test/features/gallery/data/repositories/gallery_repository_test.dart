@@ -14,7 +14,9 @@ import '../../../../core/fixtures/gallery_item_fixtures.dart';
 
 // Mock the interface, NOT the implementation
 class MockGalleryRepository extends Mock implements IGalleryRepository {}
+
 class MockSupabaseClient extends Mock implements SupabaseClient {}
+
 class MockGalleryCacheService extends Mock implements GalleryCacheService {}
 
 void main() {
@@ -29,37 +31,36 @@ void main() {
       test('returns list of gallery items', () async {
         final items = GalleryItemFixtures.list(count: 5);
 
-        when(() => mockRepository.fetchGalleryItems(
-              
-            )).thenAnswer((_) async => items);
+        when(
+          () => mockRepository.fetchGalleryItems(),
+        ).thenAnswer((_) async => items);
 
-        final result = await mockRepository.fetchGalleryItems(
-          
-        );
+        final result = await mockRepository.fetchGalleryItems();
 
         expect(result, hasLength(5));
       });
 
       test('returns empty list when no items exist', () async {
-        when(() => mockRepository.fetchGalleryItems(
-              
-            )).thenAnswer((_) async => []);
+        when(
+          () => mockRepository.fetchGalleryItems(),
+        ).thenAnswer((_) async => []);
 
-        final result = await mockRepository.fetchGalleryItems(
-          
-        );
+        final result = await mockRepository.fetchGalleryItems();
 
         expect(result, isEmpty);
       });
 
       test('returns filtered items when templateId provided', () async {
         final filteredItems = [
-          GalleryItemFixtures.single(templateId: 'template-1', status: GenerationStatus.completed),
+          GalleryItemFixtures.single(
+            templateId: 'template-1',
+            status: GenerationStatus.completed,
+          ),
         ];
 
-        when(() => mockRepository.fetchGalleryItems(
-              templateId: 'template-1',
-            )).thenAnswer((_) async => filteredItems);
+        when(
+          () => mockRepository.fetchGalleryItems(templateId: 'template-1'),
+        ).thenAnswer((_) async => filteredItems);
 
         final result = await mockRepository.fetchGalleryItems(
           templateId: 'template-1',
@@ -75,17 +76,15 @@ void main() {
         final controller = StreamController<List<GalleryItem>>();
         final items = GalleryItemFixtures.list(count: 3);
 
-        when(() => mockRepository.watchUserImages(userId: 'user-123'))
-            .thenAnswer((_) => controller.stream);
+        when(
+          () => mockRepository.watchUserImages(userId: 'user-123'),
+        ).thenAnswer((_) => controller.stream);
 
         final stream = mockRepository.watchUserImages(userId: 'user-123');
 
         controller.add(items);
 
-        await expectLater(
-          stream,
-          emits(hasLength(3)),
-        );
+        await expectLater(stream, emits(hasLength(3)));
 
         await controller.close();
       });
@@ -95,8 +94,9 @@ void main() {
         final initialItems = GalleryItemFixtures.list(count: 2);
         final updatedItems = GalleryItemFixtures.list(count: 3);
 
-        when(() => mockRepository.watchUserImages(userId: 'user-123'))
-            .thenAnswer((_) => controller.stream);
+        when(
+          () => mockRepository.watchUserImages(userId: 'user-123'),
+        ).thenAnswer((_) => controller.stream);
 
         final stream = mockRepository.watchUserImages(userId: 'user-123');
 
@@ -104,13 +104,7 @@ void main() {
           ..add(initialItems)
           ..add(updatedItems);
 
-        await expectLater(
-          stream,
-          emitsInOrder([
-            hasLength(2),
-            hasLength(3),
-          ]),
-        );
+        await expectLater(stream, emitsInOrder([hasLength(2), hasLength(3)]));
 
         await controller.close();
       });
@@ -118,13 +112,11 @@ void main() {
 
     group('deleteJob', () {
       test('completes without error on success', () async {
-        when(() => mockRepository.deleteJob('job-123'))
-            .thenAnswer((_) async {});
+        when(
+          () => mockRepository.deleteJob('job-123'),
+        ).thenAnswer((_) async {});
 
-        await expectLater(
-          mockRepository.deleteJob('job-123'),
-          completes,
-        );
+        await expectLater(mockRepository.deleteJob('job-123'), completes);
 
         verify(() => mockRepository.deleteJob('job-123')).called(1);
       });
@@ -132,44 +124,39 @@ void main() {
 
     group('softDeleteImage', () {
       test('completes without error on success', () async {
-        when(() => mockRepository.softDeleteImage('job-123'))
-            .thenAnswer((_) async {});
+        when(
+          () => mockRepository.softDeleteImage('job-123'),
+        ).thenAnswer((_) async {});
 
-        await expectLater(
-          mockRepository.softDeleteImage('job-123'),
-          completes,
-        );
+        await expectLater(mockRepository.softDeleteImage('job-123'), completes);
       });
     });
 
     group('restoreImage', () {
       test('completes without error on success', () async {
-        when(() => mockRepository.restoreImage('job-123'))
-            .thenAnswer((_) async {});
+        when(
+          () => mockRepository.restoreImage('job-123'),
+        ).thenAnswer((_) async {});
 
-        await expectLater(
-          mockRepository.restoreImage('job-123'),
-          completes,
-        );
+        await expectLater(mockRepository.restoreImage('job-123'), completes);
       });
     });
 
     group('retryGeneration', () {
       test('completes without error on success', () async {
-        when(() => mockRepository.retryGeneration('job-123'))
-            .thenAnswer((_) async {});
+        when(
+          () => mockRepository.retryGeneration('job-123'),
+        ).thenAnswer((_) async {});
 
-        await expectLater(
-          mockRepository.retryGeneration('job-123'),
-          completes,
-        );
+        await expectLater(mockRepository.retryGeneration('job-123'), completes);
       });
     });
 
     group('downloadImage', () {
       test('returns file path on success', () async {
-        when(() => mockRepository.downloadImage('https://example.com/image.png'))
-            .thenAnswer((_) async => '/path/to/downloaded/image.png');
+        when(
+          () => mockRepository.downloadImage('https://example.com/image.png'),
+        ).thenAnswer((_) async => '/path/to/downloaded/image.png');
 
         final result = await mockRepository.downloadImage(
           'https://example.com/image.png',
@@ -179,8 +166,9 @@ void main() {
       });
 
       test('throws exception on download failure', () async {
-        when(() => mockRepository.downloadImage('https://invalid.url/image.png'))
-            .thenThrow(Exception('Failed to download image'));
+        when(
+          () => mockRepository.downloadImage('https://invalid.url/image.png'),
+        ).thenThrow(Exception('Failed to download image'));
 
         expect(
           () => mockRepository.downloadImage('https://invalid.url/image.png'),
@@ -191,8 +179,9 @@ void main() {
 
     group('toggleFavorite', () {
       test('completes without error when favoriting', () async {
-        when(() => mockRepository.toggleFavorite('item-123', isFavorite: true))
-            .thenAnswer((_) async {});
+        when(
+          () => mockRepository.toggleFavorite('item-123', isFavorite: true),
+        ).thenAnswer((_) async {});
 
         await expectLater(
           mockRepository.toggleFavorite('item-123', isFavorite: true),
@@ -201,8 +190,9 @@ void main() {
       });
 
       test('completes without error when unfavoriting', () async {
-        when(() => mockRepository.toggleFavorite('item-123', isFavorite: false))
-            .thenAnswer((_) async {});
+        when(
+          () => mockRepository.toggleFavorite('item-123', isFavorite: false),
+        ).thenAnswer((_) async {});
 
         await expectLater(
           mockRepository.toggleFavorite('item-123', isFavorite: false),

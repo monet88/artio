@@ -28,20 +28,18 @@ void main() {
   group('SettingsScreen', () {
     final overrides = [
       authViewModelProvider.overrideWith(_FakeAuthViewModel.new),
-      notificationsNotifierProvider
-          .overrideWith(_FakeNotificationsNotifier.new),
+      notificationsNotifierProvider.overrideWith(
+        _FakeNotificationsNotifier.new,
+      ),
       themeModeNotifierProvider.overrideWith(_FakeThemeModeNotifier.new),
-      subscriptionNotifierProvider
-          .overrideWith(_FakeSubscriptionNotifier.new),
-      creditBalanceNotifierProvider
-          .overrideWith(_FakeCreditBalanceNotifier.new),
+      subscriptionNotifierProvider.overrideWith(_FakeSubscriptionNotifier.new),
+      creditBalanceNotifierProvider.overrideWith(
+        _FakeCreditBalanceNotifier.new,
+      ),
     ];
 
     testWidgets('renders app bar with Settings title', (tester) async {
-      await tester.pumpApp(
-        const SettingsScreen(),
-        overrides: overrides,
-      );
+      await tester.pumpApp(const SettingsScreen(), overrides: overrides);
       await tester.pump();
 
       expect(find.text('Settings'), findsOneWidget);
@@ -49,20 +47,14 @@ void main() {
     });
 
     testWidgets('renders Scaffold', (tester) async {
-      await tester.pumpApp(
-        const SettingsScreen(),
-        overrides: overrides,
-      );
+      await tester.pumpApp(const SettingsScreen(), overrides: overrides);
       await tester.pump();
 
       expect(find.byType(Scaffold), findsOneWidget);
     });
 
     testWidgets('displays user email when authenticated', (tester) async {
-      await tester.pumpApp(
-        const SettingsScreen(),
-        overrides: overrides,
-      );
+      await tester.pumpApp(const SettingsScreen(), overrides: overrides);
       await tester.pump();
 
       // Email appears in UserProfileCard AND Account section Email tile
@@ -71,10 +63,7 @@ void main() {
     });
 
     testWidgets('renders Account section with expected items', (tester) async {
-      await tester.pumpApp(
-        const SettingsScreen(),
-        overrides: overrides,
-      );
+      await tester.pumpApp(const SettingsScreen(), overrides: overrides);
       await tester.pump();
 
       expect(find.text('Account'), findsOneWidget);
@@ -83,26 +72,17 @@ void main() {
     });
 
     testWidgets('renders Logout button (scrolled)', (tester) async {
-      await tester.pumpApp(
-        const SettingsScreen(),
-        overrides: overrides,
-      );
+      await tester.pumpApp(const SettingsScreen(), overrides: overrides);
       await tester.pumpAndSettle();
 
       // Logout button is at the bottom, may need to scroll
-      await tester.scrollUntilVisible(
-        find.text('Logout'),
-        200,
-      );
+      await tester.scrollUntilVisible(find.text('Logout'), 200);
 
       expect(find.text('Logout'), findsOneWidget);
     });
 
     testWidgets('renders Appearance section', (tester) async {
-      await tester.pumpApp(
-        const SettingsScreen(),
-        overrides: overrides,
-      );
+      await tester.pumpApp(const SettingsScreen(), overrides: overrides);
       await tester.pump();
 
       expect(find.text('Appearance'), findsOneWidget);
@@ -110,57 +90,46 @@ void main() {
     });
 
     testWidgets('renders About section with version', (tester) async {
-      await tester.pumpApp(
-        const SettingsScreen(),
-        overrides: overrides,
-      );
+      await tester.pumpApp(const SettingsScreen(), overrides: overrides);
       await tester.pumpAndSettle();
 
       // Scroll to find the Version text
-      await tester.scrollUntilVisible(
-        find.text('Version'),
-        200,
-      );
+      await tester.scrollUntilVisible(find.text('Version'), 200);
 
       expect(find.text('About'), findsOneWidget);
       expect(find.text('Version'), findsOneWidget);
     });
 
     testWidgets('shows credit balance for free users', (tester) async {
-      await tester.pumpApp(
-        const SettingsScreen(),
-        overrides: overrides,
-      );
+      await tester.pumpApp(const SettingsScreen(), overrides: overrides);
       await tester.pump();
 
       expect(find.textContaining('42 credits'), findsOneWidget);
     });
 
-    testWidgets('shows credit balance and monthly allocation for subscribers',
-        (tester) async {
+    testWidgets('shows credit balance and monthly allocation for subscribers', (
+      tester,
+    ) async {
       await tester.pumpApp(
         const SettingsScreen(),
         overrides: [
           authViewModelProvider.overrideWith(_FakeAuthViewModel.new),
-          notificationsNotifierProvider
-              .overrideWith(_FakeNotificationsNotifier.new),
+          notificationsNotifierProvider.overrideWith(
+            _FakeNotificationsNotifier.new,
+          ),
           themeModeNotifierProvider.overrideWith(_FakeThemeModeNotifier.new),
-          subscriptionNotifierProvider
-              .overrideWith(_FakeProSubscriptionNotifier.new),
-          creditBalanceNotifierProvider
-              .overrideWith(_FakeCreditBalanceNotifier.new),
+          subscriptionNotifierProvider.overrideWith(
+            _FakeProSubscriptionNotifier.new,
+          ),
+          creditBalanceNotifierProvider.overrideWith(
+            _FakeCreditBalanceNotifier.new,
+          ),
         ],
       );
       await tester.pump();
 
-      expect(
-        find.textContaining('42 credits remaining'),
-        findsOneWidget,
-      );
-      expect(
-        find.textContaining('200/mo'),
-        findsOneWidget,
-      );
+      expect(find.textContaining('42 credits remaining'), findsOneWidget);
+      expect(find.textContaining('200/mo'), findsOneWidget);
     });
   });
 }

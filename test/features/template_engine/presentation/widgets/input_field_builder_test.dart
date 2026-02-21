@@ -18,10 +18,7 @@ void main() {
 
       await tester.pumpApp(
         Scaffold(
-          body: InputFieldBuilder(
-            field: field,
-            onChanged: (_) {},
-          ),
+          body: InputFieldBuilder(field: field, onChanged: (_) {}),
         ),
       );
 
@@ -62,10 +59,7 @@ void main() {
 
       await tester.pumpApp(
         Scaffold(
-          body: InputFieldBuilder(
-            field: field,
-            onChanged: (_) {},
-          ),
+          body: InputFieldBuilder(field: field, onChanged: (_) {}),
         ),
       );
 
@@ -73,8 +67,9 @@ void main() {
       expect(find.text('Style'), findsOneWidget);
     });
 
-    testWidgets('dropdown calls onChanged when option selected',
-        (tester) async {
+    testWidgets('dropdown calls onChanged when option selected', (
+      tester,
+    ) async {
       const field = InputFieldModel(
         name: 'style',
         label: 'Style',
@@ -104,8 +99,9 @@ void main() {
       expect(capturedValue, 'Option B');
     });
 
-    testWidgets('renders text field for unknown types (fallback)',
-        (tester) async {
+    testWidgets('renders text field for unknown types (fallback)', (
+      tester,
+    ) async {
       const field = InputFieldModel(
         name: 'reference',
         label: 'Reference Image',
@@ -114,10 +110,7 @@ void main() {
 
       await tester.pumpApp(
         Scaffold(
-          body: InputFieldBuilder(
-            field: field,
-            onChanged: (_) {},
-          ),
+          body: InputFieldBuilder(field: field, onChanged: (_) {}),
         ),
       );
 
@@ -138,10 +131,7 @@ void main() {
         Scaffold(
           body: Form(
             key: formKey,
-            child: InputFieldBuilder(
-              field: field,
-              onChanged: (_) {},
-            ),
+            child: InputFieldBuilder(field: field, onChanged: (_) {}),
           ),
         ),
       );
@@ -163,10 +153,7 @@ void main() {
 
       await tester.pumpApp(
         Scaffold(
-          body: InputFieldBuilder(
-            field: field,
-            onChanged: (_) {},
-          ),
+          body: InputFieldBuilder(field: field, onChanged: (_) {}),
         ),
       );
 

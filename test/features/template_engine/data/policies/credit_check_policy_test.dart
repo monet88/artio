@@ -15,15 +15,16 @@ void main() {
 
     /// Creates a container and waits for the credit balance to settle.
     Future<CreditCheckPolicy> createPolicyWithBalance(int balance) async {
-      container = ProviderContainer(
-        overrides: [
-          creditBalanceNotifierProvider.overrideWith(() {
-            return _FixedBalanceNotifier(balance);
-          }),
-        ],
-      )
-        // Listen to trigger the stream and wait for data
-        ..listen(creditBalanceNotifierProvider, (_, __) {});
+      container =
+          ProviderContainer(
+              overrides: [
+                creditBalanceNotifierProvider.overrideWith(() {
+                  return _FixedBalanceNotifier(balance);
+                }),
+              ],
+            )
+            // Listen to trigger the stream and wait for data
+            ..listen(creditBalanceNotifierProvider, (_, __) {});
       // Wait for the async stream to emit
       for (var i = 0; i < 20; i++) {
         await Future<void>.delayed(Duration.zero);
@@ -68,21 +69,23 @@ void main() {
       expect(result.isAllowed, true);
     });
 
-    test('returns allowed with remainingCredits when balance is sufficient',
-        () async {
-      final policy = await createPolicyWithBalance(50);
+    test(
+      'returns allowed with remainingCredits when balance is sufficient',
+      () async {
+        final policy = await createPolicyWithBalance(50);
 
-      final result = await policy.canGenerate(
-        userId: 'user-1',
-        templateId: 'template-1',
-      );
+        final result = await policy.canGenerate(
+          userId: 'user-1',
+          templateId: 'template-1',
+        );
 
-      expect(result.isAllowed, true);
-      result.maybeMap(
-        allowed: (a) => expect(a.remainingCredits, 50),
-        orElse: () => fail('Expected allowed'),
-      );
-    });
+        expect(result.isAllowed, true);
+        result.maybeMap(
+          allowed: (a) => expect(a.remainingCredits, 50),
+          orElse: () => fail('Expected allowed'),
+        );
+      },
+    );
 
     test('returns allowed when balance is null (not loaded)', () async {
       // Default container without overriding the balance provider.

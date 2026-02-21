@@ -49,9 +49,7 @@ class SettingsCard extends StatelessWidget {
                 ),
               ],
       ),
-      child: Column(
-        children: children,
-      ),
+      child: Column(children: children),
     );
   }
 }
@@ -59,7 +57,11 @@ class SettingsCard extends StatelessWidget {
 /// Individual settings row with icon, title, and optional trailing widget.
 class SettingsTile extends StatelessWidget {
   const SettingsTile({
-    required this.icon, required this.iconBgColor, required this.title, required this.isDark, super.key,
+    required this.icon,
+    required this.iconBgColor,
+    required this.title,
+    required this.isDark,
+    super.key,
     this.subtitle,
     this.trailing,
     this.onTap,

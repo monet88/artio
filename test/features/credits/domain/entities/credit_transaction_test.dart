@@ -34,16 +34,25 @@ void main() {
 
     test('equality works (Freezed)', () {
       final a = CreditTransaction(
-        id: 'tx-1', userId: 'u1', amount: 5,
-        type: 'ad_reward', createdAt: now,
+        id: 'tx-1',
+        userId: 'u1',
+        amount: 5,
+        type: 'ad_reward',
+        createdAt: now,
       );
       final b = CreditTransaction(
-        id: 'tx-1', userId: 'u1', amount: 5,
-        type: 'ad_reward', createdAt: now,
+        id: 'tx-1',
+        userId: 'u1',
+        amount: 5,
+        type: 'ad_reward',
+        createdAt: now,
       );
       final c = CreditTransaction(
-        id: 'tx-2', userId: 'u1', amount: 5,
-        type: 'ad_reward', createdAt: now,
+        id: 'tx-2',
+        userId: 'u1',
+        amount: 5,
+        type: 'ad_reward',
+        createdAt: now,
       );
       expect(a, equals(b));
       expect(a, isNot(equals(c)));
@@ -77,12 +86,19 @@ void main() {
 
     test('all transaction types are valid strings', () {
       for (final type in [
-        'generation', 'welcome_bonus', 'ad_reward',
-        'subscription', 'refund', 'manual',
+        'generation',
+        'welcome_bonus',
+        'ad_reward',
+        'subscription',
+        'refund',
+        'manual',
       ]) {
         final tx = CreditTransaction(
-          id: 'tx', userId: 'u', amount: 1,
-          type: type, createdAt: now,
+          id: 'tx',
+          userId: 'u',
+          amount: 1,
+          type: type,
+          createdAt: now,
         );
         expect(tx.type, type);
       }

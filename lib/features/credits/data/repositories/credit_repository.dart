@@ -25,10 +25,7 @@ class CreditRepository implements ICreditRepository {
   @override
   Future<CreditBalance> fetchBalance() async {
     try {
-      final data = await _supabase
-          .from('user_credits')
-          .select()
-          .single();
+      final data = await _supabase.from('user_credits').select().single();
       return CreditBalance.fromJson(data);
     } on PostgrestException catch (e) {
       throw AppException.network(message: e.message);
@@ -43,15 +40,18 @@ class CreditRepository implements ICreditRepository {
         .from('user_credits')
         .stream(primaryKey: ['user_id'])
         .map((rows) {
-      if (rows.isEmpty) {
-        return CreditBalance(userId: '', balance: 0, updatedAt: DateTime.now());
-      }
-      return CreditBalance.fromJson(rows.first);
-    }).handleError(
-      (Object error, StackTrace stackTrace) {
-        SentryConfig.captureException(error, stackTrace: stackTrace);
-      },
-    );
+          if (rows.isEmpty) {
+            return CreditBalance(
+              userId: '',
+              balance: 0,
+              updatedAt: DateTime.now(),
+            );
+          }
+          return CreditBalance.fromJson(rows.first);
+        })
+        .handleError((Object error, StackTrace stackTrace) {
+          SentryConfig.captureException(error, stackTrace: stackTrace);
+        });
   }
 
   @override
@@ -83,7 +83,8 @@ class CreditRepository implements ICreditRepository {
 
       if (response.status == 429) {
         throw const AppException.payment(
-          message: 'Daily ad limit reached '
+          message:
+              'Daily ad limit reached '
               '(${AppConstants.dailyAdLimit}/day)',
           code: 'daily_limit_reached',
         );
@@ -104,7 +105,8 @@ class CreditRepository implements ICreditRepository {
     } on FunctionException catch (e) {
       if (e.status == 429) {
         throw const AppException.payment(
-          message: 'Daily ad limit reached '
+          message:
+              'Daily ad limit reached '
               '(${AppConstants.dailyAdLimit}/day)',
           code: 'daily_limit_reached',
         );
@@ -122,7 +124,7 @@ class CreditRepository implements ICreditRepository {
 
   @override
   Future<({int creditsAwarded, int newBalance, int adsRemaining})>
-      rewardAdCredits({required String nonce}) async {
+  rewardAdCredits({required String nonce}) async {
     try {
       final response = await _supabase.functions.invoke(
         'reward-ad',
@@ -133,7 +135,8 @@ class CreditRepository implements ICreditRepository {
       // Check status codes before parsing body
       if (response.status == 429) {
         throw const AppException.payment(
-          message: 'Daily ad limit reached '
+          message:
+              'Daily ad limit reached '
               '(${AppConstants.dailyAdLimit}/day)',
           code: 'daily_limit_reached',
         );
@@ -158,7 +161,8 @@ class CreditRepository implements ICreditRepository {
     } on FunctionException catch (e) {
       if (e.status == 429) {
         throw const AppException.payment(
-          message: 'Daily ad limit reached '
+          message:
+              'Daily ad limit reached '
               '(${AppConstants.dailyAdLimit}/day)',
           code: 'daily_limit_reached',
         );

@@ -7,7 +7,8 @@ import 'package:fake_async/fake_async.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:supabase_flutter/supabase_flutter.dart' as supabase
+import 'package:supabase_flutter/supabase_flutter.dart'
+    as supabase
     show AuthChangeEvent, AuthState, Session;
 
 import '../../../../core/fixtures/fixtures.dart';
@@ -133,13 +134,15 @@ void main() {
         ];
 
         final results = states
-            .map((state) => state.map(
-                  initial: (_) => 'initial',
-                  authenticating: (_) => 'authenticating',
-                  authenticated: (_) => 'authenticated',
-                  unauthenticated: (_) => 'unauthenticated',
-                  error: (_) => 'error',
-                ))
+            .map(
+              (state) => state.map(
+                initial: (_) => 'initial',
+                authenticating: (_) => 'authenticating',
+                authenticated: (_) => 'authenticated',
+                unauthenticated: (_) => 'unauthenticated',
+                error: (_) => 'error',
+              ),
+            )
             .toList();
 
         expect(results, [
@@ -187,13 +190,14 @@ void main() {
 
       setUp(() {
         mockAuthRepo = _MockAuthRepository();
-        authStreamController =
-            StreamController<supabase.AuthState>.broadcast();
-        when(() => mockAuthRepo.onAuthStateChange)
-            .thenAnswer((_) => authStreamController.stream);
+        authStreamController = StreamController<supabase.AuthState>.broadcast();
+        when(
+          () => mockAuthRepo.onAuthStateChange,
+        ).thenAnswer((_) => authStreamController.stream);
         // Let _checkAuthentication settle to unauthenticated
-        when(() => mockAuthRepo.getCurrentUserWithProfile())
-            .thenAnswer((_) async => null);
+        when(
+          () => mockAuthRepo.getCurrentUserWithProfile(),
+        ).thenAnswer((_) async => null);
       });
 
       tearDown(() {
@@ -203,17 +207,13 @@ void main() {
 
       Future<AuthViewModel> createSettledNotifier() async {
         container = ProviderContainer(
-          overrides: [
-            authRepositoryProvider.overrideWithValue(mockAuthRepo),
-          ],
-        )
-          ..listen(authViewModelProvider, (_, __) {});
+          overrides: [authRepositoryProvider.overrideWithValue(mockAuthRepo)],
+        )..listen(authViewModelProvider, (_, __) {});
         // Wait for _checkAuthentication to settle
         for (var i = 0; i < 20; i++) {
           await Future<void>.delayed(Duration.zero);
           final state = container.read(authViewModelProvider);
-          if (state is! AuthStateInitial &&
-              state is! AuthStateAuthenticating) {
+          if (state is! AuthStateInitial && state is! AuthStateAuthenticating) {
             break;
           }
         }
@@ -227,13 +227,8 @@ void main() {
 
         final state = container.read(authViewModelProvider);
         expect(state, isA<AuthStateError>());
-        expect(
-          (state as AuthStateError).message,
-          'Email is required',
-        );
-        verifyNever(
-          () => mockAuthRepo.signInWithEmail(any(), any()),
-        );
+        expect((state as AuthStateError).message, 'Email is required');
+        verifyNever(() => mockAuthRepo.signInWithEmail(any(), any()));
       });
 
       test('whitespace-only email sets error state', () async {
@@ -243,13 +238,8 @@ void main() {
 
         final state = container.read(authViewModelProvider);
         expect(state, isA<AuthStateError>());
-        expect(
-          (state as AuthStateError).message,
-          'Email is required',
-        );
-        verifyNever(
-          () => mockAuthRepo.signInWithEmail(any(), any()),
-        );
+        expect((state as AuthStateError).message, 'Email is required');
+        verifyNever(() => mockAuthRepo.signInWithEmail(any(), any()));
       });
 
       test('empty password sets error state', () async {
@@ -259,13 +249,8 @@ void main() {
 
         final state = container.read(authViewModelProvider);
         expect(state, isA<AuthStateError>());
-        expect(
-          (state as AuthStateError).message,
-          'Password is required',
-        );
-        verifyNever(
-          () => mockAuthRepo.signInWithEmail(any(), any()),
-        );
+        expect((state as AuthStateError).message, 'Password is required');
+        verifyNever(() => mockAuthRepo.signInWithEmail(any(), any()));
       });
     });
 
@@ -276,12 +261,13 @@ void main() {
 
       setUp(() {
         mockAuthRepo = _MockAuthRepository();
-        authStreamController =
-            StreamController<supabase.AuthState>.broadcast();
-        when(() => mockAuthRepo.onAuthStateChange)
-            .thenAnswer((_) => authStreamController.stream);
-        when(() => mockAuthRepo.getCurrentUserWithProfile())
-            .thenAnswer((_) async => null);
+        authStreamController = StreamController<supabase.AuthState>.broadcast();
+        when(
+          () => mockAuthRepo.onAuthStateChange,
+        ).thenAnswer((_) => authStreamController.stream);
+        when(
+          () => mockAuthRepo.getCurrentUserWithProfile(),
+        ).thenAnswer((_) async => null);
       });
 
       tearDown(() {
@@ -291,16 +277,12 @@ void main() {
 
       Future<AuthViewModel> createSettledNotifier() async {
         container = ProviderContainer(
-          overrides: [
-            authRepositoryProvider.overrideWithValue(mockAuthRepo),
-          ],
-        )
-          ..listen(authViewModelProvider, (_, __) {});
+          overrides: [authRepositoryProvider.overrideWithValue(mockAuthRepo)],
+        )..listen(authViewModelProvider, (_, __) {});
         for (var i = 0; i < 20; i++) {
           await Future<void>.delayed(Duration.zero);
           final state = container.read(authViewModelProvider);
-          if (state is! AuthStateInitial &&
-              state is! AuthStateAuthenticating) {
+          if (state is! AuthStateInitial && state is! AuthStateAuthenticating) {
             break;
           }
         }
@@ -314,13 +296,8 @@ void main() {
 
         final state = container.read(authViewModelProvider);
         expect(state, isA<AuthStateError>());
-        expect(
-          (state as AuthStateError).message,
-          'Email is required',
-        );
-        verifyNever(
-          () => mockAuthRepo.signUpWithEmail(any(), any()),
-        );
+        expect((state as AuthStateError).message, 'Email is required');
+        verifyNever(() => mockAuthRepo.signUpWithEmail(any(), any()));
       });
 
       test('short password sets error state', () async {
@@ -334,9 +311,7 @@ void main() {
           (state as AuthStateError).message,
           'Password must be at least 6 characters',
         );
-        verifyNever(
-          () => mockAuthRepo.signUpWithEmail(any(), any()),
-        );
+        verifyNever(() => mockAuthRepo.signUpWithEmail(any(), any()));
       });
 
       test('empty password sets error state', () async {
@@ -346,13 +321,8 @@ void main() {
 
         final state = container.read(authViewModelProvider);
         expect(state, isA<AuthStateError>());
-        expect(
-          (state as AuthStateError).message,
-          'Password is required',
-        );
-        verifyNever(
-          () => mockAuthRepo.signUpWithEmail(any(), any()),
-        );
+        expect((state as AuthStateError).message, 'Password is required');
+        verifyNever(() => mockAuthRepo.signUpWithEmail(any(), any()));
       });
     });
 
@@ -362,18 +332,19 @@ void main() {
           final mockAuthRepo = _MockAuthRepository();
           final authStreamController =
               StreamController<supabase.AuthState>.broadcast();
-          when(() => mockAuthRepo.onAuthStateChange)
-              .thenAnswer((_) => authStreamController.stream);
-          when(mockAuthRepo.getCurrentUserWithProfile)
-              .thenAnswer((_) async => null);
+          when(
+            () => mockAuthRepo.onAuthStateChange,
+          ).thenAnswer((_) => authStreamController.stream);
+          when(
+            mockAuthRepo.getCurrentUserWithProfile,
+          ).thenAnswer((_) async => null);
           // signInWithGoogle never completes
-          when(mockAuthRepo.signInWithGoogle)
-              .thenAnswer((_) => Completer<void>().future);
+          when(
+            mockAuthRepo.signInWithGoogle,
+          ).thenAnswer((_) => Completer<void>().future);
 
           final container = ProviderContainer(
-            overrides: [
-              authRepositoryProvider.overrideWithValue(mockAuthRepo),
-            ],
+            overrides: [authRepositoryProvider.overrideWithValue(mockAuthRepo)],
           )..listen(authViewModelProvider, (_, __) {});
 
           // Let _checkAuthentication settle
@@ -410,17 +381,18 @@ void main() {
           final mockAuthRepo = _MockAuthRepository();
           final authStreamController =
               StreamController<supabase.AuthState>.broadcast();
-          when(() => mockAuthRepo.onAuthStateChange)
-              .thenAnswer((_) => authStreamController.stream);
-          when(mockAuthRepo.getCurrentUserWithProfile)
-              .thenAnswer((_) async => null);
-          when(mockAuthRepo.signInWithGoogle)
-              .thenAnswer((_) => Completer<void>().future);
+          when(
+            () => mockAuthRepo.onAuthStateChange,
+          ).thenAnswer((_) => authStreamController.stream);
+          when(
+            mockAuthRepo.getCurrentUserWithProfile,
+          ).thenAnswer((_) async => null);
+          when(
+            mockAuthRepo.signInWithGoogle,
+          ).thenAnswer((_) => Completer<void>().future);
 
           final container = ProviderContainer(
-            overrides: [
-              authRepositoryProvider.overrideWithValue(mockAuthRepo),
-            ],
+            overrides: [authRepositoryProvider.overrideWithValue(mockAuthRepo)],
           )..listen(authViewModelProvider, (_, __) {});
 
           // Let _checkAuthentication settle
@@ -431,8 +403,9 @@ void main() {
 
           // Simulate auth state change (user signs in via OAuth callback)
           final user = UserFixtures.authenticated();
-          when(mockAuthRepo.getCurrentUserWithProfile)
-              .thenAnswer((_) async => user);
+          when(
+            mockAuthRepo.getCurrentUserWithProfile,
+          ).thenAnswer((_) async => user);
 
           // Push auth event — this cancels the timer
           authStreamController.add(

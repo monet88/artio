@@ -20,7 +20,9 @@ import 'package:go_router/go_router.dart';
 /// Image viewer with swipe-to-dismiss, haptic feedback, and info sheet.
 class ImageViewerPage extends ConsumerStatefulWidget {
   const ImageViewerPage({
-    required this.items, required this.initialIndex, super.key,
+    required this.items,
+    required this.initialIndex,
+    super.key,
   });
   final List<GalleryItem> items;
   final int initialIndex;
@@ -76,9 +78,9 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage>
 
   GalleryItem get _currentItem => _items[_currentIndex];
 
-  bool get _isFreeUser => ref.read(subscriptionNotifierProvider).maybeWhen(
-        data: (status) => status.isFree, orElse: () => true,
-      );
+  bool get _isFreeUser => ref
+      .read(subscriptionNotifierProvider)
+      .maybeWhen(data: (status) => status.isFree, orElse: () => true);
 
   Future<void> _download() async {
     final imageUrl = _currentItem.imageUrl;
@@ -88,13 +90,17 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage>
     try {
       final repo = ref.read(galleryRepositoryProvider);
       final path = await ImageViewerActionHelper.download(
-        repo, imageUrl, isFreeUser: _isFreeUser,
+        repo,
+        imageUrl,
+        isFreeUser: _isFreeUser,
       );
       HapticService.downloadComplete();
       if (mounted) AppSnackbar.success(context, 'Saved to $path');
     } on Exception catch (e) {
       HapticService.error();
-      if (mounted) AppSnackbar.error(context, AppExceptionMapper.toUserMessage(e));
+      if (mounted) {
+        AppSnackbar.error(context, AppExceptionMapper.toUserMessage(e));
+      }
     } finally {
       if (mounted) setState(() => _isDownloading = false);
     }
@@ -108,10 +114,14 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage>
     try {
       final repo = ref.read(galleryRepositoryProvider);
       await ImageViewerActionHelper.share(
-        repo, imageUrl, isFreeUser: _isFreeUser,
+        repo,
+        imageUrl,
+        isFreeUser: _isFreeUser,
       );
     } on Exception catch (e) {
-      if (mounted) AppSnackbar.error(context, AppExceptionMapper.toUserMessage(e));
+      if (mounted) {
+        AppSnackbar.error(context, AppExceptionMapper.toUserMessage(e));
+      }
     } finally {
       if (mounted) setState(() => _isSharing = false);
     }
@@ -145,7 +155,7 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage>
     await ref
         .read(galleryActionsNotifierProvider.notifier)
         .softDeleteImage(item.jobId);
-        
+
     if (!mounted) return;
     setState(() {
       _items.removeAt(deletedIndex);
@@ -157,7 +167,7 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage>
         _currentIndex = _items.length - 1;
       }
     });
-    
+
     if (_items.isEmpty) return;
     _pageController.jumpToPage(_currentIndex);
   }
@@ -179,14 +189,13 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage>
   Widget build(BuildContext context) {
     const kOpacityFadeStart = 100.0;
     const kOpacityFadeRange = 200.0;
-    final showWatermark = ref.watch(subscriptionNotifierProvider).maybeWhen(
-          data: (status) => status.isFree,
-          orElse: () => true,
-        );
+    final showWatermark = ref
+        .watch(subscriptionNotifierProvider)
+        .maybeWhen(data: (status) => status.isFree, orElse: () => true);
     final viewerOpacity = (_dragOffset.abs() > kOpacityFadeStart)
         ? (1.0 -
-            ((_dragOffset.abs() - kOpacityFadeStart) / kOpacityFadeRange)
-                .clamp(0.0, 0.6))
+              ((_dragOffset.abs() - kOpacityFadeStart) / kOpacityFadeRange)
+                  .clamp(0.0, 0.6))
         : 1.0;
 
     return Scaffold(
@@ -247,10 +256,7 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage>
               ),
             ),
           if (_showInfo)
-            ImageInfoBottomSheet(
-              item: _currentItem,
-              onCopyPrompt: _copyPrompt,
-            ),
+            ImageInfoBottomSheet(item: _currentItem, onCopyPrompt: _copyPrompt),
         ],
       ),
     );

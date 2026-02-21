@@ -49,7 +49,6 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
     List<SubscriptionPackage> packages,
     AsyncValue<SubscriptionStatus> subscription,
   ) {
-
     return SafeArea(
       child: Column(
         children: [
@@ -75,14 +74,15 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
 
                   // Build cards from available packages
                   ...packages.map((pkg) {
-                    final isPro = pkg.identifier
-                        .startsWith('artio_pro_');
+                    final isPro = pkg.identifier.startsWith('artio_pro_');
                     return Padding(
                       padding: const EdgeInsets.only(bottom: AppSpacing.md),
                       child: TierComparisonCard(
                         tierName: isPro ? 'Pro' : 'Ultra',
                         price: pkg.priceString,
-                        credits: isPro ? '200 credits/month' : '500 credits/month',
+                        credits: isPro
+                            ? '200 credits/month'
+                            : '500 credits/month',
                         features: isPro
                             ? const [
                                 'All AI models',
@@ -97,7 +97,8 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                                 '500 monthly credits',
                                 'Priority generation',
                               ],
-                        isCurrentPlan: subscription.valueOrNull?.tier ==
+                        isCurrentPlan:
+                            subscription.valueOrNull?.tier ==
                             (isPro ? 'pro' : 'ultra'),
                         isSelected: _selectedPackage == pkg,
                         isRecommended: !isPro,
@@ -117,10 +118,9 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 FilledButton(
-                  onPressed:
-                      _selectedPackage != null && !_isPurchasing
-                          ? _handlePurchase
-                          : null,
+                  onPressed: _selectedPackage != null && !_isPurchasing
+                      ? _handlePurchase
+                      : null,
                   child: _isPurchasing
                       ? const SizedBox(
                           height: 20,
@@ -182,9 +182,9 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
       } else {
         final status = subscriptionState.valueOrNull;
         if (status != null && status.isActive) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Purchases restored!')),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('Purchases restored!')));
           Navigator.of(context).pop();
         } else {
           ScaffoldMessenger.of(context).showSnackBar(

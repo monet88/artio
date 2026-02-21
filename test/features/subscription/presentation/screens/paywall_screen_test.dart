@@ -9,7 +9,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockSubscriptionRepository extends Mock implements SubscriptionRepository {}
+class MockSubscriptionRepository extends Mock
+    implements SubscriptionRepository {}
 
 void main() {
   group('PaywallScreen', () {
@@ -34,9 +35,7 @@ void main() {
       });
 
       return ProviderScope(
-        overrides: [
-          subscriptionRepositoryProvider.overrideWithValue(mockRepo),
-        ],
+        overrides: [subscriptionRepositoryProvider.overrideWithValue(mockRepo)],
         child: MaterialApp(
           home: Builder(
             builder: (context) => Scaffold(
@@ -61,11 +60,13 @@ void main() {
       bool offeringsError = false,
       Completer<List<SubscriptionPackage>>? offeringsCompleter,
     }) async {
-      await tester.pumpWidget(buildWidget(
-        status: status,
-        offeringsError: offeringsError,
-        offeringsCompleter: offeringsCompleter,
-      ));
+      await tester.pumpWidget(
+        buildWidget(
+          status: status,
+          offeringsError: offeringsError,
+          offeringsCompleter: offeringsCompleter,
+        ),
+      );
       await tester.pumpAndSettle();
       await tester.tap(find.text('Open Paywall'));
       await tester.pumpAndSettle();
@@ -88,16 +89,18 @@ void main() {
       await tester.pumpAndSettle();
     });
 
-    testWidgets('shows error state with retry button when offerings fail',
-        (tester) async {
+    testWidgets('shows error state with retry button when offerings fail', (
+      tester,
+    ) async {
       await pumpPaywall(tester, offeringsError: true);
 
       expect(find.text('Unable to load subscription options'), findsOneWidget);
       expect(find.text('Try Again'), findsOneWidget);
     });
 
-    testWidgets('shows Free tier card when offerings load empty',
-        (tester) async {
+    testWidgets('shows Free tier card when offerings load empty', (
+      tester,
+    ) async {
       await pumpPaywall(tester);
 
       expect(find.text('Free'), findsWidgets);
@@ -115,8 +118,9 @@ void main() {
       expect(find.text('Restore Purchases'), findsOneWidget);
     });
 
-    testWidgets('subscribe button is disabled when no package selected',
-        (tester) async {
+    testWidgets('subscribe button is disabled when no package selected', (
+      tester,
+    ) async {
       await pumpPaywall(tester);
 
       final button = tester.widget<FilledButton>(
@@ -125,10 +129,12 @@ void main() {
       expect(button.onPressed, isNull);
     });
 
-    testWidgets('restore shows "No previous purchases found" when inactive',
-        (tester) async {
-      when(() => mockRepo.restore())
-          .thenAnswer((_) async => const SubscriptionStatus());
+    testWidgets('restore shows "No previous purchases found" when inactive', (
+      tester,
+    ) async {
+      when(
+        () => mockRepo.restore(),
+      ).thenAnswer((_) async => const SubscriptionStatus());
 
       await pumpPaywall(tester);
 
@@ -138,8 +144,9 @@ void main() {
       expect(find.text('No previous purchases found.'), findsOneWidget);
     });
 
-    testWidgets('restore shows "Purchases restored!" when active',
-        (tester) async {
+    testWidgets('restore shows "Purchases restored!" when active', (
+      tester,
+    ) async {
       when(() => mockRepo.restore()).thenAnswer(
         (_) async => const SubscriptionStatus(isActive: true, tier: 'pro'),
       );
@@ -152,8 +159,9 @@ void main() {
       expect(find.text('Purchases restored!'), findsOneWidget);
     });
 
-    testWidgets('restore shows error snackbar when restore throws',
-        (tester) async {
+    testWidgets('restore shows error snackbar when restore throws', (
+      tester,
+    ) async {
       when(() => mockRepo.restore()).thenThrow(Exception('Restore failed'));
 
       await pumpPaywall(tester);

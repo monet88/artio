@@ -57,10 +57,7 @@ abstract class AppAnimations {
     Widget child,
   ) {
     return FadeTransition(
-      opacity: CurvedAnimation(
-        parent: animation,
-        curve: defaultCurve,
-      ),
+      opacity: CurvedAnimation(parent: animation, curve: defaultCurve),
       child: child,
     );
   }
@@ -75,18 +72,12 @@ abstract class AppAnimations {
     final offsetAnimation = Tween<Offset>(
       begin: const Offset(0, 0.15),
       end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: animation,
-      curve: sharpCurve,
-    ));
+    ).animate(CurvedAnimation(parent: animation, curve: sharpCurve));
 
     return SlideTransition(
       position: offsetAnimation,
       child: FadeTransition(
-        opacity: CurvedAnimation(
-          parent: animation,
-          curve: defaultCurve,
-        ),
+        opacity: CurvedAnimation(parent: animation, curve: defaultCurve),
         child: child,
       ),
     );
@@ -105,12 +96,10 @@ abstract class AppAnimations {
         curve: const Interval(0, 0.5, curve: Curves.easeOut),
       ),
       child: ScaleTransition(
-        scale: Tween<double>(begin: 0.92, end: 1).animate(
-          CurvedAnimation(
-            parent: animation,
-            curve: defaultCurve,
-          ),
-        ),
+        scale: Tween<double>(
+          begin: 0.92,
+          end: 1,
+        ).animate(CurvedAnimation(parent: animation, curve: defaultCurve)),
         child: child,
       ),
     );
@@ -124,17 +113,12 @@ abstract class AppAnimations {
     Widget child,
   ) {
     return ScaleTransition(
-      scale: Tween<double>(begin: 0.85, end: 1).animate(
-        CurvedAnimation(
-          parent: animation,
-          curve: bounceCurve,
-        ),
-      ),
+      scale: Tween<double>(
+        begin: 0.85,
+        end: 1,
+      ).animate(CurvedAnimation(parent: animation, curve: bounceCurve)),
       child: FadeTransition(
-        opacity: CurvedAnimation(
-          parent: animation,
-          curve: defaultCurve,
-        ),
+        opacity: CurvedAnimation(parent: animation, curve: defaultCurve),
         child: child,
       ),
     );

@@ -123,10 +123,13 @@ class TemplateCard extends StatelessWidget {
                     // Meta row
                     Row(
                       children: [
-                        Icon(Icons.category_outlined,
-                            size: 14,
-                            color:
-                                isDark ? AdminColors.textHint : theme.hintColor),
+                        Icon(
+                          Icons.category_outlined,
+                          size: 14,
+                          color: isDark
+                              ? AdminColors.textHint
+                              : theme.hintColor,
+                        ),
                         const Gap(4),
                         Text(
                           template.category,
@@ -137,10 +140,13 @@ class TemplateCard extends StatelessWidget {
                           ),
                         ),
                         const Gap(12),
-                        Icon(Icons.aspect_ratio,
-                            size: 14,
-                            color:
-                                isDark ? AdminColors.textHint : theme.hintColor),
+                        Icon(
+                          Icons.aspect_ratio,
+                          size: 14,
+                          color: isDark
+                              ? AdminColors.textHint
+                              : theme.hintColor,
+                        ),
                         const Gap(4),
                         Text(
                           template.defaultAspectRatio,
@@ -167,14 +173,19 @@ class TemplateCard extends StatelessWidget {
                   ),
                   if (onDelete != null)
                     IconButton(
-                      icon: const Icon(Icons.delete_outline,
-                          size: 20, color: AdminColors.error),
+                      icon: const Icon(
+                        Icons.delete_outline,
+                        size: 20,
+                        color: AdminColors.error,
+                      ),
                       onPressed: onDelete,
                       tooltip: 'Delete',
                     ),
-                  Icon(Icons.drag_handle,
-                      size: 20,
-                      color: isDark ? AdminColors.textHint : Colors.grey),
+                  Icon(
+                    Icons.drag_handle,
+                    size: 20,
+                    color: isDark ? AdminColors.textHint : Colors.grey,
+                  ),
                 ],
               ),
             ],
@@ -208,10 +219,10 @@ class _Badge extends StatelessWidget {
       child: Text(
         label,
         style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              color: color,
-              fontWeight: FontWeight.bold,
-              fontSize: 10,
-            ),
+          color: color,
+          fontWeight: FontWeight.bold,
+          fontSize: 10,
+        ),
       ),
     );
   }

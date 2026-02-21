@@ -5,10 +5,7 @@ import 'package:flutter/material.dart';
 /// Bottom sheet displayed when user tries to use a premium model
 /// without a premium subscription.
 class PremiumModelSheet extends StatelessWidget {
-  const PremiumModelSheet({
-    required this.modelName,
-    super.key,
-  });
+  const PremiumModelSheet({required this.modelName, super.key});
 
   final String modelName;
 
@@ -22,10 +19,7 @@ class PremiumModelSheet extends StatelessWidget {
         children: [
           const Text('👑', style: TextStyle(fontSize: 48)),
           const SizedBox(height: AppSpacing.md),
-          Text(
-            'Premium model',
-            style: theme.textTheme.titleLarge,
-          ),
+          Text('Premium model', style: theme.textTheme.titleLarge),
           const SizedBox(height: AppSpacing.sm),
           Text(
             '$modelName is available with a premium subscription.',

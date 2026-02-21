@@ -31,12 +31,7 @@ class WatermarkOverlay extends StatelessWidget {
               fontSize: 12,
               fontWeight: FontWeight.w600,
               letterSpacing: 0.5,
-              shadows: const [
-                Shadow(
-                  blurRadius: 4,
-                  color: Colors.black54,
-                ),
-              ],
+              shadows: const [Shadow(blurRadius: 4, color: Colors.black54)],
             ),
           ),
         ),

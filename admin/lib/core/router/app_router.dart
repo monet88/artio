@@ -34,10 +34,7 @@ Raw<GoRouter> goRouter(Ref ref) {
     },
     routes: [
       // Login — outside shell (no sidebar)
-      GoRoute(
-        path: '/login',
-        builder: (context, state) => const LoginPage(),
-      ),
+      GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
 
       // Shell — sidebar wraps all authenticated pages
       ShellRoute(
