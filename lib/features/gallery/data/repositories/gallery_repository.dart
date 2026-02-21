@@ -43,6 +43,11 @@ class GalleryRepository implements IGalleryRepository {
     int offset = 0,
     String? templateId,
   }) async {
+    // Validate pagination parameters
+    if (limit < 1 || limit > 100 || offset < 0) {
+      throw const AppException.storage(message: 'Invalid pagination parameters');
+    }
+
     // Cache-first: only for the default first page.
     if (_isCacheableQuery(offset, templateId) && _cache.isCacheValid()) {
       final cached = await _cache.getCachedItems();
@@ -160,14 +165,11 @@ class GalleryRepository implements IGalleryRepository {
           .eq('id', jobId)
           .single();
 
-      final userId = job['user_id'] as String;
-      final urls = (job['result_urls'] as List?) ?? [];
+      final paths = (job['result_urls'] as List?)?.cast<String>() ?? <String>[];
 
-      for (var i = 0; i < urls.length; i++) {
+      if (paths.isNotEmpty) {
         try {
-          await _supabase.storage
-              .from('generated-images')
-              .remove(['$userId/$jobId/$i.png']);
+          await _supabase.storage.from('generated-images').remove(paths);
         } on storage_client.StorageException catch (e) {
           // Report to Sentry for production visibility
           unawaited(SentryConfig.captureException(e, stackTrace: StackTrace.current));
@@ -211,14 +213,31 @@ class GalleryRepository implements IGalleryRepository {
   @override
   Future<void> retryGeneration(String jobId) async {
     try {
+      // Query job to get prompt (required by Edge Function)
+      final job = await _supabase
+          .from('generation_jobs')
+          .select('prompt')
+          .eq('id', jobId)
+          .single();
+
+      final prompt = job['prompt'] as String?;
+      if (prompt == null || prompt.isEmpty) {
+        throw const AppException.generation(
+          message: 'Cannot retry: original prompt is missing',
+        );
+      }
+
       // Reset status to pending
       await _supabase
           .from('generation_jobs')
           .update({'status': 'pending', 'error_message': null})
           .eq('id', jobId);
 
-      // Re-trigger Edge Function with retry for network resilience
-      await retry(() => _supabase.functions.invoke('generate-image', body: {'jobId': jobId}));
+      // Re-trigger Edge Function with prompt for network resilience
+      await retry(() => _supabase.functions.invoke('generate-image', body: {
+        'jobId': jobId,
+        'prompt': prompt,
+      }));
     } on PostgrestException catch (e) {
       throw AppException.storage(message: e.message);
     } on FunctionException catch (e) {
