@@ -17,12 +17,14 @@ void main() {
 
     testWidgets('renders "Try Again" label', (tester) async {
       await tester.pumpWidget(buildWidget(onPressed: () {}));
+      await tester.pumpAndSettle();
 
       expect(find.text('Try Again'), findsOneWidget);
     });
 
     testWidgets('renders refresh icon', (tester) async {
       await tester.pumpWidget(buildWidget(onPressed: () {}));
+      await tester.pumpAndSettle();
 
       expect(find.byIcon(Icons.refresh_rounded), findsOneWidget);
     });
