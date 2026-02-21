@@ -33,19 +33,26 @@ class SocialLoginButtons extends ConsumerWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _SocialButton(
-              onPressed: () =>
-                  ref.read(authViewModelProvider.notifier).signInWithGoogle(),
-              icon: Icons.g_mobiledata,
-              label: 'Google',
+            SizedBox(
+              width: 140,
+              child: _SocialButton(
+                onPressed: () =>
+                    ref.read(authViewModelProvider.notifier).signInWithGoogle(),
+                icon: Icons.g_mobiledata,
+                label: 'Google',
+              ),
             ),
             if (showApple) ...[
               const SizedBox(width: AppSpacing.md),
-              _SocialButton(
-                onPressed: () =>
-                    ref.read(authViewModelProvider.notifier).signInWithApple(),
-                icon: Icons.apple,
-                label: 'Apple',
+              SizedBox(
+                width: 140,
+                child: _SocialButton(
+                  onPressed: () => ref
+                      .read(authViewModelProvider.notifier)
+                      .signInWithApple(),
+                  icon: Icons.apple,
+                  label: 'Apple',
+                ),
               ),
             ],
           ],
@@ -73,7 +80,10 @@ class _SocialButton extends StatelessWidget {
       icon: Icon(icon, size: AppDimensions.iconMd),
       label: Text(label),
       style: OutlinedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: 12),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.lg,
+          vertical: 12,
+        ),
       ),
     );
   }
