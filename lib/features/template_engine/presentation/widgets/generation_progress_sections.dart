@@ -202,9 +202,9 @@ class ErrorStatusSection extends StatelessWidget {
         const SizedBox(height: AppSpacing.md),
         Text(
           errorMessage ?? 'Generation failed',
-          style: AppTypography.bodySecondary(context).copyWith(
-            color: AppColors.error,
-          ),
+          style: AppTypography.bodySecondary(
+            context,
+          ).copyWith(color: AppColors.error),
           textAlign: TextAlign.center,
         ),
       ],

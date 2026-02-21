@@ -33,16 +33,15 @@ void main() {
           templateRepositoryProvider.overrideWithValue(mockTemplateRepository),
           ...?overrides,
         ],
-        child: const MaterialApp(
-          home: HomeScreen(),
-        ),
+        child: const MaterialApp(home: HomeScreen()),
       );
     }
 
     group('renders', () {
       testWidgets('displays HomeScreen with greeting header', (tester) async {
-        when(() => mockTemplateRepository.fetchTemplates())
-            .thenAnswer((_) async => []);
+        when(
+          () => mockTemplateRepository.fetchTemplates(),
+        ).thenAnswer((_) async => []);
 
         await tester.pumpWidget(createTestWidget());
         await tester.pump();
@@ -54,21 +53,23 @@ void main() {
       });
 
       testWidgets('shows loading state initially', (tester) async {
-        when(() => mockTemplateRepository.fetchTemplates())
-            .thenAnswer((_) async => []);
+        when(
+          () => mockTemplateRepository.fetchTemplates(),
+        ).thenAnswer((_) async => []);
 
         await tester.pumpWidget(createTestWidget());
-        
+
         // Initial pump shows loading state
         expect(find.byType(HomeScreen), findsOneWidget);
-        
+
         await tester.pumpAndSettle();
       });
 
       testWidgets('displays templates when loaded', (tester) async {
         final templates = TemplateFixtures.list(count: 3);
-        when(() => mockTemplateRepository.fetchTemplates())
-            .thenAnswer((_) async => templates);
+        when(
+          () => mockTemplateRepository.fetchTemplates(),
+        ).thenAnswer((_) async => templates);
 
         await tester.pumpWidget(createTestWidget());
         await tester.pump(const Duration(seconds: 1));
@@ -78,8 +79,9 @@ void main() {
       });
 
       testWidgets('displays empty state when no templates', (tester) async {
-        when(() => mockTemplateRepository.fetchTemplates())
-            .thenAnswer((_) async => []);
+        when(
+          () => mockTemplateRepository.fetchTemplates(),
+        ).thenAnswer((_) async => []);
 
         await tester.pumpWidget(createTestWidget());
         await tester.pumpAndSettle();
@@ -91,8 +93,9 @@ void main() {
 
     group('error handling', () {
       testWidgets('displays error message when fetch fails', (tester) async {
-        when(() => mockTemplateRepository.fetchTemplates())
-            .thenThrow(Exception('Network error'));
+        when(
+          () => mockTemplateRepository.fetchTemplates(),
+        ).thenThrow(Exception('Network error'));
 
         await tester.pumpWidget(createTestWidget());
         await tester.pumpAndSettle();

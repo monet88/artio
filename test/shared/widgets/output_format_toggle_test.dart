@@ -55,13 +55,17 @@ void main() {
       expect(find.text('\u{1F451}'), findsOneWidget);
     });
 
-    testWidgets('does not show crown emoji for PNG when premium', (tester) async {
+    testWidgets('does not show crown emoji for PNG when premium', (
+      tester,
+    ) async {
       await tester.pumpWidget(buildWidget(isPremium: true));
 
       expect(find.text('\u{1F451}'), findsNothing);
     });
 
-    testWidgets('shows premium hint when not premium and JPG selected', (tester) async {
+    testWidgets('shows premium hint when not premium and JPG selected', (
+      tester,
+    ) async {
       await tester.pumpWidget(buildWidget());
 
       expect(find.text('PNG format requires premium'), findsOneWidget);
@@ -69,11 +73,13 @@ void main() {
 
     testWidgets('calls onChanged when JPG tapped', (tester) async {
       String? selectedFormat;
-      await tester.pumpWidget(buildWidget(
-        value: 'png',
-        isPremium: true,
-        onChanged: (format) => selectedFormat = format,
-      ));
+      await tester.pumpWidget(
+        buildWidget(
+          value: 'png',
+          isPremium: true,
+          onChanged: (format) => selectedFormat = format,
+        ),
+      );
 
       await tester.tap(find.text('JPG'));
       await tester.pumpAndSettle();
@@ -81,12 +87,16 @@ void main() {
       expect(selectedFormat, 'jpg');
     });
 
-    testWidgets('calls onChanged when PNG tapped (premium user)', (tester) async {
+    testWidgets('calls onChanged when PNG tapped (premium user)', (
+      tester,
+    ) async {
       String? selectedFormat;
-      await tester.pumpWidget(buildWidget(
-        isPremium: true,
-        onChanged: (format) => selectedFormat = format,
-      ));
+      await tester.pumpWidget(
+        buildWidget(
+          isPremium: true,
+          onChanged: (format) => selectedFormat = format,
+        ),
+      );
 
       await tester.tap(find.text('PNG'));
       await tester.pumpAndSettle();
@@ -94,11 +104,13 @@ void main() {
       expect(selectedFormat, 'png');
     });
 
-    testWidgets('does NOT call onChanged when PNG tapped (non-premium user)', (tester) async {
+    testWidgets('does NOT call onChanged when PNG tapped (non-premium user)', (
+      tester,
+    ) async {
       String? selectedFormat;
-      await tester.pumpWidget(buildWidget(
-        onChanged: (format) => selectedFormat = format,
-      ));
+      await tester.pumpWidget(
+        buildWidget(onChanged: (format) => selectedFormat = format),
+      );
 
       await tester.tap(find.text('PNG'));
       await tester.pumpAndSettle();

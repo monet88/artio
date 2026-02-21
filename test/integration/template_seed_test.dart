@@ -12,6 +12,7 @@ import 'supabase_test_setup.dart';
 /// Requires .env.test or environment variables with SUPABASE_URL + SUPABASE_ANON_KEY.
 void main() {
   late List<TemplateModel> templates;
+  final deserializationErrors = <String>[];
 
   const expectedCategories = [
     'Art Style Transfer',
@@ -20,7 +21,8 @@ void main() {
     'Portrait & Face Effects',
     'Removal & Editing',
   ];
-  const expectedTotal = 25;
+  // Minimum count from seed migration. DB may have more templates added via admin.
+  const minSeedCount = 25;
 
   setUpAll(() async {
     await SupabaseTestSetup.init();
@@ -31,14 +33,38 @@ void main() {
         .eq('is_active', true)
         .order('order', ascending: true);
 
-    templates = (response as List)
-        .map((json) => TemplateModel.fromJson(json as Map<String, dynamic>))
-        .toList();
+    templates = [];
+    for (final raw in response as List) {
+      final json = raw as Map<String, dynamic>;
+      try {
+        templates.add(TemplateModel.fromJson(json));
+      } on Object catch (e) {
+        final name = json['name'] ?? json['id'] ?? 'unknown';
+        deserializationErrors.add('Template "$name": $e');
+      }
+    }
   });
 
   group('Seed templates count', () {
-    test('has exactly $expectedTotal active templates', () {
-      expect(templates, hasLength(expectedTotal));
+    test('all templates deserialize successfully', () {
+      expect(
+        deserializationErrors,
+        isEmpty,
+        reason:
+            'Failed to deserialize ${deserializationErrors.length} template(s):\n'
+            '  ${deserializationErrors.join('\n  ')}',
+      );
+    });
+
+    test('has at least $minSeedCount active templates', () {
+      final totalFetched = templates.length + deserializationErrors.length;
+      expect(
+        totalFetched,
+        greaterThanOrEqualTo(minSeedCount),
+        reason:
+            'Expected at least $minSeedCount seed templates, '
+            'got $totalFetched ($minSeedCount seeded + admin additions).',
+      );
     });
 
     test('has exactly ${expectedCategories.length} categories', () {
@@ -54,11 +80,14 @@ void main() {
       expect(categories, hasLength(expectedCategories.length));
     });
 
-    test('each category has at least 1 template and total is $expectedTotal', () {
+    test('each category has at least 1 template', () {
       for (final category in expectedCategories) {
         final count = templates.where((t) => t.category == category).length;
-        expect(count, greaterThan(0),
-            reason: '$category should have at least 1 template, got $count');
+        expect(
+          count,
+          greaterThan(0),
+          reason: '$category should have at least 1 template, got $count',
+        );
       }
     });
   });
@@ -68,19 +97,27 @@ void main() {
       for (final t in templates) {
         expect(t.id, isNotEmpty, reason: 'id empty for ${t.name}');
         expect(t.name, isNotEmpty, reason: 'name empty for ${t.id}');
-        expect(t.description, isNotEmpty,
-            reason: 'description empty for ${t.name}');
-        expect(t.category, isNotEmpty,
-            reason: 'category empty for ${t.name}');
-        expect(t.promptTemplate, isNotEmpty,
-            reason: 'promptTemplate empty for ${t.name}');
+        expect(
+          t.description,
+          isNotEmpty,
+          reason: 'description empty for ${t.name}',
+        );
+        expect(t.category, isNotEmpty, reason: 'category empty for ${t.name}');
+        expect(
+          t.promptTemplate,
+          isNotEmpty,
+          reason: 'promptTemplate empty for ${t.name}',
+        );
       }
     });
 
     test('all templates have valid thumbnailUrl', () {
       for (final t in templates) {
-        expect(t.thumbnailUrl, isNotEmpty,
-            reason: 'thumbnailUrl empty for ${t.name}');
+        expect(
+          t.thumbnailUrl,
+          isNotEmpty,
+          reason: 'thumbnailUrl empty for ${t.name}',
+        );
         expect(
           Uri.tryParse(t.thumbnailUrl)?.hasScheme ?? false,
           isTrue,
@@ -91,53 +128,80 @@ void main() {
 
     test('all templates have at least one input field', () {
       for (final t in templates) {
-        expect(t.inputFields, isNotEmpty,
-            reason: '${t.name} has no input fields');
+        expect(
+          t.inputFields,
+          isNotEmpty,
+          reason: '${t.name} has no input fields',
+        );
       }
     });
 
     test('all input fields have valid name, label, and type', () {
-      const validTypes = ['text', 'select', 'slider', 'toggle', 'otherIdeas', 'image'];
+      const validTypes = [
+        'text',
+        'select',
+        'slider',
+        'toggle',
+        'otherIdeas',
+        'image',
+      ];
       for (final t in templates) {
         for (final field in t.inputFields) {
-          expect(field.name, isNotEmpty,
-              reason: 'input field name empty in ${t.name}');
-          expect(field.label, isNotEmpty,
-              reason: 'input field label empty in ${t.name}');
-          expect(validTypes, contains(field.type),
-              reason:
-                  'invalid type "${field.type}" for field "${field.name}" in ${t.name}');
+          expect(
+            field.name,
+            isNotEmpty,
+            reason: 'input field name empty in ${t.name}',
+          );
+          expect(
+            field.label,
+            isNotEmpty,
+            reason: 'input field label empty in ${t.name}',
+          );
+          expect(
+            validTypes,
+            contains(field.type),
+            reason:
+                'invalid type "${field.type}" for field "${field.name}" in ${t.name}',
+          );
         }
       }
     });
 
     test('promptTemplate contains placeholders matching input fields', () {
       for (final t in templates) {
-        final placeholders = RegExp(r'\{(\w+)\}')
-            .allMatches(t.promptTemplate)
-            .map((m) => m.group(1))
-            .toSet();
+        final placeholders = RegExp(
+          r'\{(\w+)\}',
+        ).allMatches(t.promptTemplate).map((m) => m.group(1)).toSet();
 
         final fieldNames = t.inputFields.map((f) => f.name).toSet();
 
         for (final placeholder in placeholders) {
-          expect(fieldNames, contains(placeholder),
-              reason:
-                  '${t.name}: placeholder {$placeholder} has no matching input field');
+          expect(
+            fieldNames,
+            contains(placeholder),
+            reason:
+                '${t.name}: placeholder {$placeholder} has no matching input field',
+          );
         }
       }
     });
 
     test('all template IDs are unique', () {
       final ids = templates.map((t) => t.id).toList();
-      expect(ids.toSet(), hasLength(ids.length),
-          reason: 'duplicate template IDs found');
+      expect(
+        ids.toSet(),
+        hasLength(ids.length),
+        reason: 'duplicate template IDs found',
+      );
     });
 
     test('order values are non-negative', () {
       for (final t in templates) {
-        expect(t.order, greaterThanOrEqualTo(0),
-            reason: '${t.name} has negative order: ${t.order}');
+        expect(
+          t.order,
+          greaterThanOrEqualTo(0),
+          reason: '${t.name} has negative order: ${t.order}',
+        );
       }
     });
   });

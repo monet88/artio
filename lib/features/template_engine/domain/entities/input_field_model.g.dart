@@ -13,7 +13,7 @@ _$InputFieldModelImpl _$$InputFieldModelImplFromJson(
   label: json['label'] as String,
   type: json['type'] as String,
   placeholder: json['placeholder'] as String?,
-  defaultValue: json['defaultValue'] as String?,
+  defaultValue: json['default_value'] as String?,
   options: (json['options'] as List<dynamic>?)
       ?.map((e) => e as String)
       .toList(),
@@ -29,7 +29,7 @@ Map<String, dynamic> _$$InputFieldModelImplToJson(
   'label': instance.label,
   'type': instance.type,
   'placeholder': instance.placeholder,
-  'defaultValue': instance.defaultValue,
+  'default_value': instance.defaultValue,
   'options': instance.options,
   'min': instance.min,
   'max': instance.max,

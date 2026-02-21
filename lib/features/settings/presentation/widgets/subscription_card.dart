@@ -88,10 +88,7 @@ class SubscriptionCard extends ConsumerWidget {
             children: [
               Row(
                 children: [
-                  Icon(
-                    Icons.star,
-                    color: theme.colorScheme.primary,
-                  ),
+                  Icon(Icons.star, color: theme.colorScheme.primary),
                   const SizedBox(width: AppSpacing.sm),
                   Text(
                     '$tierLabel Plan',
@@ -103,9 +100,7 @@ class SubscriptionCard extends ConsumerWidget {
               ),
               const SizedBox(height: AppSpacing.xs),
               Text(
-                status.willRenew
-                    ? 'Renews $expiryText'
-                    : 'Expires $expiryText',
+                status.willRenew ? 'Renews $expiryText' : 'Expires $expiryText',
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: theme.colorScheme.onSurfaceVariant,
                 ),

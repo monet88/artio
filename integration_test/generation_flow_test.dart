@@ -15,12 +15,12 @@ class MockTemplateRepository extends Mock implements TemplateRepository {}
 class MockAuthViewModel extends AuthViewModel {
   @override
   AuthState build() => AuthState.authenticated(
-        UserModel(
-          id: 'test-user-id',
-          email: 'test@example.com',
-          createdAt: DateTime.now(),
-        ),
-      );
+    UserModel(
+      id: 'test-user-id',
+      email: 'test@example.com',
+      createdAt: DateTime.now(),
+    ),
+  );
 }
 
 void main() {
@@ -58,18 +58,22 @@ void main() {
     });
 
     testWidgets('template detail screen renders correctly', (tester) async {
-      await tester.pumpWidget(createTestWidget(
-        home: const TemplateDetailScreen(templateId: 'test-template'),
-      ));
+      await tester.pumpWidget(
+        createTestWidget(
+          home: const TemplateDetailScreen(templateId: 'test-template'),
+        ),
+      );
 
       expect(find.text('Generate'), findsOneWidget);
       expect(find.byType(Scaffold), findsOneWidget);
     });
 
     testWidgets('template detail shows loading state', (tester) async {
-      await tester.pumpWidget(createTestWidget(
-        home: const TemplateDetailScreen(templateId: 'test-template'),
-      ));
+      await tester.pumpWidget(
+        createTestWidget(
+          home: const TemplateDetailScreen(templateId: 'test-template'),
+        ),
+      );
 
       // Initial state shows loading
       expect(find.byType(CircularProgressIndicator), findsOneWidget);

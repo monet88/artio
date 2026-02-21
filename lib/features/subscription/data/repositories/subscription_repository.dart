@@ -55,8 +55,9 @@ class SubscriptionRepository implements ISubscriptionRepository {
   Future<SubscriptionStatus> purchase(SubscriptionPackage package) async {
     try {
       final nativePkg = package.nativePackage as Package;
-      final result =
-          await Purchases.purchase(PurchaseParams.package(nativePkg));
+      final result = await Purchases.purchase(
+        PurchaseParams.package(nativePkg),
+      );
       return _mapCustomerInfo(result.customerInfo);
     } on PlatformException catch (e) {
       // RevenueCat error code 1 = purchase cancelled by user

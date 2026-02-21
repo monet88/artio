@@ -25,8 +25,9 @@ void main() {
           updatedAt: DateTime(2026),
         );
 
-        when(() => mockRepository.fetchBalance())
-            .thenAnswer((_) async => balance);
+        when(
+          () => mockRepository.fetchBalance(),
+        ).thenAnswer((_) async => balance);
 
         final result = await mockRepository.fetchBalance();
 
@@ -35,8 +36,9 @@ void main() {
       });
 
       test('throws AppException.network on error', () async {
-        when(() => mockRepository.fetchBalance())
-            .thenThrow(const AppException.network(message: 'DB error'));
+        when(
+          () => mockRepository.fetchBalance(),
+        ).thenThrow(const AppException.network(message: 'DB error'));
 
         expect(
           () => mockRepository.fetchBalance(),
@@ -59,8 +61,9 @@ void main() {
           updatedAt: DateTime(2026, 1, 2),
         );
 
-        when(() => mockRepository.watchBalance())
-            .thenAnswer((_) => controller.stream);
+        when(
+          () => mockRepository.watchBalance(),
+        ).thenAnswer((_) => controller.stream);
 
         final stream = mockRepository.watchBalance();
 
@@ -99,8 +102,9 @@ void main() {
           ),
         ];
 
-        when(() => mockRepository.fetchTransactions())
-            .thenAnswer((_) async => transactions);
+        when(
+          () => mockRepository.fetchTransactions(),
+        ).thenAnswer((_) async => transactions);
 
         final result = await mockRepository.fetchTransactions();
 
@@ -111,8 +115,9 @@ void main() {
       });
 
       test('returns empty list when no transactions', () async {
-        when(() => mockRepository.fetchTransactions())
-            .thenAnswer((_) async => []);
+        when(
+          () => mockRepository.fetchTransactions(),
+        ).thenAnswer((_) async => []);
 
         final result = await mockRepository.fetchTransactions();
 
@@ -120,8 +125,9 @@ void main() {
       });
 
       test('throws AppException.network on error', () async {
-        when(() => mockRepository.fetchTransactions())
-            .thenThrow(const AppException.network(message: 'DB error'));
+        when(
+          () => mockRepository.fetchTransactions(),
+        ).thenThrow(const AppException.network(message: 'DB error'));
 
         expect(
           () => mockRepository.fetchTransactions(),
@@ -132,23 +138,25 @@ void main() {
 
     group('rewardAdCredits', () {
       test('returns reward result on success', () async {
-        when(() => mockRepository.rewardAdCredits(nonce: 'test-nonce'))
-            .thenAnswer(
+        when(
+          () => mockRepository.rewardAdCredits(nonce: 'test-nonce'),
+        ).thenAnswer(
           (_) async => (creditsAwarded: 5, newBalance: 55, adsRemaining: 7),
         );
 
-        final result =
-            await mockRepository.rewardAdCredits(nonce: 'test-nonce');
+        final result = await mockRepository.rewardAdCredits(
+          nonce: 'test-nonce',
+        );
 
         expect(result.creditsAwarded, 5);
         expect(result.newBalance, 55);
         expect(result.adsRemaining, 7);
       });
 
-      test('throws AppException.validation when daily limit reached',
-          () async {
-        when(() => mockRepository.rewardAdCredits(nonce: 'test-nonce'))
-            .thenThrow(
+      test('throws AppException.validation when daily limit reached', () async {
+        when(
+          () => mockRepository.rewardAdCredits(nonce: 'test-nonce'),
+        ).thenThrow(
           const AppException.network(
             message: 'Daily ad limit reached (10/day)',
             statusCode: 429,
@@ -162,10 +170,9 @@ void main() {
       });
 
       test('throws AppException.network on server error', () async {
-        when(() => mockRepository.rewardAdCredits(nonce: 'test-nonce'))
-            .thenThrow(
-          const AppException.network(message: 'Server error'),
-        );
+        when(
+          () => mockRepository.rewardAdCredits(nonce: 'test-nonce'),
+        ).thenThrow(const AppException.network(message: 'Server error'));
 
         expect(
           () => mockRepository.rewardAdCredits(nonce: 'test-nonce'),
@@ -176,8 +183,9 @@ void main() {
 
     group('requestAdNonce', () {
       test('returns nonce string on success', () async {
-        when(() => mockRepository.requestAdNonce())
-            .thenAnswer((_) async => 'abc-123-nonce');
+        when(
+          () => mockRepository.requestAdNonce(),
+        ).thenAnswer((_) async => 'abc-123-nonce');
 
         final result = await mockRepository.requestAdNonce();
 
@@ -198,8 +206,9 @@ void main() {
 
     group('fetchAdsRemainingToday', () {
       test('returns 10 when no ads watched today', () async {
-        when(() => mockRepository.fetchAdsRemainingToday())
-            .thenAnswer((_) async => 10);
+        when(
+          () => mockRepository.fetchAdsRemainingToday(),
+        ).thenAnswer((_) async => 10);
 
         final result = await mockRepository.fetchAdsRemainingToday();
 
@@ -207,8 +216,9 @@ void main() {
       });
 
       test('returns remaining count when some ads watched', () async {
-        when(() => mockRepository.fetchAdsRemainingToday())
-            .thenAnswer((_) async => 7);
+        when(
+          () => mockRepository.fetchAdsRemainingToday(),
+        ).thenAnswer((_) async => 7);
 
         final result = await mockRepository.fetchAdsRemainingToday();
 
@@ -216,8 +226,9 @@ void main() {
       });
 
       test('returns 0 when daily limit reached', () async {
-        when(() => mockRepository.fetchAdsRemainingToday())
-            .thenAnswer((_) async => 0);
+        when(
+          () => mockRepository.fetchAdsRemainingToday(),
+        ).thenAnswer((_) async => 0);
 
         final result = await mockRepository.fetchAdsRemainingToday();
 

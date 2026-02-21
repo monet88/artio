@@ -28,15 +28,16 @@ class _StubCreateViewModel extends CreateViewModel {
 
 class _FailedCreateViewModel extends CreateViewModel {
   @override
-  AsyncValue<GenerationJobModel?> build() =>
-      const AsyncData(GenerationJobModel(
-        id: 'job-failed',
-        userId: 'user-1',
-        templateId: 'free-text',
-        prompt: 'A prompt',
-        status: JobStatus.failed,
-        errorMessage: 'Provider failed',
-      ));
+  AsyncValue<GenerationJobModel?> build() => const AsyncData(
+    GenerationJobModel(
+      id: 'job-failed',
+      userId: 'user-1',
+      templateId: 'free-text',
+      prompt: 'A prompt',
+      status: JobStatus.failed,
+      errorMessage: 'Provider failed',
+    ),
+  );
 }
 
 void main() {
@@ -46,18 +47,15 @@ void main() {
   }) {
     return <Override>[
       authViewModelProvider.overrideWith(() => _StubAuthViewModel(authState)),
-      createViewModelProvider
-          .overrideWith(() => createViewModel ?? _StubCreateViewModel()),
+      createViewModelProvider.overrideWith(
+        () => createViewModel ?? _StubCreateViewModel(),
+      ),
     ];
   }
 
   group('CreateScreen', () {
-    testWidgets('renders create screen with core UI elements',
-        (tester) async {
-      await tester.pumpApp(
-        const CreateScreen(),
-        overrides: buildOverrides(),
-      );
+    testWidgets('renders create screen with core UI elements', (tester) async {
+      await tester.pumpApp(const CreateScreen(), overrides: buildOverrides());
       await tester.pumpAndSettle();
 
       // Screen renders
@@ -73,12 +71,10 @@ void main() {
       expect(find.text('Generate'), findsOneWidget);
     });
 
-    testWidgets('generate button disabled when prompt is empty',
-        (tester) async {
-      await tester.pumpApp(
-        const CreateScreen(),
-        overrides: buildOverrides(),
-      );
+    testWidgets('generate button disabled when prompt is empty', (
+      tester,
+    ) async {
+      await tester.pumpApp(const CreateScreen(), overrides: buildOverrides());
       await tester.pumpAndSettle();
 
       // Find the FilledButton and verify it's disabled
@@ -88,31 +84,21 @@ void main() {
       expect(generateButton.onPressed, isNull);
     });
 
-    testWidgets('does not show prompt error before user interaction',
-        (tester) async {
-      await tester.pumpApp(
-        const CreateScreen(),
-        overrides: buildOverrides(),
-      );
+    testWidgets('does not show prompt error before user interaction', (
+      tester,
+    ) async {
+      await tester.pumpApp(const CreateScreen(), overrides: buildOverrides());
       await tester.pumpAndSettle();
 
       // Should NOT show error text on initial render
-      expect(
-        find.text('Prompt must be at least 3 characters'),
-        findsNothing,
-      );
-      expect(
-        find.text('Prompt must be at most 1000 characters'),
-        findsNothing,
-      );
+      expect(find.text('Prompt must be at least 3 characters'), findsNothing);
+      expect(find.text('Prompt must be at most 1000 characters'), findsNothing);
     });
 
-    testWidgets('shows auth gate bottom sheet for unauthenticated generate',
-        (tester) async {
-      await tester.pumpApp(
-        const CreateScreen(),
-        overrides: buildOverrides(),
-      );
+    testWidgets('shows auth gate bottom sheet for unauthenticated generate', (
+      tester,
+    ) async {
+      await tester.pumpApp(const CreateScreen(), overrides: buildOverrides());
       await tester.pumpAndSettle();
 
       await tester.enterText(
@@ -132,10 +118,7 @@ void main() {
 
     testWidgets('shows failed job feedback snackbar', (tester) async {
       const authenticatedState = AuthState.authenticated(
-        UserModel(
-          id: 'user-1',
-          email: 'user@example.com',
-        ),
+        UserModel(id: 'user-1', email: 'user@example.com'),
       );
 
       await tester.pumpApp(

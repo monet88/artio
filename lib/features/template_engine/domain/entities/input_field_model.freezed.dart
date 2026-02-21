@@ -26,6 +26,7 @@ mixin _$InputFieldModel {
   String get type =>
       throw _privateConstructorUsedError; // text, select, slider, toggle
   String? get placeholder => throw _privateConstructorUsedError;
+  @JsonKey(name: 'default_value')
   String? get defaultValue => throw _privateConstructorUsedError;
   List<String>? get options => throw _privateConstructorUsedError;
   double? get min => throw _privateConstructorUsedError;
@@ -54,7 +55,7 @@ abstract class $InputFieldModelCopyWith<$Res> {
     String label,
     String type,
     String? placeholder,
-    String? defaultValue,
+    @JsonKey(name: 'default_value') String? defaultValue,
     List<String>? options,
     double? min,
     double? max,
@@ -145,7 +146,7 @@ abstract class _$$InputFieldModelImplCopyWith<$Res>
     String label,
     String type,
     String? placeholder,
-    String? defaultValue,
+    @JsonKey(name: 'default_value') String? defaultValue,
     List<String>? options,
     double? min,
     double? max,
@@ -228,7 +229,7 @@ class _$InputFieldModelImpl implements _InputFieldModel {
     required this.label,
     required this.type,
     this.placeholder,
-    this.defaultValue,
+    @JsonKey(name: 'default_value') this.defaultValue,
     final List<String>? options,
     this.min,
     this.max,
@@ -248,6 +249,7 @@ class _$InputFieldModelImpl implements _InputFieldModel {
   @override
   final String? placeholder;
   @override
+  @JsonKey(name: 'default_value')
   final String? defaultValue;
   final List<String>? _options;
   @override
@@ -329,7 +331,7 @@ abstract class _InputFieldModel implements InputFieldModel {
     required final String label,
     required final String type,
     final String? placeholder,
-    final String? defaultValue,
+    @JsonKey(name: 'default_value') final String? defaultValue,
     final List<String>? options,
     final double? min,
     final double? max,
@@ -348,6 +350,7 @@ abstract class _InputFieldModel implements InputFieldModel {
   @override
   String? get placeholder;
   @override
+  @JsonKey(name: 'default_value')
   String? get defaultValue;
   @override
   List<String>? get options;

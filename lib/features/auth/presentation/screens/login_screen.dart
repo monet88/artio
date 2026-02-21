@@ -72,7 +72,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     });
 
     return Scaffold(
-      backgroundColor: isDark ? AppColors.darkBackground : AppColors.lightBackground,
+      backgroundColor: isDark
+          ? AppColors.darkBackground
+          : AppColors.lightBackground,
       body: DecoratedBox(
         decoration: BoxDecoration(
           gradient: isDark ? AppGradients.backgroundGradient : null,

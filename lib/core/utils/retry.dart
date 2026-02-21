@@ -26,7 +26,11 @@ Future<T> retry<T>(
 }
 
 bool _isTransient(Object error) {
-  if (error is SocketException || error is TimeoutException || error is HandshakeException) return true;
+  if (error is SocketException ||
+      error is TimeoutException ||
+      error is HandshakeException) {
+    return true;
+  }
   if (error is AppException) {
     return error.mapOrNull(
           network: (e) {

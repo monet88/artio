@@ -34,8 +34,8 @@ Matcher isAsyncData<T>() => isA<AsyncData<T>>();
 Matcher isAsyncError<T>() => isA<AsyncError<T>>();
 
 /// Returns a matcher that checks if AsyncValue has data
-Matcher hasData<T>(T expected) => isA<AsyncData<T>>()
-    .having((d) => d.value, 'value', expected);
+Matcher hasData<T>(T expected) =>
+    isA<AsyncData<T>>().having((d) => d.value, 'value', expected);
 
 /// Returns a matcher that checks if AsyncValue has an error
 Matcher hasError<T>() => isA<AsyncError<T>>();

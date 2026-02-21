@@ -33,8 +33,9 @@ void main() {
     group('templatesProvider', () {
       test('returns list of templates on success', () async {
         final templates = TemplateFixtures.list(count: 3);
-        when(() => mockRepository.fetchTemplates())
-            .thenAnswer((_) async => templates);
+        when(
+          () => mockRepository.fetchTemplates(),
+        ).thenAnswer((_) async => templates);
 
         container = createContainer();
         final result = await container.read(templatesProvider.future);
@@ -44,8 +45,7 @@ void main() {
       });
 
       test('returns empty list when no templates', () async {
-        when(() => mockRepository.fetchTemplates())
-            .thenAnswer((_) async => []);
+        when(() => mockRepository.fetchTemplates()).thenAnswer((_) async => []);
 
         container = createContainer();
         final result = await container.read(templatesProvider.future);
@@ -54,8 +54,9 @@ void main() {
       });
 
       test('throws exception on error', () async {
-        when(() => mockRepository.fetchTemplates())
-            .thenThrow(Exception('Network error'));
+        when(
+          () => mockRepository.fetchTemplates(),
+        ).thenThrow(Exception('Network error'));
 
         container = createContainer();
 
@@ -69,8 +70,9 @@ void main() {
     group('templateByIdProvider', () {
       test('returns template when found', () async {
         final template = TemplateFixtures.basic(id: 'template-123');
-        when(() => mockRepository.fetchTemplate('template-123'))
-            .thenAnswer((_) async => template);
+        when(
+          () => mockRepository.fetchTemplate('template-123'),
+        ).thenAnswer((_) async => template);
 
         container = createContainer();
         final result = await container.read(
@@ -82,8 +84,9 @@ void main() {
       });
 
       test('returns null when not found', () async {
-        when(() => mockRepository.fetchTemplate('nonexistent'))
-            .thenAnswer((_) async => null);
+        when(
+          () => mockRepository.fetchTemplate('nonexistent'),
+        ).thenAnswer((_) async => null);
 
         container = createContainer();
         final result = await container.read(
@@ -97,8 +100,9 @@ void main() {
     group('templatesByCategoryProvider', () {
       test('returns templates filtered by category', () async {
         final templates = TemplateFixtures.list(count: 2);
-        when(() => mockRepository.fetchByCategory('portrait'))
-            .thenAnswer((_) async => templates);
+        when(
+          () => mockRepository.fetchByCategory('portrait'),
+        ).thenAnswer((_) async => templates);
 
         container = createContainer();
         final result = await container.read(
@@ -110,8 +114,9 @@ void main() {
       });
 
       test('returns empty list for unknown category', () async {
-        when(() => mockRepository.fetchByCategory('unknown'))
-            .thenAnswer((_) async => []);
+        when(
+          () => mockRepository.fetchByCategory('unknown'),
+        ).thenAnswer((_) async => []);
 
         container = createContainer();
         final result = await container.read(

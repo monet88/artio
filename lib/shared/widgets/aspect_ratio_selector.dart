@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 
 /// Grid selector for aspect ratios with expand functionality
 class AspectRatioSelector extends StatefulWidget {
-
   const AspectRatioSelector({
-    required this.selectedRatio, required this.selectedModelId, required this.onChanged, super.key,
+    required this.selectedRatio,
+    required this.selectedModelId,
+    required this.onChanged,
+    super.key,
   });
   final String selectedRatio;
   final String selectedModelId;

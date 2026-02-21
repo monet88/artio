@@ -9,6 +9,7 @@ class CreditTransaction with _$CreditTransaction {
     required String id,
     required String userId,
     required int amount,
+
     /// One of: 'generation', 'welcome_bonus', 'ad_reward', 'subscription', 'refund', 'manual'
     required String type,
     required DateTime createdAt,

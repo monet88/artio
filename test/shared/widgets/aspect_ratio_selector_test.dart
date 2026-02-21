@@ -36,7 +36,9 @@ void main() {
       expect(find.text('9:16'), findsOneWidget);
     });
 
-    testWidgets('shows More button when more options available', (tester) async {
+    testWidgets('shows More button when more options available', (
+      tester,
+    ) async {
       await tester.pumpWidget(buildWidget());
 
       expect(find.text('More'), findsOneWidget);
@@ -69,19 +71,16 @@ void main() {
       await tester.pumpWidget(buildWidget(selectedRatio: '4:3'));
 
       final chip = tester.widget<ChoiceChip>(
-        find.ancestor(
-          of: find.text('4:3'),
-          matching: find.byType(ChoiceChip),
-        ),
+        find.ancestor(of: find.text('4:3'), matching: find.byType(ChoiceChip)),
       );
       expect(chip.selected, isTrue);
     });
 
     testWidgets('calls onChanged when ratio tapped', (tester) async {
       String? selectedRatio;
-      await tester.pumpWidget(buildWidget(
-        onChanged: (ratio) => selectedRatio = ratio,
-      ));
+      await tester.pumpWidget(
+        buildWidget(onChanged: (ratio) => selectedRatio = ratio),
+      );
 
       await tester.tap(find.text('16:9'));
       await tester.pumpAndSettle();
@@ -90,9 +89,9 @@ void main() {
     });
 
     testWidgets('filters ratios based on selected model (GPT)', (tester) async {
-      await tester.pumpWidget(buildWidget(
-        selectedModelId: 'gpt-image/1.5-text-to-image',
-      ));
+      await tester.pumpWidget(
+        buildWidget(selectedModelId: 'gpt-image/1.5-text-to-image'),
+      );
 
       // GPT only supports 1:1, 2:3, 3:2
       expect(find.text('1:1'), findsOneWidget);

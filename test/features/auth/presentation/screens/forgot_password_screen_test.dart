@@ -51,10 +51,7 @@ void main() {
     testWidgets('shows error on invalid email format', (tester) async {
       await tester.pumpApp(const ForgotPasswordScreen(), overrides: overrides);
 
-      await tester.enterText(
-        find.byType(TextFormField),
-        'invalidemail',
-      );
+      await tester.enterText(find.byType(TextFormField), 'invalidemail');
       await tester.tap(find.text('Send Reset Link'));
       await tester.pumpAndSettle();
 

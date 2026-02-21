@@ -5,10 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class FailedImageCard extends ConsumerWidget {
-
-  const FailedImageCard({
-    required this.jobId, super.key,
-  });
+  const FailedImageCard({required this.jobId, super.key});
   final String jobId;
 
   @override
@@ -55,8 +52,14 @@ class FailedImageCard extends ConsumerWidget {
               ),
             ),
             style: TextButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
-              minimumSize: const Size(AppDimensions.touchTargetMin, AppDimensions.touchTargetMin),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.sm,
+                vertical: AppSpacing.xs,
+              ),
+              minimumSize: const Size(
+                AppDimensions.touchTargetMin,
+                AppDimensions.touchTargetMin,
+              ),
             ),
           ),
         ],

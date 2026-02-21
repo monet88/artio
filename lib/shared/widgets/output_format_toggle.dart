@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 
 /// Toggle for output format (JPG/PNG) with premium indicator for PNG
 class OutputFormatToggle extends StatelessWidget {
-
   const OutputFormatToggle({
-    required this.value, required this.isPremium, required this.onChanged, super.key,
+    required this.value,
+    required this.isPremium,
+    required this.onChanged,
+    super.key,
   });
   final String value;
   final bool isPremium;
@@ -22,10 +24,7 @@ class OutputFormatToggle extends StatelessWidget {
         const SizedBox(height: AppSpacing.sm),
         SegmentedButton<String>(
           segments: [
-            const ButtonSegment(
-              value: 'jpg',
-              label: Text('JPG'),
-            ),
+            const ButtonSegment(value: 'jpg', label: Text('JPG')),
             ButtonSegment(
               value: 'png',
               label: Row(
@@ -34,7 +33,10 @@ class OutputFormatToggle extends StatelessWidget {
                   const Text('PNG'),
                   if (!isPremium) ...[
                     const SizedBox(width: 4),
-                    const Text('\u{1F451}', style: TextStyle(fontSize: 12)), // Crown emoji
+                    const Text(
+                      '\u{1F451}',
+                      style: TextStyle(fontSize: 12),
+                    ), // Crown emoji
                   ],
                 ],
               ),

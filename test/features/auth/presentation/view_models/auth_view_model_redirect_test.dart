@@ -7,7 +7,8 @@ import 'package:artio/features/auth/presentation/view_models/auth_view_model.dar
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:supabase_flutter/supabase_flutter.dart' as supabase
+import 'package:supabase_flutter/supabase_flutter.dart'
+    as supabase
     show AuthState;
 
 import '../../../../core/fixtures/fixtures.dart';
@@ -23,8 +24,9 @@ void main() {
     setUp(() {
       mockAuthRepo = _MockAuthRepository();
       authStreamController = StreamController<supabase.AuthState>.broadcast();
-      when(() => mockAuthRepo.onAuthStateChange)
-          .thenAnswer((_) => authStreamController.stream);
+      when(
+        () => mockAuthRepo.onAuthStateChange,
+      ).thenAnswer((_) => authStreamController.stream);
     });
 
     tearDown(() {
@@ -36,13 +38,12 @@ void main() {
     Future<AuthViewModel> createSettledNotifier({
       UserModel? returningUser,
     }) async {
-      when(() => mockAuthRepo.getCurrentUserWithProfile())
-          .thenAnswer((_) async => returningUser);
+      when(
+        () => mockAuthRepo.getCurrentUserWithProfile(),
+      ).thenAnswer((_) async => returningUser);
 
       container = ProviderContainer(
-        overrides: [
-          authRepositoryProvider.overrideWithValue(mockAuthRepo),
-        ],
+        overrides: [authRepositoryProvider.overrideWithValue(mockAuthRepo)],
       );
 
       // Listen to keep the provider alive and read state changes.
@@ -121,8 +122,7 @@ void main() {
         final notifier = await createSettledNotifier(
           returningUser: UserFixtures.authenticated(),
         );
-        expect(
-            notifier.redirect(currentPath: '/forgot-password'), '/home');
+        expect(notifier.redirect(currentPath: '/forgot-password'), '/home');
       });
 
       test('allows access to /home (no redirect)', () async {
@@ -143,13 +143,12 @@ void main() {
     group('when authenticating (initial/loading)', () {
       test('returns null for any route during auth check', () {
         // Don't let _checkAuthentication complete
-        when(() => mockAuthRepo.getCurrentUserWithProfile())
-            .thenAnswer((_) => Completer<UserModel?>().future);
+        when(
+          () => mockAuthRepo.getCurrentUserWithProfile(),
+        ).thenAnswer((_) => Completer<UserModel?>().future);
 
         container = ProviderContainer(
-          overrides: [
-            authRepositoryProvider.overrideWithValue(mockAuthRepo),
-          ],
+          overrides: [authRepositoryProvider.overrideWithValue(mockAuthRepo)],
         );
 
         // ignore: cascade_invocations, need return value from read()

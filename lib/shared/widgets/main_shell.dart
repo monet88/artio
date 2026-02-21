@@ -34,10 +34,7 @@ class MainShell extends ConsumerWidget {
               : AppShadows.bottomNavShadow,
           border: isDark
               ? const Border(
-                  top: BorderSide(
-                    color: AppColors.white10,
-                    width: 0.5,
-                  ),
+                  top: BorderSide(color: AppColors.white10, width: 0.5),
                 )
               : null,
         ),

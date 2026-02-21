@@ -7,14 +7,13 @@ void main() {
     Widget buildWithMotionSetting({required bool disableAnimations}) {
       return MediaQuery(
         data: MediaQueryData(disableAnimations: disableAnimations),
-        child: const MaterialApp(
-          home: Scaffold(body: LoadingStateWidget()),
-        ),
+        child: const MaterialApp(home: Scaffold(body: LoadingStateWidget())),
       );
     }
 
-    testWidgets('shows static logo when reduced-motion is enabled',
-        (tester) async {
+    testWidgets('shows static logo when reduced-motion is enabled', (
+      tester,
+    ) async {
       await tester.pumpWidget(buildWithMotionSetting(disableAnimations: true));
       await tester.pump();
 
@@ -26,8 +25,9 @@ void main() {
       expect(transformCount, findsNothing);
     });
 
-    testWidgets('shows animated pulse when reduced-motion is disabled',
-        (tester) async {
+    testWidgets('shows animated pulse when reduced-motion is disabled', (
+      tester,
+    ) async {
       await tester.pumpWidget(buildWithMotionSetting(disableAnimations: false));
       await tester.pump();
 

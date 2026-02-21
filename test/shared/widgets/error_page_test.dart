@@ -6,9 +6,7 @@ void main() {
   group('ErrorPage', () {
     Widget buildWidget({Exception? error}) {
       return MaterialApp(
-        home: Scaffold(
-          body: ErrorPage(error: error),
-        ),
+        home: Scaffold(body: ErrorPage(error: error)),
       );
     }
 

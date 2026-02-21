@@ -5,7 +5,7 @@ void main() {
   group('AiModels', () {
     group('all', () {
       test('contains expected number of models', () {
-        expect(AiModels.all.length, 16);
+        expect(AiModels.all.length, 15);
       });
 
       test('each model has required fields', () {
@@ -105,24 +105,25 @@ void main() {
       });
     });
 
-    group('standardAspectRatios', () {
-      test('contains all expected ratios', () {
-        expect(AiModels.standardAspectRatios, containsAll([
-          '1:1', '2:3', '3:2', '4:5', '5:4', '9:16', '16:9', '3:4', '4:3',
-        ]));
-      });
-    });
-
-    group('gptAspectRatios', () {
-      test('contains limited GPT ratios', () {
-        expect(AiModels.gptAspectRatios, ['1:1', '2:3', '3:2']);
+    group('supportedAspectRatios', () {
+      test('contains unified ratio set', () {
+        expect(
+          AiModels.supportedAspectRatios,
+          containsAll([
+            '1:1',
+            '3:4',
+            '4:3',
+            '9:16',
+            '16:9',
+          ]),
+        );
       });
     });
 
     group('GPT models', () {
-      test('have limited aspect ratios', () {
+      test('use unified aspect ratios', () {
         final model = AiModels.getById('gpt-image/1.5-text-to-image');
-        expect(model?.supportedAspectRatios, AiModels.gptAspectRatios);
+        expect(model?.supportedAspectRatios, AiModels.supportedAspectRatios);
       });
     });
 

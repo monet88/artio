@@ -19,13 +19,10 @@ void main() {
   ProviderContainer createContainer({
     required Stream<CreditBalance> balanceStream,
   }) {
-    when(() => mockRepository.watchBalance())
-        .thenAnswer((_) => balanceStream);
+    when(() => mockRepository.watchBalance()).thenAnswer((_) => balanceStream);
 
     return ProviderContainer(
-      overrides: [
-        creditRepositoryProvider.overrideWithValue(mockRepository),
-      ],
+      overrides: [creditRepositoryProvider.overrideWithValue(mockRepository)],
     );
   }
 
@@ -37,9 +34,7 @@ void main() {
         updatedAt: DateTime(2026),
       );
 
-      final container = createContainer(
-        balanceStream: Stream.value(balance),
-      );
+      final container = createContainer(balanceStream: Stream.value(balance));
       addTearDown(container.dispose);
 
       final result = await container.read(creditBalanceNotifierProvider.future);
@@ -52,9 +47,7 @@ void main() {
       final controller = StreamController<CreditBalance>()
         ..addError(Exception('Stream error'));
 
-      final container = createContainer(
-        balanceStream: controller.stream,
-      );
+      final container = createContainer(balanceStream: controller.stream);
       addTearDown(() {
         container.dispose();
         controller.close();
@@ -70,9 +63,7 @@ void main() {
     test('currentBalance returns null when no data', () {
       final controller = StreamController<CreditBalance>();
 
-      final container = createContainer(
-        balanceStream: controller.stream,
-      );
+      final container = createContainer(balanceStream: controller.stream);
       addTearDown(() {
         container.dispose();
         controller.close();
@@ -90,9 +81,7 @@ void main() {
         updatedAt: DateTime(2026),
       );
 
-      final container = createContainer(
-        balanceStream: Stream.value(balance),
-      );
+      final container = createContainer(balanceStream: Stream.value(balance));
       addTearDown(container.dispose);
 
       await container.read(creditBalanceNotifierProvider.future);

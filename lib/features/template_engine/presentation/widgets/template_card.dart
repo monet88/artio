@@ -13,11 +13,7 @@ import 'package:shimmer/shimmer.dart';
 /// text on overlay, PRO badge as gradient chip with crown icon,
 /// category tag, subtle shadow, CachedNetworkImage, and tap animation.
 class TemplateCard extends StatefulWidget {
-
-  const TemplateCard({
-    required this.template, super.key,
-    this.index = 0,
-  });
+  const TemplateCard({required this.template, super.key, this.index = 0});
   final TemplateModel template;
   final int index;
 
@@ -38,7 +34,10 @@ class _TemplateCardState extends State<TemplateCard>
       duration: AppAnimations.fast,
     );
     _scaleAnimation = Tween<double>(begin: 1, end: 0.95).animate(
-      CurvedAnimation(parent: _tapController, curve: AppAnimations.defaultCurve),
+      CurvedAnimation(
+        parent: _tapController,
+        curve: AppAnimations.defaultCurve,
+      ),
     );
   }
 
@@ -67,7 +66,9 @@ class _TemplateCardState extends State<TemplateCard>
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
-            boxShadow: isDark ? AppShadows.cardShadowDark : AppShadows.cardShadow,
+            boxShadow: isDark
+                ? AppShadows.cardShadowDark
+                : AppShadows.cardShadow,
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(16),
@@ -103,9 +104,7 @@ class _TemplateCardState extends State<TemplateCard>
 
                 // ── Gradient Overlay ────────────────────────────────
                 const DecoratedBox(
-                  decoration: BoxDecoration(
-                    gradient: AppGradients.cardOverlay,
-                  ),
+                  decoration: BoxDecoration(gradient: AppGradients.cardOverlay),
                 ),
 
                 // ── Category Tag (top-left) ─────────────────────────
@@ -179,10 +178,7 @@ class _TemplateCardState extends State<TemplateCard>
                         color: Colors.white,
                         height: 1.2,
                         shadows: [
-                          Shadow(
-                            color: Color(0x80000000),
-                            blurRadius: 4,
-                          ),
+                          Shadow(color: Color(0x80000000), blurRadius: 4),
                         ],
                       ),
                       maxLines: 2,

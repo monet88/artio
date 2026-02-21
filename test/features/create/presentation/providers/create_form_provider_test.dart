@@ -14,15 +14,18 @@ void main() {
       container.dispose();
     });
 
-    test('setModel resets unsupported aspect ratio to first supported value', () {
-      container.read(createFormNotifierProvider.notifier)
-        ..setAspectRatio('16:9')
-        ..setModel('gpt-image/1.5-text-to-image');
+    test(
+      'setModel resets unsupported aspect ratio to first supported value',
+      () {
+        container.read(createFormNotifierProvider.notifier)
+          ..setAspectRatio('16:9')
+          ..setModel('gpt-image/1.5-text-to-image');
 
-      final state = container.read(createFormNotifierProvider);
-      expect(state.modelId, 'gpt-image/1.5-text-to-image');
-      expect(state.aspectRatio, '1:1');
-    });
+        final state = container.read(createFormNotifierProvider);
+        expect(state.modelId, 'gpt-image/1.5-text-to-image');
+        expect(state.aspectRatio, '1:1');
+      },
+    );
 
     test('setModel keeps aspect ratio when it is supported', () {
       container.read(createFormNotifierProvider.notifier)

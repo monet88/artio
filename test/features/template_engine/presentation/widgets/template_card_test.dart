@@ -92,9 +92,9 @@ void main() {
         ),
       );
 
-      final textWidget = tester.widget<Text>(find.text(
-        'This is a very long template name that should be truncated',
-      ));
+      final textWidget = tester.widget<Text>(
+        find.text('This is a very long template name that should be truncated'),
+      );
       // Redesigned template card uses maxLines: 2 for bottom overlay text
       expect(textWidget.maxLines, 2);
       expect(textWidget.overflow, TextOverflow.ellipsis);

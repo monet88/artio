@@ -23,7 +23,7 @@ class TemplateCacheService {
 
   /// Test constructor — uses [directoryPath] directly.
   TemplateCacheService.forTesting(String directoryPath)
-      : _directoryPath = directoryPath;
+    : _directoryPath = directoryPath;
 
   static const _cacheFileName = 'templates_cache.json';
   static const _defaultTtl = Duration(minutes: 5);

@@ -29,7 +29,7 @@ class AdminAuth extends _$AdminAuth implements Listenable {
       email: email,
       password: password,
     );
-    
+
     if (response.user == null) throw Exception('Login failed');
 
     // Check role

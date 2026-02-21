@@ -35,8 +35,9 @@ class _InsufficientCreditsSheetState
     setState(() => _isRewarding = true);
 
     try {
-      final result =
-          await ref.read(adRewardNotifierProvider.notifier).watchAdAndReward();
+      final result = await ref
+          .read(adRewardNotifierProvider.notifier)
+          .watchAdAndReward();
 
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -50,9 +51,9 @@ class _InsufficientCreditsSheetState
       Navigator.pop(context);
     } on AppException catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.message)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.message)));
     } on Object {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -136,11 +137,7 @@ class _InsufficientCreditsSheetState
       ),
       child: Row(
         children: [
-          Icon(
-            Icons.schedule,
-            size: 18,
-            color: theme.colorScheme.primary,
-          ),
+          Icon(Icons.schedule, size: 18, color: theme.colorScheme.primary),
           const SizedBox(width: AppSpacing.xs),
           Expanded(
             child: Text(
@@ -194,8 +191,7 @@ class _InsufficientCreditsSheetState
         data: (adsRemaining) {
           final canWatch = adsRemaining > 0 && adService.isAdLoaded;
           return FilledButton.icon(
-            onPressed:
-                canWatch && !_isRewarding ? _onWatchAd : null,
+            onPressed: canWatch && !_isRewarding ? _onWatchAd : null,
             icon: _isRewarding
                 ? const SizedBox(
                     width: 18,

@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:artio/core/exceptions/app_exception.dart';
+import 'package:artio/core/utils/prompt_validator.dart';
 import 'package:artio/features/gallery/data/services/gallery_cache_service.dart';
 import 'package:artio/features/template_engine/domain/entities/generation_job_model.dart';
 import 'package:artio/features/template_engine/domain/providers/generation_repository_provider.dart';
@@ -37,6 +39,15 @@ class GenerationViewModel extends _$GenerationViewModel {
       return;
     }
 
+    // Validate prompt using shared helper (same rules as Create flow)
+    final String trimmedPrompt;
+    try {
+      trimmedPrompt = validateGenerationPrompt(prompt);
+    } on AppException catch (e, st) {
+      state = AsyncError(e, st);
+      return;
+    }
+
     state = const AsyncLoading();
 
     try {
@@ -58,7 +69,7 @@ class GenerationViewModel extends _$GenerationViewModel {
       final jobId = await repo.startGeneration(
         userId: userId,
         templateId: templateId,
-        prompt: prompt,
+        prompt: trimmedPrompt,
         aspectRatio: aspectRatio,
         imageCount: imageCount,
       );

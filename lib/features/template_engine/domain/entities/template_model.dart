@@ -15,7 +15,9 @@ class TemplateModel with _$TemplateModel {
     required String category,
     @JsonKey(name: 'prompt_template') required String promptTemplate,
     @JsonKey(name: 'input_fields') required List<InputFieldModel> inputFields,
-    @JsonKey(name: 'default_aspect_ratio') @Default('1:1') String defaultAspectRatio,
+    @JsonKey(name: 'default_aspect_ratio')
+    @Default('1:1')
+    String defaultAspectRatio,
     @JsonKey(name: 'is_premium') @Default(false) bool isPremium,
     @Default(0) int order,
   }) = _TemplateModel;

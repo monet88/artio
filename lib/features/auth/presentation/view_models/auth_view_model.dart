@@ -11,7 +11,9 @@ import 'package:artio/routing/routes/app_routes.dart';
 import 'package:artio/utils/logger_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:supabase_flutter/supabase_flutter.dart' as supabase show AuthState;
+import 'package:supabase_flutter/supabase_flutter.dart'
+    as supabase
+    show AuthState;
 
 part 'auth_view_model.g.dart';
 
@@ -139,9 +141,7 @@ class AuthViewModel extends _$AuthViewModel implements Listenable {
     _oauthTimeoutTimer?.cancel();
     _oauthTimeoutTimer = Timer(_oauthTimeoutDuration, () {
       if (state is AuthStateAuthenticating) {
-        state = const AuthState.error(
-          'Sign in timed out. Please try again.',
-        );
+        state = const AuthState.error('Sign in timed out. Please try again.');
       }
     });
     try {
@@ -184,24 +184,30 @@ class AuthViewModel extends _$AuthViewModel implements Listenable {
 
   Future<void> resetPassword(String email) async {
     final trimmed = email.trim();
-    if (trimmed.isEmpty || !RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(trimmed)) {
-      throw const AppException.auth(message: 'Please enter a valid email address');
+    if (trimmed.isEmpty ||
+        !RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(trimmed)) {
+      throw const AppException.auth(
+        message: 'Please enter a valid email address',
+      );
     }
     // Generic UI handler: Even on failure, mask it so we do not expose valid/invalid emails.
     try {
       final authRepo = ref.read(authRepositoryProvider);
       await authRepo.resetPassword(trimmed);
     } on Exception catch (e) {
-      if (e is AppException && e.message == 'Please enter a valid email address') rethrow;
+      if (e is AppException &&
+          e.message == 'Please enter a valid email address') {
+        rethrow;
+      }
       // We log but DO NOT leak errors about user not existing to the UI
       Log.i('Failed to send reset email non-fatally: $e');
     }
   }
 
   UserModel? get currentUser => switch (state) {
-        AuthStateAuthenticated(user: final u) => u,
-        _ => null,
-      };
+    AuthStateAuthenticated(user: final u) => u,
+    _ => null,
+  };
 
   bool get isLoggedIn => state is AuthStateAuthenticated;
 
@@ -212,7 +218,8 @@ class AuthViewModel extends _$AuthViewModel implements Listenable {
     };
     if (isAuthenticating) return null;
 
-    final isAuthRoute = currentPath == const LoginRoute().location ||
+    final isAuthRoute =
+        currentPath == const LoginRoute().location ||
         currentPath == const RegisterRoute().location ||
         currentPath.startsWith('/forgot-password');
 

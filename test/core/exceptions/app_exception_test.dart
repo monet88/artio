@@ -5,8 +5,7 @@ void main() {
   group('AppException', () {
     group('NetworkException', () {
       test('stores message and optional statusCode', () {
-        const e =
-            AppException.network(message: 'timeout', statusCode: 504);
+        const e = AppException.network(message: 'timeout', statusCode: 504);
         expect(e.message, 'timeout');
         expect((e as NetworkException).statusCode, 504);
       });
@@ -71,10 +70,7 @@ void main() {
 
     group('pattern matching', () {
       test('when matches correct variant', () {
-        const exception = AppException.payment(
-          message: 'fail',
-          code: 'test',
-        );
+        const exception = AppException.payment(message: 'fail', code: 'test');
 
         final result = switch (exception) {
           NetworkException() => 'network',

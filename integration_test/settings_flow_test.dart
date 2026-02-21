@@ -10,10 +10,7 @@ void main() {
   group('Settings Flow Integration Tests', () {
     Widget createTestWidget() {
       return const ProviderScope(
-        child: MaterialApp(
-          title: 'Artio Test',
-          home: SettingsScreen(),
-        ),
+        child: MaterialApp(title: 'Artio Test', home: SettingsScreen()),
       );
     }
 
@@ -51,10 +48,7 @@ void main() {
       await tester.pumpWidget(createTestWidget());
 
       final logoutTile = tester.widget<ListTile>(
-        find.ancestor(
-          of: find.text('Logout'),
-          matching: find.byType(ListTile),
-        ),
+        find.ancestor(of: find.text('Logout'), matching: find.byType(ListTile)),
       );
 
       expect(logoutTile.leading, isA<Icon>());

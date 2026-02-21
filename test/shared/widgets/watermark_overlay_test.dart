@@ -6,8 +6,9 @@ import '../../core/helpers/pump_app.dart';
 
 void main() {
   group('WatermarkOverlay', () {
-    testWidgets('shows watermark text when showWatermark is true',
-        (tester) async {
+    testWidgets('shows watermark text when showWatermark is true', (
+      tester,
+    ) async {
       await tester.pumpApp(
         const WatermarkOverlay(
           showWatermark: true,
@@ -18,8 +19,9 @@ void main() {
       expect(find.text('artio'), findsOneWidget);
     });
 
-    testWidgets('hides watermark text when showWatermark is false',
-        (tester) async {
+    testWidgets('hides watermark text when showWatermark is false', (
+      tester,
+    ) async {
       await tester.pumpApp(
         const WatermarkOverlay(
           showWatermark: false,
@@ -30,8 +32,9 @@ void main() {
       expect(find.text('artio'), findsNothing);
     });
 
-    testWidgets('renders child widget regardless of watermark state',
-        (tester) async {
+    testWidgets('renders child widget regardless of watermark state', (
+      tester,
+    ) async {
       const childKey = Key('test-child');
 
       await tester.pumpApp(
@@ -55,8 +58,9 @@ void main() {
       expect(find.byType(Stack), findsOneWidget);
     });
 
-    testWidgets('does not use Stack when showWatermark is false',
-        (tester) async {
+    testWidgets('does not use Stack when showWatermark is false', (
+      tester,
+    ) async {
       await tester.pumpApp(
         const WatermarkOverlay(
           showWatermark: false,

@@ -4,7 +4,8 @@ import 'package:artio/core/exceptions/app_exception.dart';
 import 'package:artio/features/auth/domain/repositories/i_auth_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:supabase_flutter/supabase_flutter.dart' show AuthChangeEvent, AuthState;
+import 'package:supabase_flutter/supabase_flutter.dart'
+    show AuthChangeEvent, AuthState;
 
 import '../../../../core/fixtures/user_fixtures.dart';
 
@@ -26,10 +27,12 @@ void main() {
           email: 'test@example.com',
         );
 
-        when(() => mockAuthRepository.signInWithEmail(
-              'test@example.com',
-              'password123',
-            )).thenAnswer((_) async => expectedUser);
+        when(
+          () => mockAuthRepository.signInWithEmail(
+            'test@example.com',
+            'password123',
+          ),
+        ).thenAnswer((_) async => expectedUser);
 
         final result = await mockAuthRepository.signInWithEmail(
           'test@example.com',
@@ -38,17 +41,21 @@ void main() {
 
         expect(result, equals(expectedUser));
         expect(result.email, equals('test@example.com'));
-        verify(() => mockAuthRepository.signInWithEmail(
-              'test@example.com',
-              'password123',
-            )).called(1);
+        verify(
+          () => mockAuthRepository.signInWithEmail(
+            'test@example.com',
+            'password123',
+          ),
+        ).called(1);
       });
 
       test('throws AppException on invalid credentials', () async {
-        when(() => mockAuthRepository.signInWithEmail(
-              'test@example.com',
-              'wrongpassword',
-            )).thenThrow(
+        when(
+          () => mockAuthRepository.signInWithEmail(
+            'test@example.com',
+            'wrongpassword',
+          ),
+        ).thenThrow(
           const AppException.auth(message: 'Invalid login credentials'),
         );
 
@@ -69,10 +76,12 @@ void main() {
           email: 'newuser@example.com',
         );
 
-        when(() => mockAuthRepository.signUpWithEmail(
-              'newuser@example.com',
-              'password123',
-            )).thenAnswer((_) async => expectedUser);
+        when(
+          () => mockAuthRepository.signUpWithEmail(
+            'newuser@example.com',
+            'password123',
+          ),
+        ).thenAnswer((_) async => expectedUser);
 
         final result = await mockAuthRepository.signUpWithEmail(
           'newuser@example.com',
@@ -84,10 +93,12 @@ void main() {
       });
 
       test('throws AppException when user already exists', () async {
-        when(() => mockAuthRepository.signUpWithEmail(
-              'existing@example.com',
-              'password123',
-            )).thenThrow(
+        when(
+          () => mockAuthRepository.signUpWithEmail(
+            'existing@example.com',
+            'password123',
+          ),
+        ).thenThrow(
           const AppException.auth(message: 'User already registered'),
         );
 
@@ -105,10 +116,7 @@ void main() {
       test('completes without error', () async {
         when(() => mockAuthRepository.signOut()).thenAnswer((_) async {});
 
-        await expectLater(
-          mockAuthRepository.signOut(),
-          completes,
-        );
+        await expectLater(mockAuthRepository.signOut(), completes);
 
         verify(() => mockAuthRepository.signOut()).called(1);
       });
@@ -118,8 +126,9 @@ void main() {
       test('returns UserModel when user is authenticated', () async {
         final expectedUser = UserFixtures.authenticated();
 
-        when(() => mockAuthRepository.getCurrentUserWithProfile())
-            .thenAnswer((_) async => expectedUser);
+        when(
+          () => mockAuthRepository.getCurrentUserWithProfile(),
+        ).thenAnswer((_) async => expectedUser);
 
         final result = await mockAuthRepository.getCurrentUserWithProfile();
 
@@ -128,8 +137,9 @@ void main() {
       });
 
       test('returns null when user is not authenticated', () async {
-        when(() => mockAuthRepository.getCurrentUserWithProfile())
-            .thenAnswer((_) async => null);
+        when(
+          () => mockAuthRepository.getCurrentUserWithProfile(),
+        ).thenAnswer((_) async => null);
 
         final result = await mockAuthRepository.getCurrentUserWithProfile();
 
@@ -141,8 +151,9 @@ void main() {
       test('returns refreshed UserModel', () async {
         final expectedUser = UserFixtures.authenticated(credits: 50);
 
-        when(() => mockAuthRepository.refreshCurrentUser())
-            .thenAnswer((_) async => expectedUser);
+        when(
+          () => mockAuthRepository.refreshCurrentUser(),
+        ).thenAnswer((_) async => expectedUser);
 
         final result = await mockAuthRepository.refreshCurrentUser();
 
@@ -150,9 +161,9 @@ void main() {
       });
 
       test('throws AppException when no user is authenticated', () async {
-        when(() => mockAuthRepository.refreshCurrentUser()).thenThrow(
-          const AppException.auth(message: 'No authenticated user'),
-        );
+        when(
+          () => mockAuthRepository.refreshCurrentUser(),
+        ).thenThrow(const AppException.auth(message: 'No authenticated user'));
 
         expect(
           () => mockAuthRepository.refreshCurrentUser(),
@@ -163,16 +174,18 @@ void main() {
 
     group('resetPassword', () {
       test('completes without error', () async {
-        when(() => mockAuthRepository.resetPassword('test@example.com'))
-            .thenAnswer((_) async {});
+        when(
+          () => mockAuthRepository.resetPassword('test@example.com'),
+        ).thenAnswer((_) async {});
 
         await expectLater(
           mockAuthRepository.resetPassword('test@example.com'),
           completes,
         );
 
-        verify(() => mockAuthRepository.resetPassword('test@example.com'))
-            .called(1);
+        verify(
+          () => mockAuthRepository.resetPassword('test@example.com'),
+        ).called(1);
       });
     });
 
@@ -180,8 +193,9 @@ void main() {
       test('emits auth state changes', () async {
         final controller = StreamController<AuthState>();
 
-        when(() => mockAuthRepository.onAuthStateChange)
-            .thenAnswer((_) => controller.stream);
+        when(
+          () => mockAuthRepository.onAuthStateChange,
+        ).thenAnswer((_) => controller.stream);
 
         final stream = mockAuthRepository.onAuthStateChange;
 
@@ -189,10 +203,7 @@ void main() {
         const mockAuthState = AuthState(AuthChangeEvent.signedIn, null);
         controller.add(mockAuthState);
 
-        await expectLater(
-          stream,
-          emits(mockAuthState),
-        );
+        await expectLater(stream, emits(mockAuthState));
 
         await controller.close();
       });
@@ -200,25 +211,21 @@ void main() {
 
     group('signInWithGoogle', () {
       test('completes OAuth flow', () async {
-        when(() => mockAuthRepository.signInWithGoogle())
-            .thenAnswer((_) async {});
+        when(
+          () => mockAuthRepository.signInWithGoogle(),
+        ).thenAnswer((_) async {});
 
-        await expectLater(
-          mockAuthRepository.signInWithGoogle(),
-          completes,
-        );
+        await expectLater(mockAuthRepository.signInWithGoogle(), completes);
       });
     });
 
     group('signInWithApple', () {
       test('completes OAuth flow', () async {
-        when(() => mockAuthRepository.signInWithApple())
-            .thenAnswer((_) async {});
+        when(
+          () => mockAuthRepository.signInWithApple(),
+        ).thenAnswer((_) async {});
 
-        await expectLater(
-          mockAuthRepository.signInWithApple(),
-          completes,
-        );
+        await expectLater(mockAuthRepository.signInWithApple(), completes);
       });
     });
   });

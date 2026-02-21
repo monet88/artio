@@ -55,13 +55,13 @@ class _SplashScreenState extends State<SplashScreen>
       parent: _taglineController,
       curve: AppAnimations.defaultCurve,
     );
-    _taglineSlide = Tween<Offset>(
-      begin: const Offset(0, 0.3),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _taglineController,
-      curve: AppAnimations.defaultCurve,
-    ));
+    _taglineSlide = Tween<Offset>(begin: const Offset(0, 0.3), end: Offset.zero)
+        .animate(
+          CurvedAnimation(
+            parent: _taglineController,
+            curve: AppAnimations.defaultCurve,
+          ),
+        );
 
     // Pulse for loading indicator
     _pulseController = AnimationController(

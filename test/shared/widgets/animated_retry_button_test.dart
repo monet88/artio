@@ -7,22 +7,21 @@ void main() {
     Widget buildWidget({required VoidCallback onPressed}) {
       return MaterialApp(
         home: Scaffold(
-          body: AnimatedRetryButton(
-            onPressed: onPressed,
-            color: Colors.orange,
-          ),
+          body: AnimatedRetryButton(onPressed: onPressed, color: Colors.orange),
         ),
       );
     }
 
     testWidgets('renders "Try Again" label', (tester) async {
       await tester.pumpWidget(buildWidget(onPressed: () {}));
+      await tester.pumpAndSettle();
 
       expect(find.text('Try Again'), findsOneWidget);
     });
 
     testWidgets('renders refresh icon', (tester) async {
       await tester.pumpWidget(buildWidget(onPressed: () {}));
+      await tester.pumpAndSettle();
 
       expect(find.byIcon(Icons.refresh_rounded), findsOneWidget);
     });

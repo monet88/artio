@@ -17,9 +17,7 @@ class DashboardPage extends ConsumerWidget {
     final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Dashboard'),
-      ),
+      appBar: AppBar(title: const Text('Dashboard')),
       body: statsAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (err, _) => ErrorStateWidget.fromError(
@@ -43,7 +41,9 @@ class DashboardPage extends ConsumerWidget {
               Text(
                 'Here\'s an overview of your templates',
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: isDark ? AdminColors.textSecondary : Colors.grey.shade600,
+                  color: isDark
+                      ? AdminColors.textSecondary
+                      : Colors.grey.shade600,
                 ),
               ),
               const Gap(24),
@@ -130,7 +130,11 @@ class DashboardPage extends ConsumerWidget {
                 Card(
                   child: Column(
                     children: [
-                      for (int i = 0; i < stats.recentTemplates.length; i++) ...[
+                      for (
+                        int i = 0;
+                        i < stats.recentTemplates.length;
+                        i++
+                      ) ...[
                         _RecentTemplateRow(
                           data: stats.recentTemplates[i],
                           isDark: isDark,
@@ -200,17 +204,17 @@ class _StatCard extends StatelessWidget {
                   Text(
                     value,
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const Gap(2),
                   Text(
                     label,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: isDark
-                              ? AdminColors.textSecondary
-                              : Colors.grey.shade600,
-                        ),
+                      color: isDark
+                          ? AdminColors.textSecondary
+                          : Colors.grey.shade600,
+                    ),
                   ),
                 ],
               ),
@@ -258,17 +262,26 @@ class _RecentTemplateRow extends StatelessWidget {
                   data['thumbnail_url'],
                   fit: BoxFit.cover,
                   errorBuilder: (_, _, _) => Container(
-                    color: isDark ? AdminColors.surfaceElevated : Colors.grey.shade200,
+                    color: isDark
+                        ? AdminColors.surfaceElevated
+                        : Colors.grey.shade200,
                     child: const Icon(Icons.image, size: 18),
                   ),
                 )
               : Container(
-                  color: isDark ? AdminColors.surfaceElevated : Colors.grey.shade200,
+                  color: isDark
+                      ? AdminColors.surfaceElevated
+                      : Colors.grey.shade200,
                   child: const Icon(Icons.image, size: 18),
                 ),
         ),
       ),
-      title: Text(name, style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600)),
+      title: Text(
+        name,
+        style: theme.textTheme.bodyMedium?.copyWith(
+          fontWeight: FontWeight.w600,
+        ),
+      ),
       subtitle: Text(
         '$category · $updatedAt',
         style: theme.textTheme.bodySmall?.copyWith(

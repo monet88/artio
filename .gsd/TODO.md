@@ -11,6 +11,8 @@
 - [ ] Complete RevenueCat Dashboard setup checklist (see `docs/revenuecat-checklist.md`) `high` — 2026-02-20
 - [x] Widget tests for reduced-motion behavior (`loading_state_widget`, `error_state_widget`, `splash_screen`) `low` — 2026-02-21 ✅
 - [x] Add Sentry breadcrumb/tag for `isPremium` in TemplateDetailScreen to monitor post-deploy `low` — 2026-02-21 ✅
+- [ ] Refactor `InputFieldModel.type` from String to enum + add conditional validation for options/min/max `low` — 2026-02-21 *(long-term refactor)*
+- [ ] Document: `image_viewer_page_test` uses `pump(4s)` intentionally — timer-based, `pumpAndSettle` would timeout `low` — 2026-02-21 *(confirmed intentional)*
 
 ## Completed
 - [x] Extract `app_component_themes.dart` into smaller theme files — Widget Cleanup ✅
@@ -28,3 +30,4 @@
 - [ ] Credit history / transaction log UI `medium` — 2026-02-20
 - [ ] Subscription management settings page `medium` — 2026-02-20
 - [ ] Referral / affiliate system `low` — 2026-02-20
+- [ ] Storage lifecycle policy — auto-delete generated images after X days to save storage costs `low` — 2026-02-21

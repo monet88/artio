@@ -7,11 +7,7 @@ import 'package:shimmer/shimmer.dart';
 void main() {
   group('ShimmerGrid', () {
     Widget buildWidget() {
-      return const MaterialApp(
-        home: Scaffold(
-          body: ShimmerGrid(),
-        ),
-      );
+      return const MaterialApp(home: Scaffold(body: ShimmerGrid()));
     }
 
     testWidgets('renders shimmer placeholders', (tester) async {

@@ -30,10 +30,7 @@ abstract class AppGradients {
 
   /// Subtle version for lighter overlays
   static const cardOverlaySubtle = LinearGradient(
-    colors: [
-      Color(0x00000000),
-      Color(0x80000000),
-    ],
+    colors: [Color(0x00000000), Color(0x80000000)],
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
     stops: [0.5, 1.0],
@@ -78,11 +75,7 @@ abstract class AppGradients {
 
   /// Light mode shimmer variant
   static const shimmerGradientLight = LinearGradient(
-    colors: [
-      Color(0xFFE8EAF0),
-      Color(0xFFF3F4F8),
-      Color(0xFFE8EAF0),
-    ],
+    colors: [Color(0xFFE8EAF0), Color(0xFFF3F4F8), Color(0xFFE8EAF0)],
     stops: [0.0, 0.5, 1.0],
     begin: Alignment(-1, -0.3),
     end: Alignment(1, 0.3),
@@ -91,10 +84,7 @@ abstract class AppGradients {
   // ── Glass / Frosted Gradient ─────────────────────────────────────────
   /// Glassmorphism overlay for cards and panels
   static const glassOverlay = LinearGradient(
-    colors: [
-      Color(0x20FFFFFF),
-      Color(0x08FFFFFF),
-    ],
+    colors: [Color(0x20FFFFFF), Color(0x08FFFFFF)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );

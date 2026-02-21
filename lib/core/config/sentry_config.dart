@@ -5,15 +5,13 @@ class SentryConfig {
   static Future<void> init() async {
     if (EnvConfig.environment != 'production') return;
 
-    await SentryFlutter.init(
-      (options) {
-        options
-          ..dsn = EnvConfig.sentryDsn
-          ..tracesSampleRate = 0
-          ..attachStacktrace = true
-          ..environment = 'production';
-      },
-    );
+    await SentryFlutter.init((options) {
+      options
+        ..dsn = EnvConfig.sentryDsn
+        ..tracesSampleRate = 0
+        ..attachStacktrace = true
+        ..environment = 'production';
+    });
   }
 
   static Future<void> captureException(

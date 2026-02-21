@@ -61,10 +61,7 @@ class ImageViewerActionHelper {
     } else {
       try {
         await SharePlus.instance.share(
-          ShareParams(
-            files: [XFile(file.path)],
-            text: 'Created with Artio',
-          ),
+          ShareParams(files: [XFile(file.path)], text: 'Created with Artio'),
         );
       } finally {
         await file.delete().catchError((_) => file);

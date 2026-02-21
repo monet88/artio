@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'package:artio/core/config/sentry_config.dart';
-import 'package:artio/features/create/presentation/view_models/create_view_model.dart' show CreateViewModel;
+import 'package:artio/features/create/presentation/view_models/create_view_model.dart'
+    show CreateViewModel;
 import 'package:artio/features/template_engine/domain/entities/generation_job_model.dart';
-import 'package:artio/features/template_engine/presentation/view_models/generation_view_model.dart' show GenerationViewModel;
+import 'package:artio/features/template_engine/presentation/view_models/generation_view_model.dart'
+    show GenerationViewModel;
 
 /// Manages generation job subscriptions, timeouts, and error capture.
 ///
@@ -23,8 +25,6 @@ class GenerationJobManager {
 
   /// Default timeout for generation jobs, in minutes.
   static const defaultTimeoutMinutes = 5;
-
-
 
   /// Subscribe to a job stream with timeout and error handling.
   ///
@@ -53,13 +53,10 @@ class GenerationJobManager {
     int timeoutMinutes,
   ) {
     _timeoutTimer?.cancel();
-    _timeoutTimer = Timer(
-      Duration(minutes: timeoutMinutes),
-      () {
-        cancel();
-        onTimeout();
-      },
-    );
+    _timeoutTimer = Timer(Duration(minutes: timeoutMinutes), () {
+      cancel();
+      onTimeout();
+    });
 
     _jobSubscription?.cancel();
     _jobSubscription = jobStream.listen(
@@ -84,7 +81,13 @@ class GenerationJobManager {
           unawaited(_jobSubscription?.cancel());
           _jobSubscription = null;
           _retryTimer = Timer(Duration(milliseconds: delay), () {
-            _startListening(jobStream, onData, onError, onTimeout, timeoutMinutes);
+            _startListening(
+              jobStream,
+              onData,
+              onError,
+              onTimeout,
+              timeoutMinutes,
+            );
           });
         } else {
           await captureOnce(e, st);

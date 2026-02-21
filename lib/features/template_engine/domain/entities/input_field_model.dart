@@ -1,3 +1,4 @@
+// ignore_for_file: invalid_annotation_target — @JsonKey on Freezed constructor params is the recommended pattern
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'input_field_model.freezed.dart';
@@ -10,7 +11,7 @@ class InputFieldModel with _$InputFieldModel {
     required String label,
     required String type, // text, select, slider, toggle
     String? placeholder,
-    String? defaultValue,
+    @JsonKey(name: 'default_value') String? defaultValue,
     List<String>? options,
     double? min,
     double? max,

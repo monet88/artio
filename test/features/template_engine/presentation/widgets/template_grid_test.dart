@@ -14,13 +14,7 @@ Widget _buildTestHarness({required List<Override> overrides}) {
   return ProviderScope(
     overrides: overrides,
     child: const MaterialApp(
-      home: Scaffold(
-        body: CustomScrollView(
-          slivers: [
-            TemplateGrid(),
-          ],
-        ),
-      ),
+      home: Scaffold(body: CustomScrollView(slivers: [TemplateGrid()])),
     ),
   );
 }
@@ -85,7 +79,10 @@ void main() {
       await tester.pump();
 
       // AppExceptionMapper converts non-AppException to generic message
-      expect(find.text('An unexpected error occurred. Please try again.'), findsOneWidget);
+      expect(
+        find.text('An unexpected error occurred. Please try again.'),
+        findsOneWidget,
+      );
     });
   });
 }

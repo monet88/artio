@@ -80,9 +80,7 @@ void main() {
 
       final router = container.read(appRouterProvider);
 
-      final app = MaterialApp.router(
-        routerConfig: router,
-      );
+      final app = MaterialApp.router(routerConfig: router);
 
       expect(app.routerConfig, router);
     });

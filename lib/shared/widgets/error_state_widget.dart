@@ -10,24 +10,23 @@ import 'package:artio/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 /// Error category for visual differentiation
-enum ErrorCategory {
-  network,
-  server,
-  unknown,
-}
+enum ErrorCategory { network, server, unknown }
 
 /// Redesigned error state widget with categorized illustrations,
 /// friendly messaging, and animated retry button.
 class ErrorStateWidget extends StatefulWidget {
   const ErrorStateWidget({
-    required this.message, super.key,
+    required this.message,
+    super.key,
     this.onRetry,
     this.category = ErrorCategory.unknown,
   });
 
   /// Factory to auto-detect error category from exception
   factory ErrorStateWidget.fromError({
-    required Object error, required String message, Key? key,
+    required Object error,
+    required String message,
+    Key? key,
     VoidCallback? onRetry,
   }) {
     return ErrorStateWidget(
@@ -98,10 +97,7 @@ class _ErrorStateWidgetState extends State<ErrorStateWidget>
       curve: AppAnimations.defaultCurve,
     );
     _scaleAnimation = Tween<double>(begin: 0.9, end: 1).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: AppAnimations.defaultCurve,
-      ),
+      CurvedAnimation(parent: _controller, curve: AppAnimations.defaultCurve),
     );
   }
 

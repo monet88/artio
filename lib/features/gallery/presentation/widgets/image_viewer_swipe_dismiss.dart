@@ -6,15 +6,22 @@ import 'package:flutter/material.dart';
 /// when the drag exceeds the threshold, or snaps back on release.
 class ImageViewerSwipeDismiss extends StatefulWidget {
   const ImageViewerSwipeDismiss({
-    required this.child, required this.onDismiss, required this.onDragStateChanged, super.key,
+    required this.child,
+    required this.onDismiss,
+    required this.onDragStateChanged,
+    super.key,
   });
 
   final Widget child;
   final VoidCallback onDismiss;
 
   /// Called with (dragOffset, dragScale, isDragging).
-  final void Function(double dragOffset, double dragScale, {required bool isDragging})
-      onDragStateChanged;
+  final void Function(
+    double dragOffset,
+    double dragScale, {
+    required bool isDragging,
+  })
+  onDragStateChanged;
 
   @override
   State<ImageViewerSwipeDismiss> createState() =>
@@ -38,9 +45,12 @@ class _ImageViewerSwipeDismissState extends State<ImageViewerSwipeDismiss> {
       onVerticalDragUpdate: (details) {
         setState(() {
           _dragOffset += details.delta.dy;
-          _dragScale = 1.0 -
-              (_dragOffset.abs() / _kScaleDivisor)
-                  .clamp(0.0, _kMaxScaleReduction);
+          _dragScale =
+              1.0 -
+              (_dragOffset.abs() / _kScaleDivisor).clamp(
+                0.0,
+                _kMaxScaleReduction,
+              );
         });
         widget.onDragStateChanged(_dragOffset, _dragScale, isDragging: true);
       },
@@ -64,10 +74,7 @@ class _ImageViewerSwipeDismissState extends State<ImageViewerSwipeDismiss> {
       },
       child: Transform.translate(
         offset: Offset(0, _dragOffset),
-        child: Transform.scale(
-          scale: _dragScale,
-          child: widget.child,
-        ),
+        child: Transform.scale(scale: _dragScale, child: widget.child),
       ),
     );
   }

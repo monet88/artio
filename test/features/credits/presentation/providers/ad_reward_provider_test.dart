@@ -33,8 +33,7 @@ void main() {
     mockAuth = MockGoTrueClient();
     mockUser = MockUser();
 
-    when(() => mockRepo.fetchAdsRemainingToday())
-        .thenAnswer((_) async => 8);
+    when(() => mockRepo.fetchAdsRemainingToday()).thenAnswer((_) async => 8);
     when(() => mockSupabase.auth).thenReturn(mockAuth);
     when(() => mockAuth.currentUser).thenReturn(mockUser);
     when(() => mockUser.id).thenReturn('user-123');
@@ -64,8 +63,7 @@ void main() {
 
         when(() => mockAdService.isAdLoaded).thenReturn(false);
 
-        final notifier =
-            container.read(adRewardNotifierProvider.notifier);
+        final notifier = container.read(adRewardNotifierProvider.notifier);
 
         await expectLater(
           notifier.watchAdAndReward(),
@@ -77,16 +75,18 @@ void main() {
         await container.read(adRewardNotifierProvider.future);
 
         when(() => mockAdService.isAdLoaded).thenReturn(true);
-        when(() => mockRepo.requestAdNonce())
-            .thenAnswer((_) async => 'nonce-abc');
-        when(() => mockAdService.setServerSideVerification(
-              userId: any(named: 'userId'),
-              customData: any(named: 'customData'),
-            )).thenAnswer((_) async {});
+        when(
+          () => mockRepo.requestAdNonce(),
+        ).thenAnswer((_) async => 'nonce-abc');
+        when(
+          () => mockAdService.setServerSideVerification(
+            userId: any(named: 'userId'),
+            customData: any(named: 'customData'),
+          ),
+        ).thenAnswer((_) async {});
         when(() => mockAdService.showAd()).thenAnswer((_) async => false);
 
-        final notifier =
-            container.read(adRewardNotifierProvider.notifier);
+        final notifier = container.read(adRewardNotifierProvider.notifier);
 
         await expectLater(
           notifier.watchAdAndReward(),
@@ -101,23 +101,25 @@ void main() {
         await container.read(adRewardNotifierProvider.future);
 
         when(() => mockAdService.isAdLoaded).thenReturn(true);
-        when(() => mockRepo.requestAdNonce())
-            .thenAnswer((_) async => 'nonce-abc');
-        when(() => mockAdService.setServerSideVerification(
-              userId: any(named: 'userId'),
-              customData: any(named: 'customData'),
-            )).thenAnswer((_) async {});
+        when(
+          () => mockRepo.requestAdNonce(),
+        ).thenAnswer((_) async => 'nonce-abc');
+        when(
+          () => mockAdService.setServerSideVerification(
+            userId: any(named: 'userId'),
+            customData: any(named: 'customData'),
+          ),
+        ).thenAnswer((_) async {});
         when(() => mockAdService.showAd()).thenAnswer((_) async => true);
         when(() => mockRepo.rewardAdCredits(nonce: 'nonce-abc')).thenAnswer(
-          (_) async =>
-              (creditsAwarded: 5, newBalance: 55, adsRemaining: 7),
+          (_) async => (creditsAwarded: 5, newBalance: 55, adsRemaining: 7),
         );
         // After invalidation, build() is called again
-        when(() => mockRepo.fetchAdsRemainingToday())
-            .thenAnswer((_) async => 7);
+        when(
+          () => mockRepo.fetchAdsRemainingToday(),
+        ).thenAnswer((_) async => 7);
 
-        final notifier =
-            container.read(adRewardNotifierProvider.notifier);
+        final notifier = container.read(adRewardNotifierProvider.notifier);
 
         final result = await notifier.watchAdAndReward();
 
@@ -126,10 +128,12 @@ void main() {
         expect(result.adsRemaining, 7);
 
         verify(() => mockRepo.requestAdNonce()).called(1);
-        verify(() => mockAdService.setServerSideVerification(
-              userId: 'user-123',
-              customData: 'nonce-abc',
-            )).called(1);
+        verify(
+          () => mockAdService.setServerSideVerification(
+            userId: 'user-123',
+            customData: 'nonce-abc',
+          ),
+        ).called(1);
         verify(() => mockAdService.showAd()).called(1);
         verify(() => mockRepo.rewardAdCredits(nonce: 'nonce-abc')).called(1);
       });
@@ -138,12 +142,15 @@ void main() {
         await container.read(adRewardNotifierProvider.future);
 
         when(() => mockAdService.isAdLoaded).thenReturn(true);
-        when(() => mockRepo.requestAdNonce())
-            .thenAnswer((_) async => 'nonce-abc');
-        when(() => mockAdService.setServerSideVerification(
-              userId: any(named: 'userId'),
-              customData: any(named: 'customData'),
-            )).thenAnswer((_) async {});
+        when(
+          () => mockRepo.requestAdNonce(),
+        ).thenAnswer((_) async => 'nonce-abc');
+        when(
+          () => mockAdService.setServerSideVerification(
+            userId: any(named: 'userId'),
+            customData: any(named: 'customData'),
+          ),
+        ).thenAnswer((_) async {});
         when(() => mockAdService.showAd()).thenAnswer((_) async => true);
         when(() => mockRepo.rewardAdCredits(nonce: 'nonce-abc')).thenThrow(
           const AppException.payment(
@@ -152,8 +159,7 @@ void main() {
           ),
         );
 
-        final notifier =
-            container.read(adRewardNotifierProvider.notifier);
+        final notifier = container.read(adRewardNotifierProvider.notifier);
 
         await expectLater(
           notifier.watchAdAndReward(),

@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 /// Animated dot-style page indicator for the image viewer.
 class ImageViewerPageIndicator extends StatelessWidget {
   const ImageViewerPageIndicator({
-    required this.itemCount, required this.currentIndex, super.key,
+    required this.itemCount,
+    required this.currentIndex,
+    super.key,
   });
 
   final int itemCount;

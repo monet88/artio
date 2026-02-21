@@ -20,21 +20,17 @@ class _FakePostgrestSingleResponse extends Fake
     FutureOr<R> Function(Map<String, dynamic>) onValue, {
     Function? onError,
   }) =>
-      Future<Map<String, dynamic>>.value(_data)
-          .then(onValue, onError: onError);
+      Future<Map<String, dynamic>>.value(_data).then(onValue, onError: onError);
 
   @override
   Future<Map<String, dynamic>> catchError(
     Function onError, {
     bool Function(Object)? test,
   }) =>
-      Future<Map<String, dynamic>>.value(_data)
-          .catchError(onError, test: test);
+      Future<Map<String, dynamic>>.value(_data).catchError(onError, test: test);
 
   @override
-  Future<Map<String, dynamic>> whenComplete(
-    FutureOr<void> Function() action,
-  ) =>
+  Future<Map<String, dynamic>> whenComplete(FutureOr<void> Function() action) =>
       Future<Map<String, dynamic>>.value(_data).whenComplete(action);
 
   @override
@@ -44,9 +40,9 @@ class _FakePostgrestSingleResponse extends Fake
   Future<Map<String, dynamic>> timeout(
     Duration timeLimit, {
     FutureOr<Map<String, dynamic>> Function()? onTimeout,
-  }) =>
-      Future<Map<String, dynamic>>.value(_data)
-          .timeout(timeLimit, onTimeout: onTimeout);
+  }) => Future<Map<String, dynamic>>.value(
+    _data,
+  ).timeout(timeLimit, onTimeout: onTimeout);
 }
 
 void main() {
@@ -57,8 +53,10 @@ void main() {
 
   setUpAll(() {
     registerFallbackValue(
-      StreamTransformer<List<Map<String, dynamic>>, GenerationJobModel>
-          .fromHandlers(),
+      StreamTransformer<
+        List<Map<String, dynamic>>,
+        GenerationJobModel
+      >.fromHandlers(),
     );
   });
 
@@ -76,7 +74,7 @@ void main() {
     group('startGeneration', () {
       late MockSupabaseQueryBuilder mockJobQueryBuilder;
       late MockPostgrestFilterBuilder<List<Map<String, dynamic>>>
-          mockInsertBuilder;
+      mockInsertBuilder;
 
       /// Stubs the DB insert chain:
       /// from('generation_jobs').insert({...}).select('id').single()
@@ -85,25 +83,28 @@ void main() {
         mockInsertBuilder =
             MockPostgrestFilterBuilder<List<Map<String, dynamic>>>();
 
-        when(() => mockClient.from('generation_jobs'))
-            .thenAnswer((_) => mockJobQueryBuilder);
-        when(() => mockJobQueryBuilder.insert(any()))
-            .thenAnswer((_) => mockInsertBuilder);
-        when(() => mockInsertBuilder.select(any()))
-            .thenAnswer((_) => mockInsertBuilder);
-        when(() => mockInsertBuilder.single())
-            .thenAnswer((_) => _FakePostgrestSingleResponse({'id': jobId}));
+        when(
+          () => mockClient.from('generation_jobs'),
+        ).thenAnswer((_) => mockJobQueryBuilder);
+        when(
+          () => mockJobQueryBuilder.insert(any()),
+        ).thenAnswer((_) => mockInsertBuilder);
+        when(
+          () => mockInsertBuilder.select(any()),
+        ).thenAnswer((_) => mockInsertBuilder);
+        when(
+          () => mockInsertBuilder.single(),
+        ).thenAnswer((_) => _FakePostgrestSingleResponse({'id': jobId}));
       }
 
       test('returns job ID from DB insert on success', () async {
         stubDbInsert();
-        when(() => mockFunctions.invoke(
-              'generate-image',
-              body: any(named: 'body'),
-            )).thenAnswer((_) async => FunctionResponse(
-              data: {'status': 'ok'},
-              status: 200,
-            ));
+        when(
+          () =>
+              mockFunctions.invoke('generate-image', body: any(named: 'body')),
+        ).thenAnswer(
+          (_) async => FunctionResponse(data: {'status': 'ok'}, status: 200),
+        );
 
         final result = await repository.startGeneration(
           userId: 'test-user-id',
@@ -112,28 +113,30 @@ void main() {
         );
 
         expect(result, equals('job-123'));
-        verify(() => mockFunctions.invoke(
-              'generate-image',
-              body: {
-                'jobId': 'job-123',
-                'userId': 'test-user-id',
-                'template_id': 'template-1',
-                'prompt': 'A beautiful sunset',
-                'aspect_ratio': '1:1',
-                'image_count': 1,
-              },
-            )).called(1);
+        verify(
+          () => mockFunctions.invoke(
+            'generate-image',
+            body: {
+              'jobId': 'job-123',
+              'userId': 'test-user-id',
+              'template_id': 'template-1',
+              'prompt': 'A beautiful sunset',
+              'aspect_ratio': '1:1',
+              'image_count': 1,
+            },
+          ),
+        ).called(1);
       });
 
       test('throws AppException.network on 429 rate limit', () async {
         stubDbInsert();
-        when(() => mockFunctions.invoke(
-              'generate-image',
-              body: any(named: 'body'),
-            )).thenAnswer((_) async => FunctionResponse(
-              data: {'error': 'Rate limited'},
-              status: 429,
-            ));
+        when(
+          () =>
+              mockFunctions.invoke('generate-image', body: any(named: 'body')),
+        ).thenAnswer(
+          (_) async =>
+              FunctionResponse(data: {'error': 'Rate limited'}, status: 429),
+        );
 
         expect(
           () => repository.startGeneration(
@@ -141,23 +144,27 @@ void main() {
             templateId: 'template-1',
             prompt: 'test',
           ),
-          throwsA(isA<NetworkException>().having(
-            (e) => e.statusCode,
-            'statusCode',
-            429,
-          )),
+          throwsA(
+            isA<NetworkException>().having(
+              (e) => e.statusCode,
+              'statusCode',
+              429,
+            ),
+          ),
         );
       });
 
       test('throws AppException.generation on server error', () async {
         stubDbInsert();
-        when(() => mockFunctions.invoke(
-              'generate-image',
-              body: any(named: 'body'),
-            )).thenAnswer((_) async => FunctionResponse(
-              data: {'error': 'Internal server error'},
-              status: 500,
-            ));
+        when(
+          () =>
+              mockFunctions.invoke('generate-image', body: any(named: 'body')),
+        ).thenAnswer(
+          (_) async => FunctionResponse(
+            data: {'error': 'Internal server error'},
+            status: 500,
+          ),
+        );
 
         expect(
           () => repository.startGeneration(
@@ -169,37 +176,45 @@ void main() {
         );
       });
 
-      test('throws AppException.network on FunctionException with 429',
-          () async {
-        stubDbInsert();
-        when(() => mockFunctions.invoke(
+      test(
+        'throws AppException.network on FunctionException with 429',
+        () async {
+          stubDbInsert();
+          when(
+            () => mockFunctions.invoke(
               'generate-image',
               body: any(named: 'body'),
-            )).thenThrow(const FunctionException(
-          status: 429,
-          reasonPhrase: 'Too Many Requests',
-        ));
+            ),
+          ).thenThrow(
+            const FunctionException(
+              status: 429,
+              reasonPhrase: 'Too Many Requests',
+            ),
+          );
 
-        expect(
-          () => repository.startGeneration(
-            userId: 'test-user-id',
-            templateId: 'template-1',
-            prompt: 'test',
-          ),
-          throwsA(isA<NetworkException>().having(
-            (e) => e.statusCode,
-            'statusCode',
-            429,
-          )),
-        );
-      });
+          expect(
+            () => repository.startGeneration(
+              userId: 'test-user-id',
+              templateId: 'template-1',
+              prompt: 'test',
+            ),
+            throwsA(
+              isA<NetworkException>().having(
+                (e) => e.statusCode,
+                'statusCode',
+                429,
+              ),
+            ),
+          );
+        },
+      );
 
       test('throws AppException.network on timeout', () async {
         stubDbInsert();
-        when(() => mockFunctions.invoke(
-              'generate-image',
-              body: any(named: 'body'),
-            )).thenThrow(TimeoutException('Timeout'));
+        when(
+          () =>
+              mockFunctions.invoke('generate-image', body: any(named: 'body')),
+        ).thenThrow(TimeoutException('Timeout'));
 
         expect(
           () => repository.startGeneration(
@@ -207,23 +222,24 @@ void main() {
             templateId: 'template-1',
             prompt: 'test',
           ),
-          throwsA(isA<NetworkException>().having(
-            (e) => e.statusCode,
-            'statusCode',
-            408,
-          )),
+          throwsA(
+            isA<NetworkException>().having(
+              (e) => e.statusCode,
+              'statusCode',
+              408,
+            ),
+          ),
         );
       });
 
       test('trims whitespace from prompt', () async {
         stubDbInsert();
-        when(() => mockFunctions.invoke(
-              'generate-image',
-              body: any(named: 'body'),
-            )).thenAnswer((_) async => FunctionResponse(
-              data: {'status': 'ok'},
-              status: 200,
-            ));
+        when(
+          () =>
+              mockFunctions.invoke('generate-image', body: any(named: 'body')),
+        ).thenAnswer(
+          (_) async => FunctionResponse(data: {'status': 'ok'}, status: 200),
+        );
 
         await repository.startGeneration(
           userId: 'test-user-id',
@@ -231,28 +247,29 @@ void main() {
           prompt: '  A beautiful sunset  ',
         );
 
-        verify(() => mockFunctions.invoke(
-              'generate-image',
-              body: {
-                'jobId': 'job-123',
-                'userId': 'test-user-id',
-                'template_id': 'template-1',
-                'prompt': 'A beautiful sunset',
-                'aspect_ratio': '1:1',
-                'image_count': 1,
-              },
-            )).called(1);
+        verify(
+          () => mockFunctions.invoke(
+            'generate-image',
+            body: {
+              'jobId': 'job-123',
+              'userId': 'test-user-id',
+              'template_id': 'template-1',
+              'prompt': 'A beautiful sunset',
+              'aspect_ratio': '1:1',
+              'image_count': 1,
+            },
+          ),
+        ).called(1);
       });
 
       test('uses custom aspect ratio and image count', () async {
         stubDbInsert();
-        when(() => mockFunctions.invoke(
-              'generate-image',
-              body: any(named: 'body'),
-            )).thenAnswer((_) async => FunctionResponse(
-              data: {'status': 'ok'},
-              status: 200,
-            ));
+        when(
+          () =>
+              mockFunctions.invoke('generate-image', body: any(named: 'body')),
+        ).thenAnswer(
+          (_) async => FunctionResponse(data: {'status': 'ok'}, status: 200),
+        );
 
         await repository.startGeneration(
           userId: 'test-user-id',
@@ -262,61 +279,69 @@ void main() {
           imageCount: 4,
         );
 
-        verify(() => mockFunctions.invoke(
-              'generate-image',
-              body: {
-                'jobId': 'job-123',
-                'userId': 'test-user-id',
-                'template_id': 'template-1',
-                'prompt': 'test',
-                'aspect_ratio': '16:9',
-                'image_count': 4,
-              },
-            )).called(1);
+        verify(
+          () => mockFunctions.invoke(
+            'generate-image',
+            body: {
+              'jobId': 'job-123',
+              'userId': 'test-user-id',
+              'template_id': 'template-1',
+              'prompt': 'test',
+              'aspect_ratio': '16:9',
+              'image_count': 4,
+            },
+          ),
+        ).called(1);
       });
     });
 
     group('watchJob', () {
       test('emits job after empty-stream grace period', () async {
-        final controller = StreamController<List<Map<String, dynamic>>>.broadcast();
+        final controller =
+            StreamController<List<Map<String, dynamic>>>.broadcast();
 
         final queryBuilder = MockSupabaseQueryBuilder();
-        when(() => mockClient.from('generation_jobs'))
-            .thenAnswer((_) => queryBuilder);
-
-        when(() => queryBuilder.stream(primaryKey: ['id']))
-            .thenAnswer((_) => mockStreamFilterBuilder);
-        when(() => mockStreamFilterBuilder.eq('id', 'job-1'))
-            .thenAnswer((_) => mockStreamFilterBuilder);
         when(
-          () => mockStreamFilterBuilder
-              .transform<GenerationJobModel>(any()),
+          () => mockClient.from('generation_jobs'),
+        ).thenAnswer((_) => queryBuilder);
+
+        when(
+          () => queryBuilder.stream(primaryKey: ['id']),
+        ).thenAnswer((_) => mockStreamFilterBuilder);
+        when(
+          () => mockStreamFilterBuilder.eq('id', 'job-1'),
+        ).thenAnswer((_) => mockStreamFilterBuilder);
+        when(
+          () => mockStreamFilterBuilder.transform<GenerationJobModel>(any()),
         ).thenAnswer((invocation) {
-          final transformer = invocation.positionalArguments.first
-              as StreamTransformer<List<Map<String, dynamic>>, GenerationJobModel>;
+          final transformer =
+              invocation.positionalArguments.first
+                  as StreamTransformer<
+                    List<Map<String, dynamic>>,
+                    GenerationJobModel
+                  >;
           return controller.stream.transform(transformer);
         });
 
         final emittedJobs = <GenerationJobModel>[];
         final errors = <Object>[];
 
-        final subscription = repository.watchJob('job-1').listen(
-              emittedJobs.add,
-              onError: errors.add,
-            );
+        final subscription = repository
+            .watchJob('job-1')
+            .listen(emittedJobs.add, onError: errors.add);
 
         controller
           ..add([])
           ..add([])
           ..add([
-          {
-            'id': 'job-1',
-            'user_id': 'user-1',
-            'template_id': 'free-text',
-            'prompt': 'A prompt',
-            'status': 'pending',
-          }
-        ]);
+            {
+              'id': 'job-1',
+              'user_id': 'user-1',
+              'template_id': 'free-text',
+              'prompt': 'A prompt',
+              'status': 'pending',
+            },
+          ]);
 
         await Future<void>.delayed(const Duration(milliseconds: 20));
 
@@ -329,31 +354,37 @@ void main() {
       });
 
       test('throws after max empty events', () async {
-        final controller = StreamController<List<Map<String, dynamic>>>.broadcast();
+        final controller =
+            StreamController<List<Map<String, dynamic>>>.broadcast();
 
         final queryBuilder = MockSupabaseQueryBuilder();
-        when(() => mockClient.from('generation_jobs'))
-            .thenAnswer((_) => queryBuilder);
-
-        when(() => queryBuilder.stream(primaryKey: ['id']))
-            .thenAnswer((_) => mockStreamFilterBuilder);
-        when(() => mockStreamFilterBuilder.eq('id', 'job-1'))
-            .thenAnswer((_) => mockStreamFilterBuilder);
         when(
-          () => mockStreamFilterBuilder
-              .transform<GenerationJobModel>(any()),
+          () => mockClient.from('generation_jobs'),
+        ).thenAnswer((_) => queryBuilder);
+
+        when(
+          () => queryBuilder.stream(primaryKey: ['id']),
+        ).thenAnswer((_) => mockStreamFilterBuilder);
+        when(
+          () => mockStreamFilterBuilder.eq('id', 'job-1'),
+        ).thenAnswer((_) => mockStreamFilterBuilder);
+        when(
+          () => mockStreamFilterBuilder.transform<GenerationJobModel>(any()),
         ).thenAnswer((invocation) {
-          final transformer = invocation.positionalArguments.first
-              as StreamTransformer<List<Map<String, dynamic>>, GenerationJobModel>;
+          final transformer =
+              invocation.positionalArguments.first
+                  as StreamTransformer<
+                    List<Map<String, dynamic>>,
+                    GenerationJobModel
+                  >;
           return controller.stream.transform(transformer);
         });
 
         final errors = <Object>[];
 
-        final subscription = repository.watchJob('job-1').listen(
-              (_) {},
-              onError: errors.add,
-            );
+        final subscription = repository
+            .watchJob('job-1')
+            .listen((_) {}, onError: errors.add);
 
         controller
           ..add([])
@@ -383,7 +414,10 @@ void main() {
         'image_count': 2,
         'provider_used': 'gemini',
         'provider_task_id': 'task-abc',
-        'result_urls': ['https://example.com/img1.png', 'https://example.com/img2.png'],
+        'result_urls': [
+          'https://example.com/img1.png',
+          'https://example.com/img2.png',
+        ],
         'error_message': null,
         'created_at': '2026-01-30T10:00:00.000Z',
         'completed_at': '2026-01-30T10:05:00.000Z',
@@ -436,7 +470,13 @@ void main() {
     });
 
     test('fromJson handles all JobStatus values', () {
-      for (final status in ['pending', 'generating', 'processing', 'completed', 'failed']) {
+      for (final status in [
+        'pending',
+        'generating',
+        'processing',
+        'completed',
+        'failed',
+      ]) {
         final json = {
           'id': 'job-$status',
           'user_id': 'user-1',

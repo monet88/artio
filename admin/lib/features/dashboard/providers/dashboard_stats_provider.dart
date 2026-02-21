@@ -11,10 +11,14 @@ Future<DashboardStats> dashboardStats(Ref ref) async {
   final supabase = Supabase.instance.client;
 
   // Wrap with retry for network resilience
-  final allTemplates = await retry(() => supabase
-      .from('templates')
-      .select('id, name, category, is_active, is_premium, updated_at, thumbnail_url')
-      .order('updated_at', ascending: false));
+  final allTemplates = await retry(
+    () => supabase
+        .from('templates')
+        .select(
+          'id, name, category, is_active, is_premium, updated_at, thumbnail_url',
+        )
+        .order('updated_at', ascending: false),
+  );
 
   final list = allTemplates as List;
   final total = list.length;

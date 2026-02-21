@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 
 /// Dropdown for selecting image count (1-4)
 class ImageCountDropdown extends StatelessWidget {
-
   const ImageCountDropdown({
-    required this.value, required this.onChanged, super.key,
+    required this.value,
+    required this.onChanged,
+    super.key,
   });
   final int value;
   final ValueChanged<int> onChanged;

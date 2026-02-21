@@ -41,12 +41,15 @@ class UserModel with _$UserModel {
     return UserModel(
       id: user.id,
       email: user.email ?? '',
-      displayName: (profile?['display_name'] as String?) ??
+      displayName:
+          (profile?['display_name'] as String?) ??
           (metadata?['name'] as String?),
-      avatarUrl: (profile?['avatar_url'] as String?) ??
+      avatarUrl:
+          (profile?['avatar_url'] as String?) ??
           (metadata?['avatar_url'] as String?),
       credits: (profile?['credits'] as num?)?.toInt() ?? 0,
-      isPremium: (profile?['is_premium'] as bool? ?? false) ||
+      isPremium:
+          (profile?['is_premium'] as bool? ?? false) ||
           profile?['role'] == UserRoles.admin,
       premiumExpiresAt: _tryParseDateTime(
         profile?['premium_expires_at'] as String?,

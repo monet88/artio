@@ -1,3 +1,5 @@
+import 'package:artio/features/auth/presentation/state/auth_state.dart';
+import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
 import 'package:artio/features/gallery/data/repositories/gallery_repository.dart';
 import 'package:artio/features/gallery/domain/entities/gallery_item.dart';
 import 'package:artio/features/gallery/presentation/pages/image_viewer_page.dart';
@@ -11,7 +13,14 @@ import 'package:mocktail/mocktail.dart';
 import '../../../../core/fixtures/fixtures.dart';
 
 class MockGalleryRepository extends Mock implements GalleryRepository {}
-class MockSubscriptionRepository extends Mock implements SubscriptionRepository {}
+
+class MockSubscriptionRepository extends Mock
+    implements SubscriptionRepository {}
+
+class _FakeAuthViewModel extends AuthViewModel {
+  @override
+  AuthState build() => const AuthState.unauthenticated();
+}
 
 void main() {
   group('ImageViewerPage', () {
@@ -29,15 +38,19 @@ void main() {
       SubscriptionStatus? subscriptionStatus,
     }) {
       final status = subscriptionStatus ?? const SubscriptionStatus();
-      when(() => mockSubscriptionRepository.getStatus())
-          .thenAnswer((_) async => status);
-      when(() => mockSubscriptionRepository.getOfferings())
-          .thenAnswer((_) async => []);
+      when(
+        () => mockSubscriptionRepository.getStatus(),
+      ).thenAnswer((_) async => status);
+      when(
+        () => mockSubscriptionRepository.getOfferings(),
+      ).thenAnswer((_) async => []);
       return ProviderScope(
         overrides: [
           galleryRepositoryProvider.overrideWithValue(mockRepository),
-          subscriptionRepositoryProvider
-              .overrideWithValue(mockSubscriptionRepository),
+          subscriptionRepositoryProvider.overrideWithValue(
+            mockSubscriptionRepository,
+          ),
+          authViewModelProvider.overrideWith(_FakeAuthViewModel.new),
         ],
         child: MaterialApp(
           home: ImageViewerPage(
@@ -139,8 +152,7 @@ void main() {
     testWidgets('starts at specified initialIndex', (tester) async {
       final items = GalleryItemFixtures.list(count: 5);
 
-      await tester.pumpWidget(
-          createTestWidget(items: items, initialIndex: 2));
+      await tester.pumpWidget(createTestWidget(items: items, initialIndex: 2));
       await tester.pump(const Duration(seconds: 4));
 
       final pageView = tester.widget<PageView>(find.byType(PageView));
@@ -163,9 +175,7 @@ void main() {
         await tester.pumpWidget(
           createTestWidget(
             items: items,
-            subscriptionStatus: const SubscriptionStatus(
-              
-            ),
+            subscriptionStatus: const SubscriptionStatus(),
           ),
         );
         // pump() resolves the async subscriptionNotifierProvider

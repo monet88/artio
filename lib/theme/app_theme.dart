@@ -13,12 +13,12 @@ import 'package:flutter/services.dart';
 /// Component theme details live in [AppComponentThemes].
 /// Color palette lives in [AppColors].
 abstract class AppTheme {
-
   // ═══════════════════════════════════════════════════════════════════════
   //  LIGHT THEME
   // ═══════════════════════════════════════════════════════════════════════
 
-  static ThemeData get light => FlexThemeData.light(
+  static ThemeData get light =>
+      FlexThemeData.light(
         colors: const FlexSchemeColor(
           primary: AppColors.primaryCta,
           primaryContainer: AppColors.primaryLight,
@@ -50,10 +50,12 @@ abstract class AppTheme {
           overlayStyle: SystemUiOverlayStyle.dark,
         ),
         cardTheme: AppComponentThemes.card(color: AppColors.lightCard),
-        filledButtonTheme:
-            AppButtonThemes.filledButton(foreground: Colors.white),
-        elevatedButtonTheme:
-            AppButtonThemes.elevatedButton(foreground: Colors.white),
+        filledButtonTheme: AppButtonThemes.filledButton(
+          foreground: Colors.white,
+        ),
+        elevatedButtonTheme: AppButtonThemes.elevatedButton(
+          foreground: Colors.white,
+        ),
         outlinedButtonTheme: AppButtonThemes.outlinedButton,
         textButtonTheme: AppButtonThemes.textButton,
         navigationBarTheme: AppComponentThemes.navigationBar(
@@ -92,7 +94,8 @@ abstract class AppTheme {
   //  DARK THEME
   // ═══════════════════════════════════════════════════════════════════════
 
-  static ThemeData get dark => FlexThemeData.dark(
+  static ThemeData get dark =>
+      FlexThemeData.dark(
         colors: const FlexSchemeColor(
           primary: AppColors.primaryCta,
           primaryContainer: AppColors.primaryDark,

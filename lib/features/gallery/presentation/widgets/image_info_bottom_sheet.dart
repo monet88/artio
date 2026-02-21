@@ -9,7 +9,9 @@ import 'package:intl/intl.dart';
 /// Glassmorphism info bottom sheet for the image viewer.
 class ImageInfoBottomSheet extends StatelessWidget {
   const ImageInfoBottomSheet({
-    required this.item, required this.onCopyPrompt, super.key,
+    required this.item,
+    required this.onCopyPrompt,
+    super.key,
   });
 
   final GalleryItem item;
@@ -27,9 +29,7 @@ class ImageInfoBottomSheet extends StatelessWidget {
         duration: AppAnimations.normal,
         curve: AppAnimations.sharpCurve,
         child: ClipRRect(
-          borderRadius: const BorderRadius.vertical(
-            top: Radius.circular(20),
-          ),
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
             child: Container(
@@ -40,10 +40,7 @@ class ImageInfoBottomSheet extends StatelessWidget {
                   top: Radius.circular(20),
                 ),
                 border: const Border(
-                  top: BorderSide(
-                    color: AppColors.white10,
-                    width: 0.5,
-                  ),
+                  top: BorderSide(color: AppColors.white10, width: 0.5),
                 ),
               ),
               child: SafeArea(
@@ -195,10 +192,7 @@ class _GlassIconButton extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
               color: AppColors.white10,
-              border: Border.all(
-                color: AppColors.white10,
-                width: 0.5,
-              ),
+              border: Border.all(color: AppColors.white10, width: 0.5),
             ),
             child: Icon(icon, color: Colors.white70, size: 18),
           ),
@@ -210,10 +204,7 @@ class _GlassIconButton extends StatelessWidget {
 
 /// Small metadata chip for the info panel.
 class _MetadataChip extends StatelessWidget {
-  const _MetadataChip({
-    required this.icon,
-    required this.label,
-  });
+  const _MetadataChip({required this.icon, required this.label});
 
   final IconData icon;
   final String label;
@@ -228,10 +219,7 @@ class _MetadataChip extends StatelessWidget {
         Flexible(
           child: Text(
             label,
-            style: const TextStyle(
-              color: AppColors.textMuted,
-              fontSize: 12,
-            ),
+            style: const TextStyle(color: AppColors.textMuted, fontSize: 12),
             overflow: TextOverflow.ellipsis,
           ),
         ),

@@ -34,9 +34,7 @@ class ShimmerGrid extends StatelessWidget {
           final height = (index % 3 + 1) * 100.0 + (index % 2 * 50.0);
 
           return Shimmer.fromColors(
-            baseColor: isDark
-                ? AppColors.shimmerBase
-                : const Color(0xFFE8EAF0),
+            baseColor: isDark ? AppColors.shimmerBase : const Color(0xFFE8EAF0),
             highlightColor: isDark
                 ? AppColors.shimmerHighlight
                 : const Color(0xFFF3F4F8),

@@ -14,19 +14,15 @@ abstract class IGenerationPolicy {
 class GenerationEligibility with _$GenerationEligibility {
   const GenerationEligibility._();
 
-  const factory GenerationEligibility.allowed({
-    int? remainingCredits,
-  }) = _Allowed;
+  const factory GenerationEligibility.allowed({int? remainingCredits}) =
+      _Allowed;
 
-  const factory GenerationEligibility.denied({
-    required String reason,
-  }) = _Denied;
+  const factory GenerationEligibility.denied({required String reason}) =
+      _Denied;
 
   bool get isAllowed => this is _Allowed;
   bool get isDenied => this is _Denied;
 
-  String? get denialReason => maybeMap(
-        denied: (d) => d.reason,
-        orElse: () => null,
-      );
+  String? get denialReason =>
+      maybeMap(denied: (d) => d.reason, orElse: () => null);
 }

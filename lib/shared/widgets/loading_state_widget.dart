@@ -8,11 +8,7 @@ import 'package:flutter/material.dart';
 /// Branded loading widget with pulsing logo, optional contextual message,
 /// and skeleton loading variant.
 class LoadingStateWidget extends StatefulWidget {
-  const LoadingStateWidget({
-    super.key,
-    this.message,
-    this.compact = false,
-  });
+  const LoadingStateWidget({super.key, this.message, this.compact = false});
 
   /// Optional contextual message shown below the loading indicator.
   final String? message;
@@ -100,7 +96,9 @@ class _LoadingStateWidgetState extends State<LoadingStateWidget>
                       borderRadius: BorderRadius.circular(18),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.primaryCta.withValues(alpha: glowOpacity),
+                          color: AppColors.primaryCta.withValues(
+                            alpha: glowOpacity,
+                          ),
                           blurRadius: 24,
                           spreadRadius: _pulseController.value * 4,
                         ),

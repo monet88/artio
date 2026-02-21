@@ -54,13 +54,16 @@ void main() {
       expect(params.prompt, 'Tree\n\nNegative: noise');
     });
 
-    test('toGenerationParams without negative prompt keeps original prompt', () {
-      const state = CreateFormState(prompt: 'Portrait', negativePrompt: '  ');
+    test(
+      'toGenerationParams without negative prompt keeps original prompt',
+      () {
+        const state = CreateFormState(prompt: 'Portrait', negativePrompt: '  ');
 
-      final params = state.toGenerationParams();
+        final params = state.toGenerationParams();
 
-      expect(params.prompt, 'Portrait');
-    });
+        expect(params.prompt, 'Portrait');
+      },
+    );
 
     test('isValid false when prompt length exceeds max limit', () {
       final prompt = 'a' * (AppConstants.maxPromptLength + 1);

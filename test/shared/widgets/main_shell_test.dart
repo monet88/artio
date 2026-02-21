@@ -7,54 +7,37 @@ import 'package:go_router/go_router.dart';
 void main() {
   group('MainShell', () {
     // Helper to build widget with GoRouter context
-    Widget buildWidget({required Widget child, String initialLocation = '/home'}) {
+    Widget buildWidget({
+      required Widget child,
+      String initialLocation = '/home',
+    }) {
       final router = GoRouter(
         initialLocation: initialLocation,
         routes: [
           ShellRoute(
             builder: (context, state, child) => MainShell(child: child),
             routes: [
-              GoRoute(
-                path: '/home',
-                builder: (context, state) => child,
-              ),
-              GoRoute(
-                path: '/create',
-                builder: (context, state) => child,
-              ),
-              GoRoute(
-                path: '/gallery',
-                builder: (context, state) => child,
-              ),
-              GoRoute(
-                path: '/settings',
-                builder: (context, state) => child,
-              ),
+              GoRoute(path: '/home', builder: (context, state) => child),
+              GoRoute(path: '/create', builder: (context, state) => child),
+              GoRoute(path: '/gallery', builder: (context, state) => child),
+              GoRoute(path: '/settings', builder: (context, state) => child),
             ],
           ),
         ],
       );
 
-      return ProviderScope(
-        child: MaterialApp.router(
-          routerConfig: router,
-        ),
-      );
+      return ProviderScope(child: MaterialApp.router(routerConfig: router));
     }
 
     testWidgets('renders bottom navigation bar', (tester) async {
-      await tester.pumpWidget(
-        buildWidget(child: const Text('Home Content')),
-      );
+      await tester.pumpWidget(buildWidget(child: const Text('Home Content')));
       await tester.pumpAndSettle();
 
       expect(find.byType(NavigationBar), findsOneWidget);
     });
 
     testWidgets('all 4 navigation destinations are present', (tester) async {
-      await tester.pumpWidget(
-        buildWidget(child: const Text('Home Content')),
-      );
+      await tester.pumpWidget(buildWidget(child: const Text('Home Content')));
       await tester.pumpAndSettle();
 
       expect(find.text('Home'), findsOneWidget);
@@ -64,9 +47,7 @@ void main() {
     });
 
     testWidgets('renders Home icon', (tester) async {
-      await tester.pumpWidget(
-        buildWidget(child: const Text('Home Content')),
-      );
+      await tester.pumpWidget(buildWidget(child: const Text('Home Content')));
       await tester.pumpAndSettle();
 
       // Home tab is selected → shows selectedIcon (home_rounded)
@@ -75,9 +56,7 @@ void main() {
     });
 
     testWidgets('renders Create icon', (tester) async {
-      await tester.pumpWidget(
-        buildWidget(child: const Text('Home Content')),
-      );
+      await tester.pumpWidget(buildWidget(child: const Text('Home Content')));
       await tester.pumpAndSettle();
 
       // Create tab is unselected → shows auto_awesome_outlined
@@ -85,9 +64,7 @@ void main() {
     });
 
     testWidgets('correct index selected for home route', (tester) async {
-      await tester.pumpWidget(
-        buildWidget(child: const Text('Content')),
-      );
+      await tester.pumpWidget(buildWidget(child: const Text('Content')));
       await tester.pumpAndSettle();
 
       final navBar = tester.widget<NavigationBar>(find.byType(NavigationBar));

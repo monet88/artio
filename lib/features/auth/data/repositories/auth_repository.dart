@@ -19,7 +19,6 @@ AuthRepository authRepository(Ref ref) {
 }
 
 class AuthRepository implements IAuthRepository {
-
   const AuthRepository(this._supabase);
   final SupabaseClient _supabase;
 
@@ -79,10 +78,15 @@ class AuthRepository implements IAuthRepository {
         redirectTo: kIsWeb ? null : AppConstants.loginCallback,
       );
     } on AuthException catch (e) {
-      if (e.message.contains('canceled') || e.message.contains('cancelled')) return;
+      if (e.message.contains('canceled') || e.message.contains('cancelled')) {
+        return;
+      }
       throw AppException.auth(message: e.message);
     } catch (e) {
-      if (e.toString().contains('canceled') || e.toString().contains('cancelled')) return;
+      if (e.toString().contains('canceled') ||
+          e.toString().contains('cancelled')) {
+        return;
+      }
       throw AppException.auth(message: e.toString());
     }
   }
@@ -95,10 +99,15 @@ class AuthRepository implements IAuthRepository {
         redirectTo: AppConstants.loginCallback,
       );
     } on AuthException catch (e) {
-      if (e.message.contains('canceled') || e.message.contains('cancelled')) return;
+      if (e.message.contains('canceled') || e.message.contains('cancelled')) {
+        return;
+      }
       throw AppException.auth(message: e.message);
     } catch (e) {
-      if (e.toString().contains('canceled') || e.toString().contains('cancelled')) return;
+      if (e.toString().contains('canceled') ||
+          e.toString().contains('cancelled')) {
+        return;
+      }
       throw AppException.auth(message: e.toString());
     }
   }
@@ -171,7 +180,9 @@ class AuthRepository implements IAuthRepository {
         'created_at': DateTime.now().toIso8601String(),
       });
     } on PostgrestException catch (e) {
-      if (e.code == '23505') return; // unique_violation — profile already exists
+      if (e.code == '23505') {
+        return; // unique_violation — profile already exists
+      }
       rethrow;
     }
   }

@@ -14,7 +14,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_gallery_saver_plus/image_gallery_saver_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:storage_client/storage_client.dart' as storage_client;
 import 'package:supabase_flutter/supabase_flutter.dart' hide StorageException;
 
@@ -44,6 +44,11 @@ class GalleryRepository implements IGalleryRepository {
     String? templateId,
   }) async {
     // Cache-first: only for the default first page.
+    if (limit < 1 || limit > 100 || offset < 0) {
+      throw const AppException.storage(
+        message: 'Invalid pagination parameters',
+      );
+    }
     if (_isCacheableQuery(offset, templateId) && _cache.isCacheValid()) {
       final cached = await _cache.getCachedItems();
       if (cached != null) return cached;
@@ -51,7 +56,9 @@ class GalleryRepository implements IGalleryRepository {
 
     try {
       final items = await _fetchFromNetwork(
-        limit: limit, offset: offset, templateId: templateId,
+        limit: limit,
+        offset: offset,
+        templateId: templateId,
       );
       if (_isCacheableQuery(offset, templateId)) {
         await _cache.cacheItems(items);
@@ -61,7 +68,20 @@ class GalleryRepository implements IGalleryRepository {
       // Network error: fallback to stale cache for first page.
       if (_isCacheableQuery(offset, templateId)) {
         final stale = await _cache.getCachedItems();
-        if (stale != null) return stale;
+        if (stale != null) {
+          unawaited(
+            Future(
+              () => Sentry.addBreadcrumb(
+                Breadcrumb(
+                  message: 'Serving stale gallery cache due to network error',
+                  category: 'gallery.cache',
+                  level: SentryLevel.warning,
+                ),
+              ),
+            ),
+          );
+          return stale;
+        }
       }
       rethrow;
     }
@@ -74,7 +94,9 @@ class GalleryRepository implements IGalleryRepository {
     String? templateId,
   }) async {
     final items = await _fetchFromNetwork(
-      limit: limit, offset: offset, templateId: templateId,
+      limit: limit,
+      offset: offset,
+      templateId: templateId,
     );
     if (_isCacheableQuery(offset, templateId)) {
       await _cache.cacheItems(items);
@@ -156,22 +178,24 @@ class GalleryRepository implements IGalleryRepository {
       // Hard delete - use softDeleteImage for soft delete
       final job = await _supabase
           .from('generation_jobs')
-          .select('result_urls, user_id')
+          .select('result_urls')
           .eq('id', jobId)
           .single();
 
-      final userId = job['user_id'] as String;
       final urls = (job['result_urls'] as List?) ?? [];
 
-      for (var i = 0; i < urls.length; i++) {
+      // Use stored result_urls directly (they are storage-relative paths)
+      for (final entry in urls) {
+        final path = entry as String?;
+        if (path == null || path.isEmpty) continue;
         try {
-          await _supabase.storage
-              .from('generated-images')
-              .remove(['$userId/$jobId/$i.png']);
+          await _supabase.storage.from('generated-images').remove([path]);
         } on storage_client.StorageException catch (e) {
-          debugPrint('Storage delete failed for $userId/$jobId/$i.png: $e');
+          debugPrint('Storage delete failed for $path: $e');
           // Report to Sentry for production visibility
-          unawaited(SentryConfig.captureException(e, stackTrace: StackTrace.current));
+          unawaited(
+            SentryConfig.captureException(e, stackTrace: StackTrace.current),
+          );
         }
       }
 
@@ -212,6 +236,26 @@ class GalleryRepository implements IGalleryRepository {
   @override
   Future<void> retryGeneration(String jobId) async {
     try {
+      // Fetch job data for retry (need prompt for Edge Function)
+      final job = await _supabase
+          .from('generation_jobs')
+          .select('prompt')
+          .eq('id', jobId)
+          .maybeSingle();
+
+      if (job == null) {
+        throw const AppException.generation(
+          message: 'Cannot retry: job not found',
+        );
+      }
+
+      final prompt = job['prompt'] as String?;
+      if (prompt == null || prompt.trim().isEmpty) {
+        throw const AppException.generation(
+          message: 'Cannot retry: original prompt not found',
+        );
+      }
+
       // Reset status to pending
       await _supabase
           .from('generation_jobs')
@@ -219,14 +263,24 @@ class GalleryRepository implements IGalleryRepository {
           .eq('id', jobId);
 
       // Re-trigger Edge Function with retry for network resilience
-      await retry(() => _supabase.functions.invoke('generate-image', body: {'jobId': jobId}));
+      await retry(
+        () => _supabase.functions.invoke(
+          'generate-image',
+          body: {'jobId': jobId, 'prompt': prompt},
+        ),
+      );
     } on PostgrestException catch (e) {
       throw AppException.storage(message: e.message);
     } on FunctionException catch (e) {
-      throw AppException.generation(message: e.details?.toString() ?? 'Retry failed');
+      throw AppException.generation(
+        message: e.details?.toString() ?? 'Retry failed',
+      );
     } on Exception catch (e) {
       if (e is AppException) rethrow;
-      throw AppException.unknown(message: 'Failed to retry generation', originalError: e);
+      throw AppException.unknown(
+        message: 'Failed to retry generation',
+        originalError: e,
+      );
     }
   }
 
@@ -242,7 +296,11 @@ class GalleryRepository implements IGalleryRepository {
             (defaultTargetPlatform == TargetPlatform.android ||
                 defaultTargetPlatform == TargetPlatform.iOS)) {
           final result = await ImageGallerySaverPlus.saveFile(file.path);
-          await file.delete().catchError((_) => file);
+          try {
+            await file.delete();
+          } on FileSystemException catch (e) {
+            debugPrint('Temp file cleanup failed: $e');
+          }
           if (result is Map && result['isSuccess'] == true) {
             return 'Photos';
           }
@@ -254,7 +312,9 @@ class GalleryRepository implements IGalleryRepository {
         await file.rename(destPath);
         return destPath;
       } on FileSystemException catch (e) {
-        throw AppException.storage(message: 'Failed to save image: ${e.message}');
+        throw AppException.storage(
+          message: 'Failed to save image: ${e.message}',
+        );
       } on Exception catch (e) {
         if (e is AppException) rethrow;
         throw const AppException.network(message: 'Failed to download image');
@@ -285,7 +345,8 @@ class GalleryRepository implements IGalleryRepository {
     try {
       await _supabase
           .from('generation_jobs')
-          .update({'is_favorite': isFavorite}).eq('id', jobId);
+          .update({'is_favorite': isFavorite})
+          .eq('id', jobId);
       await _cache.clearCache();
     } on PostgrestException catch (e) {
       throw AppException.storage(message: e.message);

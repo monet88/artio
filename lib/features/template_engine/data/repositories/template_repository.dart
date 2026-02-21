@@ -86,7 +86,9 @@ class TemplateRepository implements ITemplateRepository {
           results.add(TemplateModel.fromJson(item));
         } on Exception catch (e) {
           // Skip the corrupted template and log the failure
-          Log.w('Failed to parse a template from fetched category ($category): $e');
+          Log.w(
+            'Failed to parse a template from fetched category ($category): $e',
+          );
         }
       }
       return results;

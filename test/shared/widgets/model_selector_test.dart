@@ -85,7 +85,9 @@ void main() {
       expect(find.text('NEW'), findsOneWidget);
     });
 
-    testWidgets('premium models are disabled for non-premium users', (tester) async {
+    testWidgets('premium models are disabled for non-premium users', (
+      tester,
+    ) async {
       await tester.pumpWidget(buildWidget());
 
       await tester.tap(find.byType(DropdownButtonFormField<String>));
@@ -133,10 +135,12 @@ void main() {
 
     testWidgets('calls onChanged when model selected', (tester) async {
       String? selectedModel;
-      await tester.pumpWidget(buildWidget(
-        isPremium: true,
-        onChanged: (model) => selectedModel = model,
-      ));
+      await tester.pumpWidget(
+        buildWidget(
+          isPremium: true,
+          onChanged: (model) => selectedModel = model,
+        ),
+      );
 
       await tester.tap(find.byType(DropdownButtonFormField<String>));
       await tester.pumpAndSettle();

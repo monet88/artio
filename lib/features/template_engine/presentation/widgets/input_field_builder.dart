@@ -2,9 +2,10 @@ import 'package:artio/features/template_engine/domain/entities/input_field_model
 import 'package:flutter/material.dart';
 
 class InputFieldBuilder extends StatefulWidget {
-
   const InputFieldBuilder({
-    required this.field, required this.onChanged, super.key,
+    required this.field,
+    required this.onChanged,
+    super.key,
   });
   final InputFieldModel field;
   final ValueChanged<String> onChanged;
@@ -43,10 +44,10 @@ class _InputFieldBuilderState extends State<InputFieldBuilder> {
           ),
           initialValue: widget.field.defaultValue,
           items: widget.field.options
-              ?.map((option) => DropdownMenuItem(
-                    value: option,
-                    child: Text(option),
-                  ))
+              ?.map(
+                (option) =>
+                    DropdownMenuItem(value: option, child: Text(option)),
+              )
               .toList(),
           onChanged: (value) {
             if (value != null) widget.onChanged(value);
@@ -78,9 +79,9 @@ class _InputFieldBuilderState extends State<InputFieldBuilder> {
                 ),
                 Text(
                   _sliderValue.toStringAsFixed(0),
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
                 ),
               ],
             ),
@@ -103,7 +104,8 @@ class _InputFieldBuilderState extends State<InputFieldBuilder> {
           initialValue: widget.field.defaultValue,
           decoration: InputDecoration(
             labelText: widget.field.label,
-            hintText: widget.field.placeholder ?? 'Share any additional ideas...',
+            hintText:
+                widget.field.placeholder ?? 'Share any additional ideas...',
             border: const OutlineInputBorder(),
           ),
           maxLength: 500,

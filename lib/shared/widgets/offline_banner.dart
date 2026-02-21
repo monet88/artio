@@ -30,13 +30,13 @@ class _OfflineBannerState extends ConsumerState<OfflineBanner>
       duration: AppAnimations.normal,
     );
 
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, -1),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: AppAnimations.defaultCurve,
-    ));
+    _slideAnimation =
+        Tween<Offset>(begin: const Offset(0, -1), end: Offset.zero).animate(
+          CurvedAnimation(
+            parent: _controller,
+            curve: AppAnimations.defaultCurve,
+          ),
+        );
   }
 
   @override
@@ -49,9 +49,8 @@ class _OfflineBannerState extends ConsumerState<OfflineBanner>
   Widget build(BuildContext context) {
     final connectivityAsync = ref.watch(connectivityProvider);
 
-    final isOffline = connectivityAsync.whenOrNull(
-          data: (isConnected) => !isConnected,
-        ) ??
+    final isOffline =
+        connectivityAsync.whenOrNull(data: (isConnected) => !isConnected) ??
         false;
 
     // Handle state transitions
@@ -66,9 +65,10 @@ class _OfflineBannerState extends ConsumerState<OfflineBanner>
         if (mounted) {
           // Re-check connectivity before dismissing — if user went
           // offline again during the delay, keep banner visible.
-          final stillOnline = ref.read(connectivityProvider).whenOrNull(
-                data: (isConnected) => isConnected,
-              ) ??
+          final stillOnline =
+              ref
+                  .read(connectivityProvider)
+                  .whenOrNull(data: (isConnected) => isConnected) ??
               true;
           if (stillOnline) {
             _controller.reverse();
@@ -93,9 +93,7 @@ class _OfflineBannerState extends ConsumerState<OfflineBanner>
           vertical: AppSpacing.sm,
         ),
         decoration: BoxDecoration(
-          color: _showReconnected
-              ? AppColors.success
-              : AppColors.error,
+          color: _showReconnected ? AppColors.success : AppColors.error,
           boxShadow: const [
             BoxShadow(
               color: Color(0x20000000),
@@ -110,19 +108,16 @@ class _OfflineBannerState extends ConsumerState<OfflineBanner>
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // ── Animated Icon ─────────────────────────────────
-              if (_showReconnected) const Icon(
-                      Icons.wifi_rounded,
-                      size: 18,
-                      color: Colors.white,
-                    ) else const _PulsingWifiIcon(),
+              if (_showReconnected)
+                const Icon(Icons.wifi_rounded, size: 18, color: Colors.white)
+              else
+                const _PulsingWifiIcon(),
 
               const SizedBox(width: 8),
 
               // ── Message ───────────────────────────────────────
               Text(
-                _showReconnected
-                    ? 'Back online'
-                    : 'No internet connection',
+                _showReconnected ? 'Back online' : 'No internet connection',
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 13,
@@ -187,16 +182,9 @@ class _PulsingWifiIconState extends State<_PulsingWifiIcon>
     return AnimatedBuilder(
       animation: _pulse,
       builder: (context, child) {
-        return Opacity(
-          opacity: 0.5 + (_pulse.value * 0.5),
-          child: child,
-        );
+        return Opacity(opacity: 0.5 + (_pulse.value * 0.5), child: child);
       },
-      child: const Icon(
-        Icons.wifi_off_rounded,
-        size: 18,
-        color: Colors.white,
-      ),
+      child: const Icon(Icons.wifi_off_rounded, size: 18, color: Colors.white),
     );
   }
 }

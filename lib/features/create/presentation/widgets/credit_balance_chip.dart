@@ -13,33 +13,34 @@ class CreditBalanceChip extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isLoggedIn = ref.watch(authViewModelProvider).maybeMap(
-          authenticated: (_) => true,
-          orElse: () => false,
-        );
+    final isLoggedIn = ref
+        .watch(authViewModelProvider)
+        .maybeMap(authenticated: (_) => true, orElse: () => false);
     if (!isLoggedIn) return const SizedBox.shrink();
 
     return Padding(
       padding: const EdgeInsets.only(bottom: AppSpacing.md),
-      child: ref.watch(creditBalanceNotifierProvider).maybeWhen(
-        data: (balance) => Align(
-          alignment: Alignment.centerLeft,
-          child: Chip(
-            avatar: const Text('💎', style: TextStyle(fontSize: 14)),
-            label: Text('${math.max(0, balance.balance)} credits'),
-            visualDensity: VisualDensity.compact,
+      child: ref
+          .watch(creditBalanceNotifierProvider)
+          .maybeWhen(
+            data: (balance) => Align(
+              alignment: Alignment.centerLeft,
+              child: Chip(
+                avatar: const Text('💎', style: TextStyle(fontSize: 14)),
+                label: Text('${math.max(0, balance.balance)} credits'),
+                visualDensity: VisualDensity.compact,
+              ),
+            ),
+            loading: () => const Align(
+              alignment: Alignment.centerLeft,
+              child: Chip(
+                avatar: Text('💎', style: TextStyle(fontSize: 14)),
+                label: Text('...'),
+                visualDensity: VisualDensity.compact,
+              ),
+            ),
+            orElse: () => const SizedBox.shrink(),
           ),
-        ),
-        loading: () => const Align(
-          alignment: Alignment.centerLeft,
-          child: Chip(
-            avatar: Text('💎', style: TextStyle(fontSize: 14)),
-            label: Text('...'),
-            visualDensity: VisualDensity.compact,
-          ),
-        ),
-        orElse: () => const SizedBox.shrink(),
-      ),
     );
   }
 }

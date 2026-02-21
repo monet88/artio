@@ -7,7 +7,7 @@ import '../../../../core/helpers/helpers.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  
+
   group('ThemeModeNotifier', () {
     setUp(() {
       SharedPreferences.setMockInitialValues({});
@@ -24,7 +24,9 @@ void main() {
       final container = createContainer();
 
       await container.read(themeModeNotifierProvider.future);
-      await container.read(themeModeNotifierProvider.notifier).setThemeMode(ThemeMode.dark);
+      await container
+          .read(themeModeNotifierProvider.notifier)
+          .setThemeMode(ThemeMode.dark);
 
       expect(container.read(themeModeNotifierProvider).value, ThemeMode.dark);
     });
@@ -33,7 +35,9 @@ void main() {
       final container = createContainer();
 
       await container.read(themeModeNotifierProvider.future);
-      await container.read(themeModeNotifierProvider.notifier).setThemeMode(ThemeMode.light);
+      await container
+          .read(themeModeNotifierProvider.notifier)
+          .setThemeMode(ThemeMode.light);
 
       expect(container.read(themeModeNotifierProvider).value, ThemeMode.light);
     });
@@ -44,11 +48,15 @@ void main() {
       await container.read(themeModeNotifierProvider.future);
 
       // First set to dark
-      await container.read(themeModeNotifierProvider.notifier).setThemeMode(ThemeMode.dark);
+      await container
+          .read(themeModeNotifierProvider.notifier)
+          .setThemeMode(ThemeMode.dark);
       expect(container.read(themeModeNotifierProvider).value, ThemeMode.dark);
 
       // Then back to system
-      await container.read(themeModeNotifierProvider.notifier).setThemeMode(ThemeMode.system);
+      await container
+          .read(themeModeNotifierProvider.notifier)
+          .setThemeMode(ThemeMode.system);
       expect(container.read(themeModeNotifierProvider).value, ThemeMode.system);
     });
 
@@ -56,7 +64,9 @@ void main() {
       final container = createContainer();
 
       await container.read(themeModeNotifierProvider.future);
-      await container.read(themeModeNotifierProvider.notifier).setThemeMode(ThemeMode.dark);
+      await container
+          .read(themeModeNotifierProvider.notifier)
+          .setThemeMode(ThemeMode.dark);
 
       // Multiple reads should return same value
       expect(container.read(themeModeNotifierProvider).value, ThemeMode.dark);

@@ -192,7 +192,7 @@ void main() {
         final jobs = GenerationJobFixtures.list();
 
         expect(jobs.length, 5);
-        
+
         final statuses = jobs.map((j) => j.status).toSet();
         expect(statuses, contains(JobStatus.pending));
         expect(statuses, contains(JobStatus.generating));

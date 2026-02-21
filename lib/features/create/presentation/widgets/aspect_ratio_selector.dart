@@ -4,7 +4,10 @@ import 'package:flutter/material.dart';
 
 class AspectRatioSelector extends StatelessWidget {
   const AspectRatioSelector({
-    required this.selectedRatio, required this.selectedModelId, required this.onChanged, super.key,
+    required this.selectedRatio,
+    required this.selectedModelId,
+    required this.onChanged,
+    super.key,
   });
 
   final String selectedRatio;

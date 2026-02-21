@@ -9,12 +9,11 @@ void main() {
   group('AppExceptionMapper', () {
     group('toUserMessage', () {
       test('returns network message for SocketException', () {
-        final error = const SocketException('Connection refused');
+        const error = SocketException('Connection refused');
 
         final message = AppExceptionMapper.toUserMessage(error);
 
-        expect(
-            message, 'No internet connection. Please check your network.');
+        expect(message, 'No internet connection. Please check your network.');
       });
 
       test('returns timeout message for TimeoutException', () {
@@ -60,10 +59,7 @@ void main() {
 
     group('NetworkException mapping', () {
       test('maps 404 to "not found" message', () {
-        const error = NetworkException(
-          message: 'Not found',
-          statusCode: 404,
-        );
+        const error = NetworkException(message: 'Not found', statusCode: 404);
 
         final message = AppExceptionMapper.toUserMessage(error);
 
@@ -82,10 +78,7 @@ void main() {
       });
 
       test('maps 403 to "permission denied" message', () {
-        const error = NetworkException(
-          message: 'Forbidden',
-          statusCode: 403,
-        );
+        const error = NetworkException(message: 'Forbidden', statusCode: 403);
 
         final message = AppExceptionMapper.toUserMessage(error);
 
@@ -124,9 +117,7 @@ void main() {
       });
 
       test('maps network errors without status code to "connection error"', () {
-        const error = NetworkException(
-          message: 'Network error',
-        );
+        const error = NetworkException(message: 'Network error');
 
         final message = AppExceptionMapper.toUserMessage(error);
 
@@ -134,10 +125,7 @@ void main() {
       });
 
       test('maps other status codes to "connection error"', () {
-        const error = NetworkException(
-          message: 'Some error',
-          statusCode: 418,
-        );
+        const error = NetworkException(message: 'Some error', statusCode: 418);
 
         final message = AppExceptionMapper.toUserMessage(error);
 

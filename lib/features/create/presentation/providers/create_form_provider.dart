@@ -55,10 +55,7 @@ class CreateFormNotifier extends _$CreateFormNotifier {
         ? state.aspectRatio
         : supportedRatios.first;
 
-    state = state.copyWith(
-      modelId: modelId,
-      aspectRatio: newAspectRatio,
-    );
+    state = state.copyWith(modelId: modelId, aspectRatio: newAspectRatio);
   }
 
   void reset() {

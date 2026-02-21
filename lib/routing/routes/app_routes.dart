@@ -18,10 +18,7 @@ part 'app_routes.g.dart';
 
 /// Extra data for gallery image navigation
 class GalleryImageExtra {
-  const GalleryImageExtra({
-    required this.items,
-    required this.initialIndex,
-  });
+  const GalleryImageExtra({required this.items, required this.initialIndex});
 
   final List<GalleryItem> items;
   final int initialIndex;
@@ -84,8 +81,7 @@ class HomeRoute extends GoRouteData {
   const HomeRoute();
 
   @override
-  Widget build(BuildContext context, GoRouterState state) =>
-      const HomeScreen();
+  Widget build(BuildContext context, GoRouterState state) => const HomeScreen();
 }
 
 class CreateRoute extends GoRouteData {

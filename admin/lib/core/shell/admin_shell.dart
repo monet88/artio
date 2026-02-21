@@ -101,9 +101,9 @@ class AdminShell extends ConsumerWidget {
         Text(
           'Artio',
           style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                fontWeight: FontWeight.w600,
-                letterSpacing: 0.5,
-              ),
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.5,
+          ),
         ),
       ],
     );

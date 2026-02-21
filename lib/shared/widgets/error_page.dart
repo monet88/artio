@@ -15,7 +15,11 @@ class ErrorPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.error_outline, size: AppDimensions.iconXxl, color: Colors.red),
+            const Icon(
+              Icons.error_outline,
+              size: AppDimensions.iconXxl,
+              color: Colors.red,
+            ),
             const SizedBox(height: AppSpacing.md),
             Text(error?.toString() ?? 'Page not found'),
             const SizedBox(height: AppSpacing.md),

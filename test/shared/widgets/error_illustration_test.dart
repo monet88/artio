@@ -11,11 +11,7 @@ void main() {
     }) {
       return MaterialApp(
         home: Scaffold(
-          body: ErrorIllustration(
-            icon: icon,
-            color: color,
-            isDark: isDark,
-          ),
+          body: ErrorIllustration(icon: icon, color: color, isDark: isDark),
         ),
       );
     }

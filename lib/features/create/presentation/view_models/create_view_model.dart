@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:artio/core/constants/ai_models.dart';
-import 'package:artio/core/constants/app_constants.dart';
 import 'package:artio/core/constants/generation_constants.dart';
 import 'package:artio/core/exceptions/app_exception.dart';
 import 'package:artio/core/state/credit_balance_state_provider.dart';
+import 'package:artio/core/utils/prompt_validator.dart';
 import 'package:artio/features/create/domain/entities/create_form_state.dart';
 import 'package:artio/features/gallery/data/services/gallery_cache_service.dart';
 import 'package:artio/features/template_engine/domain/entities/generation_job_model.dart';
@@ -47,25 +47,11 @@ class CreateViewModel extends _$CreateViewModel {
       return;
     }
 
-    final trimmedPrompt = formState.prompt.trim();
-    if (trimmedPrompt.length < 3) {
-      state = AsyncError(
-        const AppException.generation(
-          message: 'Prompt must be at least 3 characters',
-        ),
-        StackTrace.current,
-      );
-      return;
-    }
-
-    if (trimmedPrompt.length > AppConstants.maxPromptLength) {
-      state = AsyncError(
-        const AppException.generation(
-          message:
-              'Prompt must be at most ${AppConstants.maxPromptLength} characters',
-        ),
-        StackTrace.current,
-      );
+    // Validate only — toGenerationParams() handles trimming + negative prompt merging
+    try {
+      validateGenerationPrompt(formState.prompt);
+    } on AppException catch (e, st) {
+      state = AsyncError(e, st);
       return;
     }
 

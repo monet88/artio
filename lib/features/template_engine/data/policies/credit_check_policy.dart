@@ -13,7 +13,10 @@ class CreditCheckPolicy implements IGenerationPolicy {
     required String userId,
     required String templateId,
   }) async {
-    final balance = _ref.read(creditBalanceNotifierProvider).valueOrNull?.balance;
+    final balance = _ref
+        .read(creditBalanceNotifierProvider)
+        .valueOrNull
+        ?.balance;
 
     // Not loaded yet — allow and let server enforce
     if (balance == null) {
@@ -21,9 +24,7 @@ class CreditCheckPolicy implements IGenerationPolicy {
     }
 
     if (balance < _minimumCost) {
-      return const GenerationEligibility.denied(
-        reason: 'Insufficient credits',
-      );
+      return const GenerationEligibility.denied(reason: 'Insufficient credits');
     }
 
     return GenerationEligibility.allowed(remainingCredits: balance);

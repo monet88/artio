@@ -1,10 +1,13 @@
 import 'dart:async';
 
+import 'package:artio/core/config/sentry_config.dart';
+import 'package:artio/core/constants/generation_constants.dart';
 import 'package:artio/core/exceptions/app_exception.dart';
 import 'package:artio/core/providers/supabase_provider.dart';
 import 'package:artio/core/utils/retry.dart';
 import 'package:artio/features/template_engine/domain/entities/generation_job_model.dart';
 import 'package:artio/features/template_engine/domain/repositories/i_generation_repository.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -65,7 +68,9 @@ class GenerationRepository implements IGenerationRepository {
                   if (modelId != null) 'model': modelId,
                 },
               )
-              .timeout(const Duration(seconds: 90)),
+              .timeout(
+                const Duration(seconds: kGenerationRequestTimeoutSeconds),
+              ),
         );
 
         if (response.status == 429) {
@@ -84,8 +89,7 @@ class GenerationRepository implements IGenerationRepository {
 
         if (response.status != 200) {
           final errorMsg = response.data is Map<String, dynamic>
-              ? ((response.data as Map<String, dynamic>)['error']
-                        as String?) ??
+              ? ((response.data as Map<String, dynamic>)['error'] as String?) ??
                     'Generation failed'
               : 'Generation failed';
           throw AppException.generation(message: errorMsg);
@@ -99,7 +103,10 @@ class GenerationRepository implements IGenerationRepository {
               .from('generation_jobs')
               .update({'status': 'failed'})
               .eq('id', jobId);
-        } on Object catch (_) {}
+        } on Object catch (e, st) {
+          debugPrint('Failed to mark orphaned job $jobId as failed: $e');
+          unawaited(SentryConfig.captureException(e, stackTrace: st));
+        }
         rethrow;
       }
     } on FunctionException catch (e) {

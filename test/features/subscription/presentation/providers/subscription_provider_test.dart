@@ -1,4 +1,6 @@
 import 'package:artio/core/exceptions/app_exception.dart';
+import 'package:artio/features/auth/presentation/state/auth_state.dart';
+import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
 import 'package:artio/features/subscription/data/repositories/subscription_repository.dart';
 import 'package:artio/features/subscription/domain/entities/subscription_package.dart';
 import 'package:artio/features/subscription/domain/entities/subscription_status.dart';
@@ -10,28 +12,35 @@ import 'package:mocktail/mocktail.dart';
 class MockSubscriptionRepository extends Mock
     implements SubscriptionRepository {}
 
+class _FakeAuthViewModel extends AuthViewModel {
+  @override
+  AuthState build() => const AuthState.unauthenticated();
+}
+
 void main() {
   late MockSubscriptionRepository mockRepo;
   late ProviderContainer container;
 
   setUp(() {
     mockRepo = MockSubscriptionRepository();
-    registerFallbackValue(const SubscriptionPackage(
-      identifier: 'test',
-      priceString: r'$0',
-      nativePackage: 'native',
-    ));
+    registerFallbackValue(
+      const SubscriptionPackage(
+        identifier: 'test',
+        priceString: r'$0',
+        nativePackage: 'native',
+      ),
+    );
   });
 
   ProviderContainer createContainer({
     SubscriptionStatus initialStatus = const SubscriptionStatus(),
   }) {
-    when(() => mockRepo.getStatus())
-        .thenAnswer((_) async => initialStatus);
+    when(() => mockRepo.getStatus()).thenAnswer((_) async => initialStatus);
 
     return ProviderContainer(
       overrides: [
         subscriptionRepositoryProvider.overrideWithValue(mockRepo),
+        authViewModelProvider.overrideWith(_FakeAuthViewModel.new),
       ],
     );
   }
@@ -43,8 +52,7 @@ void main() {
       const expected = SubscriptionStatus(tier: 'pro', isActive: true);
       container = createContainer(initialStatus: expected);
 
-      final status =
-          await container.read(subscriptionNotifierProvider.future);
+      final status = await container.read(subscriptionNotifierProvider.future);
       expect(status.isPro, isTrue);
       verify(() => mockRepo.getStatus()).called(1);
     });
@@ -52,8 +60,7 @@ void main() {
     test('build() returns free status by default', () async {
       container = createContainer();
 
-      final status =
-          await container.read(subscriptionNotifierProvider.future);
+      final status = await container.read(subscriptionNotifierProvider.future);
       expect(status.isFree, isTrue);
     });
 
@@ -63,17 +70,17 @@ void main() {
         await container.read(subscriptionNotifierProvider.future);
 
         when(() => mockRepo.purchase(any())).thenAnswer(
-          (_) async =>
-              const SubscriptionStatus(tier: 'pro', isActive: true),
+          (_) async => const SubscriptionStatus(tier: 'pro', isActive: true),
         );
 
-        final notifier =
-            container.read(subscriptionNotifierProvider.notifier);
-        await notifier.purchase(const SubscriptionPackage(
-          identifier: 'pro_monthly',
-          priceString: r'$9.99',
-          nativePackage: 'native',
-        ));
+        final notifier = container.read(subscriptionNotifierProvider.notifier);
+        await notifier.purchase(
+          const SubscriptionPackage(
+            identifier: 'pro_monthly',
+            priceString: r'$9.99',
+            nativePackage: 'native',
+          ),
+        );
 
         final state = container.read(subscriptionNotifierProvider);
         expect(state.value?.isPro, isTrue);
@@ -91,13 +98,14 @@ void main() {
           ),
         );
 
-        final notifier =
-            container.read(subscriptionNotifierProvider.notifier);
-        await notifier.purchase(const SubscriptionPackage(
-          identifier: 'pro',
-          priceString: r'$9.99',
-          nativePackage: 'native',
-        ));
+        final notifier = container.read(subscriptionNotifierProvider.notifier);
+        await notifier.purchase(
+          const SubscriptionPackage(
+            identifier: 'pro',
+            priceString: r'$9.99',
+            nativePackage: 'native',
+          ),
+        );
 
         final state = container.read(subscriptionNotifierProvider);
         expect(state.hasError, isTrue);
@@ -111,12 +119,10 @@ void main() {
         await container.read(subscriptionNotifierProvider.future);
 
         when(() => mockRepo.restore()).thenAnswer(
-          (_) async =>
-              const SubscriptionStatus(tier: 'ultra', isActive: true),
+          (_) async => const SubscriptionStatus(tier: 'ultra', isActive: true),
         );
 
-        final notifier =
-            container.read(subscriptionNotifierProvider.notifier);
+        final notifier = container.read(subscriptionNotifierProvider.notifier);
         await notifier.restore();
 
         final state = container.read(subscriptionNotifierProvider);
@@ -135,8 +141,7 @@ void main() {
           ),
         );
 
-        final notifier =
-            container.read(subscriptionNotifierProvider.notifier);
+        final notifier = container.read(subscriptionNotifierProvider.notifier);
         await notifier.restore();
 
         final state = container.read(subscriptionNotifierProvider);
@@ -167,9 +172,9 @@ void main() {
     test('propagates error from repository', () async {
       container = createContainer();
 
-      when(() => mockRepo.getOfferings()).thenThrow(
-        const AppException.payment(message: 'Network error'),
-      );
+      when(
+        () => mockRepo.getOfferings(),
+      ).thenThrow(const AppException.payment(message: 'Network error'));
 
       expect(
         () => container.read(offeringsProvider.future),

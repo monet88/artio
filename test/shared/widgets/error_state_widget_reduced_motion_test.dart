@@ -8,15 +8,14 @@ void main() {
       return MediaQuery(
         data: MediaQueryData(disableAnimations: disableAnimations),
         child: const MaterialApp(
-          home: Scaffold(
-            body: ErrorStateWidget(message: 'Test error'),
-          ),
+          home: Scaffold(body: ErrorStateWidget(message: 'Test error')),
         ),
       );
     }
 
-    testWidgets('immediately visible when reduced-motion is enabled',
-        (tester) async {
+    testWidgets('immediately visible when reduced-motion is enabled', (
+      tester,
+    ) async {
       await tester.pumpWidget(buildWithMotionSetting(disableAnimations: true));
       await tester.pump();
 
@@ -34,8 +33,7 @@ void main() {
       expect(find.text('Test error'), findsOneWidget);
     });
 
-    testWidgets('starts faded when reduced-motion is disabled',
-        (tester) async {
+    testWidgets('starts faded when reduced-motion is disabled', (tester) async {
       await tester.pumpWidget(buildWithMotionSetting(disableAnimations: false));
       await tester.pump();
 

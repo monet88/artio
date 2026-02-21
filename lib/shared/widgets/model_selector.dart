@@ -3,10 +3,14 @@ import 'package:artio/core/design_system/app_spacing.dart';
 import 'package:flutter/material.dart';
 
 /// Dropdown selector for AI models with premium badges and credit costs
-class ModelSelector extends StatefulWidget { // text-to-image, image-to-image, image-editing
+class ModelSelector extends StatefulWidget {
+  // text-to-image, image-to-image, image-editing
 
   const ModelSelector({
-    required this.selectedModelId, required this.isPremium, required this.onChanged, super.key,
+    required this.selectedModelId,
+    required this.isPremium,
+    required this.onChanged,
+    super.key,
     this.filterByType,
   });
   final String selectedModelId;
@@ -81,12 +85,12 @@ class _ModelSelectorState extends State<ModelSelector> {
                 children: [
                   Expanded(child: Text(model.displayName)),
                   const SizedBox(width: AppSpacing.sm),
-                  const Text('\u{1F48E}', style: TextStyle(fontSize: 12)), // Diamond
+                  const Text(
+                    '\u{1F48E}',
+                    style: TextStyle(fontSize: 12),
+                  ), // Diamond
                   const SizedBox(width: 2),
-                  Text(
-                    '${model.creditCost}',
-                    style: theme.textTheme.bodySmall,
-                  ),
+                  Text('${model.creditCost}', style: theme.textTheme.bodySmall),
                 ],
               );
             }).toList();
@@ -110,7 +114,10 @@ class _ModelSelectorState extends State<ModelSelector> {
                       ),
                     ),
                     const SizedBox(width: AppSpacing.sm),
-                    const Text('\u{1F48E}', style: TextStyle(fontSize: 12)), // Diamond
+                    const Text(
+                      '\u{1F48E}',
+                      style: TextStyle(fontSize: 12),
+                    ), // Diamond
                     const SizedBox(width: 2),
                     Text(
                       '${model.creditCost}',
@@ -119,7 +126,10 @@ class _ModelSelectorState extends State<ModelSelector> {
                     if (model.isNew) ...[
                       const SizedBox(width: AppSpacing.sm),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 2,
+                        ),
                         decoration: BoxDecoration(
                           color: theme.colorScheme.primaryContainer,
                           borderRadius: BorderRadius.circular(4),
@@ -135,7 +145,10 @@ class _ModelSelectorState extends State<ModelSelector> {
                     ],
                     if (model.isPremium) ...[
                       const SizedBox(width: AppSpacing.sm),
-                      const Text('\u{1F451}', style: TextStyle(fontSize: 12)), // Crown
+                      const Text(
+                        '\u{1F451}',
+                        style: TextStyle(fontSize: 12),
+                      ), // Crown
                     ],
                     if (widget.selectedModelId == model.id) ...[
                       const SizedBox(width: AppSpacing.sm),

@@ -1,5 +1,6 @@
 import 'package:artio/features/auth/domain/entities/user_model.dart';
-import 'package:supabase_flutter/supabase_flutter.dart' show AuthState, Session, User;
+import 'package:supabase_flutter/supabase_flutter.dart'
+    show AuthState, Session, User;
 
 /// Authentication repository interface.
 /// Defines contract for all auth operations.

@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 /// Gradient CTA button used in auth screens.
 class GradientButton extends StatelessWidget {
   const GradientButton({
-    required this.onPressed, required this.label, super.key,
+    required this.onPressed,
+    required this.label,
+    super.key,
     this.isLoading = false,
   });
 
@@ -23,9 +25,7 @@ class GradientButton extends StatelessWidget {
       child: Container(
         height: 52,
         decoration: BoxDecoration(
-          gradient: onPressed != null
-              ? AppGradients.primaryGradient
-              : null,
+          gradient: onPressed != null ? AppGradients.primaryGradient : null,
           color: onPressed == null ? AppColors.textMuted : null,
           borderRadius: BorderRadius.circular(14),
           boxShadow: onPressed != null
@@ -50,8 +50,7 @@ class GradientButton extends StatelessWidget {
                       width: 20,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        valueColor:
-                            AlwaysStoppedAnimation<Color>(Colors.white),
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                       ),
                     )
                   : ExcludeSemantics(

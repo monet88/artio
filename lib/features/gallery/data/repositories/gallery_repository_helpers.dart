@@ -36,7 +36,7 @@ GalleryItem parseJob(Map<String, dynamic> job, int imageIndex) {
     templateId: (job['template_id'] as String?) ?? '',
     templateName:
         ((job['templates'] as Map<String, dynamic>?)?['name'] as String?) ??
-            'Unknown',
+        'Unknown',
     prompt: job['prompt'] as String?,
     createdAt: safeParseDateTime(job['created_at']) ?? DateTime.now(),
     status: parseJobStatus(job['status'] as String?),
