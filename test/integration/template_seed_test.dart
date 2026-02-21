@@ -12,6 +12,7 @@ import 'supabase_test_setup.dart';
 /// Requires .env.test or environment variables with SUPABASE_URL + SUPABASE_ANON_KEY.
 void main() {
   late List<TemplateModel> templates;
+  final deserializationErrors = <String>[];
 
   const expectedCategories = [
     'Art Style Transfer',
@@ -20,7 +21,8 @@ void main() {
     'Portrait & Face Effects',
     'Removal & Editing',
   ];
-  const expectedTotal = 25;
+  // Minimum count from seed migration. DB may have more templates added via admin.
+  const minSeedCount = 25;
 
   setUpAll(() async {
     await SupabaseTestSetup.init();
@@ -31,14 +33,37 @@ void main() {
         .eq('is_active', true)
         .order('order', ascending: true);
 
-    templates = (response as List)
-        .map((json) => TemplateModel.fromJson(json as Map<String, dynamic>))
-        .toList();
+    templates = [];
+    for (final raw in response as List) {
+      final json = raw as Map<String, dynamic>;
+      try {
+        templates.add(TemplateModel.fromJson(json));
+      } on Object catch (e) {
+        final name = json['name'] ?? json['id'] ?? 'unknown';
+        deserializationErrors.add('Template "$name": $e');
+      }
+    }
   });
 
   group('Seed templates count', () {
-    test('has exactly $expectedTotal active templates', () {
-      expect(templates, hasLength(expectedTotal));
+    test('all templates deserialize successfully', () {
+      expect(
+        deserializationErrors,
+        isEmpty,
+        reason:
+            'Failed to deserialize ${deserializationErrors.length} template(s):\n'
+            '  ${deserializationErrors.join('\n  ')}',
+      );
+    });
+
+    test('has at least $minSeedCount active templates', () {
+      final totalFetched = templates.length + deserializationErrors.length;
+      expect(
+        totalFetched,
+        greaterThanOrEqualTo(minSeedCount),
+        reason: 'Expected at least $minSeedCount seed templates, '
+            'got $totalFetched ($minSeedCount seeded + admin additions).',
+      );
     });
 
     test('has exactly ${expectedCategories.length} categories', () {
@@ -54,7 +79,7 @@ void main() {
       expect(categories, hasLength(expectedCategories.length));
     });
 
-    test('each category has at least 1 template and total is $expectedTotal', () {
+    test('each category has at least 1 template', () {
       for (final category in expectedCategories) {
         final count = templates.where((t) => t.category == category).length;
         expect(count, greaterThan(0),

@@ -1,16 +1,21 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:artio/core/exceptions/app_exception.dart';
+import 'package:artio/features/gallery/data/repositories/gallery_repository.dart';
 import 'package:artio/features/gallery/data/services/gallery_cache_service.dart';
 import 'package:artio/features/gallery/domain/entities/gallery_item.dart';
 import 'package:artio/features/gallery/domain/repositories/i_gallery_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/fixtures/gallery_item_fixtures.dart';
 
 // Mock the interface, NOT the implementation
 class MockGalleryRepository extends Mock implements IGalleryRepository {}
+class MockSupabaseClient extends Mock implements SupabaseClient {}
+class MockGalleryCacheService extends Mock implements GalleryCacheService {}
 
 void main() {
   late MockGalleryRepository mockRepository;
@@ -263,6 +268,51 @@ void main() {
 
       expect(cache.isCacheValid(), isFalse);
       expect(await cache.getCachedItems(), isNull);
+    });
+  });
+
+  group('GalleryRepository pagination guard', () {
+    late GalleryRepository repository;
+
+    setUp(() {
+      repository = GalleryRepository(
+        MockSupabaseClient(),
+        MockGalleryCacheService(),
+      );
+    });
+
+    test('throws for limit < 1', () {
+      expect(
+        () => repository.fetchGalleryItems(limit: 0),
+        throwsA(isA<AppException>()),
+      );
+    });
+
+    test('throws for limit > 100', () {
+      expect(
+        () => repository.fetchGalleryItems(limit: 101),
+        throwsA(isA<AppException>()),
+      );
+    });
+
+    test('throws for negative offset', () {
+      expect(
+        () => repository.fetchGalleryItems(offset: -1),
+        throwsA(isA<AppException>()),
+      );
+    });
+
+    test('throws with correct error message', () {
+      expect(
+        () => repository.fetchGalleryItems(limit: 0),
+        throwsA(
+          isA<AppException>().having(
+            (e) => e.toString(),
+            'message',
+            contains('Invalid pagination parameters'),
+          ),
+        ),
+      );
     });
   });
 }
