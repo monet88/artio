@@ -41,7 +41,8 @@ class UserModel with _$UserModel {
       avatarUrl: (profile?['avatar_url'] as String?) ??
           (metadata?['avatar_url'] as String?),
       credits: (profile?['credits'] as num?)?.toInt() ?? 0,
-      isPremium: profile?['is_premium'] as bool? ?? false,
+      isPremium: (profile?['is_premium'] as bool? ?? false) ||
+          profile?['role'] == 'admin',
       premiumExpiresAt: _tryParseDateTime(
         profile?['premium_expires_at'] as String?,
       ),
