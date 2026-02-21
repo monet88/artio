@@ -11,6 +11,10 @@ const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY")!;
 const KIE_API_BASE = "https://api.kie.ai";
 const GEMINI_API_BASE = "https://generativelanguage.googleapis.com/v1beta";
 
+// Polling configuration — must match client timeout (120s = 60 * 2s)
+const POLL_MAX_ATTEMPTS = 60;
+const POLL_INTERVAL_MS = 2000;
+
 // Main provider — all models routed through KIE API
 const KIE_MODELS = [
   // Google / Imagen
@@ -190,8 +194,8 @@ async function createKieTask(
 
 async function pollKieTask(
   taskId: string,
-  maxAttempts = 60,
-  intervalMs = 2000
+  maxAttempts = POLL_MAX_ATTEMPTS,
+  intervalMs = POLL_INTERVAL_MS
 ): Promise<{ images: string[] } | { error: string }> {
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
     const response = await fetch(
@@ -490,9 +494,12 @@ Deno.serve(async (req) => {
         const createResult = await createKieTask(prompt, model, aspectRatio, imageCount, imageInputs);
 
         if ("error" in createResult) {
-          await refundCreditsOnFailure(supabase, userId, creditCost, jobId);
-          await updateJobStatus(supabase, jobId, { status: "failed", error_message: createResult.error });
-          return new Response(JSON.stringify({ error: createResult.error }), {
+          const refund = await refundCreditsOnFailure(supabase, userId, creditCost, jobId);
+          const finalError = refund.success
+            ? createResult.error
+            : `${createResult.error} [refund_pending_manual attempts=${refund.attempts}]`;
+          await updateJobStatus(supabase, jobId, { status: "failed", error_message: finalError });
+          return new Response(JSON.stringify({ error: finalError }), {
             status: 500,
             headers: { ...headers, "Content-Type": "application/json" },
           });
@@ -504,9 +511,12 @@ Deno.serve(async (req) => {
         const pollResult = await pollKieTask(createResult.taskId);
 
         if ("error" in pollResult) {
-          await refundCreditsOnFailure(supabase, userId, creditCost, jobId);
-          await updateJobStatus(supabase, jobId, { status: "failed", error_message: pollResult.error });
-          return new Response(JSON.stringify({ error: pollResult.error }), {
+          const refund = await refundCreditsOnFailure(supabase, userId, creditCost, jobId);
+          const finalError = refund.success
+            ? pollResult.error
+            : `${pollResult.error} [refund_pending_manual attempts=${refund.attempts}]`;
+          await updateJobStatus(supabase, jobId, { status: "failed", error_message: finalError });
+          return new Response(JSON.stringify({ error: finalError }), {
             status: 500,
             headers: { ...headers, "Content-Type": "application/json" },
           });
@@ -521,9 +531,12 @@ Deno.serve(async (req) => {
         const geminiResult = await generateViaGemini(prompt, model, aspectRatio);
 
         if ("error" in geminiResult) {
-          await refundCreditsOnFailure(supabase, userId, creditCost, jobId);
-          await updateJobStatus(supabase, jobId, { status: "failed", error_message: geminiResult.error });
-          return new Response(JSON.stringify({ error: geminiResult.error }), {
+          const refund = await refundCreditsOnFailure(supabase, userId, creditCost, jobId);
+          const finalError = refund.success
+            ? geminiResult.error
+            : `${geminiResult.error} [refund_pending_manual attempts=${refund.attempts}]`;
+          await updateJobStatus(supabase, jobId, { status: "failed", error_message: finalError });
+          return new Response(JSON.stringify({ error: finalError }), {
             status: 500,
             headers: { ...headers, "Content-Type": "application/json" },
           });
@@ -547,8 +560,11 @@ Deno.serve(async (req) => {
       );
     } catch (postDeductionError) {
       // Refund credits if any step after deduction fails (e.g. mirroring)
-      await refundCreditsOnFailure(supabase, userId, creditCost, jobId);
-      const errorMsg = postDeductionError instanceof Error ? postDeductionError.message : "Unknown error";
+      const refund = await refundCreditsOnFailure(supabase, userId, creditCost, jobId);
+      let errorMsg = postDeductionError instanceof Error ? postDeductionError.message : "Unknown error";
+      if (!refund.success) {
+        errorMsg = `${errorMsg} [refund_pending_manual attempts=${refund.attempts}]`;
+      }
       await updateJobStatus(supabase, jobId, { status: "failed", error_message: errorMsg });
       return new Response(
         JSON.stringify({ error: errorMsg }),
