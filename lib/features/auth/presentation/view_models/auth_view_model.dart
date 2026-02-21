@@ -220,7 +220,11 @@ class AuthViewModel extends _$AuthViewModel implements Listenable {
       return const HomeRoute().location;
     }
 
-    // No forced login redirect — allow unauthenticated users everywhere
+    // Force unauthenticated users to login on protected routes
+    if (!isLoggedIn && !isAuthRoute && currentPath != const SplashRoute().location) {
+      return const LoginRoute().location;
+    }
+
     return null;
   }
 
