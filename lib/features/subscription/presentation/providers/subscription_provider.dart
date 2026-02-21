@@ -20,7 +20,7 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
     };
     if (isDbPremium) {
       return const SubscriptionStatus(
-        tier: 'ultra',
+        tier: SubscriptionTiers.ultra,
         isActive: true,
         willRenew: true,
       );
