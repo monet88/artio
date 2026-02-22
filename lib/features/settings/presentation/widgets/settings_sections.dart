@@ -4,6 +4,7 @@ import 'package:artio/core/utils/url_launcher_utils.dart';
 import 'package:artio/features/settings/domain/providers/notifications_provider.dart';
 import 'package:artio/features/settings/presentation/widgets/settings_helpers.dart';
 import 'package:artio/features/settings/presentation/widgets/theme_switcher.dart';
+import 'package:artio/routing/routes/app_routes.dart';
 import 'package:artio/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -54,6 +55,15 @@ class SettingsSections extends ConsumerWidget {
                 trailing: SettingsChevronArrow(isDark: isDark),
                 onTap: onResetPassword,
                 isDark: isDark,
+              ),
+              SettingsDivider(isDark: isDark),
+              SettingsTile(
+                icon: Icons.toll_rounded,
+                iconBgColor: AppColors.primaryCta,
+                title: 'Credit History',
+                trailing: SettingsChevronArrow(isDark: isDark),
+                isDark: isDark,
+                onTap: () => const CreditHistoryRoute().push<void>(context),
               ),
             ],
           ),

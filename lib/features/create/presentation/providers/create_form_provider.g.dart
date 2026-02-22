@@ -7,7 +7,7 @@ part of 'create_form_provider.dart';
 // **************************************************************************
 
 String _$createFormNotifierHash() =>
-    r'1c4d40e1bc0795fdc27cc66f7b54f833ff347f77';
+    r'736aefdf2cd4dec077a28f414a76236d1d623181';
 
 /// See also [CreateFormNotifier].
 @ProviderFor(CreateFormNotifier)

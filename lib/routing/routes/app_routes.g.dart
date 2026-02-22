@@ -15,6 +15,7 @@ List<RouteBase> get $appRoutes => [
   $mainShellRoute,
   $templateDetailRoute,
   $galleryImageRoute,
+  $creditHistoryRoute,
   $paywallRoute,
 ];
 
@@ -254,6 +255,28 @@ extension $GalleryImageRouteExtension on GalleryImageRoute {
 
   void replace(BuildContext context) =>
       context.replace(location, extra: $extra);
+}
+
+RouteBase get $creditHistoryRoute => GoRouteData.$route(
+  path: '/credits/history',
+
+  factory: $CreditHistoryRouteExtension._fromState,
+);
+
+extension $CreditHistoryRouteExtension on CreditHistoryRoute {
+  static CreditHistoryRoute _fromState(GoRouterState state) =>
+      const CreditHistoryRoute();
+
+  String get location => GoRouteData.$location('/credits/history');
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
 }
 
 RouteBase get $paywallRoute => GoRouteData.$route(

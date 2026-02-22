@@ -4,6 +4,7 @@ import 'package:artio/features/auth/presentation/screens/onboarding_screen.dart'
 import 'package:artio/features/auth/presentation/screens/register_screen.dart';
 import 'package:artio/features/auth/presentation/screens/splash_screen.dart';
 import 'package:artio/features/create/presentation/create_screen.dart';
+import 'package:artio/features/credits/presentation/screens/credit_history_screen.dart';
 import 'package:artio/features/gallery/domain/entities/gallery_item.dart';
 import 'package:artio/features/gallery/presentation/pages/gallery_page.dart';
 import 'package:artio/features/gallery/presentation/pages/image_viewer_page.dart';
@@ -168,6 +169,15 @@ class GalleryImageRoute extends GoRouteData {
       initialIndex: extra.initialIndex,
     );
   }
+}
+
+@TypedGoRoute<CreditHistoryRoute>(path: '/credits/history')
+class CreditHistoryRoute extends GoRouteData {
+  const CreditHistoryRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+      const CreditHistoryScreen();
 }
 
 @TypedGoRoute<PaywallRoute>(path: '/paywall')
