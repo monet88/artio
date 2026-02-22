@@ -241,17 +241,16 @@ class AuthViewModel extends _$AuthViewModel implements Listenable {
 
     final isOnboardingRoute = currentPath == const OnboardingRoute().location;
 
-    // Splash: send to home always (guests welcome).
-    // Logged-in first-timers see onboarding first.
+    // Splash: everyone sees onboarding on first launch (guest or logged-in).
+    // Only go to /home if onboarding has already been completed.
     if (currentPath == const SplashRoute().location) {
-      if (isLoggedIn && !_onboardingDone) {
-        return const OnboardingRoute().location;
-      }
-      return const HomeRoute().location;
+      return !_onboardingDone
+          ? const OnboardingRoute().location
+          : const HomeRoute().location;
     }
 
-    // After login: redirect to onboarding if not yet done.
-    if (isLoggedIn && !_onboardingDone && !isOnboardingRoute) {
+    // Any route (except auth/onboarding itself): redirect to onboarding if not done.
+    if (!_onboardingDone && !isOnboardingRoute && !isAuthRoute) {
       return const OnboardingRoute().location;
     }
 
@@ -260,15 +259,8 @@ class AuthViewModel extends _$AuthViewModel implements Listenable {
       return const HomeRoute().location;
     }
 
-    // Logged-in users who finished onboarding shouldn't see onboarding again.
-    if (isLoggedIn && _onboardingDone && isOnboardingRoute) {
-      return const HomeRoute().location;
-    }
-
-    // Guests (not logged in) can navigate freely — no forced login redirect.
-    // Auth is required at point-of-action (Generate, Ads, IAP) via showAuthGateSheet().
-    // Only exception: onboarding route is not useful for guests — redirect to home.
-    if (!isLoggedIn && isOnboardingRoute) {
+    // After completing onboarding, don't show it again.
+    if (_onboardingDone && isOnboardingRoute) {
       return const HomeRoute().location;
     }
 
