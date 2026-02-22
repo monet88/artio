@@ -1,8 +1,8 @@
 # System Architecture
 
 **Project**: Artio - AI Image Generation SaaS
-**Updated**: 2026-02-20
-**Version**: 1.5
+**Updated**: 2026-02-22
+**Version**: 1.6
 
 ---
 
@@ -330,20 +330,19 @@ CREATE POLICY "Users can view own transactions"
 ## Storage Buckets (Supabase)
 
 ```
-user_uploads/             # User-uploaded input images
+generated-images/         # User uploads + AI-generated outputs (note: hyphen, not underscore)
   {user_id}/
-    {job_id}/
-      input.jpg
-
-generated-images/         # AI-generated outputs (note: hyphen, not underscore)
-  {user_id}/
-    {job_id}/
-      output.png
+    inputs/               # User-selected source images for templates
+      {uuid}.jpg
+      {uuid}.jpg
+    {job_id}.jpg          # AI-generated output image
 ```
 
 **RLS Policies:**
-- `user_uploads`: Users can upload/read own files
-- `generated-images`: Users can read own files, Edge Function writes
+- `generated-images`:
+  - Users can upload/read own files in `{user_id}/` prefix
+  - Edge Function can write outputs
+  - Signed URLs for image inputs (60-min expiry)
 
 ---
 
@@ -399,28 +398,33 @@ Router redirects to Home
 
 ## Image Generation Flow
 
-### Template-Based Generation
+### Template-Based Generation (Image Input Support)
 
 ```
 User selects template
       ↓
 Template detail screen loads template data
       ↓
-Dynamic input form renders (text, image upload, dropdown)
+Dynamic input form renders (text, image upload, dropdown, image picker)
       ↓
-User fills inputs, taps "Generate"
+User fills inputs, selects images from gallery/camera, taps "Generate"
+      ↓
+Generation ViewModel processes inputs:
+  1. Validates selected images (format, size)
+  2. Uploads images to Storage: {userId}/inputs/{uuid}.jpg
+  3. Passes imageInputs paths to repository
       ↓
 Generation repository starts a job
   1. Creates generation_jobs row (status: 'pending')
-  2. Uploads input images to Storage (if any)
-  3. Calls Edge Function: generate_image
+  2. Calls Edge Function with imageInputs parameter
       ↓
 Edge Function:
-  1. Fetches template config
-  2. Builds KIE API payload (image-to-image)
-  3. Calls KIE API
-  4. On response: Downloads result, uploads to Storage
-  5. Updates generation_jobs (status: 'completed', result_urls)
+  1. Resolves Storage paths → signed URLs (60-min expiry)
+  2. Maps image fields to correct KIE/Gemini parameter names per model
+  3. Builds request payload (image-to-image or text-to-image)
+  4. Calls KIE API or Gemini API
+  5. Downloads result, uploads to Storage
+  6. Updates generation_jobs (status: 'completed', result_urls)
       ↓
 Realtime subscription streams job updates to UI
   - Pending → "Queued..."
@@ -428,6 +432,13 @@ Realtime subscription streams job updates to UI
   - Completed → Shows result image
   - Failed → Shows error message (via AppExceptionMapper)
 ```
+
+**Image Input Features:**
+- User can select 1-3 images per template (based on `input_fields`)
+- Images compressed to max 2MB before upload (JPEG, quality 85%)
+- Upload progress indicator during generation
+- Image preview + remove button in UI
+- Model selector auto-filters to image-capable models only
 
 ### Text-to-Image Generation
 
@@ -565,23 +576,31 @@ MaterialApp.router(
 ```json
 {
   "job_id": "uuid",
-  "template_id": "uuid",
+  "template_id": "uuid|null",
+  "model_id": "google/imagen4-fast|flux-2/flex-image-to-image|etc",
+  "output_format": "portrait|square|landscape",
+  "prompt": "a red car",
+  "imageInputs": [
+    "user-id/inputs/uuid-1.jpg",
+    "user-id/inputs/uuid-2.jpg"
+  ],
   "input_data": {
-    "prompt": "a red car",
-    "style": "photorealistic",
-    "image_url": "https://storage.supabase.co/..."
+    "style": "photorealistic"
   }
 }
 ```
 
 **Flow:**
 1. Authenticate request (verify JWT)
-2. Fetch template config from `templates` table (template flows)
-3. Build KIE API request (model varies by mode)
-4. Call KIE API
-5. Download result image
-6. Upload to `generated-images` Storage bucket
-7. Update `generation_jobs` table (status: 'completed', result_urls)
+2. Deduct credits via `deduct_credits` RPC (402 if insufficient)
+3. Resolve image paths to signed URLs (imageInputs array)
+4. Build API request (KIE or Gemini)
+   - Maps field names per model: `input_urls`, `image_urls`, `image_input`, etc.
+   - Includes signed URLs for image inputs
+5. Call KIE API or Gemini API
+6. Download result image
+7. Upload to `generated-images` Storage bucket
+8. Update `generation_jobs` table (status: 'completed', result_urls)
 
 **Output (example shape):**
 ```json
@@ -592,10 +611,20 @@ MaterialApp.router(
 }
 ```
 
+**Image Input Mapping by Model:**
+| Model Family | Field Name |
+|-------------|-----------|
+| `flux-2/*-image-to-image` | `input_urls` |
+| `gpt-image/*-image-to-image` | `input_urls` |
+| `seedream/*-edit` | `image_urls` |
+| `google/nano-banana-edit` | `image_urls` |
+| `nano-banana-pro`, `gemini-*` | `image_input` |
+
 **Error Handling:**
-- KIE API failures → Update job status to 'failed', set error_message
-- Retry logic for transient errors
-- Rate limit handling (exponential backoff)
+- KIE/Gemini API failures → Update job status to 'failed', set error_message
+- Insufficient credits → Return 402, no charge
+- Image resolution errors → Return 400 with descriptive message
+- Retry logic for transient errors (exponential backoff)
 
 ---
 
@@ -758,4 +787,4 @@ ref.listen(generationJobProvider(jobId), (prev, next) {
 
 **AI Model Documentation**: `docs/kie-api/` (source of truth for model specs, parameters, Edge Function integration)
 
-**Last Updated**: 2026-02-20 (v1.5 — exception hierarchy, init resilience, monitoring status)
+**Last Updated**: 2026-02-22 (v1.6 — image input flow, Imagen 4.0 models, Storage paths, Edge Function updates)

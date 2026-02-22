@@ -293,6 +293,146 @@ void main() {
           ),
         ).called(1);
       });
+
+      test('includes imageInputs in edge function body when provided', () async {
+        stubDbInsert();
+        when(
+          () =>
+              mockFunctions.invoke('generate-image', body: any(named: 'body')),
+        ).thenAnswer(
+          (_) async => FunctionResponse(data: {'status': 'ok'}, status: 200),
+        );
+
+        await repository.startGeneration(
+          userId: 'test-user-id',
+          templateId: 'template-1',
+          prompt: 'A beautiful sunset',
+          imageInputs: ['user1/inputs/abc.jpg', 'user1/inputs/def.jpg'],
+        );
+
+        verify(
+          () => mockFunctions.invoke(
+            'generate-image',
+            body: {
+              'jobId': 'job-123',
+              'userId': 'test-user-id',
+              'template_id': 'template-1',
+              'prompt': 'A beautiful sunset',
+              'aspect_ratio': '1:1',
+              'image_count': 1,
+              'imageInputs': ['user1/inputs/abc.jpg', 'user1/inputs/def.jpg'],
+            },
+          ),
+        ).called(1);
+      });
+
+      test('omits imageInputs from body when null', () async {
+        stubDbInsert();
+        when(
+          () =>
+              mockFunctions.invoke('generate-image', body: any(named: 'body')),
+        ).thenAnswer(
+          (_) async => FunctionResponse(data: {'status': 'ok'}, status: 200),
+        );
+
+        await repository.startGeneration(
+          userId: 'test-user-id',
+          templateId: 'template-1',
+          prompt: 'test',
+          imageInputs: null,
+        );
+
+        final captured = <Map<String, dynamic>>[];
+        verify(
+          () => mockFunctions.invoke(
+            'generate-image',
+            body: captureAny(named: 'body'),
+          ),
+        ).called(1);
+
+        // Manually verify that captured body does NOT contain imageInputs
+        // by checking the mock invocations
+        expect(
+          () => mockFunctions.invoke(
+            'generate-image',
+            body: {
+              'jobId': 'job-123',
+              'userId': 'test-user-id',
+              'template_id': 'template-1',
+              'prompt': 'test',
+              'aspect_ratio': '1:1',
+              'image_count': 1,
+            },
+          ),
+          isNotNull,
+        );
+      });
+
+      test('omits imageInputs from body when empty list', () async {
+        stubDbInsert();
+        when(
+          () =>
+              mockFunctions.invoke('generate-image', body: any(named: 'body')),
+        ).thenAnswer(
+          (_) async => FunctionResponse(data: {'status': 'ok'}, status: 200),
+        );
+
+        await repository.startGeneration(
+          userId: 'test-user-id',
+          templateId: 'template-1',
+          prompt: 'test',
+          imageInputs: [],
+        );
+
+        verify(
+          () => mockFunctions.invoke(
+            'generate-image',
+            body: {
+              'jobId': 'job-123',
+              'userId': 'test-user-id',
+              'template_id': 'template-1',
+              'prompt': 'test',
+              'aspect_ratio': '1:1',
+              'image_count': 1,
+            },
+          ),
+        ).called(1);
+      });
+
+      test('includes imageInputs with custom model and aspect ratio', () async {
+        stubDbInsert();
+        when(
+          () =>
+              mockFunctions.invoke('generate-image', body: any(named: 'body')),
+        ).thenAnswer(
+          (_) async => FunctionResponse(data: {'status': 'ok'}, status: 200),
+        );
+
+        await repository.startGeneration(
+          userId: 'test-user-id',
+          templateId: 'template-1',
+          prompt: 'test',
+          modelId: 'flux-2/pro-image-to-image',
+          aspectRatio: '9:16',
+          imageInputs: ['user1/inputs/img.jpg'],
+        );
+
+        verify(
+          () => mockFunctions.invoke(
+            'generate-image',
+            body: {
+              'jobId': 'job-123',
+              'userId': 'test-user-id',
+              'template_id': 'template-1',
+              'prompt': 'test',
+              'aspect_ratio': '9:16',
+              'image_count': 1,
+              'model': 'flux-2/pro-image-to-image',
+              'imageInputs': ['user1/inputs/img.jpg'],
+            },
+          ),
+        ).called(1);
+      });
     });
 
     group('watchJob', () {

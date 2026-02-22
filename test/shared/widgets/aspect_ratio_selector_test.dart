@@ -36,35 +36,13 @@ void main() {
       expect(find.text('9:16'), findsOneWidget);
     });
 
-    testWidgets('shows More button when more options available', (
+    testWidgets('hides More button when all ratios fit in primary set', (
       tester,
     ) async {
+      // Universal ratio list has exactly 5 entries = same as primary ratios
       await tester.pumpWidget(buildWidget());
 
-      expect(find.text('More'), findsOneWidget);
-    });
-
-    testWidgets('expands to show all ratios when More tapped', (tester) async {
-      await tester.pumpWidget(buildWidget());
-
-      await tester.tap(find.text('More'));
-      await tester.pumpAndSettle();
-
-      expect(find.text('Less'), findsOneWidget);
-      expect(find.text('2:3'), findsOneWidget);
-      expect(find.text('3:2'), findsOneWidget);
-    });
-
-    testWidgets('collapses when Less tapped', (tester) async {
-      await tester.pumpWidget(buildWidget());
-
-      await tester.tap(find.text('More'));
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.text('Less'));
-      await tester.pumpAndSettle();
-
-      expect(find.text('More'), findsOneWidget);
+      expect(find.text('More'), findsNothing);
     });
 
     testWidgets('selected ratio is highlighted', (tester) async {
@@ -88,15 +66,14 @@ void main() {
       expect(selectedRatio, '16:9');
     });
 
-    testWidgets('filters ratios based on selected model (GPT)', (tester) async {
+    testWidgets('all models share universal aspect ratios', (tester) async {
+      // GPT uses server-side ratio mapping, client shows all 5 universal ratios
       await tester.pumpWidget(
         buildWidget(selectedModelId: 'gpt-image/1.5-text-to-image'),
       );
 
-      // GPT only supports 1:1, 2:3, 3:2
       expect(find.text('1:1'), findsOneWidget);
-      // 16:9 not in GPT supported ratios
-      expect(find.text('16:9'), findsNothing);
+      expect(find.text('16:9'), findsOneWidget);
     });
   });
 }

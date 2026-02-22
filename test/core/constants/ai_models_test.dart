@@ -5,7 +5,7 @@ void main() {
   group('AiModels', () {
     group('all', () {
       test('contains expected number of models', () {
-        expect(AiModels.all.length, 15);
+        expect(AiModels.all.length, 18);
       });
 
       test('each model has required fields', () {
@@ -131,6 +131,80 @@ void main() {
       test('nano-banana-edit is marked as new', () {
         final model = AiModels.getById('google/nano-banana-edit');
         expect(model?.isNew, isTrue);
+      });
+    });
+
+    group('supportsImageInput', () {
+      test('imageCapableModels returns exactly 8 models', () {
+        expect(AiModels.imageCapableModels.length, 8);
+      });
+
+      test('all models with supportsImageInput=true are in imageCapableModels', () {
+        final imageModels = AiModels.imageCapableModels;
+        for (final model in imageModels) {
+          expect(model.supportsImageInput, isTrue);
+        }
+      });
+
+      test('nano-banana-edit has supportsImageInput true', () {
+        final model = AiModels.getById('google/nano-banana-edit');
+        expect(model?.supportsImageInput, isTrue);
+      });
+
+      test('nano-banana-pro has supportsImageInput true', () {
+        final model = AiModels.getById('nano-banana-pro');
+        expect(model?.supportsImageInput, isTrue);
+      });
+
+      test('flux-2/flex-image-to-image has supportsImageInput true', () {
+        final model = AiModels.getById('flux-2/flex-image-to-image');
+        expect(model?.supportsImageInput, isTrue);
+      });
+
+      test('flux-2/pro-image-to-image has supportsImageInput true', () {
+        final model = AiModels.getById('flux-2/pro-image-to-image');
+        expect(model?.supportsImageInput, isTrue);
+      });
+
+      test('gpt-image/1.5-image-to-image has supportsImageInput true', () {
+        final model = AiModels.getById('gpt-image/1.5-image-to-image');
+        expect(model?.supportsImageInput, isTrue);
+      });
+
+      test('seedream/4.5-edit has supportsImageInput true', () {
+        final model = AiModels.getById('seedream/4.5-edit');
+        expect(model?.supportsImageInput, isTrue);
+      });
+
+      test('gemini-3-pro-image-preview has supportsImageInput true', () {
+        final model = AiModels.getById('gemini-3-pro-image-preview');
+        expect(model?.supportsImageInput, isTrue);
+      });
+
+      test('gemini-2.5-flash-image has supportsImageInput true', () {
+        final model = AiModels.getById('gemini-2.5-flash-image');
+        expect(model?.supportsImageInput, isTrue);
+      });
+
+      test('imagen-4.0-generate-001 has supportsImageInput false', () {
+        final model = AiModels.getById('imagen-4.0-generate-001');
+        expect(model?.supportsImageInput, isFalse);
+      });
+
+      test('google/imagen4 has supportsImageInput false', () {
+        final model = AiModels.getById('google/imagen4');
+        expect(model?.supportsImageInput, isFalse);
+      });
+
+      test('bidirectional filter excludes correctly', () {
+        final imageModels = AiModels.all.where((m) => m.supportsImageInput).toList();
+        final textModels = AiModels.all.where((m) => !m.supportsImageInput).toList();
+        // No overlap
+        final imageIds = imageModels.map((m) => m.id).toSet();
+        final textIds = textModels.map((m) => m.id).toSet();
+        expect(imageIds.intersection(textIds), isEmpty);
+        // Full coverage
+        expect(imageIds.length + textIds.length, AiModels.all.length);
       });
     });
   });

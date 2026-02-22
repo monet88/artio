@@ -1,5 +1,6 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
+import { encodeBase64 } from "https://deno.land/std/encoding/base64.ts";
 import { corsHeaders, handleCorsIfPreflight } from "../_shared/cors.ts";
 import { isPremiumModel, getModelCreditCost } from "../_shared/model_config.ts";
 import { checkAndDeductCredits, refundCreditsOnFailure } from "../_shared/credit_logic.ts";
@@ -33,10 +34,17 @@ const KIE_MODELS = [
   "seedream/4.5-edit",
 ] as const;
 
-// Fallback provider — Google native Gemini models
+// Fallback provider — Google native Gemini models (use :generateContent)
 const GEMINI_MODELS = [
   "gemini-3-pro-image-preview",
   "gemini-2.5-flash-image",
+] as const;
+
+// Google Imagen 4.0 native models (use :predict endpoint)
+const IMAGEN_MODELS = [
+  "imagen-4.0-generate-001",
+  "imagen-4.0-ultra-generate-001",
+  "imagen-4.0-fast-generate-001",
 ] as const;
 
 // MODEL_CREDIT_COSTS, PREMIUM_MODELS, isPremiumModel, getModelCreditCost
@@ -79,9 +87,10 @@ function getSupabaseClient() {
   });
 }
 
-function getProvider(model: string): "kie" | "gemini" {
+function getProvider(model: string): "kie" | "gemini" | "imagen" {
   if (KIE_MODELS.includes(model as typeof KIE_MODELS[number])) return "kie";
   if (GEMINI_MODELS.includes(model as typeof GEMINI_MODELS[number])) return "gemini";
+  if (IMAGEN_MODELS.includes(model as typeof IMAGEN_MODELS[number])) return "imagen";
   return "kie";
 }
 
@@ -308,11 +317,38 @@ async function pollKieTask(
   return { error: "Generation timed out after 120 seconds" };
 }
 
+async function downloadImageAsBase64(
+  url: string
+): Promise<{ mimeType: string; data: string }> {
+  const response = await fetch(url);
+  if (!response.ok) throw new Error(`Failed to download image: ${response.status}`);
+  const contentType = response.headers.get("content-type") || "image/jpeg";
+  const buffer = new Uint8Array(await response.arrayBuffer());
+  const base64 = encodeBase64(buffer);
+  return { mimeType: contentType, data: base64 };
+}
+
 async function generateViaGemini(
   prompt: string,
   model: string,
-  aspectRatio: string
+  aspectRatio: string,
+  imageUrls?: string[]
 ): Promise<{ base64Images: string[] } | { error: string }> {
+  // Build parts: images first (if any), then text prompt
+  const parts: Array<Record<string, unknown>> = [];
+
+  if (imageUrls?.length) {
+    const imageParts = await Promise.all(
+      imageUrls.map(async (url) => {
+        const { mimeType, data } = await downloadImageAsBase64(url);
+        return { inlineData: { mimeType, data } };
+      })
+    );
+    parts.push(...imageParts);
+  }
+
+  parts.push({ text: prompt });
+
   const response = await fetch(
     `${GEMINI_API_BASE}/models/${model}:generateContent`,
     {
@@ -322,7 +358,7 @@ async function generateViaGemini(
         "x-goog-api-key": GEMINI_API_KEY,
       },
       body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
+        contents: [{ parts }],
         generationConfig: {
           imageConfig: { aspectRatio: aspectRatio || "1:1" },
         },
@@ -343,6 +379,51 @@ async function generateViaGemini(
       if (part.inlineData?.data) {
         base64Images.push(part.inlineData.data);
       }
+    }
+  }
+
+  if (base64Images.length === 0) {
+    return { error: "No images generated" };
+  }
+
+  return { base64Images };
+}
+
+async function generateViaImagen(
+  prompt: string,
+  model: string,
+  aspectRatio: string,
+  imageCount: number
+): Promise<{ base64Images: string[] } | { error: string }> {
+  const response = await fetch(
+    `${GEMINI_API_BASE}/models/${model}:predict`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-goog-api-key": GEMINI_API_KEY,
+      },
+      body: JSON.stringify({
+        instances: [{ prompt }],
+        parameters: {
+          sampleCount: imageCount,
+          aspectRatio: aspectRatio || "1:1",
+        },
+      }),
+    }
+  );
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    return { error: `Imagen API error: ${response.status} - ${errorText}` };
+  }
+
+  const result = await response.json();
+  const base64Images: string[] = [];
+
+  for (const prediction of result.predictions || []) {
+    if (prediction.bytesBase64Encoded) {
+      base64Images.push(prediction.bytesBase64Encoded);
     }
   }
 
@@ -682,10 +763,32 @@ Deno.serve(async (req) => {
         console.log(`[${jobId}] Mirroring ${pollResult.images.length} images`);
         storagePaths = await mirrorUrlsToStorage(supabase, userId, jobId, pollResult.images, outputFormat);
 
+      } else if (provider === "imagen") {
+        console.log(`[${jobId}] Imagen generation: ${model}, count: ${imageCount}, format: ${outputFormat}`);
+
+        const imagenResult = await generateViaImagen(prompt, model, aspectRatio, imageCount);
+
+        if ("error" in imagenResult) {
+          const errorMsg = await refundAndBuildErrorMsg(supabase, userId, creditCost, jobId, imagenResult.error);
+          await updateJobStatus(supabase, jobId, { status: "failed", error_message: errorMsg });
+          return new Response(JSON.stringify({ error: imagenResult.error }), {
+            status: 500,
+            headers: { ...headers, "Content-Type": "application/json" },
+          });
+        }
+
+        console.log(`[${jobId}] Mirroring ${imagenResult.base64Images.length} images`);
+        storagePaths = await mirrorBase64ToStorage(supabase, userId, jobId, imagenResult.base64Images, outputFormat);
+
       } else {
         console.log(`[${jobId}] Gemini generation: ${model}, format: ${outputFormat}`);
 
-        const geminiResult = await generateViaGemini(prompt, model, aspectRatio);
+        // Resolve Supabase storage paths to signed URLs for Gemini access
+        const resolvedGeminiImages = imageInputs?.length
+          ? await resolveImageUrls(supabase, imageInputs)
+          : undefined;
+
+        const geminiResult = await generateViaGemini(prompt, model, aspectRatio, resolvedGeminiImages);
 
         if ("error" in geminiResult) {
           const errorMsg = await refundAndBuildErrorMsg(supabase, userId, creditCost, jobId, geminiResult.error);

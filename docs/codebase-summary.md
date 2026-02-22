@@ -1,8 +1,8 @@
 # Codebase Summary
 
 **Project**: Artio - AI Image Generation SaaS
-**Generated**: 2026-02-20 (repomix v1.11.0)
-**Repomix Snapshot**: 143,439 tokens, 668,912 characters, 189 files (core source files). Top token contributors:
+**Generated**: 2026-02-22 (repomix v1.11.0)
+**Repomix Snapshot**: 143,439+ tokens, 668,912+ characters, 192+ files (core source files). Top token contributors:
 1. `supabase/functions/deno.lock` (5,038 tokens, 10,780 chars)
 2. `supabase/functions/generate-image/index.ts` (4,727 tokens, 18,818 chars)
 3. `supabase/migrations/20260128130000_add_25_templates.sql` (4,102 tokens, 14,869 chars)
@@ -216,17 +216,27 @@ lib/
 #### 2. Template Engine (template_engine feature)
 - **Domain Layer**: `TemplateModel`, `GenerationJobModel`, `InputFieldModel`, repository interfaces
 - **Data Layer**: `TemplateRepository`, `GenerationRepository` (Supabase + Edge Functions)
-- **Presentation Layer**: Template list/detail screens, providers
+- **Presentation Layer**: Template list/detail screens, providers, image input widget
 - **Capabilities**:
   - Template browsing with category filters
   - Dynamic input field rendering (text, image upload, dropdown)
+  - **Image input flow** (NEW):
+    - Gallery/camera image picker support (1-3 images per template)
+    - Image compression (max 2MB, JPEG quality 85%)
+    - Parallel upload to Supabase Storage (`generated-images/{userId}/inputs/`)
+    - Model selector auto-filters to image-capable models
+    - Upload progress indicator
   - Generation job creation and tracking
   - Real-time job status updates
 
 **Key Files**:
 - `lib/features/template_engine/domain/entities/template_model.dart`
 - `lib/features/template_engine/data/repositories/template_repository.dart`
+- `lib/features/template_engine/data/repositories/generation_repository.dart`
 - `lib/features/template_engine/presentation/widgets/input_field_builder.dart`
+- `lib/features/template_engine/presentation/screens/template_detail_screen.dart`
+- `lib/shared/widgets/image_input_widget.dart` (NEW)
+- `lib/core/services/image_upload_service.dart` (NEW)
 
 #### 3. Gallery (gallery feature)
 - **Domain Layer**: `GalleryItem`, `IGalleryRepository`
@@ -261,8 +271,12 @@ lib/
 #### 6. Core Infrastructure
 - **Exception Handling**: Sealed `AppException` class hierarchy
 - **Error Mapping**: `AppExceptionMapper` for user-friendly messages
-- **Constants Management**: Centralized in `AppConstants`
+- **Constants Management**: Centralized in `AppConstants` + `AiModelConfig` (with `supportsImageInput`)
 - **Dependency Injection**: Riverpod providers for global dependencies
+- **Image Upload Service** (NEW): Parallel compression + upload to Storage
+  - Auto-compresses images to max 2MB (JPEG quality 85%)
+  - Returns Storage paths for Edge Function
+  - Tracks upload progress
 
 ---
 
@@ -417,6 +431,9 @@ class UnknownException extends AppException { originalError? }
 | `flex_color_scheme` | ^8.2.0 | Theme |
 | `purchases_flutter` | ^9.0.0 | Payments |
 | `google_mobile_ads` | ^6.0.0 | Ads |
+| `image_picker` | ^1.1.2 | Camera/gallery image selection |
+| `image` | ^4.3.2 | Image compression/manipulation |
+| `uuid` | ^4.9.0 | Unique file naming |
 
 ---
 
@@ -565,6 +582,6 @@ dart run build_runner watch
 
 ---
 
-**Last Updated**: 2026-02-20 (v1.5 — file counts, exception classes, testing status, next steps)
+**Last Updated**: 2026-02-22 (v1.6 — image input flow, new services/widgets, dependency updates)
 **Analysis Depth**: Comprehensive (repomix pack, verified against codebase)
-**Codebase Grade**: A- (95% architecture compliance, all 7 features complete)
+**Codebase Grade**: A- (95% architecture compliance, all 7 features complete, image input feature complete)

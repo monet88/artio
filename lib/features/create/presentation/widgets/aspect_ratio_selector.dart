@@ -16,7 +16,7 @@ class AspectRatioSelector extends StatelessWidget {
 
   List<String> get _ratios {
     final model = AiModels.getById(selectedModelId);
-    return model?.supportedAspectRatios ?? AiModels.standardAspectRatios;
+    return model?.supportedAspectRatios ?? AiModels.supportedAspectRatios;
   }
 
   @override

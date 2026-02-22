@@ -1,14 +1,20 @@
 import 'package:artio/features/template_engine/domain/entities/input_field_model.dart';
+import 'package:artio/shared/widgets/image_input_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class InputFieldBuilder extends StatefulWidget {
   const InputFieldBuilder({
     required this.field,
     required this.onChanged,
     super.key,
+    this.onImageChanged,
+    this.imageFile,
   });
   final InputFieldModel field;
   final ValueChanged<String> onChanged;
+  final ValueChanged<XFile?>? onImageChanged;
+  final XFile? imageFile;
 
   @override
   State<InputFieldBuilder> createState() => _InputFieldBuilderState();
@@ -110,6 +116,14 @@ class _InputFieldBuilderState extends State<InputFieldBuilder> {
           ),
           maxLength: 500,
           onChanged: widget.onChanged,
+        );
+
+      case 'image':
+        return ImageInputWidget(
+          label: widget.field.label,
+          isRequired: widget.field.required,
+          file: widget.imageFile,
+          onChanged: (file) => widget.onImageChanged?.call(file),
         );
 
       case 'text':

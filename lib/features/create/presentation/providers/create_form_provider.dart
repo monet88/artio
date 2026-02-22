@@ -48,7 +48,7 @@ class CreateFormNotifier extends _$CreateFormNotifier {
   void setModel(String modelId) {
     final model = AiModels.getById(modelId);
     final supportedRatios =
-        model?.supportedAspectRatios ?? AiModels.standardAspectRatios;
+        model?.supportedAspectRatios ?? AiModels.supportedAspectRatios;
 
     // If current aspect ratio is not supported by the new model, reset it
     final newAspectRatio = supportedRatios.contains(state.aspectRatio)

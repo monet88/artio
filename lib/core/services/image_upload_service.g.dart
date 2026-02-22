@@ -1,31 +1,29 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'generation_view_model.dart';
+part of 'image_upload_service.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$generationViewModelHash() =>
-    r'96a9e2ab2f9d529c62f88b9dd33aa974eb3d6bf0';
+String _$imageUploadServiceHash() =>
+    r'd9fe234f9ae82e12371270537cabd735e2f5e0d7';
 
-/// See also [GenerationViewModel].
-@ProviderFor(GenerationViewModel)
-final generationViewModelProvider =
-    AutoDisposeNotifierProvider<
-      GenerationViewModel,
-      AsyncValue<GenerationJobModel?>
-    >.internal(
-      GenerationViewModel.new,
-      name: r'generationViewModelProvider',
+/// See also [imageUploadService].
+@ProviderFor(imageUploadService)
+final imageUploadServiceProvider =
+    AutoDisposeProvider<ImageUploadService>.internal(
+      imageUploadService,
+      name: r'imageUploadServiceProvider',
       debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
           ? null
-          : _$generationViewModelHash,
+          : _$imageUploadServiceHash,
       dependencies: null,
       allTransitiveDependencies: null,
     );
 
-typedef _$GenerationViewModel =
-    AutoDisposeNotifier<AsyncValue<GenerationJobModel?>>;
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef ImageUploadServiceRef = AutoDisposeProviderRef<ImageUploadService>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

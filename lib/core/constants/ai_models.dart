@@ -8,6 +8,7 @@ class AiModelConfig {
     required this.creditCost,
     required this.type,
     this.isNew = false,
+    this.supportsImageInput = false,
   });
   final String id;
   final String displayName;
@@ -16,6 +17,7 @@ class AiModelConfig {
   final int creditCost;
   final String type; // text-to-image, image-to-image, image-editing
   final bool isNew;
+  final bool supportsImageInput;
 }
 
 /// All available AI models from KIE API
@@ -75,6 +77,7 @@ class AiModels {
       creditCost: 8,
       type: 'image-editing',
       isNew: true,
+      supportsImageInput: true,
     ),
     AiModelConfig(
       id: 'nano-banana-pro', // NOTE: no google/ prefix per KIE API spec
@@ -83,6 +86,7 @@ class AiModels {
       supportedAspectRatios: supportedAspectRatios,
       creditCost: 36,
       type: 'text-to-image',
+      supportsImageInput: true,
     ),
 
     // ── KIE: Flux-2 Models ──
@@ -101,6 +105,7 @@ class AiModels {
       supportedAspectRatios: supportedAspectRatios,
       creditCost: 28,
       type: 'image-to-image',
+      supportsImageInput: true,
     ),
     AiModelConfig(
       id: 'flux-2/pro-text-to-image',
@@ -117,6 +122,7 @@ class AiModels {
       supportedAspectRatios: supportedAspectRatios,
       creditCost: 10,
       type: 'image-to-image',
+      supportsImageInput: true,
     ),
 
     // ── KIE: GPT Image Models ──
@@ -135,6 +141,7 @@ class AiModels {
       supportedAspectRatios: supportedAspectRatios,
       creditCost: 8,
       type: 'image-to-image',
+      supportsImageInput: true,
     ),
 
     // ── KIE: Seedream Models ──
@@ -153,6 +160,33 @@ class AiModels {
       supportedAspectRatios: supportedAspectRatios,
       creditCost: 10,
       type: 'image-editing',
+      supportsImageInput: true,
+    ),
+
+    // ── Gemini: Imagen 4.0 Native Text-to-Image ──
+    AiModelConfig(
+      id: 'imagen-4.0-generate-001',
+      displayName: 'Imagen 4.0 Native',
+      isPremium: false,
+      supportedAspectRatios: supportedAspectRatios,
+      creditCost: 16,
+      type: 'text-to-image',
+    ),
+    AiModelConfig(
+      id: 'imagen-4.0-ultra-generate-001',
+      displayName: 'Imagen 4.0 Ultra Native',
+      isPremium: true,
+      supportedAspectRatios: supportedAspectRatios,
+      creditCost: 24,
+      type: 'text-to-image',
+    ),
+    AiModelConfig(
+      id: 'imagen-4.0-fast-generate-001',
+      displayName: 'Imagen 4.0 Fast Native',
+      isPremium: false,
+      supportedAspectRatios: supportedAspectRatios,
+      creditCost: 8,
+      type: 'text-to-image',
     ),
 
     // ── Gemini: Google Native Models (fallback) ──
@@ -164,6 +198,7 @@ class AiModels {
       creditCost: 15,
       type: 'text-to-image',
       isNew: true,
+      supportsImageInput: true,
     ),
     AiModelConfig(
       id: 'gemini-2.5-flash-image',
@@ -173,6 +208,7 @@ class AiModels {
       creditCost: 8,
       type: 'text-to-image',
       isNew: true,
+      supportsImageInput: true,
     ),
   ];
 
@@ -195,4 +231,8 @@ class AiModels {
   /// Get free models only
   static List<AiModelConfig> get freeModels =>
       all.where((m) => !m.isPremium).toList();
+
+  /// Get models that support image input
+  static List<AiModelConfig> get imageCapableModels =>
+      all.where((m) => m.supportsImageInput).toList();
 }

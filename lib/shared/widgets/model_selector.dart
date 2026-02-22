@@ -12,11 +12,13 @@ class ModelSelector extends StatefulWidget {
     required this.onChanged,
     super.key,
     this.filterByType,
+    this.filterSupportsImageInput,
   });
   final String selectedModelId;
   final bool isPremium;
   final ValueChanged<String> onChanged;
   final String? filterByType;
+  final bool? filterSupportsImageInput;
 
   @override
   State<ModelSelector> createState() => _ModelSelectorState();
@@ -27,6 +29,12 @@ class _ModelSelectorState extends State<ModelSelector> {
     var models = AiModels.all;
     if (widget.filterByType != null) {
       models = models.where((m) => m.type == widget.filterByType).toList();
+    }
+    if (widget.filterSupportsImageInput != null) {
+      models = models
+          .where(
+              (m) => m.supportsImageInput == widget.filterSupportsImageInput)
+          .toList();
     }
     return models;
   }

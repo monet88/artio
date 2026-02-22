@@ -26,7 +26,7 @@ class _AspectRatioSelectorState extends State<AspectRatioSelector> {
 
   List<String> get _availableRatios {
     final model = AiModels.getById(widget.selectedModelId);
-    return model?.supportedAspectRatios ?? AiModels.standardAspectRatios;
+    return model?.supportedAspectRatios ?? AiModels.supportedAspectRatios;
   }
 
   List<String> get _displayedRatios {

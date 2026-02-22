@@ -34,6 +34,9 @@ class GenerationViewModel extends _$GenerationViewModel {
     required String userId,
     String aspectRatio = '1:1',
     int imageCount = 1,
+    List<String>? imageInputs,
+    String? modelId,
+    String? outputFormat,
   }) async {
     if (isGenerating) {
       return;
@@ -72,6 +75,9 @@ class GenerationViewModel extends _$GenerationViewModel {
         prompt: trimmedPrompt,
         aspectRatio: aspectRatio,
         imageCount: imageCount,
+        imageInputs: imageInputs,
+        modelId: modelId,
+        outputFormat: outputFormat,
       );
 
       _jobManager.watchJob(

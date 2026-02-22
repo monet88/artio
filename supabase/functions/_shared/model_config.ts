@@ -29,6 +29,9 @@ export const MODEL_CREDIT_COSTS: Record<string, number> = {
     "seedream/4.5-edit": 10,           // TBD — kept as-is
     "gemini-3-pro-image-preview": 15,  // Free Google API quota
     "gemini-2.5-flash-image": 8,       // Free Google API quota
+    "imagen-4.0-generate-001": 16,     // Gemini native: same as KIE imagen4
+    "imagen-4.0-ultra-generate-001": 24, // Gemini native: same as KIE imagen4-ultra
+    "imagen-4.0-fast-generate-001": 8, // Gemini native: same as KIE imagen4-fast
 };
 
 /**
@@ -42,6 +45,7 @@ export const PREMIUM_MODELS = [
     "gpt-image/1.5-text-to-image",
     "gpt-image/1.5-image-to-image",
     "gemini-3-pro-image-preview",
+    "imagen-4.0-ultra-generate-001",
 ] as const;
 
 /** Check if a model requires premium subscription. */

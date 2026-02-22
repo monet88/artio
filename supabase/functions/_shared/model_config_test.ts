@@ -16,6 +16,7 @@ Deno.test("isPremiumModel returns true for all premium models", () => {
         "gpt-image/1.5-text-to-image",
         "gpt-image/1.5-image-to-image",
         "gemini-3-pro-image-preview",
+        "imagen-4.0-ultra-generate-001",
     ];
     for (const id of expected) {
         assertEquals(isPremiumModel(id), true, `${id} should be premium`);
@@ -48,6 +49,9 @@ Deno.test("getModelCreditCost returns correct costs", () => {
     assertEquals(getModelCreditCost("flux-2/pro-text-to-image"), 10);
     assertEquals(getModelCreditCost("gpt-image/1.5-text-to-image"), 8);
     assertEquals(getModelCreditCost("gemini-3-pro-image-preview"), 15);
+    assertEquals(getModelCreditCost("imagen-4.0-generate-001"), 16);
+    assertEquals(getModelCreditCost("imagen-4.0-ultra-generate-001"), 24);
+    assertEquals(getModelCreditCost("imagen-4.0-fast-generate-001"), 8);
 });
 
 Deno.test("getModelCreditCost returns undefined for unknown model", () => {
@@ -65,6 +69,7 @@ Deno.test("PREMIUM_MODELS matches Dart ai_models.dart premium IDs", () => {
         "gpt-image/1.5-text-to-image",
         "gpt-image/1.5-image-to-image",
         "gemini-3-pro-image-preview",
+        "imagen-4.0-ultra-generate-001",
     ];
     const tsPremiumIds = [...PREMIUM_MODELS].sort();
     const expected = [...dartPremiumIds].sort();
@@ -88,6 +93,9 @@ Deno.test("MODEL_CREDIT_COSTS keys match Dart ai_models.dart model IDs", () => {
         "seedream/4.5-edit",
         "gemini-3-pro-image-preview",
         "gemini-2.5-flash-image",
+        "imagen-4.0-generate-001",
+        "imagen-4.0-ultra-generate-001",
+        "imagen-4.0-fast-generate-001",
     ];
     const tsModelIds = Object.keys(MODEL_CREDIT_COSTS).sort();
     const expected = [...dartModelIds].sort();
@@ -112,6 +120,9 @@ Deno.test("MODEL_CREDIT_COSTS values match Dart ai_models.dart creditCost", () =
         "seedream/4.5-edit": 10,
         "gemini-3-pro-image-preview": 15,
         "gemini-2.5-flash-image": 8,
+        "imagen-4.0-generate-001": 16,
+        "imagen-4.0-ultra-generate-001": 24,
+        "imagen-4.0-fast-generate-001": 8,
     };
     for (const [id, expectedCost] of Object.entries(dartCosts)) {
         assertEquals(

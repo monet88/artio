@@ -34,6 +34,7 @@ class GenerationRepository implements IGenerationRepository {
     int imageCount = 1,
     String? outputFormat,
     String? modelId,
+    List<String>? imageInputs,
   }) async {
     try {
       // Step 1: Create job row in DB first (Edge Function verifies ownership)
@@ -66,6 +67,8 @@ class GenerationRepository implements IGenerationRepository {
                   'image_count': imageCount,
                   if (outputFormat != null) 'outputFormat': outputFormat,
                   if (modelId != null) 'model': modelId,
+                  if (imageInputs != null && imageInputs.isNotEmpty)
+                    'imageInputs': imageInputs,
                 },
               )
               .timeout(

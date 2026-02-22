@@ -9,6 +9,7 @@ abstract class IGenerationRepository {
     int imageCount = 1,
     String? outputFormat,
     String? modelId,
+    List<String>? imageInputs,
   });
 
   Stream<GenerationJobModel> watchJob(String jobId);

@@ -1,5 +1,6 @@
 import 'package:artio/features/template_engine/domain/entities/input_field_model.dart';
 import 'package:artio/features/template_engine/presentation/widgets/input_field_builder.dart';
+import 'package:artio/shared/widgets/image_input_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -99,13 +100,31 @@ void main() {
       expect(capturedValue, 'Option B');
     });
 
-    testWidgets('renders text field for unknown types (fallback)', (
+    testWidgets('renders image input widget for image type', (
       tester,
     ) async {
       const field = InputFieldModel(
         name: 'reference',
         label: 'Reference Image',
-        type: 'image', // Unknown type, falls back to text
+        type: 'image',
+      );
+
+      await tester.pumpApp(
+        Scaffold(
+          body: InputFieldBuilder(field: field, onChanged: (_) {}),
+        ),
+      );
+
+      expect(find.byType(ImageInputWidget), findsOneWidget);
+    });
+
+    testWidgets('renders text field for unknown types (fallback)', (
+      tester,
+    ) async {
+      const field = InputFieldModel(
+        name: 'reference',
+        label: 'Reference',
+        type: 'unknown-type', // Unknown type, falls back to text
       );
 
       await tester.pumpApp(
@@ -115,7 +134,7 @@ void main() {
       );
 
       expect(find.byType(TextFormField), findsOneWidget);
-      expect(find.text('Reference Image'), findsOneWidget);
+      expect(find.text('Reference'), findsOneWidget);
     });
 
     testWidgets('required field validation returns error', (tester) async {

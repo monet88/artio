@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:artio/core/config/sentry_config.dart';
+import 'package:artio/core/constants/ai_models.dart';
 import 'package:artio/core/design_system/app_spacing.dart';
+import 'package:artio/core/services/image_upload_service.dart';
 import 'package:artio/core/state/auth_view_model_provider.dart';
 import 'package:artio/core/utils/app_exception_mapper.dart';
 import 'package:artio/features/auth/presentation/state/auth_state.dart';
@@ -21,6 +23,7 @@ import 'package:artio/shared/widgets/output_format_toggle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 class TemplateDetailScreen extends ConsumerStatefulWidget {
@@ -34,8 +37,10 @@ class TemplateDetailScreen extends ConsumerStatefulWidget {
 
 class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
   final Map<String, String> _inputValues = {};
+  final Map<String, XFile> _imageFiles = {};
   final Set<String> _reportedErrors = <String>{};
   final _formKey = GlobalKey<FormState>();
+  bool _isUploading = false;
   ProviderSubscription<AsyncValue<TemplateModel?>>? _templateErrorSub;
   ProviderSubscription<AsyncValue<GenerationJobModel?>>? _jobErrorSub;
   ProviderSubscription? _premiumSub;
@@ -55,7 +60,10 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
     return prompt;
   }
 
-  void _handleGenerate(TemplateModel template) {
+  bool _hasImageInput(TemplateModel template) =>
+      template.inputFields.any((f) => f.type == 'image');
+
+  Future<void> _handleGenerate(TemplateModel template) async {
     final userId = ref
         .read(authViewModelProvider)
         .maybeMap(authenticated: (s) => s.user.id, orElse: () => null);
@@ -79,6 +87,19 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
     // Validate form inputs
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
+    // Validate required image fields
+    final missingImages = template.inputFields
+        .where((f) => f.type == 'image' && f.required)
+        .where((f) => !_imageFiles.containsKey(f.name));
+    if (missingImages.isNotEmpty) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Please select all required images')),
+        );
+      }
+      return;
+    }
+
     // Check for unreplaced placeholders
     final unresolved = RegExp(r'\{[a-zA-Z_]+\}').allMatches(prompt);
     if (unresolved.isNotEmpty) {
@@ -88,15 +109,47 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
       return;
     }
 
-    ref
-        .read(generationViewModelProvider.notifier)
-        .generate(
-          templateId: template.id,
-          prompt: prompt,
-          userId: userId,
-          aspectRatio: options.aspectRatio,
-          imageCount: options.imageCount,
-        );
+    // Upload images if any (ordered by template input_fields)
+    List<String>? imageInputs;
+    if (_imageFiles.isNotEmpty) {
+      setState(() => _isUploading = true);
+      try {
+        final orderedFiles = template.inputFields
+            .where(
+                (f) => f.type == 'image' && _imageFiles.containsKey(f.name))
+            .map((f) => _imageFiles[f.name]!)
+            .toList();
+
+        imageInputs = await ref.read(imageUploadServiceProvider).uploadAll(
+              files: orderedFiles,
+              userId: userId,
+            );
+      } on Object catch (e) {
+        if (mounted) {
+          setState(() => _isUploading = false);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Upload failed: $e')),
+          );
+        }
+        return;
+      }
+      if (mounted) setState(() => _isUploading = false);
+    }
+
+    unawaited(
+      ref
+          .read(generationViewModelProvider.notifier)
+          .generate(
+            templateId: template.id,
+            prompt: prompt,
+            userId: userId,
+            aspectRatio: options.aspectRatio,
+            imageCount: options.imageCount,
+            imageInputs: imageInputs,
+            modelId: options.modelId,
+            outputFormat: options.outputFormat,
+          ),
+    );
   }
 
   void _captureOnce(Object error, StackTrace? stackTrace) {
@@ -144,6 +197,28 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
         (scope) => scope.setTag('isPremium', isPremium.toString()),
       );
     });
+
+    // Auto-switch to image-capable model when template data arrives
+    ref.listenManual<AsyncValue<TemplateModel?>>(
+      templateByIdProvider(widget.templateId),
+      (previous, next) {
+        next.whenData((template) {
+          if (template == null) return;
+          if (!_hasImageInput(template)) return;
+          final currentModel = ref.read(generationOptionsProvider).modelId;
+          final modelObj = AiModels.getById(currentModel);
+          if (modelObj == null || !modelObj.supportsImageInput) {
+            final imageModels = AiModels.imageCapableModels;
+            if (imageModels.isNotEmpty) {
+              ref
+                  .read(generationOptionsProvider.notifier)
+                  .updateModel(imageModels.first.id);
+            }
+          }
+        });
+      },
+      fireImmediately: true,
+    );
   }
 
   @override
@@ -193,6 +268,16 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
                           field: field,
                           onChanged: (value) =>
                               _inputValues[field.name] = value,
+                          onImageChanged: field.type == 'image'
+                              ? (file) => setState(() {
+                                    if (file != null) {
+                                      _imageFiles[field.name] = file;
+                                    } else {
+                                      _imageFiles.remove(field.name);
+                                    }
+                                  })
+                              : null,
+                          imageFile: _imageFiles[field.name],
                         ),
                         const SizedBox(height: AppSpacing.md),
                       ],
@@ -245,15 +330,17 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
                   onChanged: (modelId) => ref
                       .read(generationOptionsProvider.notifier)
                       .updateModel(modelId),
-                  filterByType: 'text-to-image',
+                  filterSupportsImageInput:
+                      _hasImageInput(template) ? true : null,
                 ),
                 const SizedBox(height: AppSpacing.lg),
                 GenerationStateSection(
                   jobAsync: jobAsync,
-                  isGenerating: ref
-                      .read(generationViewModelProvider.notifier)
-                      .isGenerating,
-                  onGenerate: () => _handleGenerate(template),
+                  isGenerating: _isUploading ||
+                      ref
+                          .read(generationViewModelProvider.notifier)
+                          .isGenerating,
+                  onGenerate: () => unawaited(_handleGenerate(template)),
                   onReset: () =>
                       ref.read(generationViewModelProvider.notifier).reset(),
                 ),

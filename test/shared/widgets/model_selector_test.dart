@@ -51,8 +51,8 @@ void main() {
     testWidgets('shows credit cost', (tester) async {
       await tester.pumpWidget(buildWidget());
 
-      // Imagen 4 costs 6 credits
-      expect(find.text('6'), findsOneWidget);
+      // Imagen 4 costs 16 credits
+      expect(find.text('16'), findsWidgets);
     });
 
     testWidgets('dropdown contains all models', (tester) async {
