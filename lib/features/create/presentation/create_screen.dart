@@ -172,77 +172,77 @@ class _CreateScreenState extends ConsumerState<CreateScreen> {
       appBar: AppBar(title: const Text('Create')),
       body: Stack(
         children: [
-          SafeArea(
-            top: false,
-            child: SingleChildScrollView(
-              padding: AppSpacing.screenPadding.copyWith(
-                bottom: AppSpacing.screenPadding.bottom + AppSpacing.lg,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
+          SingleChildScrollView(
+            padding: AppSpacing.screenPadding.copyWith(
+              bottom:
+                  AppSpacing.screenPadding.bottom +
+                  MediaQuery.of(context).viewPadding.bottom +
+                  AppSpacing.lg,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  'Text to Image',
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                Text(
+                  'Create high quality images from your prompt',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                const SizedBox(height: AppSpacing.lg),
+                const CreditBalanceChip(),
+                PromptInputField(
+                  label: 'Prompt',
+                  hintText: 'Describe the image you want...',
+                  value: formState.prompt,
+                  onChanged: formNotifier.setPrompt,
+                  errorText: promptErrorText,
+                ),
+                const SizedBox(height: AppSpacing.md),
+                PromptInputField(
+                  label: 'Negative prompt (optional)',
+                  hintText: 'Describe what to avoid...',
+                  value: formState.negativePrompt,
+                  onChanged: formNotifier.setNegativePrompt,
+                ),
+                const SizedBox(height: AppSpacing.lg),
+                AspectRatioSelector(
+                  selectedRatio: formState.aspectRatio,
+                  selectedModelId: formState.modelId,
+                  onChanged: formNotifier.setAspectRatio,
+                ),
+                const SizedBox(height: AppSpacing.md),
+                ModelSelector(
+                  selectedModelId: formState.modelId,
+                  isPremium: isPremium,
+                  onChanged: formNotifier.setModel,
+                ),
+                const SizedBox(height: AppSpacing.lg),
+                FilledButton(
+                  onPressed: formState.isValid && !isGenerating
+                      ? () => _handleGenerate(
+                          formState,
+                          isGenerating: isGenerating,
+                        )
+                      : null,
+                  child: const Text('Generate'),
+                ),
+                const SizedBox(height: AppSpacing.lg),
+                if (jobState.valueOrNull?.status == JobStatus.completed) ...[
                   Text(
-                    'Text to Image',
-                    style: Theme.of(context).textTheme.headlineSmall,
-                  ),
-                  const SizedBox(height: AppSpacing.sm),
-                  Text(
-                    'Create high quality images from your prompt',
+                    'Generation completed. Check Gallery for results.',
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
-                  const SizedBox(height: AppSpacing.lg),
-                  const CreditBalanceChip(),
-                  PromptInputField(
-                    label: 'Prompt',
-                    hintText: 'Describe the image you want...',
-                    value: formState.prompt,
-                    onChanged: formNotifier.setPrompt,
-                    errorText: promptErrorText,
-                  ),
-                  const SizedBox(height: AppSpacing.md),
-                  PromptInputField(
-                    label: 'Negative prompt (optional)',
-                    hintText: 'Describe what to avoid...',
-                    value: formState.negativePrompt,
-                    onChanged: formNotifier.setNegativePrompt,
-                  ),
-                  const SizedBox(height: AppSpacing.lg),
-                  AspectRatioSelector(
-                    selectedRatio: formState.aspectRatio,
-                    selectedModelId: formState.modelId,
-                    onChanged: formNotifier.setAspectRatio,
-                  ),
-                  const SizedBox(height: AppSpacing.md),
-                  ModelSelector(
-                    selectedModelId: formState.modelId,
-                    isPremium: isPremium,
-                    onChanged: formNotifier.setModel,
-                  ),
-                  const SizedBox(height: AppSpacing.lg),
+                  const SizedBox(height: AppSpacing.sm),
                   FilledButton(
-                    onPressed: formState.isValid && !isGenerating
-                        ? () => _handleGenerate(
-                            formState,
-                            isGenerating: isGenerating,
-                          )
-                        : null,
-                    child: const Text('Generate'),
+                    onPressed: () =>
+                        ref.read(createViewModelProvider.notifier).reset(),
+                    child: const Text('Generate another'),
                   ),
-                  const SizedBox(height: AppSpacing.lg),
-                  if (jobState.valueOrNull?.status == JobStatus.completed) ...[
-                    Text(
-                      'Generation completed. Check Gallery for results.',
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                    const SizedBox(height: AppSpacing.sm),
-                    FilledButton(
-                      onPressed: () =>
-                          ref.read(createViewModelProvider.notifier).reset(),
-                      child: const Text('Generate another'),
-                    ),
-                  ],
                 ],
-              ),
+              ],
             ),
           ),
           if (isGenerating) ...[
