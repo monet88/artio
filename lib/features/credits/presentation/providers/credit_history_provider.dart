@@ -1,5 +1,6 @@
 import 'package:artio/features/credits/domain/entities/credit_transaction.dart';
 import 'package:artio/features/credits/domain/providers/credit_repository_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'credit_history_provider.g.dart';

@@ -81,10 +81,9 @@ class AuthViewModel extends _$AuthViewModel implements Listenable {
 
   Future<void> _loadOnboardingFlag() async {
     try {
-      _onboardingDone = await onboardingDoneProvider.future.timeout(
-        const Duration(seconds: 2),
-        onTimeout: () => true,
-      );
+      _onboardingDone = await ref
+          .read(onboardingDoneProvider.future)
+          .timeout(const Duration(seconds: 2), onTimeout: () => true);
     } on Object {
       _onboardingDone = true; // On error, skip onboarding to avoid soft-lock
     }
