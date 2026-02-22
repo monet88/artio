@@ -1,5 +1,6 @@
 import 'package:artio/features/auth/presentation/screens/forgot_password_screen.dart';
 import 'package:artio/features/auth/presentation/screens/login_screen.dart';
+import 'package:artio/features/auth/presentation/screens/onboarding_screen.dart';
 import 'package:artio/features/auth/presentation/screens/register_screen.dart';
 import 'package:artio/features/auth/presentation/screens/splash_screen.dart';
 import 'package:artio/features/create/presentation/create_screen.dart';
@@ -58,6 +59,15 @@ class ForgotPasswordRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) =>
       const ForgotPasswordScreen();
+}
+
+@TypedGoRoute<OnboardingRoute>(path: '/onboarding')
+class OnboardingRoute extends GoRouteData {
+  const OnboardingRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+      const OnboardingScreen();
 }
 
 @TypedShellRoute<MainShellRoute>(

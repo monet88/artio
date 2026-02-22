@@ -6,6 +6,7 @@ import 'package:artio/core/state/user_scoped_providers.dart';
 import 'package:artio/core/utils/app_exception_mapper.dart';
 import 'package:artio/features/auth/domain/entities/user_model.dart';
 import 'package:artio/features/auth/domain/providers/auth_repository_provider.dart';
+import 'package:artio/features/auth/domain/providers/onboarding_provider.dart';
 import 'package:artio/features/auth/presentation/state/auth_state.dart';
 import 'package:artio/routing/routes/app_routes.dart';
 import 'package:artio/utils/logger_service.dart';
@@ -23,6 +24,9 @@ class AuthViewModel extends _$AuthViewModel implements Listenable {
   StreamSubscription<supabase.AuthState>? _authSubscription;
   Timer? _oauthTimeoutTimer;
   static const _oauthTimeoutDuration = Duration(minutes: 3);
+
+  /// Cached onboarding completion flag — loaded async, used sync in redirect().
+  bool _onboardingDone = true; // Optimistic: assume done to avoid flicker
 
   @override
   AuthState build() {
@@ -70,7 +74,20 @@ class AuthViewModel extends _$AuthViewModel implements Listenable {
       await SentryConfig.captureException(e, stackTrace: st);
       state = const AuthState.unauthenticated();
     }
+    // Load onboarding flag after determining auth state.
+    await _loadOnboardingFlag();
     _notifyRouter();
+  }
+
+  Future<void> _loadOnboardingFlag() async {
+    try {
+      _onboardingDone = await onboardingDoneProvider.future.timeout(
+        const Duration(seconds: 2),
+        onTimeout: () => true,
+      );
+    } on Object {
+      _onboardingDone = true; // On error, skip onboarding to avoid soft-lock
+    }
   }
 
   Future<void> _handleSignedIn() async {
@@ -223,18 +240,34 @@ class AuthViewModel extends _$AuthViewModel implements Listenable {
         currentPath == const RegisterRoute().location ||
         currentPath.startsWith('/forgot-password');
 
-    // Splash always goes to Home
+    final isOnboardingRoute = currentPath == const OnboardingRoute().location;
+
+    // Splash always goes to Home (or onboarding if first time).
     if (currentPath == const SplashRoute().location) {
-      return const HomeRoute().location;
+      return isLoggedIn && !_onboardingDone
+          ? const OnboardingRoute().location
+          : const HomeRoute().location;
     }
 
-    // Logged-in users shouldn't see auth screens
+    // After login: redirect to onboarding if not yet done.
+    if (isLoggedIn && !_onboardingDone && !isOnboardingRoute) {
+      return const OnboardingRoute().location;
+    }
+
+    // Logged-in users shouldn't see auth screens.
     if (isLoggedIn && isAuthRoute) {
       return const HomeRoute().location;
     }
 
-    // Force unauthenticated users to login on protected routes
-    if (!isLoggedIn && !isAuthRoute && currentPath != const SplashRoute().location) {
+    // Logged-in users who finished onboarding shouldn't see onboarding again.
+    if (isLoggedIn && _onboardingDone && isOnboardingRoute) {
+      return const HomeRoute().location;
+    }
+
+    // Force unauthenticated users to login on protected routes.
+    if (!isLoggedIn &&
+        !isAuthRoute &&
+        currentPath != const SplashRoute().location) {
       return const LoginRoute().location;
     }
 
