@@ -7,7 +7,7 @@ part of 'generation_view_model.dart';
 // **************************************************************************
 
 String _$generationViewModelHash() =>
-    r'96a9e2ab2f9d529c62f88b9dd33aa974eb3d6bf0';
+    r'2d3db2f7f86db8c1ba0ee25e9e83ea7fb725f476';
 
 /// See also [GenerationViewModel].
 @ProviderFor(GenerationViewModel)
