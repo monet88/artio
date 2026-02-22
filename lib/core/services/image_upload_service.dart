@@ -14,7 +14,7 @@ ImageUploadService imageUploadService(Ref ref) {
 }
 
 /// Handles parallel image upload to Supabase Storage.
-/// Images are uploaded to `generated-images/{userId}/inputs/{uuid}.jpg`.
+/// Images are uploaded to `generated-images/{userId}/inputs/{uuid}.{ext}`.
 class ImageUploadService {
   const ImageUploadService(this._supabase);
 
