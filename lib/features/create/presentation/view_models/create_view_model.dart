@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:artio/core/constants/ai_models.dart';
 import 'package:artio/core/constants/generation_constants.dart';
 import 'package:artio/core/exceptions/app_exception.dart';
+import 'package:artio/core/services/content_moderation_service.dart';
 import 'package:artio/core/state/credit_balance_state_provider.dart';
 import 'package:artio/core/utils/prompt_validator.dart';
 import 'package:artio/features/create/domain/entities/create_form_state.dart';
@@ -44,6 +45,18 @@ class CreateViewModel extends _$CreateViewModel {
     required bool isPremiumUser,
   }) async {
     if (isGenerating) {
+      return;
+    }
+
+    // Check content policy before any validation or API call.
+    final moderationError = contentModerationService.checkPrompt(
+      formState.prompt,
+    );
+    if (moderationError != null) {
+      state = AsyncError(
+        AppException.generation(message: moderationError),
+        StackTrace.current,
+      );
       return;
     }
 

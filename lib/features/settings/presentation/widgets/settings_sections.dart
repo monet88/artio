@@ -1,5 +1,6 @@
 import 'package:artio/core/design_system/app_spacing.dart';
 import 'package:artio/core/design_system/app_typography.dart';
+import 'package:artio/core/utils/url_launcher_utils.dart';
 import 'package:artio/features/settings/domain/providers/notifications_provider.dart';
 import 'package:artio/features/settings/presentation/widgets/settings_helpers.dart';
 import 'package:artio/features/settings/presentation/widgets/theme_switcher.dart';
@@ -138,6 +139,95 @@ class SettingsSections extends ConsumerWidget {
                 style: AppTypography.captionMuted(context),
               ),
               isDark: isDark,
+            ),
+          ],
+        ),
+
+        const SizedBox(height: AppSpacing.lg),
+
+        // ── Legal ────────────────────────────────────────────────
+        // REQUIRED by Apple App Store — reviewers verify these links exist.
+        const SettingsSectionLabel(label: 'Legal'),
+        const SizedBox(height: AppSpacing.sm),
+        SettingsCard(
+          isDark: isDark,
+          children: [
+            SettingsTile(
+              icon: Icons.privacy_tip_outlined,
+              iconBgColor: const Color(0xFF5B8BF0),
+              title: 'Privacy Policy',
+              trailing: SettingsChevronArrow(isDark: isDark),
+              isDark: isDark,
+              onTap: () => launchUrlSafely(
+                context,
+                // TODO(legal): Replace with your hosted Privacy Policy URL
+                'https://artio.app/privacy',
+              ),
+            ),
+            SettingsDivider(isDark: isDark),
+            SettingsTile(
+              icon: Icons.gavel_outlined,
+              iconBgColor: const Color(0xFF7B61FF),
+              title: 'Terms of Service',
+              trailing: SettingsChevronArrow(isDark: isDark),
+              isDark: isDark,
+              onTap: () => launchUrlSafely(
+                context,
+                // TODO(legal): Replace with your hosted Terms of Service URL
+                'https://artio.app/terms',
+              ),
+            ),
+            SettingsDivider(isDark: isDark),
+            SettingsTile(
+              icon: Icons.code_outlined,
+              iconBgColor: AppColors.textMuted,
+              title: 'Open Source Licenses',
+              trailing: SettingsChevronArrow(isDark: isDark),
+              isDark: isDark,
+              onTap: () => showLicensePage(
+                context: context,
+                applicationName: 'Artio',
+                applicationLegalese: '© 2026 Artio. All rights reserved.',
+              ),
+            ),
+          ],
+        ),
+
+        const SizedBox(height: AppSpacing.lg),
+
+        // ── Support ──────────────────────────────────────────────
+        const SettingsSectionLabel(label: 'Support'),
+        const SizedBox(height: AppSpacing.sm),
+        SettingsCard(
+          isDark: isDark,
+          children: [
+            SettingsTile(
+              icon: Icons.help_outline_rounded,
+              iconBgColor: const Color(0xFF34C759),
+              title: 'Help & FAQ',
+              trailing: SettingsChevronArrow(isDark: isDark),
+              isDark: isDark,
+              onTap: () => launchUrlSafely(
+                context,
+                // TODO(support): Replace with your help centre URL
+                'https://artio.app/help',
+              ),
+            ),
+            SettingsDivider(isDark: isDark),
+            SettingsTile(
+              icon: Icons.bug_report_outlined,
+              iconBgColor: AppColors.warning,
+              title: 'Report a Problem',
+              trailing: SettingsChevronArrow(isDark: isDark),
+              isDark: isDark,
+              onTap: () => launchEmailSafely(
+                context,
+                to: 'support@artio.app',
+                subject: 'Problem Report — Artio App',
+                body:
+                    'Describe the problem you encountered:\n\n'
+                    'App version: ${version ?? 'Unknown'}\n',
+              ),
             ),
           ],
         ),

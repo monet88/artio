@@ -28,8 +28,79 @@
 	<true/>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Artio needs access to save generated images to your photo library.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Artio needs to access your photos to select images for AI generation.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Artio needs camera access to capture photos for AI generation.</string>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>This identifier will be used to deliver personalized ads to you.</string>
 	<key>GADApplicationIdentifier</key>
 	<string>ca-app-pub-3940256099942544~1458002511</string>
+	<key>SKAdNetworkItems</key>
+	<array>
+		<!-- Google AdMob / GMA SDK required SKAdNetwork IDs -->
+		<dict><key>SKAdNetworkIdentifier</key><string>cstr6suwn9.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>4fzdc2evr5.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>4pfyvq9l8r.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>2fnua5tdw4.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>ydx93a7ass.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>5a6flpkh64.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>p78axxw29g.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>v72qych5uu.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>c6k4g5qg8m.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>s39g8k73mm.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>3qy4746246.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>3sh42y64q3.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>f38h382jlk.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>hs6bdukanm.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>prcb7njmu6.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>v4nxqhlyqp.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>wzmmz9fp6w.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>yclnxrl5pm.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>t38b2kh725.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>7ug5zh24hu.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>9rd848q2bm.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>n6fk4nfna4.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>dbu4b84rxf.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>mtkv5xtk9e.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>6xzpu9s2p8.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>bvpn9ufa9b.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>gta9lk7p23.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>3qcr597p9d.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>av6w8kgt66.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>klf5c3l5u5.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>ppxm28t8ap.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>uw77j35x4d.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>9nlqeag3gk.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>5lm9lj6jb7.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>8s468mfl3y.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>2u9pt9hc89.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>8ibal2a327.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>e5fvkxwrpn.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>kbd757ywx3.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>9b89h5y424.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>wg4vff78zm.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>4468km3ulz.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>9t245vhmpl.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>n38lu8286q.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>7953jerfzd.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>ejvt5qm6ak.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>44jx6755aq.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>4w7y6s5ca2.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>5tjdwbrq8w.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>97r2b46745.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>b9bk5wbcq9.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>dzg6xy7pwj.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>qqp299437r.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>m8dbwf3yly.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>5l3tpt7t6e.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>ba5vm4xm2d.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>k674qkevps.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>24t9a8vw3c.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>r45fhb6rf7.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>b6axk6bbef.skadnetwork</string></dict>
+		<dict><key>SKAdNetworkIdentifier</key><string>e4d3r8y4z8.skadnetwork</string></dict>
+	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
