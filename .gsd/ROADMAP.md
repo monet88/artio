@@ -103,4 +103,6 @@ _No active milestone. Use `/new-milestone` to start one._
 - [ ] 🟢 Sentry alert rule for `[CRITICAL] Credit refund failed` (docs in `.gsd/phases/phase-4/SENTRY-ALERTS.md`)
 - [ ] 🟢 Replace AdMob placeholder IDs (`ca-app-pub-XXXXX`) with real production IDs from AdMob dashboard
 - [ ] 🟢 `credit_logic.ts` uses `any` type — fix when Supabase SDK exposes better types
+- [ ] 🟢 Storage TTL cleanup for orphaned upload images (`generated-images` bucket, `inputs/` prefix)
+- [ ] 🟢 MIME type detection in `ImageUploadService` (currently ImagePicker always outputs JPEG with quality param, defer until other formats are strictly needed)
 
