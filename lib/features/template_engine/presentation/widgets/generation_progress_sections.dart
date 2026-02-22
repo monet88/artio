@@ -3,10 +3,12 @@ import 'package:artio/core/design_system/app_dimensions.dart';
 import 'package:artio/core/design_system/app_gradients.dart';
 import 'package:artio/core/design_system/app_spacing.dart';
 import 'package:artio/core/design_system/app_typography.dart';
+import 'package:artio/core/services/storage_url_service.dart';
 import 'package:artio/features/template_engine/domain/entities/generation_job_model.dart';
 import 'package:artio/shared/widgets/loading_state_widget.dart';
 import 'package:artio/theme/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Pulsing progress bar + glow ring for generating/processing states.
 class ProgressStatusSection extends StatelessWidget {
@@ -159,18 +161,55 @@ class CompletedStatusSection extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.md),
         if (resultUrls != null && resultUrls!.isNotEmpty)
-          ClipRRect(
-            borderRadius: AppDimensions.cardRadius,
-            child: Image.network(
-              resultUrls!.first,
-              fit: BoxFit.cover,
-              loadingBuilder: (context, child, loadingProgress) {
-                if (loadingProgress == null) return child;
-                return const LoadingStateWidget();
-              },
+          _SignedStorageImage(storagePath: resultUrls!.first),
+      ],
+    );
+  }
+}
+
+/// Resolves a Supabase storage path to a signed URL before displaying.
+/// Prevents `Invalid argument: No host specified` errors from raw storage paths.
+class _SignedStorageImage extends ConsumerWidget {
+  const _SignedStorageImage({required this.storagePath});
+
+  final String storagePath;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final urlAsync = ref.watch(signedStorageUrlProvider(storagePath));
+
+    return urlAsync.when(
+      loading: () => const LoadingStateWidget(),
+      error: (_, __) => Icon(
+        Icons.broken_image_outlined,
+        size: 48,
+        color: AppColors.error.withValues(alpha: 0.5),
+      ),
+      data: (url) {
+        if (url == null) {
+          return Icon(
+            Icons.broken_image_outlined,
+            size: 48,
+            color: AppColors.error.withValues(alpha: 0.5),
+          );
+        }
+        return ClipRRect(
+          borderRadius: AppDimensions.cardRadius,
+          child: Image.network(
+            url,
+            fit: BoxFit.cover,
+            loadingBuilder: (context, child, loadingProgress) {
+              if (loadingProgress == null) return child;
+              return const LoadingStateWidget();
+            },
+            errorBuilder: (context, error, stackTrace) => Icon(
+              Icons.broken_image_outlined,
+              size: 48,
+              color: AppColors.error.withValues(alpha: 0.5),
             ),
           ),
-      ],
+        );
+      },
     );
   }
 }
