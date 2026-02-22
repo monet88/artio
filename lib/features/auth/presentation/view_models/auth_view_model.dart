@@ -241,11 +241,13 @@ class AuthViewModel extends _$AuthViewModel implements Listenable {
 
     final isOnboardingRoute = currentPath == const OnboardingRoute().location;
 
-    // Splash always goes to Home (or onboarding if first time).
+    // Splash: send to home always (guests welcome).
+    // Logged-in first-timers see onboarding first.
     if (currentPath == const SplashRoute().location) {
-      return isLoggedIn && !_onboardingDone
-          ? const OnboardingRoute().location
-          : const HomeRoute().location;
+      if (isLoggedIn && !_onboardingDone) {
+        return const OnboardingRoute().location;
+      }
+      return const HomeRoute().location;
     }
 
     // After login: redirect to onboarding if not yet done.
@@ -263,11 +265,11 @@ class AuthViewModel extends _$AuthViewModel implements Listenable {
       return const HomeRoute().location;
     }
 
-    // Force unauthenticated users to login on protected routes.
-    if (!isLoggedIn &&
-        !isAuthRoute &&
-        currentPath != const SplashRoute().location) {
-      return const LoginRoute().location;
+    // Guests (not logged in) can navigate freely — no forced login redirect.
+    // Auth is required at point-of-action (Generate, Ads, IAP) via showAuthGateSheet().
+    // Only exception: onboarding route is not useful for guests — redirect to home.
+    if (!isLoggedIn && isOnboardingRoute) {
+      return const HomeRoute().location;
     }
 
     return null;
