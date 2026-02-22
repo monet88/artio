@@ -273,6 +273,16 @@ class AuthViewModel extends _$AuthViewModel implements Listenable {
     return null;
   }
 
+  /// Called by [OnboardingScreen] when the user taps "Get Started".
+  ///
+  /// Updates the in-memory flag so [redirect] stops redirecting to /onboarding,
+  /// saves to SharedPreferences, then notifies the router to re-evaluate.
+  Future<void> completeOnboarding() async {
+    _onboardingDone = true;
+    await markOnboardingDone();
+    _notifyRouter();
+  }
+
   void _notifyRouter() => _routerListener?.call();
 
   String _parseErrorMessage(Object e) {

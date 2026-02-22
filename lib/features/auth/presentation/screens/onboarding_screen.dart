@@ -1,21 +1,22 @@
-import 'package:artio/features/auth/domain/providers/onboarding_provider.dart';
+import 'package:artio/core/state/auth_view_model_provider.dart';
 import 'package:artio/routing/routes/app_routes.dart';
 import 'package:artio/theme/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Onboarding screen shown once after first login.
 ///
 /// Design: Full-screen dark gradient, 3 slides with icon, title, subtitle.
 /// PageView with explicit dot indicators and a "Get Started" / "Next" button.
 /// On completion calls [markOnboardingDone] and navigates to Home.
-class OnboardingScreen extends StatefulWidget {
+class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
 
   @override
-  State<OnboardingScreen> createState() => _OnboardingScreenState();
+  ConsumerState<OnboardingScreen> createState() => _OnboardingScreenState();
 }
 
-class _OnboardingScreenState extends State<OnboardingScreen> {
+class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   final _pageController = PageController();
   int _currentPage = 0;
 
@@ -63,7 +64,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   Future<void> _finish() async {
-    await markOnboardingDone();
+    // Update in-memory flag + notify router so redirect() sees _onboardingDone=true.
+    // Without this, going to /home triggers redirect back to /onboarding in a loop.
+    await ref.read(authViewModelProvider.notifier).completeOnboarding();
     if (!mounted) return;
     const HomeRoute().go(context);
   }
