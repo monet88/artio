@@ -178,21 +178,22 @@ class GalleryRepository implements IGalleryRepository {
       // Hard delete - use softDeleteImage for soft delete
       final job = await _supabase
           .from('generation_jobs')
-          .select('result_urls')
+          .select('result_urls, input_image_paths')
           .eq('id', jobId)
           .single();
 
       final urls = (job['result_urls'] as List?) ?? [];
+      final inputPaths = (job['input_image_paths'] as List?) ?? [];
 
-      // Use stored result_urls directly (they are storage-relative paths)
-      for (final entry in urls) {
+      // Delete all storage files (outputs + inputs)
+      final allPaths = [...urls, ...inputPaths];
+      for (final entry in allPaths) {
         final path = entry as String?;
         if (path == null || path.isEmpty) continue;
         try {
           await _supabase.storage.from('generated-images').remove([path]);
         } on storage_client.StorageException catch (e) {
           debugPrint('Storage delete failed for $path: $e');
-          // Report to Sentry for production visibility
           unawaited(
             SentryConfig.captureException(e, stackTrace: StackTrace.current),
           );

@@ -82,6 +82,8 @@
 
 ## Completed Milestones
 
+- ✅ **Image Input Flow** — 2026-02-22 (pick, upload, generate with user images)
+  - Spec: `docs/feature-image-input-flow.md`
 - ✅ **UI/UX Polish** — 2026-02-21 (8 commits, 14 files, 446 tests green)
   - Archive: `.gsd/milestones/ui-ux-polish/`
 
@@ -99,10 +101,8 @@ _No active milestone. Use `/new-milestone` to start one._
 - [ ] Subscription management settings page
 - [ ] Referral / affiliate system
 
-### Technical Debt
-- [ ] 🟢 Sentry alert rule for `[CRITICAL] Credit refund failed` (docs in `.gsd/phases/phase-4/SENTRY-ALERTS.md`)
-- [ ] 🟢 Replace AdMob placeholder IDs (`ca-app-pub-XXXXX`) with real production IDs from AdMob dashboard
-- [ ] 🟢 `credit_logic.ts` uses `any` type — fix when Supabase SDK exposes better types
-- [ ] 🟢 Storage TTL cleanup for orphaned upload images (`generated-images` bucket, `inputs/` prefix)
-- [ ] 🟢 MIME type detection in `ImageUploadService` (currently ImagePicker always outputs JPEG with quality param, defer until other formats are strictly needed)
+### Technical Debt (Resolved)
+- [x] ~~`credit_logic.ts` uses `any` type~~ — replaced with `SupabaseClient` type (2026-02-22)
+- [x] ~~Storage TTL cleanup for orphaned upload images~~ — `input_image_paths` column + cleanup in deleteJob (2026-02-22)
+- [x] ~~MIME type detection in `ImageUploadService`~~ — XFile.mimeType + extension fallback (2026-02-22)
 

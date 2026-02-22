@@ -1,12 +1,12 @@
 // Shared credit deduction/refund logic for Edge Functions
+import type { SupabaseClient } from "jsr:@supabase/supabase-js@2";
 
 /**
  * Checks user credits and deducts if sufficient.
  * Uses the `deduct_credits` RPC which atomically validates + deducts.
  */
-// deno-lint-ignore no-explicit-any
 export async function checkAndDeductCredits(
-  supabase: any,
+  supabase: SupabaseClient,
   userId: string,
   amount: number,
   jobId: string
@@ -35,9 +35,8 @@ export async function checkAndDeductCredits(
  * Refunds credits with exponential backoff retry.
  * Logs [CRITICAL] if all retries exhausted — requires manual intervention.
  */
-// deno-lint-ignore no-explicit-any
 export async function refundCreditsOnFailure(
-  supabase: any,
+  supabase: SupabaseClient,
   userId: string,
   amount: number,
   jobId: string,
