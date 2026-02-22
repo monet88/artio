@@ -181,3 +181,4 @@ package-lock.json
 artifacts/
 
 gsd-template/
+.claude/settings.local.json
