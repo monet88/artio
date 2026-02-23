@@ -1,16 +1,18 @@
 import 'package:artio/core/design_system/app_animations.dart';
 import 'package:artio/core/design_system/app_dimensions.dart';
 import 'package:artio/core/design_system/app_spacing.dart';
+import 'package:artio/core/services/storage_url_service.dart';
 import 'package:artio/features/gallery/domain/entities/gallery_item.dart';
 import 'package:artio/features/gallery/presentation/widgets/failed_image_card.dart';
 import 'package:artio/shared/widgets/watermark_overlay.dart';
 import 'package:artio/theme/app_colors.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shimmer/shimmer.dart';
 
 /// Gallery item with long-press scale effect.
-class InteractiveGalleryItem extends StatefulWidget {
+class InteractiveGalleryItem extends ConsumerStatefulWidget {
   const InteractiveGalleryItem({
     required this.item,
     required this.onTap,
@@ -23,10 +25,11 @@ class InteractiveGalleryItem extends StatefulWidget {
   final bool showWatermark;
 
   @override
-  State<InteractiveGalleryItem> createState() => _InteractiveGalleryItemState();
+  ConsumerState<InteractiveGalleryItem> createState() =>
+      _InteractiveGalleryItemState();
 }
 
-class _InteractiveGalleryItemState extends State<InteractiveGalleryItem>
+class _InteractiveGalleryItemState extends ConsumerState<InteractiveGalleryItem>
     with SingleTickerProviderStateMixin {
   late final AnimationController _pressController;
   late final Animation<double> _scaleAnimation;
@@ -125,44 +128,79 @@ class _InteractiveGalleryItemState extends State<InteractiveGalleryItem>
 
     // Handle Completed Status with Image
     if (item.imageUrl != null) {
-      return WatermarkOverlay(
-        showWatermark: widget.showWatermark,
-        child: Hero(
-          tag: 'gallery-image-${item.id}',
-          child: ClipRRect(
-            borderRadius: AppDimensions.cardRadius,
-            child: CachedNetworkImage(
-              imageUrl: item.imageUrl!,
-              placeholder: (context, url) => AspectRatio(
-                aspectRatio: 1,
-                child: Shimmer.fromColors(
-                  baseColor: isDark
-                      ? AppColors.shimmerBase
-                      : const Color(0xFFE8EAF0),
-                  highlightColor: isDark
-                      ? AppColors.shimmerHighlight
-                      : const Color(0xFFF3F4F8),
-                  child: Container(color: Colors.white),
-                ),
+      // Resolve storage path → signed HTTPS URL (bucket is private)
+      final signedUrlAsync = ref.watch(
+        signedStorageUrlProvider(item.imageUrl!),
+      );
+
+      return signedUrlAsync.when(
+        loading: () => AspectRatio(
+          aspectRatio: 1,
+          child: Shimmer.fromColors(
+            baseColor: isDark ? AppColors.shimmerBase : const Color(0xFFE8EAF0),
+            highlightColor: isDark
+                ? AppColors.shimmerHighlight
+                : const Color(0xFFF3F4F8),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: AppDimensions.cardRadius,
               ),
-              errorWidget: (context, url, error) => AspectRatio(
-                aspectRatio: 1,
-                child: ColoredBox(
-                  color: isDark
-                      ? AppColors.darkSurface2
-                      : AppColors.lightSurface2,
-                  child: Icon(
-                    Icons.broken_image_rounded,
-                    color: isDark
-                        ? AppColors.textMuted
-                        : AppColors.textMutedLight,
-                  ),
-                ),
-              ),
-              fit: BoxFit.cover,
             ),
           ),
         ),
+        error: (_, __) => AspectRatio(
+          aspectRatio: 1,
+          child: ColoredBox(
+            color: isDark ? AppColors.darkSurface2 : AppColors.lightSurface2,
+            child: Icon(
+              Icons.broken_image_rounded,
+              color: isDark ? AppColors.textMuted : AppColors.textMutedLight,
+            ),
+          ),
+        ),
+        data: (signedUrl) {
+          if (signedUrl == null) return const SizedBox.shrink();
+          return WatermarkOverlay(
+            showWatermark: widget.showWatermark,
+            child: Hero(
+              tag: 'gallery-image-${item.id}',
+              child: ClipRRect(
+                borderRadius: AppDimensions.cardRadius,
+                child: CachedNetworkImage(
+                  imageUrl: signedUrl,
+                  placeholder: (context, url) => AspectRatio(
+                    aspectRatio: 1,
+                    child: Shimmer.fromColors(
+                      baseColor: isDark
+                          ? AppColors.shimmerBase
+                          : const Color(0xFFE8EAF0),
+                      highlightColor: isDark
+                          ? AppColors.shimmerHighlight
+                          : const Color(0xFFF3F4F8),
+                      child: Container(color: Colors.white),
+                    ),
+                  ),
+                  errorWidget: (context, url, error) => AspectRatio(
+                    aspectRatio: 1,
+                    child: ColoredBox(
+                      color: isDark
+                          ? AppColors.darkSurface2
+                          : AppColors.lightSurface2,
+                      child: Icon(
+                        Icons.broken_image_rounded,
+                        color: isDark
+                            ? AppColors.textMuted
+                            : AppColors.textMutedLight,
+                      ),
+                    ),
+                  ),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          );
+        },
       );
     }
 
