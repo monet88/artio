@@ -1,13 +1,15 @@
 import 'package:artio/core/design_system/app_animations.dart';
 import 'package:artio/core/design_system/app_spacing.dart';
+import 'package:artio/core/services/storage_url_service.dart';
 import 'package:artio/features/gallery/domain/entities/gallery_item.dart';
 import 'package:artio/features/gallery/presentation/widgets/interactive_gallery_item.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 /// Masonry image grid with staggered appear animations,
 /// shimmer placeholders, and long-press scale effect.
-class MasonryImageGrid extends StatefulWidget {
+class MasonryImageGrid extends ConsumerStatefulWidget {
   const MasonryImageGrid({
     required this.items,
     required this.onItemTap,
@@ -19,10 +21,10 @@ class MasonryImageGrid extends StatefulWidget {
   final bool showWatermark;
 
   @override
-  State<MasonryImageGrid> createState() => _MasonryImageGridState();
+  ConsumerState<MasonryImageGrid> createState() => _MasonryImageGridState();
 }
 
-class _MasonryImageGridState extends State<MasonryImageGrid>
+class _MasonryImageGridState extends ConsumerState<MasonryImageGrid>
     with SingleTickerProviderStateMixin {
   late final AnimationController _staggerController;
 
@@ -58,6 +60,13 @@ class _MasonryImageGridState extends State<MasonryImageGrid>
       crossAxisCount = 2;
     }
 
+    // Batch-resolve all image URLs in a single Supabase API call.
+    final paths = widget.items
+        .map((i) => i.imageUrl)
+        .whereType<String>()
+        .toList();
+    final signedUrlMap =
+        ref.watch(gallerySignedUrlsProvider(paths)).valueOrNull ?? {};
     return MasonryGridView.count(
       padding: AppSpacing.cardPadding,
       crossAxisCount: crossAxisCount,
@@ -107,6 +116,9 @@ class _MasonryImageGridState extends State<MasonryImageGrid>
             item: item,
             onTap: () => widget.onItemTap(item, index),
             showWatermark: widget.showWatermark,
+            resolvedUrl: item.imageUrl != null
+                ? signedUrlMap[item.imageUrl]
+                : null,
           ),
         );
       },

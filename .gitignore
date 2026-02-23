@@ -182,3 +182,6 @@ artifacts/
 
 gsd-template/
 .claude/settings.local.json
+
+# APK output folder (local builds only)
+apkoutputs/

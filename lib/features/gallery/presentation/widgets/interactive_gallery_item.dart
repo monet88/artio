@@ -1,32 +1,40 @@
 import 'package:artio/core/design_system/app_animations.dart';
 import 'package:artio/core/design_system/app_dimensions.dart';
 import 'package:artio/core/design_system/app_spacing.dart';
+import 'package:artio/core/services/storage_url_service.dart';
 import 'package:artio/features/gallery/domain/entities/gallery_item.dart';
 import 'package:artio/features/gallery/presentation/widgets/failed_image_card.dart';
 import 'package:artio/shared/widgets/watermark_overlay.dart';
 import 'package:artio/theme/app_colors.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shimmer/shimmer.dart';
 
 /// Gallery item with long-press scale effect.
-class InteractiveGalleryItem extends StatefulWidget {
+class InteractiveGalleryItem extends ConsumerStatefulWidget {
   const InteractiveGalleryItem({
     required this.item,
     required this.onTap,
     this.showWatermark = false,
+
+    /// Pre-resolved signed URL from a batch call. When provided, skips the
+    /// per-item [signedStorageUrlProvider] to avoid N+1 API requests.
+    this.resolvedUrl,
     super.key,
   });
 
   final GalleryItem item;
   final VoidCallback onTap;
   final bool showWatermark;
+  final String? resolvedUrl;
 
   @override
-  State<InteractiveGalleryItem> createState() => _InteractiveGalleryItemState();
+  ConsumerState<InteractiveGalleryItem> createState() =>
+      _InteractiveGalleryItemState();
 }
 
-class _InteractiveGalleryItemState extends State<InteractiveGalleryItem>
+class _InteractiveGalleryItemState extends ConsumerState<InteractiveGalleryItem>
     with SingleTickerProviderStateMixin {
   late final AnimationController _pressController;
   late final Animation<double> _scaleAnimation;
@@ -125,44 +133,142 @@ class _InteractiveGalleryItemState extends State<InteractiveGalleryItem>
 
     // Handle Completed Status with Image
     if (item.imageUrl != null) {
-      return WatermarkOverlay(
-        showWatermark: widget.showWatermark,
-        child: Hero(
-          tag: 'gallery-image-${item.id}',
+      // Use pre-resolved URL from batch call if available,
+      // otherwise fall back to per-item signed URL resolution.
+      final signedUrlAsync = widget.resolvedUrl != null
+          ? AsyncValue.data(widget.resolvedUrl)
+          : ref.watch(signedStorageUrlProvider(item.imageUrl!));
+
+      return signedUrlAsync.when(
+        loading: () => AspectRatio(
+          aspectRatio: 1,
+          child: Shimmer.fromColors(
+            baseColor: isDark ? AppColors.shimmerBase : const Color(0xFFE8EAF0),
+            highlightColor: isDark
+                ? AppColors.shimmerHighlight
+                : const Color(0xFFF3F4F8),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: AppDimensions.cardRadius,
+              ),
+            ),
+          ),
+        ),
+        error: (_, __) => AspectRatio(
+          aspectRatio: 1,
           child: ClipRRect(
             borderRadius: AppDimensions.cardRadius,
-            child: CachedNetworkImage(
-              imageUrl: item.imageUrl!,
-              placeholder: (context, url) => AspectRatio(
-                aspectRatio: 1,
-                child: Shimmer.fromColors(
-                  baseColor: isDark
-                      ? AppColors.shimmerBase
-                      : const Color(0xFFE8EAF0),
-                  highlightColor: isDark
-                      ? AppColors.shimmerHighlight
-                      : const Color(0xFFF3F4F8),
-                  child: Container(color: Colors.white),
-                ),
+            child: ColoredBox(
+              color: isDark ? AppColors.darkSurface2 : AppColors.lightSurface2,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.broken_image_rounded,
+                    size: 32,
+                    color: isDark
+                        ? AppColors.textMuted
+                        : AppColors.textMutedLight,
+                  ),
+                  const SizedBox(height: AppSpacing.xs),
+                  Text(
+                    'Failed to load',
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      color: isDark
+                          ? AppColors.textMuted
+                          : AppColors.textMutedLight,
+                    ),
+                  ),
+                ],
               ),
-              errorWidget: (context, url, error) => AspectRatio(
-                aspectRatio: 1,
+            ),
+          ),
+        ),
+        data: (signedUrl) {
+          if (signedUrl == null) {
+            return AspectRatio(
+              aspectRatio: 1,
+              child: ClipRRect(
+                borderRadius: AppDimensions.cardRadius,
                 child: ColoredBox(
                   color: isDark
                       ? AppColors.darkSurface2
                       : AppColors.lightSurface2,
                   child: Icon(
-                    Icons.broken_image_rounded,
+                    Icons.image_not_supported_outlined,
+                    size: 32,
                     color: isDark
                         ? AppColors.textMuted
                         : AppColors.textMutedLight,
                   ),
                 ),
               ),
-              fit: BoxFit.cover,
+            );
+          }
+          return WatermarkOverlay(
+            showWatermark: widget.showWatermark,
+            child: Hero(
+              tag: 'gallery-image-${item.id}',
+              child: ClipRRect(
+                borderRadius: AppDimensions.cardRadius,
+                child: CachedNetworkImage(
+                  imageUrl: signedUrl,
+                  // Use the stable storage path as cache key so the cached
+                  // image survives signed URL expiry (signed URL rotates,
+                  // but the content is the same file).
+                  cacheKey: item.imageUrl,
+                  placeholder: (context, url) => AspectRatio(
+                    aspectRatio: 1,
+                    child: Shimmer.fromColors(
+                      baseColor: isDark
+                          ? AppColors.shimmerBase
+                          : const Color(0xFFE8EAF0),
+                      highlightColor: isDark
+                          ? AppColors.shimmerHighlight
+                          : const Color(0xFFF3F4F8),
+                      child: Container(color: Colors.white),
+                    ),
+                  ),
+                  errorWidget: (context, url, error) => AspectRatio(
+                    aspectRatio: 1,
+                    child: ClipRRect(
+                      borderRadius: AppDimensions.cardRadius,
+                      child: ColoredBox(
+                        color: isDark
+                            ? AppColors.darkSurface2
+                            : AppColors.lightSurface2,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.broken_image_rounded,
+                              size: 32,
+                              color: isDark
+                                  ? AppColors.textMuted
+                                  : AppColors.textMutedLight,
+                            ),
+                            const SizedBox(height: AppSpacing.xs),
+                            Text(
+                              'Failed to load',
+                              style: Theme.of(context).textTheme.labelSmall
+                                  ?.copyWith(
+                                    color: isDark
+                                        ? AppColors.textMuted
+                                        : AppColors.textMutedLight,
+                                  ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  fit: BoxFit.cover,
+                ),
+              ),
             ),
-          ),
-        ),
+          );
+        },
       );
     }
 
