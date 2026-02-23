@@ -11,9 +11,11 @@ List<RouteBase> get $appRoutes => [
   $loginRoute,
   $registerRoute,
   $forgotPasswordRoute,
+  $onboardingRoute,
   $mainShellRoute,
   $templateDetailRoute,
   $galleryImageRoute,
+  $creditHistoryRoute,
   $paywallRoute,
 ];
 
@@ -88,6 +90,28 @@ extension $ForgotPasswordRouteExtension on ForgotPasswordRoute {
       const ForgotPasswordRoute();
 
   String get location => GoRouteData.$location('/forgot-password');
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $onboardingRoute => GoRouteData.$route(
+  path: '/onboarding',
+
+  factory: $OnboardingRouteExtension._fromState,
+);
+
+extension $OnboardingRouteExtension on OnboardingRoute {
+  static OnboardingRoute _fromState(GoRouterState state) =>
+      const OnboardingRoute();
+
+  String get location => GoRouteData.$location('/onboarding');
 
   void go(BuildContext context) => context.go(location);
 
@@ -231,6 +255,28 @@ extension $GalleryImageRouteExtension on GalleryImageRoute {
 
   void replace(BuildContext context) =>
       context.replace(location, extra: $extra);
+}
+
+RouteBase get $creditHistoryRoute => GoRouteData.$route(
+  path: '/credits/history',
+
+  factory: $CreditHistoryRouteExtension._fromState,
+);
+
+extension $CreditHistoryRouteExtension on CreditHistoryRoute {
+  static CreditHistoryRoute _fromState(GoRouterState state) =>
+      const CreditHistoryRoute();
+
+  String get location => GoRouteData.$location('/credits/history');
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
 }
 
 RouteBase get $paywallRoute => GoRouteData.$route(
