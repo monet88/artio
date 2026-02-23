@@ -1,7 +1,7 @@
 -- Add 13 new templates from nanobananaprompt.org (cross-model: Nano Banana, Seedream, Flux-2)
 -- Date: 2026-02-23
 -- Note: All templates use {variable} interpolation mapped to input_fields
--- Note: is_active = false → set to true after manual QA test on device
+-- Note: all templates are is_active = true (visible immediately after insert)
 
 -- ============================================================
 -- PORTRAIT & FACE EFFECTS

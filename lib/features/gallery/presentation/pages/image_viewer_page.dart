@@ -1,4 +1,5 @@
 import 'package:artio/core/design_system/app_animations.dart';
+import 'package:artio/core/exceptions/app_exception.dart';
 import 'package:artio/core/services/haptic_service.dart';
 import 'package:artio/core/services/storage_url_service.dart';
 import 'package:artio/core/state/subscription_state_provider.dart';
@@ -83,17 +84,23 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage>
       .read(subscriptionNotifierProvider)
       .maybeWhen(data: (status) => status.isFree, orElse: () => true);
 
+  /// Resolves the current item's storage path to a signed HTTPS URL.
+  /// Throws [AppException] if resolution fails.
+  Future<String> _resolveSignedUrl(String rawPath) async {
+    final signed = await ref.read(storageUrlServiceProvider).signedUrl(rawPath);
+    if (signed == null) {
+      throw const AppException.storage(message: 'Could not resolve image URL');
+    }
+    return signed;
+  }
+
   Future<void> _download() async {
     final rawPath = _currentItem.imageUrl;
     if (rawPath == null) return;
     HapticService.buttonTap();
     setState(() => _isDownloading = true);
     try {
-      // Resolve storage path → signed HTTPS URL before downloading
-      final signedUrl = await ref
-          .read(storageUrlServiceProvider)
-          .signedUrl(rawPath);
-      if (signedUrl == null) throw Exception('Could not resolve image URL');
+      final signedUrl = await _resolveSignedUrl(rawPath);
       final repo = ref.read(galleryRepositoryProvider);
       final path = await ImageViewerActionHelper.download(
         repo,
@@ -118,11 +125,7 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage>
     HapticService.share();
     setState(() => _isSharing = true);
     try {
-      // Resolve storage path → signed HTTPS URL before sharing
-      final signedUrl = await ref
-          .read(storageUrlServiceProvider)
-          .signedUrl(rawPath);
-      if (signedUrl == null) throw Exception('Could not resolve image URL');
+      final signedUrl = await _resolveSignedUrl(rawPath);
       final repo = ref.read(galleryRepositoryProvider);
       await ImageViewerActionHelper.share(
         repo,

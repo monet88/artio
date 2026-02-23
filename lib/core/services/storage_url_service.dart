@@ -23,6 +23,38 @@ class StorageUrlService {
         .from(_bucket)
         .createSignedUrl(path, _signedUrlExpiry);
   }
+
+  /// Batch-resolves multiple storage paths in a single Supabase API call.
+  /// Returns a map of storagePath → signedUrl (null if resolution failed).
+  /// Paths that are already HTTPS URLs are returned as-is without an API call.
+  Future<Map<String, String?>> signedUrls(List<String> paths) async {
+    if (paths.isEmpty) return {};
+
+    // Split: paths that need signing vs already-full URLs
+    final toSign = <String>[];
+    final result = <String, String?>{};
+
+    for (final p in paths) {
+      if (p.startsWith('http://') || p.startsWith('https://')) {
+        result[p] = p;
+      } else {
+        toSign.add(p);
+      }
+    }
+
+    if (toSign.isEmpty) return result;
+
+    // Single API call for all storage paths
+    final signed = await _supabase.storage
+        .from(_bucket)
+        .createSignedUrls(toSign, _signedUrlExpiry);
+
+    for (final entry in signed) {
+      result[entry.path] = entry.signedUrl;
+    }
+
+    return result;
+  }
 }
 
 @riverpod
@@ -36,4 +68,16 @@ StorageUrlService storageUrlService(Ref ref) {
 Future<String?> signedStorageUrl(Ref ref, String storagePath) async {
   final service = ref.watch(storageUrlServiceProvider);
   return service.signedUrl(storagePath);
+}
+
+/// Batch-resolves a list of gallery item image paths to signed URLs.
+/// Returns a map of storagePath → signedUrl.
+/// Use this at the page level to avoid N+1 signed URL API calls.
+@riverpod
+Future<Map<String, String?>> gallerySignedUrls(
+  Ref ref,
+  List<String> paths,
+) async {
+  final service = ref.watch(storageUrlServiceProvider);
+  return service.signedUrls(paths);
 }

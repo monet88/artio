@@ -184,5 +184,152 @@ class _SignedStorageUrlProviderElement
   String get storagePath => (origin as SignedStorageUrlProvider).storagePath;
 }
 
+String _$gallerySignedUrlsHash() => r'333703756d303d9789259529edfa173cb2668dba';
+
+/// Batch-resolves a list of gallery item image paths to signed URLs.
+/// Returns a map of storagePath → signedUrl.
+/// Use this at the page level to avoid N+1 signed URL API calls.
+///
+/// Copied from [gallerySignedUrls].
+@ProviderFor(gallerySignedUrls)
+const gallerySignedUrlsProvider = GallerySignedUrlsFamily();
+
+/// Batch-resolves a list of gallery item image paths to signed URLs.
+/// Returns a map of storagePath → signedUrl.
+/// Use this at the page level to avoid N+1 signed URL API calls.
+///
+/// Copied from [gallerySignedUrls].
+class GallerySignedUrlsFamily extends Family<AsyncValue<Map<String, String?>>> {
+  /// Batch-resolves a list of gallery item image paths to signed URLs.
+  /// Returns a map of storagePath → signedUrl.
+  /// Use this at the page level to avoid N+1 signed URL API calls.
+  ///
+  /// Copied from [gallerySignedUrls].
+  const GallerySignedUrlsFamily();
+
+  /// Batch-resolves a list of gallery item image paths to signed URLs.
+  /// Returns a map of storagePath → signedUrl.
+  /// Use this at the page level to avoid N+1 signed URL API calls.
+  ///
+  /// Copied from [gallerySignedUrls].
+  GallerySignedUrlsProvider call(List<String> paths) {
+    return GallerySignedUrlsProvider(paths);
+  }
+
+  @override
+  GallerySignedUrlsProvider getProviderOverride(
+    covariant GallerySignedUrlsProvider provider,
+  ) {
+    return call(provider.paths);
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'gallerySignedUrlsProvider';
+}
+
+/// Batch-resolves a list of gallery item image paths to signed URLs.
+/// Returns a map of storagePath → signedUrl.
+/// Use this at the page level to avoid N+1 signed URL API calls.
+///
+/// Copied from [gallerySignedUrls].
+class GallerySignedUrlsProvider
+    extends AutoDisposeFutureProvider<Map<String, String?>> {
+  /// Batch-resolves a list of gallery item image paths to signed URLs.
+  /// Returns a map of storagePath → signedUrl.
+  /// Use this at the page level to avoid N+1 signed URL API calls.
+  ///
+  /// Copied from [gallerySignedUrls].
+  GallerySignedUrlsProvider(List<String> paths)
+    : this._internal(
+        (ref) => gallerySignedUrls(ref as GallerySignedUrlsRef, paths),
+        from: gallerySignedUrlsProvider,
+        name: r'gallerySignedUrlsProvider',
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$gallerySignedUrlsHash,
+        dependencies: GallerySignedUrlsFamily._dependencies,
+        allTransitiveDependencies:
+            GallerySignedUrlsFamily._allTransitiveDependencies,
+        paths: paths,
+      );
+
+  GallerySignedUrlsProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.paths,
+  }) : super.internal();
+
+  final List<String> paths;
+
+  @override
+  Override overrideWith(
+    FutureOr<Map<String, String?>> Function(GallerySignedUrlsRef provider)
+    create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: GallerySignedUrlsProvider._internal(
+        (ref) => create(ref as GallerySignedUrlsRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        paths: paths,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<Map<String, String?>> createElement() {
+    return _GallerySignedUrlsProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is GallerySignedUrlsProvider && other.paths == paths;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, paths.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin GallerySignedUrlsRef
+    on AutoDisposeFutureProviderRef<Map<String, String?>> {
+  /// The parameter `paths` of this provider.
+  List<String> get paths;
+}
+
+class _GallerySignedUrlsProviderElement
+    extends AutoDisposeFutureProviderElement<Map<String, String?>>
+    with GallerySignedUrlsRef {
+  _GallerySignedUrlsProviderElement(super.provider);
+
+  @override
+  List<String> get paths => (origin as GallerySignedUrlsProvider).paths;
+}
+
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

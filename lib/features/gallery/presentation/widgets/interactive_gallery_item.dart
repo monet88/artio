@@ -17,12 +17,17 @@ class InteractiveGalleryItem extends ConsumerStatefulWidget {
     required this.item,
     required this.onTap,
     this.showWatermark = false,
+
+    /// Pre-resolved signed URL from a batch call. When provided, skips the
+    /// per-item [signedStorageUrlProvider] to avoid N+1 API requests.
+    this.resolvedUrl,
     super.key,
   });
 
   final GalleryItem item;
   final VoidCallback onTap;
   final bool showWatermark;
+  final String? resolvedUrl;
 
   @override
   ConsumerState<InteractiveGalleryItem> createState() =>
@@ -128,10 +133,11 @@ class _InteractiveGalleryItemState extends ConsumerState<InteractiveGalleryItem>
 
     // Handle Completed Status with Image
     if (item.imageUrl != null) {
-      // Resolve storage path → signed HTTPS URL (bucket is private)
-      final signedUrlAsync = ref.watch(
-        signedStorageUrlProvider(item.imageUrl!),
-      );
+      // Use pre-resolved URL from batch call if available,
+      // otherwise fall back to per-item signed URL resolution.
+      final signedUrlAsync = widget.resolvedUrl != null
+          ? AsyncValue.data(widget.resolvedUrl)
+          : ref.watch(signedStorageUrlProvider(item.imageUrl!));
 
       return signedUrlAsync.when(
         loading: () => AspectRatio(
@@ -151,16 +157,55 @@ class _InteractiveGalleryItemState extends ConsumerState<InteractiveGalleryItem>
         ),
         error: (_, __) => AspectRatio(
           aspectRatio: 1,
-          child: ColoredBox(
-            color: isDark ? AppColors.darkSurface2 : AppColors.lightSurface2,
-            child: Icon(
-              Icons.broken_image_rounded,
-              color: isDark ? AppColors.textMuted : AppColors.textMutedLight,
+          child: ClipRRect(
+            borderRadius: AppDimensions.cardRadius,
+            child: ColoredBox(
+              color: isDark ? AppColors.darkSurface2 : AppColors.lightSurface2,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.broken_image_rounded,
+                    size: 32,
+                    color: isDark
+                        ? AppColors.textMuted
+                        : AppColors.textMutedLight,
+                  ),
+                  const SizedBox(height: AppSpacing.xs),
+                  Text(
+                    'Failed to load',
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      color: isDark
+                          ? AppColors.textMuted
+                          : AppColors.textMutedLight,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
         data: (signedUrl) {
-          if (signedUrl == null) return const SizedBox.shrink();
+          if (signedUrl == null) {
+            return AspectRatio(
+              aspectRatio: 1,
+              child: ClipRRect(
+                borderRadius: AppDimensions.cardRadius,
+                child: ColoredBox(
+                  color: isDark
+                      ? AppColors.darkSurface2
+                      : AppColors.lightSurface2,
+                  child: Icon(
+                    Icons.image_not_supported_outlined,
+                    size: 32,
+                    color: isDark
+                        ? AppColors.textMuted
+                        : AppColors.textMutedLight,
+                  ),
+                ),
+              ),
+            );
+          }
           return WatermarkOverlay(
             showWatermark: widget.showWatermark,
             child: Hero(
@@ -169,6 +214,10 @@ class _InteractiveGalleryItemState extends ConsumerState<InteractiveGalleryItem>
                 borderRadius: AppDimensions.cardRadius,
                 child: CachedNetworkImage(
                   imageUrl: signedUrl,
+                  // Use the stable storage path as cache key so the cached
+                  // image survives signed URL expiry (signed URL rotates,
+                  // but the content is the same file).
+                  cacheKey: item.imageUrl,
                   placeholder: (context, url) => AspectRatio(
                     aspectRatio: 1,
                     child: Shimmer.fromColors(
@@ -183,15 +232,34 @@ class _InteractiveGalleryItemState extends ConsumerState<InteractiveGalleryItem>
                   ),
                   errorWidget: (context, url, error) => AspectRatio(
                     aspectRatio: 1,
-                    child: ColoredBox(
-                      color: isDark
-                          ? AppColors.darkSurface2
-                          : AppColors.lightSurface2,
-                      child: Icon(
-                        Icons.broken_image_rounded,
+                    child: ClipRRect(
+                      borderRadius: AppDimensions.cardRadius,
+                      child: ColoredBox(
                         color: isDark
-                            ? AppColors.textMuted
-                            : AppColors.textMutedLight,
+                            ? AppColors.darkSurface2
+                            : AppColors.lightSurface2,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.broken_image_rounded,
+                              size: 32,
+                              color: isDark
+                                  ? AppColors.textMuted
+                                  : AppColors.textMutedLight,
+                            ),
+                            const SizedBox(height: AppSpacing.xs),
+                            Text(
+                              'Failed to load',
+                              style: Theme.of(context).textTheme.labelSmall
+                                  ?.copyWith(
+                                    color: isDark
+                                        ? AppColors.textMuted
+                                        : AppColors.textMutedLight,
+                                  ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
