@@ -204,42 +204,6 @@ Watch mode: `dart run build_runner watch`
 
 ---
 
-## COMMANDS
-
-```bash
-# Main app
-flutter pub get
-flutter run                    # Default device
-flutter run -d chrome          # Web
-flutter run -d windows         # Windows
-flutter analyze
-dart format .
-flutter test                   # All tests
-flutter test --coverage
-
-# Admin (run from /admin directory)
-flutter pub get                # workdir: admin/
-flutter run -d chrome          # workdir: admin/
-flutter analyze                # workdir: admin/
-
-# Integration tests
-flutter test integration_test/template_e2e_test.dart
-flutter test --tags integration
-```
-
----
-
-## ENVIRONMENT
-
-- `.env` loaded via `flutter_dotenv`
-- Required keys: `SUPABASE_URL`, `SUPABASE_ANON_KEY`
-- Edge Function secrets: `GEMINI_API_KEY`, `KIE_API_KEY` (set via `supabase secrets set`)
-- Env selection: `String.fromEnvironment('ENV', defaultValue: 'development')`
-- Files: `.env`, `.env.development`, `.env.staging`, `.env.test`
-- Sentry: initialized in `main.dart` via `sentry_config.dart`
-
----
-
 ## DB SCHEMA (key tables)
 
 | Table | Purpose | Key migration |
@@ -267,8 +231,6 @@ RPCs: `deduct_credits`, `refund_credits`, `reward_ad` — all `SECURITY DEFINER`
 | `docs/development-roadmap.md` | Phases and progress |
 | `docs/ai-models-reference.md` | AI model configs and costs |
 | `docs/feature-image-input-flow.md` | Image input feature spec |
-| `docs/runbook.md` | Operational procedures |
-| `docs/revenuecat-checklist.md` | RevenueCat integration checklist |
 
 ---
 
