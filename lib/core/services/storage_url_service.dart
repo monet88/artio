@@ -1,6 +1,9 @@
 import 'package:artio/core/providers/supabase_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
+part 'storage_url_service.g.dart';
 
 const _bucket = 'generated-images';
 const _signedUrlExpiry = 3600; // 1 hour
@@ -16,23 +19,21 @@ class StorageUrlService {
     if (path.startsWith('http://') || path.startsWith('https://')) {
       return path;
     }
-    final response = await _supabase.storage
+    return _supabase.storage
         .from(_bucket)
         .createSignedUrl(path, _signedUrlExpiry);
-    return response;
   }
 }
 
-final storageUrlServiceProvider = Provider<StorageUrlService>((ref) {
+@riverpod
+StorageUrlService storageUrlService(Ref ref) {
   return StorageUrlService(ref.watch(supabaseClientProvider));
-});
+}
 
 /// Resolves a single storage path to a signed HTTPS URL.
 /// Used in widgets via `ref.watch(signedStorageUrlProvider(path))`.
-final signedStorageUrlProvider = FutureProvider.family<String?, String>((
-  ref,
-  storagePath,
-) async {
+@riverpod
+Future<String?> signedStorageUrl(Ref ref, String storagePath) async {
   final service = ref.watch(storageUrlServiceProvider);
   return service.signedUrl(storagePath);
-});
+}

@@ -180,9 +180,19 @@ class _SignedStorageImage extends ConsumerWidget {
 
     return urlAsync.when(
       loading: () => const LoadingStateWidget(),
-      error: (_, __) => const SizedBox.shrink(),
+      error: (_, __) => Icon(
+        Icons.broken_image_outlined,
+        size: 48,
+        color: AppColors.error.withValues(alpha: 0.5),
+      ),
       data: (url) {
-        if (url == null) return const SizedBox.shrink();
+        if (url == null) {
+          return Icon(
+            Icons.broken_image_outlined,
+            size: 48,
+            color: AppColors.error.withValues(alpha: 0.5),
+          );
+        }
         return ClipRRect(
           borderRadius: AppDimensions.cardRadius,
           child: Image.network(
@@ -192,8 +202,11 @@ class _SignedStorageImage extends ConsumerWidget {
               if (loadingProgress == null) return child;
               return const LoadingStateWidget();
             },
-            errorBuilder: (context, error, stackTrace) =>
-                const SizedBox.shrink(),
+            errorBuilder: (context, error, stackTrace) => Icon(
+              Icons.broken_image_outlined,
+              size: 48,
+              color: AppColors.error.withValues(alpha: 0.5),
+            ),
           ),
         );
       },

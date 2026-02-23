@@ -1,35 +1,78 @@
-# Debug Session: grep_search_empty_returns
+---
+status: resolved
+trigger: "input_image_paths always NULL in generation_jobs despite images being uploaded and used successfully"
+created: 2026-02-22T21:44:00+07:00
+updated: 2026-02-22T21:55:00+07:00
+---
 
 ## Symptom
-The `grep_search` MCP tool repeatedly returns empty results when searching for strings that are definitely present. 
 
-**When:** Occurred during phase 2 verification when searching for `_retryCount`, `Assert`, `math.max`, and `EmailValidator.validate`.
-**Expected:** The tool should return the line numbers and content where the queries match.
-**Actual:** Three test queries returned empty, while one (`EmailValidator.validate`) returned results.
+expected: `input_image_paths` column in `generation_jobs` stores uploaded image storage paths
+actual: All 17 generation jobs have `input_image_paths = null` despite images being uploaded to Storage and used successfully by Edge Function
+
+## Evidence
+
+- checked: All 17 generation_jobs from templates — 0 have `input_image_paths` set
+  found: Column always null even for jobs that use image editing models (nano-banana-edit)
+  implication: Data not persisting through PostgREST API
+
+- checked: Supabase Storage `generated-images/{userId}/inputs/` folder
+  found: 10+ uploaded images exist with timestamps matching job creation times
+  implication: Upload succeeds, images are used, but paths not saved to DB
+
+- checked: Column privileges for `authenticated` role
+  found: INSERT/UPDATE/SELECT all granted, no triggers, column type `text[]` correct
+  implication: DB-level permissions are fine
+
+- checked: Direct SQL INSERT with array values
+  found: Works perfectly — array persists
+  implication: Issue is NOT at PostgreSQL level
+
+- checked: PostgREST REST API insert (simulating Dart client)
+  found: After schema reload, array persists correctly
+  implication: PostgREST schema cache was stale
 
 ## Hypotheses
 
 | # | Hypothesis | Likelihood | Status |
 |---|------------|------------|--------|
-| 1 | Windows path formatting issue (backslashes `\` causing escape issues). | Eliminated | Tested with forward slashes and exact same issue occurred. |
-| 2 | File caching/syncing issue. | Eliminated | It's not a cache, the file was committed and reads perfectly with `view_file` or `rg`. |
-| 3 | Query string required `IsRegex: true` exact matching quirks. | Eliminated | Simple Queries like "Assert" also failed. |
-| 4 | The tool has a bug when `SearchPath` is a single file instead of a directory. | 99% | CONFIRMED. When `SearchPath` is a directory, it finds the query. When `SearchPath` points to the exact single file, it returns empty. |
+| 1 | PostgREST schema cache stale after migration | 90% | CONFIRMED |
+| 2 | Dart List<String> serialization issue | 5% | ELIMINATED |
+| 3 | RLS policy blocking column | 3% | ELIMINATED |
+| 4 | DB trigger nullifying column | 2% | ELIMINATED |
 
 ## Attempts
 
-### Attempt 1: Test Path Formats
-**Testing:** H1 — Path syntax
-**Action:** Used `grep_search` with forward slashes on `.../auth` directory.
-**Result:** Worked. So backslashes are mostly fine when running on directories.
+### Attempt 1
+**Testing:** H3 — RLS policy blocking column write
+**Action:** Queried column_privileges and RLS policies
+**Result:** All privileges granted, RLS only checks `auth.uid() = user_id`
+**Conclusion:** ELIMINATED
 
-### Attempt 2: Test Single File vs Directory
-**Testing:** H4 — Bug with single file paths
-**Action:** Ran `grep_search` on `_retryCount` using the parent directory as `SearchPath`. Then ran `grep_search` on `math.max` using the single file as `SearchPath`.
-**Result:** The directory search worked perfectly and found `_retryCount` 8 times. The single file search for `math.max` returned `No results found`, even though the file contains it.
+### Attempt 2
+**Testing:** H4 — DB trigger nullifying column
+**Action:** Queried information_schema.triggers
+**Result:** No triggers on generation_jobs table
+**Conclusion:** ELIMINATED
+
+### Attempt 3
+**Testing:** H1 — PostgREST schema cache stale
+**Action:** Ran `NOTIFY pgrst, 'reload schema'`, then tested PostgREST REST API insert with JSON array
+**Result:** `input_image_paths` now correctly saved as `["path/test1.jpg", "path/test2.jpg"]`
+**Conclusion:** CONFIRMED
 
 ## Resolution
 
-**Root Cause:** The `grep_search` tool fails silently and returns empty results when `SearchPath` is a direct file path rather than a directory.
-**Fix (Workaround):** For future calls, always provide the parent directory (or the closest folder) as `SearchPath`, and optionally use `Includes` or regular filters if needed to narrow down the search. Wait, since it's a tool bug, I should adapt my usage pattern.
-**Verified:** Confirmed by running `grep_search` on the directory successfully.
+**Root Cause:** PostgREST schema cache was stale after migration `20260222073922` (add_input_image_paths) was applied. PostgREST didn't know about the new `input_image_paths TEXT[]` column and **silently dropped** it from INSERT payloads sent via the REST API.
+
+**Fix:** Ran `NOTIFY pgrst, 'reload schema'` to force PostgREST to refresh its schema cache. No code changes needed.
+
+**Verified:** PostgREST REST API insert now correctly persists `input_image_paths` array values.
+
+**Prevention:** After applying migrations that add/alter columns, always run:
+```sql
+NOTIFY pgrst, 'reload schema';
+```
+Or use Supabase dashboard to restart PostgREST. The `apply_migration` MCP tool may handle this automatically, but direct SQL or `supabase db push` may not.
+
+**Regression Check:** No regressions — this was a configuration issue, not a code issue.

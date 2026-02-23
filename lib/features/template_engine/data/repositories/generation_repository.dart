@@ -46,6 +46,8 @@ class GenerationRepository implements IGenerationRepository {
             'prompt': prompt,
             'status': 'pending',
             if (modelId != null) 'model_id': modelId,
+            if (imageInputs != null && imageInputs.isNotEmpty)
+              'input_image_paths': imageInputs,
           })
           .select('id')
           .single();
