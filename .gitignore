@@ -154,6 +154,11 @@ WARP.md
 .repomixignore
 .mcp.json
 plans/
+pr-review/
+.serena/
+GEMINI.md
+AGENTS.md
+PROJECT_RULES.md
 
 # Build artifacts
 release-manifest.json
@@ -167,20 +172,14 @@ repomix-output.xml
 repomix-output.txt
 repomix-output.md
 
-# Gemini CLI settings (contains user-specific config)
-
 # Node.js (tooling only, not a Node project)
 node_modules/
 package.json
 package-lock.json
 
-# Tracked: project rules and config for AI tools
-!.serena/
+# Semantic search index
 .ck/
 artifacts/
 
-gsd-template/
-
 # APK output folder (local builds only)
 apkoutputs/
-
