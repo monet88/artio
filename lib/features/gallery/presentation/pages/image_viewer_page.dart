@@ -1,5 +1,6 @@
 import 'package:artio/core/design_system/app_animations.dart';
 import 'package:artio/core/services/haptic_service.dart';
+import 'package:artio/core/services/storage_url_service.dart';
 import 'package:artio/core/state/subscription_state_provider.dart';
 import 'package:artio/core/utils/app_exception_mapper.dart';
 import 'package:artio/features/gallery/domain/entities/gallery_item.dart';
@@ -83,15 +84,20 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage>
       .maybeWhen(data: (status) => status.isFree, orElse: () => true);
 
   Future<void> _download() async {
-    final imageUrl = _currentItem.imageUrl;
-    if (imageUrl == null) return;
+    final rawPath = _currentItem.imageUrl;
+    if (rawPath == null) return;
     HapticService.buttonTap();
     setState(() => _isDownloading = true);
     try {
+      // Resolve storage path → signed HTTPS URL before downloading
+      final signedUrl = await ref
+          .read(storageUrlServiceProvider)
+          .signedUrl(rawPath);
+      if (signedUrl == null) throw Exception('Could not resolve image URL');
       final repo = ref.read(galleryRepositoryProvider);
       final path = await ImageViewerActionHelper.download(
         repo,
-        imageUrl,
+        signedUrl,
         isFreeUser: _isFreeUser,
       );
       HapticService.downloadComplete();
@@ -107,15 +113,20 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage>
   }
 
   Future<void> _share() async {
-    final imageUrl = _currentItem.imageUrl;
-    if (imageUrl == null) return;
+    final rawPath = _currentItem.imageUrl;
+    if (rawPath == null) return;
     HapticService.share();
     setState(() => _isSharing = true);
     try {
+      // Resolve storage path → signed HTTPS URL before sharing
+      final signedUrl = await ref
+          .read(storageUrlServiceProvider)
+          .signedUrl(rawPath);
+      if (signedUrl == null) throw Exception('Could not resolve image URL');
       final repo = ref.read(galleryRepositoryProvider);
       await ImageViewerActionHelper.share(
         repo,
-        imageUrl,
+        signedUrl,
         isFreeUser: _isFreeUser,
       );
     } on Exception catch (e) {
