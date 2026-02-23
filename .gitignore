@@ -156,6 +156,9 @@ WARP.md
 plans/
 pr-review/
 .serena/
+GEMINI.md
+AGENTS.md
+PROJECT_RULES.md
 
 # Build artifacts
 release-manifest.json
