@@ -27,10 +27,26 @@ class MasonryImageGrid extends ConsumerStatefulWidget {
 class _MasonryImageGridState extends ConsumerState<MasonryImageGrid>
     with SingleTickerProviderStateMixin {
   late final AnimationController _staggerController;
+  // Stable list instance: only replaced when item URLs actually change.
+  // Prevents gallerySignedUrlsProvider from re-firing on every rebuild
+  // because Riverpod family uses List identity equality.
+  late List<String> _paths;
+
+  static List<String> _extractPaths(List<GalleryItem> items) =>
+      items.map((i) => i.imageUrl).whereType<String>().toList();
+
+  static bool _pathsEqual(List<String> a, List<String> b) {
+    if (a.length != b.length) return false;
+    for (var i = 0; i < a.length; i++) {
+      if (a[i] != b[i]) return false;
+    }
+    return true;
+  }
 
   @override
   void initState() {
     super.initState();
+    _paths = _extractPaths(widget.items);
     _staggerController = AnimationController(
       vsync: this,
       duration: Duration(
@@ -40,6 +56,18 @@ class _MasonryImageGridState extends ConsumerState<MasonryImageGrid>
                 widget.items.length.clamp(0, AppAnimations.maxStaggerItems)),
       ),
     )..forward();
+  }
+
+  @override
+  void didUpdateWidget(MasonryImageGrid oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!identical(oldWidget.items, widget.items)) {
+      final newPaths = _extractPaths(widget.items);
+      if (!_pathsEqual(_paths, newPaths)) {
+        // Only update state (and invalidate provider) when URLs actually changed
+        setState(() => _paths = newPaths);
+      }
+    }
   }
 
   @override
@@ -61,12 +89,9 @@ class _MasonryImageGridState extends ConsumerState<MasonryImageGrid>
     }
 
     // Batch-resolve all image URLs in a single Supabase API call.
-    final paths = widget.items
-        .map((i) => i.imageUrl)
-        .whereType<String>()
-        .toList();
+    // _paths is a stable instance — only changes when item URLs actually change.
     final signedUrlMap =
-        ref.watch(gallerySignedUrlsProvider(paths)).valueOrNull ?? {};
+        ref.watch(gallerySignedUrlsProvider(_paths)).valueOrNull ?? {};
     return MasonryGridView.count(
       padding: AppSpacing.cardPadding,
       crossAxisCount: crossAxisCount,
