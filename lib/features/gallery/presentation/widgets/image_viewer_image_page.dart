@@ -90,6 +90,20 @@ class ImageViewerImagePage extends ConsumerWidget {
                             fontSize: 14,
                           ),
                         ),
+                        const SizedBox(height: AppSpacing.sm),
+                        GestureDetector(
+                          onTap: () => ref.invalidate(
+                            signedStorageUrlProvider(rawPath!),
+                          ),
+                          child: const Text(
+                            'Retry',
+                            style: TextStyle(
+                              color: AppColors.primaryCta,
+                              fontSize: 14,
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                     data: (signedUrl) => signedUrl == null
@@ -152,6 +166,20 @@ class ImageViewerImagePage extends ConsumerWidget {
                                       style: TextStyle(
                                         color: AppColors.textMuted,
                                         fontSize: 14,
+                                      ),
+                                    ),
+                                    const SizedBox(height: AppSpacing.sm),
+                                    GestureDetector(
+                                      onTap: () => ref.invalidate(
+                                        signedStorageUrlProvider(rawPath!),
+                                      ),
+                                      child: const Text(
+                                        'Retry',
+                                        style: TextStyle(
+                                          color: AppColors.primaryCta,
+                                          fontSize: 14,
+                                          decoration: TextDecoration.underline,
+                                        ),
                                       ),
                                     ),
                                   ],

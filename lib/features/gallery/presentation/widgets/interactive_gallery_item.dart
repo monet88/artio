@@ -180,6 +180,21 @@ class _InteractiveGalleryItemState extends ConsumerState<InteractiveGalleryItem>
                           : AppColors.textMutedLight,
                     ),
                   ),
+                  const SizedBox(height: AppSpacing.xs),
+                  GestureDetector(
+                    onTap: () => ref.invalidate(
+                      signedStorageUrlProvider(item.imageUrl!),
+                    ),
+                    child: Text(
+                      'Retry',
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                        color: isDark
+                            ? AppColors.primaryCta
+                            : AppColors.primaryCta,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -257,6 +272,28 @@ class _InteractiveGalleryItemState extends ConsumerState<InteractiveGalleryItem>
                                         ? AppColors.textMuted
                                         : AppColors.textMutedLight,
                                   ),
+                            ),
+                            const SizedBox(height: AppSpacing.xs),
+                            GestureDetector(
+                              onTap: () {
+                                // Evict from image cache so CachedNetworkImage
+                                // re-fetches on next render.
+                                CachedNetworkImage.evictFromCache(
+                                  item.imageUrl!,
+                                );
+                                // Invalidate provider to get a fresh signed URL.
+                                ref.invalidate(
+                                  signedStorageUrlProvider(item.imageUrl!),
+                                );
+                              },
+                              child: Text(
+                                'Retry',
+                                style: Theme.of(context).textTheme.labelSmall
+                                    ?.copyWith(
+                                      color: AppColors.primaryCta,
+                                      decoration: TextDecoration.underline,
+                                    ),
+                              ),
                             ),
                           ],
                         ),
