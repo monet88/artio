@@ -12,48 +12,6 @@ This repo has 3 active surfaces:
 
 When changing behavior, confirm which surface owns it before editing.
 
-## Common Commands
-
-### Main app (`/`)
-
-```bash
-# Install deps
-flutter pub get
-
-# Codegen (Riverpod/Freezed/go_router)
-dart run build_runner build --delete-conflicting-outputs
-
-# Codegen watch mode
-dart run build_runner watch
-
-# Run app
-flutter run
-flutter run -d chrome
-flutter run -d windows
-
-# Static analysis + format
-flutter analyze
-dart format .
-
-# Tests
-flutter test
-flutter test --coverage
-flutter test test/features/auth/data/repositories/auth_repository_test.dart
-flutter test test/integration/template_seed_test.dart
-flutter test integration_test/template_e2e_test.dart
-```
-
-### Admin app (`/admin`)
-
-```bash
-# Run inside repo root
-cd admin && flutter pub get
-cd admin && dart run build_runner build --delete-conflicting-outputs
-cd admin && flutter run -d chrome
-cd admin && flutter analyze
-cd admin && flutter test
-```
-
 ## Runtime / Environment
 
 - Main app bootstraps env via `String.fromEnvironment('ENV', defaultValue: 'development')` in `lib/main.dart`.
@@ -144,17 +102,3 @@ Main app tests are split by intent:
 - `integration_test/` end-to-end style flows
 
 When fixing behavior, prefer running the narrowest relevant test file first, then full suite.
-
-## Existing docs to keep aligned
-
-- `README.md`
-- `docs/system-architecture.md`
-- `docs/code-standards.md`
-- `docs/project-overview-pdr.md`
-- `docs/codebase-summary.md`
-- `docs/development-roadmap.md`
-
-## Global policy inheritance (must follow)
-
-- If privacy hook blocks a sensitive file read, ask for explicit approval via `AskUserQuestion` before reading it.
-- Follow modularization guidance from global rules: consider splitting large code files (>200 LOC) by responsibility; do not apply this to markdown/plain-text/config/env/bash files.
