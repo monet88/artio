@@ -174,14 +174,13 @@ node_modules/
 package.json
 package-lock.json
 
-# Tracked: project rules, skills, and config for AI tools
+# Tracked: project rules and config for AI tools
 !.serena/
-!.claude/
 .ck/
 artifacts/
 
 gsd-template/
-.claude/settings.local.json
 
 # APK output folder (local builds only)
 apkoutputs/
+
