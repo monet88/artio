@@ -8,60 +8,51 @@
 
 ## [Unreleased]
 
-### Added
-- **Image Input Flow** (2026-02-22):
-  - `ImageUploadService` for parallel image compression + upload to Supabase Storage
-  - `ImageInputWidget` for gallery/camera picker with preview and remove functionality
-  - Image compression (max 2MB, JPEG quality 85%) before upload
-  - Upload progress indicator during generation
-  - `AiModelConfig.supportsImageInput` flag + `imageCapableModels` getter for model filtering
-  - 3 new Imagen 4.0 models with image input support:
-    - `imagen-4.0-generate-fast` (fast generation)
-    - `imagen-4.0-generate-standard` (standard quality)
-    - `imagen-4.0-generate-ultra` (best quality)
-  - Edge Function updated: `generateViaImagen()` for Imagen 4.0, image field name mapping per model
-  - `uuid` package added to pubspec.yaml for unique input file naming
-  - `image_count_dropdown` widget for selecting 1-3 images per template
-  - `ModelSelector` bidirectional filtering for image-capable models
-  - `TemplateDetailScreen` wired with image state, upload-before-generate flow
-  - Generation pipeline: `imageInputs`, `modelId`, `outputFormat` parameters passed through all layers
+### Added — Sprint 2: UX Improvements (2026-02-22)
+- **Onboarding flow** — 3-slide dark gradient intro screen shown to ALL first-time users (guest or logged-in). Persisted via SharedPreferences. Slides: "Create Stunning AI Art" / "Fast & Easy" / "Free Credits to Start"
+- **Guest mode** — removed forced login on app open. Users browse home/gallery/templates freely; auth required only at action points (Generate, Ads, IAP)
+- **Paywall redesign** — dark gradient, glowing diamond hero, benefit chips grid, animated plan cards (Pro/Ultra), gradient CTA, Restore Purchases in header
+- **Credit History screen** — transaction list with type icons, color-coded amounts (green=earn, red=spend), date formatting, empty state. Accessible via Settings → Account → Credit History
+- **Settings improvements** — Legal section (Privacy Policy, ToS, Open Source Licenses), Support section (Help & FAQ, Report a Problem), Credit History tile in Account section
+- **Content Moderation** — client-side prompt keyword filter before generation. Blocks inappropriate content via `ContentModerationService`
+- **iOS ATT Consent** — App Tracking Transparency dialog before AdMob init (iOS only)
+- **iOS PrivacyInfo.xcprivacy** — declared accessed APIs and data types for iOS 17+ App Store
+- **SKAdNetwork IDs** — Google AdMob attribution IDs in `Info.plist`
 
-### Changed
-- **Edge Function (`generate-image/index.ts`)**:
-  - Now accepts `imageInputs` parameter (array of Storage paths)
-  - Resolves paths to signed URLs (60-min expiry)
-  - Maps image field names per model family (e.g., `input_urls`, `image_urls`, `image_input`)
-  - Added `generateViaImagen()` for Imagen 4.0 models (separate `:predict` endpoint)
-  - Updated model selection logic to support image-capable variants
-  - Better error handling for image resolution failures
+### Fixed — Sprint 3: Bug Fixes (2026-02-22)
+- **Google Sign-In stuck loading** — `AndroidManifest.xml` was missing `intent-filter` for `com.artio.app://` deep link scheme. OAuth browser callback couldn't return to app → `AuthState` stuck at `authenticating` forever. Fixed by adding `<data android:scheme="com.artio.app"/>` intent-filter
+- **Generate button hidden by nav bar** — Samsung A53's gesture navigation bar covered the Generate button. Fixed with `MediaQuery.of(context).viewPadding.bottom` padding on `SingleChildScrollView`
+- **Onboarding redirect loop** — After "Get Started", `markOnboardingDone()` saved to disk but `AuthViewModel._onboardingDone` stayed `false` in memory → infinite `/home → /onboarding` loop. Fixed by adding `completeOnboarding()` to `AuthViewModel` that updates memory flag + notifies router
+- **Compile errors in providers** — Missing `flutter_riverpod` import caused `Undefined class 'Ref'` in `onboarding_provider.dart` and `credit_history_provider.dart`.  Fixed `.timeout()` call on `Refreshable` → `ref.read(provider.future).timeout()`
 
-- **AiModelConfig**:
-  - Added `supportsImageInput: bool` field (default: false)
-  - Added `imageCapableModels` getter to filter models supporting image input
-  - Existing models: `nano-banana-edit`, `nano-banana-pro`, `flux-2` variants, `gpt-image` variants, `seedream` edit models, `gemini-*` models updated with correct flags
-
-- **Storage Organization**:
-  - User uploads now stored in `generated-images/{userId}/inputs/{uuid}.jpg`
-  - AI outputs stored at `generated-images/{userId}/{jobId}.jpg` (unchanged)
-  - Consolidated to single bucket with subdirectories (previously planned dual-bucket)
-
-- **Supabase Config**:
-  - `verify_jwt = false` in `config.toml` (gateway-level HS256 verification handles auth)
-  - Edge Function validates JWT via `supabase.auth.getUser(token)` internally
-
-### Fixed
-- Model selection now correctly filters based on image input capability
-- Edge Function properly handles both text-to-image and image-to-image workflows
-
-### Deprecated
-- Nothing in this release
-
-### Removed
-- Nothing in this release
+### Added — Image Input Flow (2026-02-22)
+- `ImageUploadService` for parallel image compression + upload to Supabase Storage
+- `ImageInputWidget` for gallery/camera picker with preview and remove functionality
+- Image compression (max 2MB, JPEG quality 85%) before upload
+- Upload progress indicator during generation
+- `AiModelConfig.supportsImageInput` flag + `imageCapableModels` getter for model filtering
+- 3 new Imagen 4.0 models with image input support
 
 ---
 
 ## [1.5.0] - 2026-02-20
+
+### Added
+- Exception hierarchy cleanup and standardization
+- Sentry error tracking integration
+- AdMob rewarded ads with server-side verification (SSV)
+- Complete test coverage (651+ unit tests, 15 integration tests)
+
+### Changed
+- Tech debt cleanup and edge-case remediation
+- Init resilience improvements
+
+### Fixed
+- Auth redirect flow on protected routes
+- Force unauthenticated users to login page
+
+---
+
 
 ### Added
 - Exception hierarchy cleanup and standardization

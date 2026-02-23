@@ -173,7 +173,12 @@ class _CreateScreenState extends ConsumerState<CreateScreen> {
       body: Stack(
         children: [
           SingleChildScrollView(
-            padding: AppSpacing.screenPadding,
+            padding: AppSpacing.screenPadding.copyWith(
+              bottom:
+                  AppSpacing.screenPadding.bottom +
+                  MediaQuery.of(context).viewPadding.bottom +
+                  AppSpacing.lg,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
