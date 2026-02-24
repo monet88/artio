@@ -164,7 +164,6 @@ class _ImagePlaceholder extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: theme.colorScheme.outline.withAlpha(100),
-            style: BorderStyle.solid,
           ),
           color: theme.colorScheme.surfaceContainerLow,
         ),

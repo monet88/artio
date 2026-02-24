@@ -5,10 +5,12 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'credit_history_provider.g.dart';
 
+const _pageSize = 30;
+
 /// Loads the last [_pageSize] credit transactions.
 /// Paginated via [offset].
 @riverpod
 Future<List<CreditTransaction>> creditHistory(Ref ref, {int offset = 0}) async {
   final repo = ref.watch(creditRepositoryProvider);
-  return repo.fetchTransactions(limit: 30, offset: offset);
+  return repo.fetchTransactions(limit: _pageSize, offset: offset);
 }

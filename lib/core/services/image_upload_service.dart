@@ -1,10 +1,9 @@
+import 'package:artio/core/providers/supabase_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
-
-import 'package:artio/core/providers/supabase_provider.dart';
 
 part 'image_upload_service.g.dart';
 
@@ -46,7 +45,6 @@ class ImageUploadService {
           bytes,
           fileOptions: FileOptions(
             contentType: mimeType,
-            upsert: false,
           ),
         );
     return path;

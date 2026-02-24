@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 ///
 /// Design: Full-screen dark gradient, 3 slides with icon, title, subtitle.
 /// PageView with explicit dot indicators and a "Get Started" / "Next" button.
-/// On completion calls [markOnboardingDone] and navigates to Home.
+/// On completion calls `completeOnboarding` and navigates to Home.
 class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
 
@@ -109,7 +109,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     duration: const Duration(milliseconds: 200),
                     child: TextButton(
                       onPressed: _isLastPage ? null : _finish,
-                      child: Text(
+                      child: const Text(
                         'Skip',
                         style: TextStyle(
                           color: AppColors.white60,
@@ -248,7 +248,7 @@ class _SlideContent extends StatelessWidget {
             decoration: BoxDecoration(
               color: slide.iconBg,
               borderRadius: BorderRadius.circular(32),
-              border: Border.all(color: AppColors.white10, width: 1),
+              border: Border.all(color: AppColors.white10),
             ),
             child: Center(
               child: Text(
@@ -279,7 +279,7 @@ class _SlideContent extends StatelessWidget {
           Text(
             slide.subtitle,
             textAlign: TextAlign.center,
-            style: TextStyle(
+            style: const TextStyle(
               color: AppColors.white60,
               fontSize: 16,
               height: 1.6,

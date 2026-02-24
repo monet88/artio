@@ -50,7 +50,7 @@ class _EmptyHistoryState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return const Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -59,12 +59,12 @@ class _EmptyHistoryState extends StatelessWidget {
             size: 64,
             color: AppColors.textMuted,
           ),
-          const SizedBox(height: 16),
-          const Text(
+          SizedBox(height: 16),
+          Text(
             'No Transactions Yet',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8),
           Text(
             'Your credit history will appear here.',
             style: TextStyle(color: AppColors.white60),

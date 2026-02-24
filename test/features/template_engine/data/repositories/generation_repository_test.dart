@@ -339,33 +339,16 @@ void main() {
           userId: 'test-user-id',
           templateId: 'template-1',
           prompt: 'test',
-          imageInputs: null,
         );
 
-        final captured = <Map<String, dynamic>>[];
-        verify(
+        final captured = verify(
           () => mockFunctions.invoke(
             'generate-image',
             body: captureAny(named: 'body'),
           ),
-        ).called(1);
+        ).captured.single as Map<String, dynamic>;
 
-        // Manually verify that captured body does NOT contain imageInputs
-        // by checking the mock invocations
-        expect(
-          () => mockFunctions.invoke(
-            'generate-image',
-            body: {
-              'jobId': 'job-123',
-              'userId': 'test-user-id',
-              'template_id': 'template-1',
-              'prompt': 'test',
-              'aspect_ratio': '1:1',
-              'image_count': 1,
-            },
-          ),
-          isNotNull,
-        );
+        expect(captured.containsKey('imageInputs'), isFalse);
       });
 
       test('omits imageInputs from body when empty list', () async {

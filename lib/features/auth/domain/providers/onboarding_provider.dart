@@ -6,7 +6,7 @@ part 'onboarding_provider.g.dart';
 
 const _kOnboardingDoneKey = 'onboarding_done';
 
-/// Returns [true] if the user has already completed onboarding.
+/// Returns `true` if the user has already completed onboarding.
 /// Persisted across sessions via SharedPreferences.
 @riverpod
 Future<bool> onboardingDone(Ref ref) async {
