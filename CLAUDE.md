@@ -1,104 +1,174 @@
-# CLAUDE.md
+# CLAUDE.md — Artio
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-specific instructions as needed.
 
-## Repository Layout (non-obvious)
+**Tradeoff:** These guidelines bias toward caution over speed. For trivial tasks, use judgment.
 
-This repo has 3 active surfaces:
+## 1. Think Before Coding
 
-1. **Main Flutter app** (`/`) – end-user app (`name: artio`)
-2. **Admin Flutter app** (`/admin`) – template/admin dashboard (`name: artio_admin`)
-3. **Supabase backend** (`/supabase`) – SQL migrations + Edge Function (`generate-image`)
+**Don't assume. Don't hide confusion. Surface tradeoffs.**
 
-When changing behavior, confirm which surface owns it before editing.
+Before implementing:
+- State your assumptions explicitly. If uncertain, ask.
+- If multiple interpretations exist, present them - don't pick silently.
+- If a simpler approach exists, say so. Push back when warranted.
+- If something is unclear, stop. Name what's confusing. Ask.
 
-## Runtime / Environment
+## 2. Simplicity First
 
-- Main app bootstraps env via `String.fromEnvironment('ENV', defaultValue: 'development')` in `lib/main.dart`.
-- Supabase config is loaded through `EnvConfig` (`lib/core/config/env_config.dart`).
-- Required runtime keys are in `.env` (see `README.md` + `pubspec.yaml` assets section).
-- Sentry is initialized during app startup (`lib/main.dart`, `lib/core/config/sentry_config.dart`).
+**Minimum code that solves the problem. Nothing speculative.**
 
-## Architecture (big picture)
+- No features beyond what was asked.
+- No abstractions for single-use code.
+- No "flexibility" or "configurability" that wasn't requested.
+- No error handling for impossible scenarios.
+- If you write 200 lines and it could be 50, rewrite it.
 
-## 1) Frontend architecture (main app)
+Ask yourself: "Would a senior engineer say this is overcomplicated?" If yes, simplify.
 
-- Feature-first clean architecture under `lib/features/*`.
-- Each feature uses: `domain` (interfaces/entities), `data` (repo impl), `presentation` (UI + Riverpod view models/providers).
-- Dependency direction is enforced: **Presentation -> Domain <- Data**.
+## 3. Surgical Changes
 
-Cross-cutting modules:
-- `lib/core/` for config, providers, constants, design system, exceptions, utilities
-- `lib/routing/` for GoRouter + typed route definitions
-- `lib/shared/` for shared widgets/shell/error UI
+**Touch only what you must. Clean up only your own mess.**
 
-## 2) Navigation/auth orchestration
+When editing existing code:
+- Don't "improve" adjacent code, comments, or formatting.
+- Don't refactor things that aren't broken.
+- Match existing style, even if you'd do it differently.
+- If you notice unrelated dead code, mention it - don't delete it.
 
-- Router provider: `lib/routing/app_router.dart`
-- Typed routes: `lib/routing/routes/app_routes.dart`
-- Auth state + redirect logic: `lib/features/auth/presentation/view_models/auth_view_model.dart`
+When your changes create orphans:
+- Remove imports/variables/functions that YOUR changes made unused.
+- Don't remove pre-existing dead code unless asked.
 
-AuthViewModel implements `Listenable` and drives router refresh/redirect behavior.
+The test: Every changed line should trace directly to the user's request.
 
-## 3) Image generation pipeline (core product flow)
+## 4. Goal-Driven Execution
 
-Primary flow spans Flutter + Supabase Edge Function:
+**Define success criteria. Loop until verified.**
 
-1. UI/ViewModel starts generation (`create` or `template_engine` view model)
-2. Repository calls Supabase function `generate-image`
-3. Edge function selects provider (Kie or Gemini), performs generation, mirrors files to Supabase Storage
-4. Job rows are updated in `generation_jobs`
-5. Flutter listens via realtime stream (`watchJob`) and updates UI
+Transform tasks into verifiable goals:
+- "Add validation" → "Write tests for invalid inputs, then make them pass"
+- "Fix the bug" → "Write a test that reproduces it, then make it pass"
+- "Refactor X" → "Ensure tests pass before and after"
+
+For multi-step tasks, state a brief plan:
+```
+1. [Step] → verify: [check]
+2. [Step] → verify: [check]
+3. [Step] → verify: [check]
+```
+
+Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
+
+---
+
+**These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
+
+---
+
+# Artio Project Guidelines
+
+AI art generation SaaS. Flutter/Dart monorepo with 3 active surfaces:
+
+1. **Main app** (`/`) — end-user mobile app (`name: artio`)
+2. **Admin app** (`/admin`) — template/admin dashboard (`name: artio_admin`)
+3. **Backend** (`/supabase`) — SQL migrations + Edge Functions
+
+**Stack:** Flutter 3.10+ / Dart 3.10+ / Riverpod codegen / GoRouter codegen / Supabase (Auth/DB/Storage/Edge Functions) / Freezed / Sentry
+
+> **Always read existing context first** — `docs/code-standards.md`, `docs/system-architecture.md`, project memories — before analyzing source code.
+
+---
+
+## Architecture
+
+Feature-first clean architecture under `lib/features/*`.
+Each feature: `domain/` (interfaces/entities) · `data/` (repo impl) · `presentation/` (UI + Riverpod VMs).
+Dependency direction: **Presentation -> Domain <- Data**.
+
+Cross-cutting: `lib/core/` (config, providers, design system, exceptions, utilities) · `lib/routing/` (GoRouter + typed routes) · `lib/shared/` (shared widgets/shell/error UI)
+
+### Navigation & Auth
+
+- Router: `lib/routing/app_router.dart` · Routes: `lib/routing/routes/app_routes.dart`
+- AuthViewModel implements `Listenable`, drives router refresh/redirect
+
+### Image Generation Pipeline (core product flow)
+
+```
+UI/ViewModel -> Repository -> Edge Function -> AI provider (Kie/Gemini) -> Storage -> generation_jobs realtime -> UI
+```
 
 Key files:
 - Client repo: `lib/features/template_engine/data/repositories/generation_repository.dart`
-- Create flow VM: `lib/features/create/presentation/view_models/create_view_model.dart`
-- Template flow VM: `lib/features/template_engine/presentation/view_models/generation_view_model.dart`
-- Shared job orchestration: `lib/features/template_engine/presentation/helpers/generation_job_manager.dart`
+- Create VM: `lib/features/create/presentation/view_models/create_view_model.dart`
+- Template VM: `lib/features/template_engine/presentation/view_models/generation_view_model.dart`
+- Job orchestration: `lib/features/template_engine/presentation/helpers/generation_job_manager.dart`
 - Edge function: `supabase/functions/generate-image/index.ts`
 
-## 4) Credits + payment guardrails
+### Credits (two-layer enforcement)
 
-Credits are enforced in 2 layers:
+1. **Client pre-check** — balance stream via credits provider
+2. **Server-authoritative** — `deduct_credits` / `refund_credits` RPC in edge function
 
-- **Client pre-check** in create flow (balance stream via credits provider)
-- **Server-authoritative deduction/refund** in edge function (`deduct_credits` / `refund_credits` RPC path)
+Insufficient credits must map to existing 402 handling path.
 
-Key files:
-- `lib/features/credits/presentation/providers/credit_balance_provider.dart`
-- `supabase/functions/generate-image/index.ts`
-- migrations under `supabase/migrations/*create_credit_system.sql`
+---
 
-## Codegen Rules (important)
+## Quick Map
 
-Generated artifacts are committed and expected (`*.g.dart`, `*.freezed.dart`, router generated files).
+| Domain | Path |
+|--------|------|
+| Auth | `lib/features/auth/` |
+| Template Engine | `lib/features/template_engine/` |
+| Create | `lib/features/create/` |
+| Gallery | `lib/features/gallery/` |
+| Credits | `lib/features/credits/` |
+| Subscription | `lib/features/subscription/` |
+| Settings | `lib/features/settings/` |
+| Router | `lib/routing/app_router.dart` |
+| Design System | `lib/core/design_system/` |
+| Supabase DI | `lib/core/providers/supabase_provider.dart` |
+| Edge Functions | `supabase/functions/generate-image/index.ts` |
+| Shared Edge Utils | `supabase/functions/_shared/` |
+| AI Model Docs | `docs/kie-api/` |
 
-After changing any:
-- `@riverpod` provider/viewmodel
-- Freezed/json entity
-- typed route annotation
+---
 
-run:
+## Codegen
 
-```bash
-dart run build_runner build --delete-conflicting-outputs
-```
+Generated files committed (`*.g.dart`, `*.freezed.dart`, router files). After changing `@riverpod` / Freezed / typed route annotations, run `build_runner build`. Do not hand-edit generated files.
 
-Do not hand-edit generated files.
+---
 
-## Backend/AI references
+## Project-Specific Rules
 
-- AI model reference source of truth: `docs/kie-api/`
-- Supabase edge runtime config: `supabase/config.toml`
-- Active function entrypoint: `supabase/functions/generate-image/index.ts`
+- Confirm owning surface before editing (`/`, `/admin`, `/supabase`)
+- Always use `@riverpod` codegen (never manual `StateNotifierProvider` etc.)
+- Always use `@freezed` for domain entities
+- Use design tokens from `lib/core/design_system/` for UI values
+- Env config via `EnvConfig` (`lib/core/config/env_config.dart`)
+- Sentry: `lib/main.dart` + `lib/core/config/sentry_config.dart`
+
+---
+
+## Known Gotchas
+
+- Mocktail + Supabase future-like builders: use `thenAnswer` over `thenReturn`
+- Keep model cost config synced between client constants and edge function
+- Keep retry scope safe — avoid duplicate `generation_jobs` row inserts
+- `generation_repository.dart` retry wraps only Step 2 (edge function call), not full operation
+- Job ID comes from DB insert, NOT Edge Function response
+- `SECURITY DEFINER` on trigger functions breaks `current_user` checks — avoid
+- Preserve least-privilege RPC/service-role access patterns
+
+---
 
 ## Test Layout
 
-Main app tests are split by intent:
+- `test/features/` — feature unit/widget tests
+- `test/core/`, `test/shared/`, `test/routing/` — infra/shared
+- `test/integration/` — integration checks
+- `integration_test/` — end-to-end flows
 
-- `test/features/` feature unit/widget tests
-- `test/core/`, `test/shared/`, `test/routing/` infra/shared tests
-- `test/integration/` integration checks
-- `integration_test/` end-to-end style flows
-
-When fixing behavior, prefer running the narrowest relevant test file first, then full suite.
+---

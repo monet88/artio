@@ -183,3 +183,6 @@ artifacts/
 
 # APK output folder (local builds only)
 apkoutputs/
+AGENTS.md
+CLAUDE.md
+GEMINI.md
