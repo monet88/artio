@@ -2,9 +2,9 @@ import 'package:artio/core/design_system/app_spacing.dart';
 import 'package:artio/features/subscription/domain/entities/subscription_package.dart';
 import 'package:artio/features/subscription/domain/entities/subscription_status.dart';
 import 'package:artio/features/subscription/presentation/providers/subscription_provider.dart';
-import 'package:artio/theme/app_colors.dart';
 import 'package:artio/shared/widgets/error_state_widget.dart';
 import 'package:artio/shared/widgets/loading_state_widget.dart';
+import 'package:artio/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -15,27 +15,9 @@ class PaywallScreen extends ConsumerStatefulWidget {
   ConsumerState<PaywallScreen> createState() => _PaywallScreenState();
 }
 
-class _PaywallScreenState extends ConsumerState<PaywallScreen>
-    with SingleTickerProviderStateMixin {
+class _PaywallScreenState extends ConsumerState<PaywallScreen> {
   SubscriptionPackage? _selectedPackage;
   bool _isPurchasing = false;
-
-  late final AnimationController _shimmerController;
-
-  @override
-  void initState() {
-    super.initState();
-    _shimmerController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 2),
-    )..repeat();
-  }
-
-  @override
-  void dispose() {
-    _shimmerController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -192,7 +174,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen>
           ),
         ),
         const SizedBox(height: AppSpacing.xs),
-        Text(
+        const Text(
           'Generate unlimited AI art with no limits',
           textAlign: TextAlign.center,
           style: TextStyle(color: AppColors.white60, fontSize: 15, height: 1.4),
@@ -375,7 +357,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen>
   }
 
   Widget _buildFreeTierNote(bool isDark) {
-    return Text(
+    return const Text(
       'Free plan: 10 welcome credits + earn more by watching ads',
       textAlign: TextAlign.center,
       style: TextStyle(color: AppColors.white40, fontSize: 12, height: 1.5),

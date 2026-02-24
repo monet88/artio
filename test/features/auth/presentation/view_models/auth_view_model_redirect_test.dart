@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:artio/features/auth/data/repositories/auth_repository.dart';
 import 'package:artio/features/auth/domain/entities/user_model.dart';
+import 'package:artio/features/auth/domain/providers/onboarding_provider.dart';
 import 'package:artio/features/auth/presentation/state/auth_state.dart';
 import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -37,13 +38,19 @@ void main() {
     /// Creates a container and waits for the auth check to settle.
     Future<AuthViewModel> createSettledNotifier({
       UserModel? returningUser,
+      bool onboardingDone = true,
     }) async {
       when(
         () => mockAuthRepo.getCurrentUserWithProfile(),
       ).thenAnswer((_) async => returningUser);
 
       container = ProviderContainer(
-        overrides: [authRepositoryProvider.overrideWithValue(mockAuthRepo)],
+        overrides: [
+          authRepositoryProvider.overrideWithValue(mockAuthRepo),
+          onboardingDoneProvider.overrideWith(
+            (ref) async => onboardingDone,
+          ),
+        ],
       );
 
       // Listen to keep the provider alive and read state changes.
@@ -70,24 +77,24 @@ void main() {
         expect(notifier.redirect(currentPath: '/'), '/home');
       });
 
-      test('redirects /home to /login when unauthenticated', () async {
+      test('allows access to /home when unauthenticated', () async {
         final notifier = await createSettledNotifier();
-        expect(notifier.redirect(currentPath: '/home'), '/login');
+        expect(notifier.redirect(currentPath: '/home'), isNull);
       });
 
-      test('redirects /create to /login when unauthenticated', () async {
+      test('allows access to /create when unauthenticated', () async {
         final notifier = await createSettledNotifier();
-        expect(notifier.redirect(currentPath: '/create'), '/login');
+        expect(notifier.redirect(currentPath: '/create'), isNull);
       });
 
-      test('redirects /settings to /login when unauthenticated', () async {
+      test('allows access to /settings when unauthenticated', () async {
         final notifier = await createSettledNotifier();
-        expect(notifier.redirect(currentPath: '/settings'), '/login');
+        expect(notifier.redirect(currentPath: '/settings'), isNull);
       });
 
-      test('redirects /gallery to /login when unauthenticated', () async {
+      test('allows access to /gallery when unauthenticated', () async {
         final notifier = await createSettledNotifier();
-        expect(notifier.redirect(currentPath: '/gallery'), '/login');
+        expect(notifier.redirect(currentPath: '/gallery'), isNull);
       });
 
       test('allows access to /login (no redirect)', () async {
