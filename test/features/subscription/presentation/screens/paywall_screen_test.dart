@@ -103,28 +103,31 @@ void main() {
     ) async {
       await pumpPaywall(tester);
 
-      expect(find.text('Free'), findsWidgets);
+      expect(
+        find.text('Free plan: 10 welcome credits + earn more by watching ads'),
+        findsOneWidget,
+      );
     });
 
-    testWidgets('shows "Upgrade to Premium" app bar title', (tester) async {
+    testWidgets('shows "Unlock Premium" hero title', (tester) async {
       await pumpPaywall(tester);
 
-      expect(find.text('Upgrade to Premium'), findsOneWidget);
+      expect(find.text('Unlock Premium'), findsOneWidget);
     });
 
-    testWidgets('shows Restore Purchases button', (tester) async {
+    testWidgets('shows Restore button', (tester) async {
       await pumpPaywall(tester);
 
-      expect(find.text('Restore Purchases'), findsOneWidget);
+      expect(find.text('Restore'), findsOneWidget);
     });
 
-    testWidgets('subscribe button is disabled when no package selected', (
+    testWidgets('subscribe CTA asks user to select a plan when none selected', (
       tester,
     ) async {
       await pumpPaywall(tester);
 
-      final button = tester.widget<FilledButton>(
-        find.widgetWithText(FilledButton, 'Subscribe'),
+      final button = tester.widget<ElevatedButton>(
+        find.widgetWithText(ElevatedButton, 'Select a plan above'),
       );
       expect(button.onPressed, isNull);
     });
@@ -138,10 +141,13 @@ void main() {
 
       await pumpPaywall(tester);
 
-      await tester.tap(find.text('Restore Purchases'));
+      await tester.tap(find.text('Restore'));
       await tester.pumpAndSettle();
 
-      expect(find.text('No previous purchases found.'), findsOneWidget);
+      expect(
+        find.text('No previous purchases found for this account.'),
+        findsOneWidget,
+      );
     });
 
     testWidgets('restore shows "Purchases restored!" when active', (
@@ -153,10 +159,10 @@ void main() {
 
       await pumpPaywall(tester);
 
-      await tester.tap(find.text('Restore Purchases'));
+      await tester.tap(find.text('Restore'));
       await tester.pumpAndSettle();
 
-      expect(find.text('Purchases restored!'), findsOneWidget);
+      expect(find.text('✅ Purchases restored!'), findsOneWidget);
     });
 
     testWidgets('restore shows error snackbar when restore throws', (
@@ -166,7 +172,7 @@ void main() {
 
       await pumpPaywall(tester);
 
-      await tester.tap(find.text('Restore Purchases'));
+      await tester.tap(find.text('Restore'));
       await tester.pumpAndSettle();
 
       expect(find.text('Restore failed. Please try again.'), findsOneWidget);

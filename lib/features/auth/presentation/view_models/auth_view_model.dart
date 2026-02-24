@@ -267,7 +267,7 @@ class AuthViewModel extends _$AuthViewModel implements Listenable {
     return null;
   }
 
-  /// Called by [OnboardingScreen] when the user taps "Get Started".
+  /// Called by `OnboardingScreen` when the user taps "Get Started".
   ///
   /// Updates the in-memory flag so [redirect] stops redirecting to /onboarding,
   /// saves to SharedPreferences, then notifies the router to re-evaluate.

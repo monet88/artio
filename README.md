@@ -1,291 +1,235 @@
-# Artio - AI Art Generation App
+# Artio
 
-<div align="center">
+Cross-platform AI image generation SaaS built with Flutter, Supabase, and Edge Functions.
 
-**A Flutter cross-platform AI image generation SaaS**
+> Last updated: 2026-02-23 (synced to current codebase)
 
-[![Flutter](https://img.shields.io/badge/Flutter-3.10+-02569B?logo=flutter)](https://flutter.dev)
-[![Dart](https://img.shields.io/badge/Dart-3.10+-0175C2?logo=dart)](https://dart.dev)
-[![Riverpod](https://img.shields.io/badge/Riverpod-2.6+-AFB5C8?logo=flutter)](https://riverpod.dev)
-[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+## Repository Surfaces
 
-</div>
+- Main app: `/` (Flutter app for Android, iOS, Web, Windows)
+- Admin app: `/admin` (Flutter Web admin dashboard)
+- Backend: `/supabase` (schema, migrations, edge functions)
 
----
+## Current Product State (from code)
 
-## Overview
+### Main app (`/`)
 
-**Artio** ("Art Made Simple") is a cross-platform AI image generation SaaS delivering enterprise-grade image creation through two distinct modes:
+- Authentication: email/password, Google OAuth, Apple Sign-In, password reset
+- Onboarding + guest browsing flow (users can browse before login)
+- Template-based generation with dynamic input fields, including image input upload
+- Text-to-image Create flow with model selection and generation options
+- Credits + premium gating with 402 handling UI
+- Credit history screen and transaction rendering
+- Rewarded ad flow for credits (`reward-ad` edge function)
+- Subscription paywall + RevenueCat purchase/restore wiring
+- Gallery with masonry grid, viewer, download/share/delete
+- Content moderation pre-check for prompts
+- Offline banner + connectivity-aware UX
 
-- **Template Engine** (Home tab): Guided image-to-image transformation with curated presets
-- **Text-to-Image** (Create tab): Freeform prompt-based generation
+### Admin app (`/admin`)
 
-### Tech Stack
+- Admin auth gate and protected routes
+- Dashboard stats page
+- Template list with search/filter
+- Template CRUD (create/edit/delete)
+- Drag-and-drop reorder with DB persistence
 
-| Category | Technology |
-|----------|------------|
-| **Framework** | Flutter 3.10+ (Android, iOS, Web, Windows) |
-| **State Management** | Riverpod 2.6+ with code generation |
-| **Navigation** | go_router 14.8+ with auth guards |
-| **Data Models** | Freezed + JSON Serializable |
-| **Backend** | Supabase (Auth, PostgreSQL, Storage, Edge Functions, Realtime) |
-| **Payments** | RevenueCat (mobile) + Stripe (web) |
-| **Ads** | AdMob (rewarded ads) |
-| **AI Provider** | Kie API (primary), Gemini (fallback) |
+### Backend (`/supabase`)
 
----
+- Edge functions:
+  - `generate-image`: generation pipeline, model routing, credit deduction/refund, premium checks, rate limit
+  - `reward-ad`: ad nonce + claim flow
+  - `revenuecat-webhook`: subscription status sync + credit grant
+- Migrations for templates, profiles, credits, subscriptions, rate limiting, and generation job fields
 
-## Architecture
+## Generation Pipeline
 
-### Feature-First Clean Architecture
+Both Template and Create flows use the same backend path:
 
-```
+`UI -> Repository -> supabase/functions/generate-image -> AI provider -> Storage -> generation_jobs -> UI`
+
+Server-side guardrails currently in place:
+
+- Rate limit: 5 requests / 60 seconds per user (`check_rate_limit`)
+- Premium-model enforcement before generation
+- Server-authoritative credit deduction (`deduct_credits`)
+- Insufficient credits response: HTTP 402
+- Credit refund on failure (`refund_credits`, with retry)
+- Result mirroring into `generated-images` bucket
+
+## AI Model Support
+
+`lib/core/constants/ai_models.dart` currently defines 18 models:
+
+- KIE models (Imagen, Nano Banana, Flux-2, GPT Image, Seedream)
+- Gemini native models (`imagen-4.0-*`, `gemini-*`)
+- Image-input capable model filtering via `supportsImageInput`
+
+Model cost and premium flags are synchronized with:
+
+- Client: `lib/core/constants/ai_models.dart`
+- Server: `supabase/functions/_shared/model_config.ts`
+
+## Architecture Snapshot
+
+```text
 lib/
-├── core/                   # Cross-cutting concerns
-│   ├── constants/         # App-wide constants
-│   ├── exceptions/        # AppException hierarchy
-│   ├── providers/         # Supabase client DI
-│   └── utils/             # Error mapper, logger
-│
-├── features/              # Feature modules (3-layer each)
-│   ├── auth/              # ✓ Authentication (login/register/OAuth)
-│   ├── template_engine/   # ✓ CORE: AI template-based generation
-│   ├── gallery/           # ✓ User's generated images
-│   ├── settings/          # ✓ App settings (theme switcher)
-│   └── create/            # ✓ Create screen
-│
-├── routing/               # GoRouter configuration
-├── shared/                # Shared widgets (MainShell, ErrorPage)
-├── theme/                 # Theme management
-├── test/                  # Unit and widget tests
-├── integration_test/      # E2E tests
-└── main.dart              # Entry point
+  core/
+  features/
+    auth/
+    create/
+    credits/
+    gallery/
+    settings/
+    subscription/
+    template_engine/
+  routing/
+  shared/
+  theme/
+
+admin/
+  lib/
+    core/
+    features/
+      auth/
+      dashboard/
+      templates/
+
+supabase/
+  functions/
+    generate-image/
+    reward-ad/
+    revenuecat-webhook/
+    _shared/
+  migrations/
 ```
 
-### 3-Layer Pattern per Feature
-
-Each feature follows Clean Architecture:
-- **Domain**: Entities, Repository interfaces
-- **Data**: Repository implementations, Supabase integration
-- **Presentation**: Providers (Riverpod), Screens, Widgets
-
----
-
-## Getting Started
+## Getting Started (Main App)
 
 ### Prerequisites
 
-- Flutter SDK 3.10+ ([Install](https://docs.flutter.dev/get-started/install))
-- Dart SDK 3.10+
-- Supabase project ([Create free](https://supabase.com))
+- Flutter SDK compatible with Dart `^3.10.7`
+- Supabase project (or local Supabase via CLI + Docker)
 
-### Installation
+### Install dependencies
 
 ```bash
-# Clone repository
-git clone <repo-url>
-cd artio
-
-# Install dependencies
 flutter pub get
-
-# Run code generation
 dart run build_runner build --delete-conflicting-outputs
-
-# Configure environment
-cp .env.example .env
-# Edit .env with your Supabase credentials
 ```
 
-### Configuration
+### Environment setup
 
-Create `.env` file in project root:
+Main app loads env by `--dart-define=ENV=<name>` and reads `.env.<name>`.
+Default is `development`, so `.env.development` is required.
+
+Minimal required keys:
 
 ```env
-SUPABASE_URL=your_supabase_url
-SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_URL=...
+SUPABASE_ANON_KEY=...
+```
+
+Optional keys already wired in code:
+
+```env
+SENTRY_DSN=...
+REVENUECAT_APPLE_KEY=...
+REVENUECAT_GOOGLE_KEY=...
+REVENUECAT_WEB_KEY=...
+STRIPE_PUBLISHABLE_KEY=...
+GEMINI_API_KEY=...
+KIE_API_KEY=...
 ```
 
 ### Run
 
 ```bash
-# Flutter (iOS/Android/Windows)
-flutter run
+# Mobile/Desktop
+flutter run --dart-define=ENV=development
 
 # Web
+flutter run -d chrome --dart-define=ENV=development
+
+# Staging env
+flutter run --dart-define=ENV=staging
+```
+
+## Getting Started (Admin App)
+
+```bash
+cd admin
+flutter pub get
+```
+
+Create `admin/.env` with:
+
+```env
+SUPABASE_URL=...
+SUPABASE_ANON_KEY=...
+```
+
+Run admin web:
+
+```bash
 flutter run -d chrome
-
-# Windows
-flutter run -d windows
-
-# Release build
-flutter build apk      # Android
-flutter build ios      # iOS
-flutter build web      # Web
-flutter build windows  # Windows
 ```
 
----
+## Supabase Local Development
 
-## Features
-
-### Implemented
-
-| Feature | Description | Status |
-|---------|-------------|--------|
-| **Authentication** | Email/password, Google OAuth, Apple Sign-In, password reset | Complete |
-| **Template Engine** | Browse templates, dynamic inputs, generation tracking, realtime job updates | Complete |
-| **Create (Text-to-Image)** | Prompt + parameter UI, backend integration, credit enforcement via Edge Function | Complete |
-| **Gallery** | Masonry grid, image viewer, download/share/delete, soft delete | Complete |
-| **Settings** | Theme switcher (light/dark/system), account management | Complete |
-| **Realtime Updates** | Job status streaming via Supabase Realtime (template + create flows) | Complete |
-| **Credits System** | Balance display, insufficient credit + premium model sheets, 402 handling, deduct/refund RPCs | Complete |
-
-**Credit Guardrails:** Both Template-Based and Text-to-Image generation flows post to `supabase/functions/generate-image`, which enforces the user's credit balance via `deduct_credits` RPC. On insufficient balance, returns 402 and displays `insufficient_credits_sheet` or `premium_model_sheet` widgets from `features/credits/presentation/widgets`. On success, polls the selected Kie/Gemini model, mirrors outputs into `generated-images` bucket, and updates `generation_jobs` table. Model costs defined in Edge Function match `core/constants/ai_models.dart`.
-
-### Planned / Pending
-
-| Feature | Description | Status |
-|---------|-------------|--------|
-| **Subscription purchases** | RevenueCat + Stripe + rewarded ads | Pending (purchase flows + pricing) |
-| **Rate Limiting** | Daily generation limits, cooldown, anti-abuse | Planned |
-
----
-
-## Quick Start
-
-### Run the App
+Quick commands:
 
 ```bash
-flutter run              # Default device
-flutter run -d chrome    # Web
-flutter run -d windows   # Windows
+supabase start
+supabase db reset
+supabase functions serve generate-image
 ```
 
-### Basic Workflow
-
-1. **Sign up** → Email/password or Google/Apple OAuth
-2. **Home tab** → Browse templates
-3. **Select template** → Fill inputs → Generate
-4. **Create tab** → Enter prompt (text-to-image flow)
-5. **Gallery** → View/download/share your creations
-
-See [docs/](docs/) for detailed guides
-
----
-
-## Development
-
-### Code Generation
+Set required function secrets:
 
 ```bash
-# One-time generation
+supabase secrets set SUPABASE_SERVICE_ROLE_KEY=...
+supabase secrets set KIE_API_KEY=...
+supabase secrets set GEMINI_API_KEY=...
+supabase secrets set REVENUECAT_WEBHOOK_SECRET=...
+```
+
+Detailed guide: `docs/local-supabase-setup-guide.md`
+
+## Development Commands
+
+```bash
+# Codegen
 dart run build_runner build --delete-conflicting-outputs
+dart run build_runner watch --delete-conflicting-outputs
 
-# Watch mode (development)
-dart run build_runner watch
-```
-
-### Code Quality
-
-```bash
-# Analyze code
+# Static analysis
 flutter analyze
 
-# Run tests
+# Unit/widget tests (default)
 flutter test
 
-# Format code
-dart format .
+# Integration-tagged tests
+flutter test --tags integration
 ```
 
-### Key Libraries
+## Test Suite Snapshot
 
-```yaml
-# State Management
-flutter_riverpod: ^2.6.1
-riverpod_annotation: ^2.6.1
+Current test file count in this repo:
 
-# Data Classes
-freezed: ^2.5.8
-json_serializable: ^6.9.2
+- Unit/widget test files: 80 (`test/**/*_test.dart`)
+- Integration test files: 5 (`integration_test/*_test.dart`)
 
-# Backend
-supabase_flutter: ^2.11.0
+## Key Documentation
 
-# Routing
-go_router: ^14.8.1
+- `docs/system-architecture.md`
+- `docs/code-standards.md`
+- `docs/project-overview-pdr.md`
+- `docs/development-roadmap.md`
+- `docs/project-changelog.md`
+- `docs/local-supabase-setup-guide.md`
 
-# Payments
-purchases_flutter: ^9.0.0
+## Notes
 
-# Utils
-cached_network_image: ^3.4.1
-image_picker: ^1.1.2
-share_plus: ^12.0.1
-```
-
----
-
-## Documentation
-
-| Document | Description |
-|----------|-------------|
-| [docs/development-roadmap.md](docs/development-roadmap.md) | Project phases and progress tracking |
-| [CLAUDE.md](CLAUDE.md) | AI assistant guidelines |
-| [docs/code-standards.md](docs/code-standards.md) | Coding conventions |
-| [docs/system-architecture.md](docs/system-architecture.md) | Architecture documentation |
-| [docs/project-overview-pdr.md](docs/project-overview-pdr.md) | Product requirements |
-| [docs/codebase-summary.md](docs/codebase-summary.md) | Detailed code analysis |
-
----
-
-## Testing
-
-```bash
-# Run all tests
-flutter test
-
-# Run with coverage
-flutter test --coverage
-
-# Run integration tests (requires running app)
-flutter test integration_test/template_e2e_test.dart
-
-# Run specific test file
-flutter test test/features/auth/data/repositories/auth_repository_test.dart
-```
-
-**Test Suite**: Coverage and test count need verification (run `flutter test --coverage`).
-
----
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'feat: add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
----
-
-## Support
-
-For issues, questions, or contributions, please open an issue in the project repository.
-
----
-
-<div align="center">
-
-**Built with Flutter**
-
-**Last Updated**: 2026-02-19
-
-</div>
+- Some legacy docs may still contain outdated planning statuses; this README reflects the current implementation in code.
+- Do not hand-edit generated files (`*.g.dart`, `*.freezed.dart`).

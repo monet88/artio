@@ -1,11 +1,22 @@
+import 'package:artio/core/services/storage_url_service.dart';
 import 'package:artio/features/gallery/domain/entities/gallery_item.dart';
 import 'package:artio/features/gallery/presentation/widgets/masonry_image_grid.dart';
 import 'package:artio/shared/widgets/watermark_overlay.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../../../core/fixtures/gallery_item_fixtures.dart';
+
+class _StubStorageUrlService implements StorageUrlService {
+  @override
+  Future<String?> signedUrl(String path) async => path;
+
+  @override
+  Future<Map<String, String?>> signedUrls(List<String> paths) async =>
+      {for (final path in paths) path: path};
+}
 
 void main() {
   group('MasonryImageGrid', () {
@@ -18,15 +29,20 @@ void main() {
     });
 
     Widget buildWidget(List<GalleryItem> items, {bool showWatermark = false}) {
-      return MaterialApp(
-        home: Scaffold(
-          body: MasonryImageGrid(
-            items: items,
-            showWatermark: showWatermark,
-            onItemTap: (item, index) {
-              tappedItem = item;
-              tappedIndex = index;
-            },
+      return ProviderScope(
+        overrides: [
+          storageUrlServiceProvider.overrideWith((_) => _StubStorageUrlService()),
+        ],
+        child: MaterialApp(
+          home: Scaffold(
+            body: MasonryImageGrid(
+              items: items,
+              showWatermark: showWatermark,
+              onItemTap: (item, index) {
+                tappedItem = item;
+                tappedIndex = index;
+              },
+            ),
           ),
         ),
       );
@@ -74,6 +90,8 @@ void main() {
       final completedItems = [GalleryItemFixtures.completed()];
 
       await tester.pumpWidget(buildWidget(completedItems));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
 
       expect(find.byType(ClipRRect), findsOneWidget);
     });
@@ -84,6 +102,8 @@ void main() {
       final completedItems = [GalleryItemFixtures.completed()];
 
       await tester.pumpWidget(buildWidget(completedItems, showWatermark: true));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
 
       expect(find.byType(WatermarkOverlay), findsOneWidget);
       expect(find.text('artio'), findsOneWidget);

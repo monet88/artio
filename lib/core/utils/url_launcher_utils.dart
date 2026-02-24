@@ -35,8 +35,8 @@ Future<void> launchEmailSafely(
   if (!await launchUrl(uri)) {
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Could not open mail app'),
+        const SnackBar(
+          content: Text('Could not open mail app'),
           behavior: SnackBarBehavior.floating,
         ),
       );
