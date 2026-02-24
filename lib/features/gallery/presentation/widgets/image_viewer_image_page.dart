@@ -2,6 +2,8 @@ import 'package:artio/core/design_system/app_gradients.dart';
 import 'package:artio/core/design_system/app_spacing.dart';
 import 'package:artio/core/services/storage_url_service.dart';
 import 'package:artio/features/gallery/domain/entities/gallery_item.dart';
+import 'package:artio/features/gallery/presentation/constants/gallery_strings.dart';
+import 'package:artio/shared/widgets/animated_retry_button.dart';
 import 'package:artio/shared/widgets/watermark_overlay.dart';
 import 'package:artio/theme/app_colors.dart';
 import 'package:flutter/material.dart';
@@ -84,11 +86,18 @@ class ImageViewerImagePage extends ConsumerWidget {
                         ),
                         const SizedBox(height: AppSpacing.md),
                         const Text(
-                          'Failed to load image',
+                          GalleryStrings.failedToLoadImage,
                           style: TextStyle(
                             color: AppColors.textMuted,
                             fontSize: 14,
                           ),
+                        ),
+                        const SizedBox(height: AppSpacing.sm),
+                        AnimatedRetryButton(
+                          onPressed: () => ref.invalidate(
+                            signedStorageUrlProvider(rawPath!),
+                          ),
+                          color: AppColors.primaryCta,
                         ),
                       ],
                     ),
@@ -148,11 +157,18 @@ class ImageViewerImagePage extends ConsumerWidget {
                                     ),
                                     const SizedBox(height: AppSpacing.md),
                                     const Text(
-                                      'Failed to load image',
+                                      GalleryStrings.failedToLoadImage,
                                       style: TextStyle(
                                         color: AppColors.textMuted,
                                         fontSize: 14,
                                       ),
+                                    ),
+                                    const SizedBox(height: AppSpacing.sm),
+                                    AnimatedRetryButton(
+                                      onPressed: () => ref.invalidate(
+                                        signedStorageUrlProvider(rawPath!),
+                                      ),
+                                      color: AppColors.primaryCta,
                                     ),
                                   ],
                                 ),

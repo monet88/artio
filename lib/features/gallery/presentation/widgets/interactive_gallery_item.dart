@@ -3,7 +3,9 @@ import 'package:artio/core/design_system/app_dimensions.dart';
 import 'package:artio/core/design_system/app_spacing.dart';
 import 'package:artio/core/services/storage_url_service.dart';
 import 'package:artio/features/gallery/domain/entities/gallery_item.dart';
+import 'package:artio/features/gallery/presentation/constants/gallery_strings.dart';
 import 'package:artio/features/gallery/presentation/widgets/failed_image_card.dart';
+import 'package:artio/shared/widgets/retry_text_button.dart';
 import 'package:artio/shared/widgets/watermark_overlay.dart';
 import 'package:artio/theme/app_colors.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -38,6 +40,10 @@ class _InteractiveGalleryItemState extends ConsumerState<InteractiveGalleryItem>
     with SingleTickerProviderStateMixin {
   late final AnimationController _pressController;
   late final Animation<double> _scaleAnimation;
+
+  /// Incremented on retry to force [CachedNetworkImage] recreation via
+  /// [ValueKey]. More reliable than depending on setState alone.
+  int _retryCount = 0;
 
   @override
   void initState() {
@@ -173,11 +179,17 @@ class _InteractiveGalleryItemState extends ConsumerState<InteractiveGalleryItem>
                   ),
                   const SizedBox(height: AppSpacing.xs),
                   Text(
-                    'Failed to load',
+                    GalleryStrings.failedToLoad,
                     style: Theme.of(context).textTheme.labelSmall?.copyWith(
                       color: isDark
                           ? AppColors.textMuted
                           : AppColors.textMutedLight,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.sm),
+                  RetryTextButton(
+                    onPressed: () => ref.invalidate(
+                      signedStorageUrlProvider(item.imageUrl!),
                     ),
                   ),
                 ],
@@ -213,6 +225,7 @@ class _InteractiveGalleryItemState extends ConsumerState<InteractiveGalleryItem>
               child: ClipRRect(
                 borderRadius: AppDimensions.cardRadius,
                 child: CachedNetworkImage(
+                  key: ValueKey(_retryCount),
                   imageUrl: signedUrl,
                   // Use the stable storage path as cache key so the cached
                   // image survives signed URL expiry (signed URL rotates,
@@ -250,13 +263,31 @@ class _InteractiveGalleryItemState extends ConsumerState<InteractiveGalleryItem>
                             ),
                             const SizedBox(height: AppSpacing.xs),
                             Text(
-                              'Failed to load',
+                              GalleryStrings.failedToLoad,
                               style: Theme.of(context).textTheme.labelSmall
                                   ?.copyWith(
                                     color: isDark
                                         ? AppColors.textMuted
                                         : AppColors.textMutedLight,
                                   ),
+                            ),
+                            const SizedBox(height: AppSpacing.sm),
+                            RetryTextButton(
+                              onPressed: () {
+                                CachedNetworkImage.evictFromCache(
+                                  item.imageUrl!,
+                                );
+                                setState(() => _retryCount++);
+                                if (widget.resolvedUrl == null) {
+                                  ref.invalidate(
+                                    signedStorageUrlProvider(item.imageUrl!),
+                                  );
+                                }
+                                // When resolvedUrl != null: _retryCount++
+                                // changes ValueKey → CachedNetworkImage
+                                // fully recreated. Cache was evicted,
+                                // so re-fetch happens naturally.
+                              },
                             ),
                           ],
                         ),
