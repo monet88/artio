@@ -163,37 +163,10 @@ class _InteractiveGalleryItemState extends ConsumerState<InteractiveGalleryItem>
         ),
         error: (_, __) => AspectRatio(
           aspectRatio: 1,
-          child: ClipRRect(
-            borderRadius: AppDimensions.cardRadius,
-            child: ColoredBox(
-              color: isDark ? AppColors.darkSurface2 : AppColors.lightSurface2,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.broken_image_rounded,
-                    size: 32,
-                    color: isDark
-                        ? AppColors.textMuted
-                        : AppColors.textMutedLight,
-                  ),
-                  const SizedBox(height: AppSpacing.xs),
-                  Text(
-                    GalleryStrings.failedToLoad,
-                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                      color: isDark
-                          ? AppColors.textMuted
-                          : AppColors.textMutedLight,
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.sm),
-                  RetryTextButton(
-                    onPressed: () => ref.invalidate(
-                      signedStorageUrlProvider(item.imageUrl!),
-                    ),
-                  ),
-                ],
-              ),
+          child: _GalleryErrorPlaceholder(
+            isDark: isDark,
+            onRetry: () => ref.invalidate(
+              signedStorageUrlProvider(item.imageUrl!),
             ),
           ),
         ),
@@ -245,53 +218,23 @@ class _InteractiveGalleryItemState extends ConsumerState<InteractiveGalleryItem>
                   ),
                   errorWidget: (context, url, error) => AspectRatio(
                     aspectRatio: 1,
-                    child: ClipRRect(
-                      borderRadius: AppDimensions.cardRadius,
-                      child: ColoredBox(
-                        color: isDark
-                            ? AppColors.darkSurface2
-                            : AppColors.lightSurface2,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.broken_image_rounded,
-                              size: 32,
-                              color: isDark
-                                  ? AppColors.textMuted
-                                  : AppColors.textMutedLight,
-                            ),
-                            const SizedBox(height: AppSpacing.xs),
-                            Text(
-                              GalleryStrings.failedToLoad,
-                              style: Theme.of(context).textTheme.labelSmall
-                                  ?.copyWith(
-                                    color: isDark
-                                        ? AppColors.textMuted
-                                        : AppColors.textMutedLight,
-                                  ),
-                            ),
-                            const SizedBox(height: AppSpacing.sm),
-                            RetryTextButton(
-                              onPressed: () {
-                                CachedNetworkImage.evictFromCache(
-                                  item.imageUrl!,
-                                );
-                                setState(() => _retryCount++);
-                                if (widget.resolvedUrl == null) {
-                                  ref.invalidate(
-                                    signedStorageUrlProvider(item.imageUrl!),
-                                  );
-                                }
-                                // When resolvedUrl != null: _retryCount++
-                                // changes ValueKey → CachedNetworkImage
-                                // fully recreated. Cache was evicted,
-                                // so re-fetch happens naturally.
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
+                    child: _GalleryErrorPlaceholder(
+                      isDark: isDark,
+                      onRetry: () {
+                        CachedNetworkImage.evictFromCache(
+                          item.imageUrl!,
+                        );
+                        setState(() => _retryCount++);
+                        if (widget.resolvedUrl == null) {
+                          ref.invalidate(
+                            signedStorageUrlProvider(item.imageUrl!),
+                          );
+                        }
+                        // When resolvedUrl != null: _retryCount++
+                        // changes ValueKey -> CachedNetworkImage
+                        // fully recreated. Cache was evicted,
+                        // so re-fetch happens naturally.
+                      },
                     ),
                   ),
                   fit: BoxFit.cover,
@@ -305,5 +248,47 @@ class _InteractiveGalleryItemState extends ConsumerState<InteractiveGalleryItem>
 
     // Fallback
     return const SizedBox.shrink();
+  }
+}
+
+/// Shared error placeholder for gallery grid items.
+/// Displays broken image icon, error text, and retry button.
+class _GalleryErrorPlaceholder extends StatelessWidget {
+  const _GalleryErrorPlaceholder({
+    required this.isDark,
+    required this.onRetry,
+  });
+
+  final bool isDark;
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: AppDimensions.cardRadius,
+      child: ColoredBox(
+        color: isDark ? AppColors.darkSurface2 : AppColors.lightSurface2,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.broken_image_rounded,
+              size: 32,
+              color: isDark ? AppColors.textMuted : AppColors.textMutedLight,
+            ),
+            const SizedBox(height: AppSpacing.xs),
+            Text(
+              GalleryStrings.failedToLoad,
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                color:
+                    isDark ? AppColors.textMuted : AppColors.textMutedLight,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            RetryTextButton(onPressed: onRetry),
+          ],
+        ),
+      ),
+    );
   }
 }

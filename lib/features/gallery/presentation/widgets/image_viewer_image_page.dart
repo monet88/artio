@@ -72,34 +72,10 @@ class ImageViewerImagePage extends ConsumerWidget {
                         ),
                       ),
                     ),
-                    error: (_, __) => Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        ShaderMask(
-                          blendMode: BlendMode.srcIn,
-                          shaderCallback: (bounds) =>
-                              AppGradients.primaryGradient.createShader(bounds),
-                          child: const Icon(
-                            Icons.broken_image_rounded,
-                            size: 56,
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.md),
-                        const Text(
-                          GalleryStrings.failedToLoadImage,
-                          style: TextStyle(
-                            color: AppColors.textMuted,
-                            fontSize: 14,
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.sm),
-                        AnimatedRetryButton(
-                          onPressed: () => ref.invalidate(
-                            signedStorageUrlProvider(rawPath!),
-                          ),
-                          color: AppColors.primaryCta,
-                        ),
-                      ],
+                    error: (_, __) => _ViewerErrorPlaceholder(
+                      onRetry: () => ref.invalidate(
+                        signedStorageUrlProvider(rawPath!),
+                      ),
                     ),
                     data: (signedUrl) => signedUrl == null
                         ? const SizedBox.shrink()
@@ -142,41 +118,55 @@ class ImageViewerImagePage extends ConsumerWidget {
                               );
                             },
                             errorBuilder: (context, error, stackTrace) =>
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    ShaderMask(
-                                      blendMode: BlendMode.srcIn,
-                                      shaderCallback: (bounds) => AppGradients
-                                          .primaryGradient
-                                          .createShader(bounds),
-                                      child: const Icon(
-                                        Icons.broken_image_rounded,
-                                        size: 56,
-                                      ),
-                                    ),
-                                    const SizedBox(height: AppSpacing.md),
-                                    const Text(
-                                      GalleryStrings.failedToLoadImage,
-                                      style: TextStyle(
-                                        color: AppColors.textMuted,
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                    const SizedBox(height: AppSpacing.sm),
-                                    AnimatedRetryButton(
-                                      onPressed: () => ref.invalidate(
-                                        signedStorageUrlProvider(rawPath!),
-                                      ),
-                                      color: AppColors.primaryCta,
-                                    ),
-                                  ],
+                                _ViewerErrorPlaceholder(
+                                  onRetry: () => ref.invalidate(
+                                    signedStorageUrlProvider(rawPath!),
+                                  ),
                                 ),
                           ),
                   ),
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Shared error placeholder for the full-screen image viewer.
+/// Displays gradient broken image icon, error text, and animated retry button.
+class _ViewerErrorPlaceholder extends StatelessWidget {
+  const _ViewerErrorPlaceholder({required this.onRetry});
+
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        ShaderMask(
+          blendMode: BlendMode.srcIn,
+          shaderCallback: (bounds) =>
+              AppGradients.primaryGradient.createShader(bounds),
+          child: const Icon(
+            Icons.broken_image_rounded,
+            size: 56,
+          ),
+        ),
+        const SizedBox(height: AppSpacing.md),
+        const Text(
+          GalleryStrings.failedToLoadImage,
+          style: TextStyle(
+            color: AppColors.textMuted,
+            fontSize: 14,
+          ),
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        AnimatedRetryButton(
+          onPressed: onRetry,
+          color: AppColors.primaryCta,
+        ),
+      ],
     );
   }
 }

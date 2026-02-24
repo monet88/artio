@@ -100,8 +100,7 @@ void main() {
   });
 
   group('InteractiveGalleryItem — CachedNetworkImage retry', () {
-    testWidgets(
-        'with resolvedUrl, retry increments ValueKey on CachedNetworkImage',
+    testWidgets('initial CachedNetworkImage has ValueKey(0)',
         (tester) async {
       final item = _completedItem();
       const resolvedUrl = 'https://example.com/signed/test.jpg';
@@ -128,6 +127,85 @@ void main() {
       final cachedImage =
           tester.widget<CachedNetworkImage>(cachedImageFinder);
       expect(cachedImage.key, equals(const ValueKey(0)));
+    });
+
+    testWidgets(
+        'without resolvedUrl, provider error retry does not affect retryCount',
+        (tester) async {
+      var callCount = 0;
+      final item = _completedItem();
+
+      await tester.pumpWidget(
+        _buildTestWidget(
+          overrides: [
+            signedStorageUrlProvider(item.imageUrl!).overrideWith((_) {
+              callCount++;
+              throw Exception('network error');
+            }),
+          ],
+          child: SizedBox(
+            width: 200,
+            height: 200,
+            child: InteractiveGalleryItem(
+              item: item,
+              onTap: () {},
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final initialCallCount = callCount;
+
+      // Tap retry — should invalidate the provider
+      await tester.tap(find.byType(RetryTextButton));
+      await tester.pumpAndSettle();
+
+      // Provider was called again (re-evaluated after invalidation)
+      expect(callCount, greaterThan(initialCallCount));
+
+      // No CachedNetworkImage exists (still in error state, no ValueKey
+      // to check) — the retry path for provider error goes through
+      // ref.invalidate, not _retryCount++
+      expect(find.byType(CachedNetworkImage), findsNothing);
+    });
+
+    testWidgets(
+        'with resolvedUrl, signed URL provider is not used',
+        (tester) async {
+      var providerCalled = false;
+      final item = _completedItem();
+      const resolvedUrl = 'https://example.com/signed/test.jpg';
+
+      await tester.pumpWidget(
+        _buildTestWidget(
+          overrides: [
+            signedStorageUrlProvider(item.imageUrl!).overrideWith((_) {
+              providerCalled = true;
+              throw Exception('should not be called');
+            }),
+          ],
+          child: SizedBox(
+            width: 200,
+            height: 200,
+            child: InteractiveGalleryItem(
+              item: item,
+              onTap: () {},
+              resolvedUrl: resolvedUrl,
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      // Provider should NOT be watched when resolvedUrl is provided
+      expect(providerCalled, isFalse);
+
+      // CachedNetworkImage should use the resolvedUrl directly
+      final cachedImage = tester.widget<CachedNetworkImage>(
+        find.byType(CachedNetworkImage),
+      );
+      expect(cachedImage.imageUrl, equals(resolvedUrl));
     });
   });
 }
