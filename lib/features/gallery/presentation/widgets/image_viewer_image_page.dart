@@ -2,6 +2,8 @@ import 'package:artio/core/design_system/app_gradients.dart';
 import 'package:artio/core/design_system/app_spacing.dart';
 import 'package:artio/core/services/storage_url_service.dart';
 import 'package:artio/features/gallery/domain/entities/gallery_item.dart';
+import 'package:artio/features/gallery/presentation/constants/gallery_strings.dart';
+import 'package:artio/shared/widgets/animated_retry_button.dart';
 import 'package:artio/shared/widgets/watermark_overlay.dart';
 import 'package:artio/theme/app_colors.dart';
 import 'package:flutter/material.dart';
@@ -70,27 +72,10 @@ class ImageViewerImagePage extends ConsumerWidget {
                         ),
                       ),
                     ),
-                    error: (_, __) => Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        ShaderMask(
-                          blendMode: BlendMode.srcIn,
-                          shaderCallback: (bounds) =>
-                              AppGradients.primaryGradient.createShader(bounds),
-                          child: const Icon(
-                            Icons.broken_image_rounded,
-                            size: 56,
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.md),
-                        const Text(
-                          'Failed to load image',
-                          style: TextStyle(
-                            color: AppColors.textMuted,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ],
+                    error: (_, __) => _ViewerErrorPlaceholder(
+                      onRetry: () => ref.invalidate(
+                        signedStorageUrlProvider(rawPath!),
+                      ),
                     ),
                     data: (signedUrl) => signedUrl == null
                         ? const SizedBox.shrink()
@@ -133,34 +118,55 @@ class ImageViewerImagePage extends ConsumerWidget {
                               );
                             },
                             errorBuilder: (context, error, stackTrace) =>
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    ShaderMask(
-                                      blendMode: BlendMode.srcIn,
-                                      shaderCallback: (bounds) => AppGradients
-                                          .primaryGradient
-                                          .createShader(bounds),
-                                      child: const Icon(
-                                        Icons.broken_image_rounded,
-                                        size: 56,
-                                      ),
-                                    ),
-                                    const SizedBox(height: AppSpacing.md),
-                                    const Text(
-                                      'Failed to load image',
-                                      style: TextStyle(
-                                        color: AppColors.textMuted,
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                  ],
+                                _ViewerErrorPlaceholder(
+                                  onRetry: () => ref.invalidate(
+                                    signedStorageUrlProvider(rawPath!),
+                                  ),
                                 ),
                           ),
                   ),
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Shared error placeholder for the full-screen image viewer.
+/// Displays gradient broken image icon, error text, and animated retry button.
+class _ViewerErrorPlaceholder extends StatelessWidget {
+  const _ViewerErrorPlaceholder({required this.onRetry});
+
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        ShaderMask(
+          blendMode: BlendMode.srcIn,
+          shaderCallback: (bounds) =>
+              AppGradients.primaryGradient.createShader(bounds),
+          child: const Icon(
+            Icons.broken_image_rounded,
+            size: 56,
+          ),
+        ),
+        const SizedBox(height: AppSpacing.md),
+        const Text(
+          GalleryStrings.failedToLoadImage,
+          style: TextStyle(
+            color: AppColors.textMuted,
+            fontSize: 14,
+          ),
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        AnimatedRetryButton(
+          onPressed: onRetry,
+          color: AppColors.primaryCta,
+        ),
+      ],
     );
   }
 }
