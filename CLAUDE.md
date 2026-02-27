@@ -76,7 +76,7 @@ AI art generation SaaS. Flutter/Dart monorepo with 3 active surfaces:
 
 **Stack:** Flutter 3.10+ / Dart 3.10+ / Riverpod codegen / GoRouter codegen / Supabase (Auth/DB/Storage/Edge Functions) / Freezed / Sentry
 
-> **Always read existing context first** — `docs/code-standards.md`, `docs/system-architecture.md`, project memories — before analyzing source code.
+> **Always read existing context first** — `docs/code-standards.md`, `docs/system-architecture.md`, `docs/project-overview-pdr.md`, `docs/development-roadmap.md`, `docs/project-changelog.md`, project memories — before analyzing source code.
 
 ---
 
@@ -149,6 +149,25 @@ Generated files committed (`*.g.dart`, `*.freezed.dart`, router files). After ch
 - Use design tokens from `lib/core/design_system/` for UI values
 - Env config via `EnvConfig` (`lib/core/config/env_config.dart`)
 - Sentry: `lib/main.dart` + `lib/core/config/sentry_config.dart`
+- Prefer Dart MCP tools over shell commands (see section below)
+
+---
+
+## Dart MCP Tools
+
+Use `mcp__dart__*` tools for language-aware operations. Shell only when piping/special flags needed.
+
+| Tool | Use When |
+|------|----------|
+| `hover` | Type info, docs, inferred types for a symbol |
+| `resolve_workspace_symbol` | Find symbol declarations by name across workspace |
+| `signature_help` | Function/method parameter info at call site |
+| `analyze_files` | Static analysis — errors/warnings/lints |
+| `dart_fix` | Auto-fix lint issues |
+| `dart_format` | Format Dart files |
+| `run_tests` | Run Dart/Flutter tests |
+| `pub` | pub get, upgrade, etc. |
+| `pub_dev_search` | Search pub.dev for packages |
 
 ---
 
