@@ -2,7 +2,7 @@
 
 Cross-platform AI image generation SaaS built with Flutter, Supabase, and Edge Functions.
 
-> Last updated: 2026-02-23 (synced to current codebase)
+> Last updated: 2026-02-28 (synced to current codebase)
 
 ## Repository Surfaces
 
@@ -217,7 +217,7 @@ flutter test --tags integration
 
 Current test file count in this repo:
 
-- Unit/widget test files: 80 (`test/**/*_test.dart`)
+- Unit/widget test files: 82 (`test/**/*_test.dart`)
 - Integration test files: 5 (`integration_test/*_test.dart`)
 
 ## Key Documentation

@@ -1,7 +1,7 @@
 # Code Standards
 
 **Project**: Artio - AI Image Generation SaaS
-**Updated**: 2026-02-20
+**Updated**: 2026-02-28
 **Version**: 1.5
 
 ---
@@ -165,6 +165,14 @@ lib/
 | Repositories (Impl) | `{Name}Repository` | `AuthRepository` |
 | ViewModels | `{Name}ViewModel` | `AuthViewModel` |
 | Providers | `{name}Provider` | `authViewModelProvider` |
+
+---
+
+## Import Ordering
+
+1. Dart SDK imports (`dart:...`)
+2. Package imports (`package:flutter/...`, `package:riverpod/...`)
+3. Project imports (`package:artio/...`)
 
 ---
 
@@ -444,7 +452,7 @@ class AppConstants {
 
 ### Current Status
 
-- **Test files**: 88 across `test/` and `integration_test/`
+- **Test files**: 82 unit/widget files + 5 integration files
 - **Test count**: 651+ unit tests + 15 integration tests
 - **Analyzer**: 0 errors
 - **Target**: 80%+ line coverage for production readiness
@@ -639,10 +647,10 @@ flutter pub outdated
 
 ## References
 
-- **Architecture Guide:** `.agent/skills/flutter-expert/SKILL.md`
+- **Architecture Guide:** `AGENTS.md`
 - **Error Handling:** `lib/core/exceptions/app_exception.dart`
 - **Constants:** `lib/core/constants/app_constants.dart`
 
 ---
 
-**Last Updated**: 2026-02-20
+**Last Updated**: 2026-02-28

@@ -1,7 +1,7 @@
 # Codebase Summary
 
 **Project**: Artio - AI Image Generation SaaS
-**Generated**: 2026-02-22 (repomix v1.11.0)
+**Generated**: 2026-02-28 (repomix v1.11.0)
 **Repomix Snapshot**: 143,439+ tokens, 668,912+ characters, 192+ files (core source files). Top token contributors:
 1. `supabase/functions/deno.lock` (5,038 tokens, 10,780 chars)
 2. `supabase/functions/generate-image/index.ts` (4,727 tokens, 18,818 chars)
@@ -9,7 +9,7 @@
 4. `admin/lib/features/templates/presentation/pages/template_editor_page.dart` (3,911 tokens, 20,353 chars)
 5. `supabase/config.toml` (3,596 tokens, 14,636 chars)
 
-**Summary**: Repomix confirms the clean architecture across the Flutter app, admin client, Supabase migrations, and Edge Functions. The codebase now has 145 non-generated Dart source files in lib/ with 7 features (auth, template_engine, gallery, credits, subscription, create, settings), 651+ unit tests + 15 integration tests across 88 test files.
+**Summary**: Repomix confirms the clean architecture across the Flutter app, admin client, Supabase migrations, and Edge Functions. The codebase now has 145 non-generated Dart source files in lib/ with 7 features (auth, template_engine, gallery, credits, subscription, create, settings), plus 82 unit/widget test files and 5 integration test files.
 
 ---
 
@@ -27,7 +27,7 @@ Artio is a Flutter-based cross-platform application implementing clean architect
 |------|-------|---------|
 | Dart source files (non-generated) | 145 | Main app source code |
 | Admin app files | 17 | Admin Flutter web app |
-| Test files | 88 (651+ unit + 15 integration) | Unit, widget, integration tests |
+| Test files | 87 (82 unit/widget + 5 integration files) | Unit, widget, integration tests |
 | Generated files (.freezed/.g.dart) | Auto-generated | Code generation artifacts (committed) |
 | Config files | ~10 | pubspec, analysis_options, etc. |
 | Documentation | 15+ | Plans, reports, roadmap, docs |
@@ -37,7 +37,7 @@ Artio is a Flutter-based cross-platform application implementing clean architect
 - **Total Files**: 145 non-generated Dart source files in lib/
 - **Admin app**: 17 Dart files
 - **Supabase**: 12 SQL migrations, 3 Edge Functions + `_shared` module
-- **Test files**: 88 (651+ unit tests + 15 integration tests)
+- **Test files**: 87 (82 unit/widget files + 5 integration files)
 - **Features**: 7 (auth:11, create:11, credits:9, gallery:21, settings:8, subscription:8, template_engine:27)
 - **Core subdirectories**: 8 (config, constants, design_system, exceptions, providers, services, state, utils)
 - **Edge Functions**: 3 (generate-image, revenuecat-webhook, reward-ad) + `_shared` module
@@ -48,148 +48,40 @@ Artio is a Flutter-based cross-platform application implementing clean architect
 
 ### Directory Structure
 
-```
-lib/
-├── core/                           # Cross-cutting concerns
-│   ├── config/
-│   │   ├── env_config.dart         # Environment configuration
-│   │   └── sentry_config.dart      # Sentry error tracking config
-│   ├── constants/
-│   │   ├── app_constants.dart      # Centralized constants
-│   │   └── ai_models.dart          # AI model configurations
-│   ├── design_system/
-│   │   ├── app_dimensions.dart     # Design system dimensions
-│   │   └── app_spacing.dart        # Spacing constants
-│   ├── exceptions/
-│   │   └── app_exception.dart      # Sealed exception hierarchy
-│   ├── providers/
-│   │   └── supabase_provider.dart     # Global Supabase client DI
-│   ├── services/
-│   │   ├── haptic_service.dart        # Haptic feedback service
-│   │   └── rewarded_ad_service.dart   # AdMob rewarded ads with SSV
-│   ├── state/
-│   │   └── user_scoped_providers.dart # User-scoped state providers
-│   └── utils/
-│       ├── app_exception_mapper.dart # User-friendly error messages
-│       ├── date_time_utils.dart      # DateTime parsing utilities
-│       ├── email_validator.dart      # Email TLD validation
-│       ├── retry.dart               # Retry with exponential backoff
-│       └── watermark_util.dart       # Image watermark utility
-│
-├── features/                       # Feature modules (3-layer each)
-│   ├── auth/                       # ✓ 3-layer architecture
-│   │   ├── domain/
-│   │   │   ├── entities/
-│   │   │   │   └── user_model.dart # Freezed model
-│   │   │   └── repositories/
-│   │   │       └── i_auth_repository.dart # Abstract interface
-│   │   ├── data/
-│   │   │   └── repositories/
-│   │   │       └── auth_repository.dart # Supabase impl
-│   │   └── presentation/
-│   │       ├── screens/
-│   │       │   ├── login_screen.dart
-│   │       │   ├── register_screen.dart
-│   │       │   ├── forgot_password_screen.dart
-│   │       │   └── splash_screen.dart
-│   │       ├── view_models/
-│   │       │   └── auth_view_model.dart
-│   │       ├── state/
-│   │       │   └── auth_state.dart
-│   │       └── widgets/
-│   │           └── social_login_buttons.dart
-│   │
-│   ├── template_engine/            # ✓ 3-layer architecture
-│   │   ├── domain/
-│   │   │   ├── entities/
-│   │   │   │   ├── template_model.dart
-│   │   │   │   ├── generation_job_model.dart
-│   │   │   │   └── input_field_model.dart
-│   │   │   ├── repositories/
-│   │   │   │   ├── i_template_repository.dart
-│   │   │   │   └── i_generation_repository.dart
-│   │   │   └── policies/
-│   │   │       └── generation_policy.dart
-│   │   ├── data/
-│   │   │   ├── repositories/
-│   │   │   │   ├── template_repository.dart
-│   │   │   │   └── generation_repository.dart
-│   │   │   └── policies/
-│   │   │       └── free_beta_policy.dart
-│   │   └── presentation/
-│   │       ├── providers/
-│   │       │   ├── template_provider.dart
-│   │       │   ├── generation_policy_provider.dart
-│   │       │   └── generation_view_model.dart
-│   │       ├── screens/
-│   │       │   ├── home_screen.dart
-│   │       │   └── template_detail_screen.dart
-│   │       └── widgets/
-│   │           ├── template_card.dart
-│   │           ├── template_grid.dart
-│   │           ├── input_field_builder.dart
-│   │           └── generation_progress.dart
-│   │
-│   ├── gallery/                    # ✓ 3-layer architecture
-│   │   ├── domain/
-│   │   │   ├── entities/
-│   │   │   │   └── gallery_item.dart
-│   │   │   └── repositories/
-│   │   │       └── i_gallery_repository.dart
-│   │   ├── data/
-│   │   │   └── repositories/
-│   │   │       └── gallery_repository.dart
-│   │   └── presentation/
-│   │       ├── providers/
-│   │       │   └── gallery_provider.dart
-│   │       ├── pages/
-│   │       │   ├── gallery_page.dart
-│   │       │   └── image_viewer_page.dart
-│   │       └── widgets/
-│   │           ├── masonry_image_grid.dart
-│   │           ├── shimmer_grid.dart
-│   │           ├── empty_gallery_state.dart
-│   │           └── failed_image_card.dart
-│   │
-│   ├── settings/                   # ✓ 3-layer architecture
-│   │   ├── domain/
-│   │   ├── data/
-│   │   └── presentation/
-│   │       ├── providers/
-│   │       │   └── theme_provider.dart
-│   │       └── screens/
-│   │           └── settings_screen.dart
-│   │
-│   └── create/                     # ✓ 3-layer architecture
-│       ├── domain/
-│       ├── data/
-│       └── presentation/
-│           └── screens/
-│               └── create_screen.dart
-│
-├── routing/
-│   └── app_router.dart             # GoRouter config with auth guards
-│
-├── shared/
-│   └── widgets/
-│       ├── main_shell.dart         # Main app shell with bottom nav
-│       └── error_page.dart         # Global error display
-│
-├── theme/
-│   ├── app_colors.dart
-│   ├── app_theme.dart
-│   └── theme_provider.dart
-│
-├── test/                           # Unit and widget tests
-│   └── features/                   # Feature-specific tests
-│
-├── integration_test/               # E2E tests
-│   └── template_e2e_test.dart
-│
-├── test_driver/                    # Flutter driver
-│   └── integration_test.dart
-│
-└── main.dart                       # App entry point
+```text
+.
+├── lib/
+│   ├── core/                       # config, constants, design_system, exceptions, providers, services, state, utils
+│   ├── features/
+│   │   ├── auth/
+│   │   ├── create/
+│   │   ├── credits/
+│   │   ├── gallery/
+│   │   ├── settings/
+│   │   ├── subscription/
+│   │   └── template_engine/
+│   ├── routing/
+│   │   └── app_router.dart         # GoRouter config with auth guards
+│   ├── shared/
+│   ├── theme/
+│   ├── utils/
+│   └── main.dart                   # App entry point
+├── test/                           # 82 unit/widget test files
+├── integration_test/               # 5 integration test files
+├── admin/
+│   └── lib/
+│       ├── core/
+│       └── features/
+│           ├── auth/
+│           ├── dashboard/
+│           └── templates/
+└── supabase/
+    ├── functions/
+    │   ├── generate-image/
+    │   ├── reward-ad/
+    │   ├── revenuecat-webhook/
+    │   └── _shared/
+    └── migrations/
 ```
 
 ---
@@ -265,8 +157,8 @@ lib/
 - **Architecture**: 3-layer clean architecture
 - **Capabilities**:
   - Text-to-image prompt input UI
-  - Parameter selection layout
-  - Generation flow wiring to repository (backend integration pending)
+  - Model selection and generation options
+  - Generation flow wired to shared `GenerationRepository` backend
 
 #### 6. Core Infrastructure
 - **Exception Handling**: Sealed `AppException` class hierarchy
@@ -439,7 +331,7 @@ class UnknownException extends AppException { originalError? }
 
 ### Testing Status
 
-**Overall**: 651+ unit tests + 15 integration tests across 88 test files. 0 analyzer issues.
+**Overall**: 82 unit/widget test files + 5 integration test files (87 total). 0 analyzer issues.
 
 ### Test Coverage Areas
 
@@ -544,7 +436,7 @@ dart run build_runner watch
 |----------|--------|---------|
 | `README.md` | ✓ Current | Project overview, getting started |
 | `CLAUDE.md` | ✓ Current | AI assistant instructions |
-| `development-roadmap.md` | ✓ Current | Detailed development phases |
+| `project-roadmap.md` | ✓ Current | Detailed development phases |
 | `code-standards.md` | ✓ Current | Coding conventions |
 | `system-architecture.md` | ✓ Current | Architecture documentation |
 | `project-overview-pdr.md` | ✓ Current | Product requirements |
@@ -575,13 +467,13 @@ dart run build_runner watch
 
 ## References
 
-- **Development Roadmap**: `docs/development-roadmap.md`
+- **Project Roadmap**: `docs/project-roadmap.md`
 - **Code Standards**: `docs/code-standards.md`
 - **System Architecture**: `docs/system-architecture.md`
 - **Project Overview**: `docs/project-overview-pdr.md`
 
 ---
 
-**Last Updated**: 2026-02-22 (v1.6 — image input flow, new services/widgets, dependency updates)
+**Last Updated**: 2026-02-28 (v1.7 — test count refresh and structure verification updates)
 **Analysis Depth**: Comprehensive (repomix pack, verified against codebase)
 **Codebase Grade**: A- (95% architecture compliance, all 7 features complete, image input feature complete)

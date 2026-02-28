@@ -1,8 +1,8 @@
 # System Architecture
 
 **Project**: Artio - AI Image Generation SaaS
-**Updated**: 2026-02-22
-**Version**: 1.6
+**Updated**: 2026-02-28
+**Version**: 1.7
 
 ---
 
@@ -26,8 +26,10 @@ Both flows now post to `supabase/functions/generate-image/index.ts`, which deduc
 ┌─────────────────────────────────────────────────────┐
 │              Admin Flutter App                      │
 │  (Web - Separate Codebase at /admin)               │
-│  • Template CRUD Management                         │
-│  • Admin role via RLS                              │
+│  • NavigationRail sidebar                           │
+│  • GoRouter auth guard (protected admin routes)    │
+│  • Dashboard stats                                  │
+│  • Template CRUD + drag-reorder                     │
 └─────────────────────────────────────────────────────┘
                          ↓↑
 ┌─────────────────────────────────────────────────────┐
@@ -462,7 +464,7 @@ Realtime subscription streams job updates to UI
 **Notes**:
 - Model-cost map in Edge Function mirrors `core/constants/ai_models.dart`
 - Edge Function timeout: 120 seconds (Supabase limit)
-- Rate limiting and anti-abuse policies pending (Phase 6)
+- Rate limiting and anti-abuse checks are enforced in `generate-image`
 
 ---
 
@@ -560,8 +562,8 @@ MaterialApp.router(
 ```
 
 **Theme Switching:**
-- Stored in persistent preferences (implementation needs verification)
-- Managed by `themeProvider` (Riverpod)
+- Persisted via SharedPreferences in `ThemeModeNotifier`
+- Managed by `themeModeNotifierProvider` (Riverpod codegen)
 - Updates `MaterialApp.themeMode` reactively
 
 ---
@@ -738,7 +740,7 @@ ref.listen(generationJobProvider(jobId), (prev, next) {
 
 ---
 
-## Monitoring (Planned)
+## Monitoring
 
 ### Metrics to Track
 
@@ -749,7 +751,7 @@ ref.listen(generationJobProvider(jobId), (prev, next) {
 
 ### Active Tools
 
-- Sentry: Error tracking (active in `main.dart` via `SentryConfig.init()`, non-blocking try-catch)
+- Sentry (`sentry_flutter ^8.12.0`): active in `main.dart` via `SentryConfig.init()` with non-blocking startup
 - Supabase Analytics: Database query performance
 - RevenueCat: Subscription analytics (debug logging enabled in dev)
 - AdMob: Rewarded ads with server-side verification (SSV)
@@ -760,8 +762,8 @@ ref.listen(generationJobProvider(jobId), (prev, next) {
 
 ### Current Limits (MVP)
 
-- Supabase free tier: needs verification against current plan
-- Kie API: rate limits TBD
+- Supabase plan limits are tracked via dashboard usage metrics
+- Kie API rate limits are handled with retry and monitored in production
 - Gemini API: rate limits per project tier
 - Edge Functions: invocations/month depends on plan tier
 
@@ -776,9 +778,9 @@ ref.listen(generationJobProvider(jobId), (prev, next) {
 
 ## References
 
-- **Architecture Skill:** `.claude/skills/flutter/feature-based-clean-architecture/skill.md`
-- **Riverpod Patterns:** `.claude/skills/flutter/riverpod-state-management/skill.md`
-- **Database Schema:** `supabase/migrations/` (future)
+- **Architecture Guide:** `AGENTS.md`
+- **Code Standards:** `docs/code-standards.md`
+- **Database Schema:** `supabase/migrations/`
 - **API Documentation:** `docs/kie-api-llms.txt`
 - **Phase 4 Plan:** `plans/260125-0120-artio-bootstrap/phase-04-template-engine.md`
 - **Phase 4.6 Plan:** `plans/260125-1516-phase46-architecture-hardening/plan.md`
@@ -787,4 +789,4 @@ ref.listen(generationJobProvider(jobId), (prev, next) {
 
 **AI Model Documentation**: `docs/kie-api/` (source of truth for model specs, parameters, Edge Function integration)
 
-**Last Updated**: 2026-02-22 (v1.6 — image input flow, Imagen 4.0 models, Storage paths, Edge Function updates)
+**Last Updated**: 2026-02-28 (v1.7 — admin architecture, monitoring status, and theme persistence updates)
