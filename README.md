@@ -225,7 +225,7 @@ Current test file count in this repo:
 - `docs/system-architecture.md`
 - `docs/code-standards.md`
 - `docs/project-overview-pdr.md`
-- `docs/development-roadmap.md`
+- `docs/project-roadmap.md`
 - `docs/project-changelog.md`
 - `docs/local-supabase-setup-guide.md`
 

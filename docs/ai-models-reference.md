@@ -30,8 +30,10 @@
 | `flux-2/pro-text-to-image` | Flux-2 Pro | KIE | ✅ | 10 | 1:1, 2:3, 3:2, 9:16, 16:9, 3:4, 4:3 | [Local](kie-api/flux2/flux2-pro-text-to-image.md) | [KIE](https://docs.kie.ai/market/flux2/pro-text-to-image.md) |
 | `gpt-image/1.5-text-to-image` | GPT Image 1.5 | KIE | ✅ | 8 | 1:1, 2:3, 3:2 | [Local](kie-api/gpt-image/gpt-image-1.5-text-to-image.md) | [KIE](https://docs.kie.ai/market/gpt-image/1.5-text-to-image.md) |
 | `seedream/4.5-text-to-image` | Seedream 4.5 | KIE | ❌ | 8 | 1:1, 4:3, 3:4, 16:9, 9:16, 2:3, 3:2, 21:9 | [Local](kie-api/seedream/seedream-4.5-text-to-image.md) | [KIE](https://docs.kie.ai/market/seedream/4.5-text-to-image.md) |
-| `gemini-3-pro-image-preview` | Gemini 3 Pro Image | Gemini | ✅ | 15 | All standard | [Local](kie-api/google/gemini-3-pro-image-preview.md) | Google native API |
-| `gemini-2.5-flash-image` | Gemini 2.5 Flash Image | Gemini | ❌ | 8 | All standard | [Local](kie-api/google/gemini-2.5-flash-image.md) | Google native API |
+| `gemini-3-pro-image-preview` | Gemini 3 Pro Image | Gemini | ✅ | 15 | All standard | [Local](gemini/gemini-3-pro-image-preview.md) | Google native API |
+| `gemini-2.5-flash-image` | Gemini 2.5 Flash Image | Gemini | ❌ | 8 | All standard | [Local](gemini/gemini-2.5-flash-image.md) | Google native API |
+| `nano-banana-2` | Nano Banana 2 | KIE | TBD | TBD | 1:1, 1:4, 16:9, 1:8, 21:9, 2:3, 3:2, 3:4, 4:1, 4:3, 4:5, 5:4, 8:1, 9:16, auto | [Local](kie-api/google/nano-banana-2.md) | [KIE](https://docs.kie.ai/market/google/nano-banana-2.md) |
+| `gemini-3.1-flash-image-preview` | Nano Banana 2 (Gemini) | Gemini | TBD | TBD | All standard | [Local](gemini/gemini-3.1-flash-image-preview.md) | Google native API |
 
 ## Image-to-Image / Editing Models (Tạo ảnh từ template + input image)
 
