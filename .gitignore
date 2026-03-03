@@ -145,7 +145,10 @@ integration_test/.test_coverage.dart
 .app-template/
 .codex/
 .cursor/
-.github/
+# Allow GitHub Actions workflows
+!.github/
+.github/*
+!.github/workflows/
 .osgrep/
 opencode.json
 .skillsrc
@@ -181,3 +184,6 @@ artifacts/
 
 # APK output folder (local builds only)
 apkoutputs/
+
+# DR backups (local database dumps)
+backups/
