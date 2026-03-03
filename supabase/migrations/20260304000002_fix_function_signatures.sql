@@ -272,6 +272,8 @@ BEGIN
     'ads_remaining', 10 - v_current_count
   );
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public;
 
 REVOKE ALL ON FUNCTION reward_ad_credits(UUID) FROM authenticated;
