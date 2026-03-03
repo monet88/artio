@@ -6,7 +6,7 @@ part of 'credit_history_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$creditHistoryHash() => r'9208374504f963eb1d71b3705b308f26cce13d23';
+String _$creditHistoryHash() => r'639c81d756e95f8e4feb47ba7477c586c1c1616e';
 
 /// Copied from Dart SDK
 class _SystemHash {
