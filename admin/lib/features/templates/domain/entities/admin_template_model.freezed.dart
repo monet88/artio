@@ -27,7 +27,7 @@ mixin _$AdminTemplateModel {
   String get category => throw _privateConstructorUsedError;
   @JsonKey(name: 'prompt_template')
   String get promptTemplate => throw _privateConstructorUsedError;
-  @JsonKey(name: 'order')
+  @JsonKey(name: 'sort_order')
   int get order => throw _privateConstructorUsedError;
   @JsonKey(name: 'is_premium')
   bool get isPremium => throw _privateConstructorUsedError;
@@ -68,7 +68,7 @@ abstract class $AdminTemplateModelCopyWith<$Res> {
     String description,
     String category,
     @JsonKey(name: 'prompt_template') String promptTemplate,
-    @JsonKey(name: 'order') int order,
+    @JsonKey(name: 'sort_order') int order,
     @JsonKey(name: 'is_premium') bool isPremium,
     @JsonKey(name: 'is_active') bool isActive,
     @JsonKey(name: 'thumbnail_url') String? thumbnailUrl,
@@ -183,7 +183,7 @@ abstract class _$$AdminTemplateModelImplCopyWith<$Res>
     String description,
     String category,
     @JsonKey(name: 'prompt_template') String promptTemplate,
-    @JsonKey(name: 'order') int order,
+    @JsonKey(name: 'sort_order') int order,
     @JsonKey(name: 'is_premium') bool isPremium,
     @JsonKey(name: 'is_active') bool isActive,
     @JsonKey(name: 'thumbnail_url') String? thumbnailUrl,
@@ -290,7 +290,7 @@ class _$AdminTemplateModelImpl implements _AdminTemplateModel {
     required this.description,
     required this.category,
     @JsonKey(name: 'prompt_template') required this.promptTemplate,
-    @JsonKey(name: 'order') required this.order,
+    @JsonKey(name: 'sort_order') required this.order,
     @JsonKey(name: 'is_premium') this.isPremium = false,
     @JsonKey(name: 'is_active') this.isActive = true,
     @JsonKey(name: 'thumbnail_url') this.thumbnailUrl,
@@ -316,7 +316,7 @@ class _$AdminTemplateModelImpl implements _AdminTemplateModel {
   @JsonKey(name: 'prompt_template')
   final String promptTemplate;
   @override
-  @JsonKey(name: 'order')
+  @JsonKey(name: 'sort_order')
   final int order;
   @override
   @JsonKey(name: 'is_premium')
@@ -426,7 +426,7 @@ abstract class _AdminTemplateModel implements AdminTemplateModel {
     required final String description,
     required final String category,
     @JsonKey(name: 'prompt_template') required final String promptTemplate,
-    @JsonKey(name: 'order') required final int order,
+    @JsonKey(name: 'sort_order') required final int order,
     @JsonKey(name: 'is_premium') final bool isPremium,
     @JsonKey(name: 'is_active') final bool isActive,
     @JsonKey(name: 'thumbnail_url') final String? thumbnailUrl,
@@ -451,7 +451,7 @@ abstract class _AdminTemplateModel implements AdminTemplateModel {
   @JsonKey(name: 'prompt_template')
   String get promptTemplate;
   @override
-  @JsonKey(name: 'order')
+  @JsonKey(name: 'sort_order')
   int get order;
   @override
   @JsonKey(name: 'is_premium')

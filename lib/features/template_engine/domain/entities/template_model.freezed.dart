@@ -35,6 +35,7 @@ mixin _$TemplateModel {
   String get defaultAspectRatio => throw _privateConstructorUsedError;
   @JsonKey(name: 'is_premium')
   bool get isPremium => throw _privateConstructorUsedError;
+  @JsonKey(name: 'sort_order')
   int get order => throw _privateConstructorUsedError;
 
   /// Serializes this TemplateModel to a JSON map.
@@ -64,7 +65,7 @@ abstract class $TemplateModelCopyWith<$Res> {
     @JsonKey(name: 'input_fields') List<InputFieldModel> inputFields,
     @JsonKey(name: 'default_aspect_ratio') String defaultAspectRatio,
     @JsonKey(name: 'is_premium') bool isPremium,
-    int order,
+    @JsonKey(name: 'sort_order') int order,
   });
 }
 
@@ -161,7 +162,7 @@ abstract class _$$TemplateModelImplCopyWith<$Res>
     @JsonKey(name: 'input_fields') List<InputFieldModel> inputFields,
     @JsonKey(name: 'default_aspect_ratio') String defaultAspectRatio,
     @JsonKey(name: 'is_premium') bool isPremium,
-    int order,
+    @JsonKey(name: 'sort_order') int order,
   });
 }
 
@@ -251,7 +252,7 @@ class _$TemplateModelImpl implements _TemplateModel {
     required final List<InputFieldModel> inputFields,
     @JsonKey(name: 'default_aspect_ratio') this.defaultAspectRatio = '1:1',
     @JsonKey(name: 'is_premium') this.isPremium = false,
-    this.order = 0,
+    @JsonKey(name: 'sort_order') this.order = 0,
   }) : _inputFields = inputFields;
 
   factory _$TemplateModelImpl.fromJson(Map<String, dynamic> json) =>
@@ -287,7 +288,7 @@ class _$TemplateModelImpl implements _TemplateModel {
   @JsonKey(name: 'is_premium')
   final bool isPremium;
   @override
-  @JsonKey()
+  @JsonKey(name: 'sort_order')
   final int order;
 
   @override
@@ -363,7 +364,7 @@ abstract class _TemplateModel implements TemplateModel {
     required final List<InputFieldModel> inputFields,
     @JsonKey(name: 'default_aspect_ratio') final String defaultAspectRatio,
     @JsonKey(name: 'is_premium') final bool isPremium,
-    final int order,
+    @JsonKey(name: 'sort_order') final int order,
   }) = _$TemplateModelImpl;
 
   factory _TemplateModel.fromJson(Map<String, dynamic> json) =
@@ -393,6 +394,7 @@ abstract class _TemplateModel implements TemplateModel {
   @JsonKey(name: 'is_premium')
   bool get isPremium;
   @override
+  @JsonKey(name: 'sort_order')
   int get order;
 
   /// Create a copy of TemplateModel

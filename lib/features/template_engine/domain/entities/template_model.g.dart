@@ -19,7 +19,7 @@ _$TemplateModelImpl _$$TemplateModelImplFromJson(Map<String, dynamic> json) =>
           .toList(),
       defaultAspectRatio: json['default_aspect_ratio'] as String? ?? '1:1',
       isPremium: json['is_premium'] as bool? ?? false,
-      order: (json['order'] as num?)?.toInt() ?? 0,
+      order: (json['sort_order'] as num?)?.toInt() ?? 0,
     );
 
 Map<String, dynamic> _$$TemplateModelImplToJson(_$TemplateModelImpl instance) =>
@@ -33,5 +33,5 @@ Map<String, dynamic> _$$TemplateModelImplToJson(_$TemplateModelImpl instance) =>
       'input_fields': instance.inputFields,
       'default_aspect_ratio': instance.defaultAspectRatio,
       'is_premium': instance.isPremium,
-      'order': instance.order,
+      'sort_order': instance.order,
     };

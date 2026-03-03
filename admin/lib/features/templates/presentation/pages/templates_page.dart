@@ -19,7 +19,7 @@ class Templates extends _$Templates {
     return Supabase.instance.client
         .from('templates')
         .stream(primaryKey: ['id'])
-        .order('order', ascending: true)
+        .order('sort_order', ascending: true)
         .map(
           (rows) =>
               rows.map((row) => AdminTemplateModel.fromJson(row)).toList(),
@@ -44,7 +44,7 @@ class Templates extends _$Templates {
     for (int i = 0; i < reorderedList.length; i++) {
       final dbOrder = i + 1;
       if (reorderedList[i].order != dbOrder) {
-        updates.add({'id': reorderedList[i].id, 'order': dbOrder});
+        updates.add({'id': reorderedList[i].id, 'sort_order': dbOrder});
       }
     }
 

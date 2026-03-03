@@ -78,7 +78,7 @@ class TemplateRepository implements ITemplateRepository {
           .select()
           .eq('category', category)
           .eq('is_active', true)
-          .order('order', ascending: true);
+          .order('sort_order', ascending: true);
 
       final results = <TemplateModel>[];
       for (final item in response) {
@@ -104,7 +104,7 @@ class TemplateRepository implements ITemplateRepository {
     return _supabase
         .from('templates')
         .stream(primaryKey: ['id'])
-        .order('order', ascending: true)
+        .order('sort_order', ascending: true)
         .map((data) => data.map(TemplateModel.fromJson).toList());
   }
 
@@ -116,7 +116,7 @@ class TemplateRepository implements ITemplateRepository {
             .from('templates')
             .select()
             .eq('is_active', true)
-            .order('order', ascending: true);
+            .order('sort_order', ascending: true);
 
         final results = <TemplateModel>[];
         for (final item in response) {
