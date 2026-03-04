@@ -18,6 +18,18 @@ BEGIN
   END IF;
 END $$;
 
+-- Backfill claimed_at from sync-schema 'claimed' column before dropping
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_name = 'pending_ad_rewards' AND column_name = 'claimed'
+  ) THEN
+    UPDATE pending_ad_rewards SET claimed_at = NOW()
+    WHERE claimed = true AND claimed_at IS NULL;
+  END IF;
+END $$;
+
 -- Drop sync-schema columns if they exist
 DO $$
 BEGIN
@@ -38,7 +50,7 @@ END $$;
 
 -- Recreate cleanup index with original schema definition
 DROP INDEX IF EXISTS idx_pending_ad_rewards_cleanup;
-CREATE INDEX idx_pending_ad_rewards_cleanup
+CREATE INDEX IF NOT EXISTS idx_pending_ad_rewards_cleanup
   ON pending_ad_rewards(created_at)
   WHERE claimed_at IS NULL;
 
@@ -73,7 +85,10 @@ BEGIN
 
     IF NOT FOUND THEN
         INSERT INTO generation_rate_limits (user_id, window_start, request_count)
-        VALUES (p_user_id, v_now, 1);
+        VALUES (p_user_id, v_now, 1)
+        ON CONFLICT (user_id) DO UPDATE
+          SET window_start = EXCLUDED.window_start, request_count = 1
+          WHERE generation_rate_limits.window_start < (v_now - (p_window_seconds || ' seconds')::INTERVAL);
         RETURN jsonb_build_object(
             'allowed', true,
             'remaining', p_max_requests - 1
@@ -104,7 +119,7 @@ BEGIN
     SET request_count = request_count + 1
     WHERE user_id = p_user_id;
 
-    v_remaining := p_max_requests - v_row.request_count - 1;
+    v_remaining := GREATEST(0, p_max_requests - v_row.request_count - 1);
     RETURN jsonb_build_object(
         'allowed', true,
         'remaining', v_remaining
@@ -182,6 +197,15 @@ BEGIN
     );
   END IF;
 
+  -- Pre-check: verify user has a credit balance record before consuming ad slot
+  PERFORM 1 FROM user_credits WHERE user_id = p_user_id FOR UPDATE;
+  IF NOT FOUND THEN
+    RETURN json_build_object(
+      'success', false, 'error', 'no_credit_record',
+      'message', 'User has no credit balance record'
+    );
+  END IF;
+
   INSERT INTO ad_views (user_id, view_date, view_count)
   VALUES (p_user_id, v_today, 1)
   ON CONFLICT (user_id, view_date)
@@ -200,13 +224,6 @@ BEGIN
   SET balance = balance + 5
   WHERE user_id = p_user_id
   RETURNING balance INTO v_new_balance;
-
-  IF v_new_balance IS NULL THEN
-    RETURN json_build_object(
-      'success', false, 'error', 'no_credit_record',
-      'message', 'User has no credit balance record'
-    );
-  END IF;
 
   INSERT INTO credit_transactions (user_id, amount, type, description)
   VALUES (p_user_id, 5, 'ad_reward', 'Rewarded ad credit (nonce-verified)');
@@ -233,6 +250,15 @@ DECLARE
   v_current_count INTEGER;
   v_new_balance INTEGER;
 BEGIN
+  -- Pre-check: verify user has a credit balance record before consuming ad slot
+  PERFORM 1 FROM user_credits WHERE user_id = p_user_id FOR UPDATE;
+  IF NOT FOUND THEN
+    RETURN json_build_object(
+      'success', false, 'error', 'no_credit_record',
+      'message', 'User has no credit balance record'
+    );
+  END IF;
+
   INSERT INTO ad_views (user_id, view_date, view_count)
   VALUES (p_user_id, v_today, 1)
   ON CONFLICT (user_id, view_date)
@@ -252,14 +278,6 @@ BEGIN
   SET balance = balance + 5
   WHERE user_id = p_user_id
   RETURNING balance INTO v_new_balance;
-
-  IF v_new_balance IS NULL THEN
-    RETURN json_build_object(
-      'success', false,
-      'error', 'no_credit_record',
-      'message', 'User has no credit balance record'
-    );
-  END IF;
 
   INSERT INTO credit_transactions (user_id, amount, type, description)
   VALUES (p_user_id, 5, 'ad_reward', 'Rewarded ad credit');

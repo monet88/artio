@@ -57,7 +57,7 @@ WITH CHECK ((select auth.uid()) = user_id);
 
 DROP POLICY IF EXISTS "Users can update own generation jobs" ON generation_jobs;
 CREATE POLICY "Users can update own generation jobs" ON generation_jobs FOR UPDATE
-USING ((select auth.uid()) = user_id)
+USING ((select auth.uid()) = user_id AND deleted_at IS NULL)
 WITH CHECK ((select auth.uid()) = user_id);
 
 DROP POLICY IF EXISTS "Admins can view all generation jobs" ON generation_jobs;

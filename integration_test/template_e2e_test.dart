@@ -30,7 +30,7 @@ void main() {
       final response = await Supabase.instance.client
           .from('templates')
           .select()
-          .order('order', ascending: true);
+          .order('sort_order', ascending: true);
 
       // Verify count
       expect(response.length, 25, reason: 'Should have 25 templates');
@@ -58,7 +58,7 @@ void main() {
       // Verify order sequence (1-25)
       for (var i = 0; i < response.length; i++) {
         expect(
-          response[i]['order'],
+          response[i]['sort_order'],
           i + 1,
           reason: 'Template at index $i should have order ${i + 1}',
         );
@@ -111,7 +111,7 @@ void main() {
       final response = await Supabase.instance.client
           .from('templates')
           .select()
-          .order('order', ascending: true);
+          .order('sort_order', ascending: true);
 
       // Count templates per category
       final categoryCounts = <String, int>{};

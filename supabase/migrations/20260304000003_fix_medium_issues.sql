@@ -3,10 +3,18 @@
 -- Phase 6: Restrict storage + credit policies
 
 -- ============================================================
--- Phase 5: Rename reserved-word column
+-- Phase 5: Rename reserved-word column (idempotent)
 -- ============================================================
 
-ALTER TABLE templates RENAME COLUMN "order" TO sort_order;
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_name = 'templates' AND column_name = 'order'
+  ) THEN
+    ALTER TABLE templates RENAME COLUMN "order" TO sort_order;
+  END IF;
+END $$;
 
 -- ============================================================
 -- Phase 6: Restrict storage + credit policies

@@ -14,7 +14,7 @@ _$AdminTemplateModelImpl _$$AdminTemplateModelImplFromJson(
   description: json['description'] as String,
   category: json['category'] as String,
   promptTemplate: json['prompt_template'] as String,
-  order: (json['sort_order'] as num).toInt(),
+  order: (json['sort_order'] as num?)?.toInt() ?? 0,
   isPremium: json['is_premium'] as bool? ?? false,
   isActive: json['is_active'] as bool? ?? true,
   thumbnailUrl: json['thumbnail_url'] as String?,
