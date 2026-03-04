@@ -114,6 +114,10 @@ class TemplateRepository implements ITemplateRepository {
           Log.w('Failed to parse a template from realtime stream: $e');
         }
       }
+      if (results.length < data.length) {
+        Log.w(
+            'Parsed ${results.length}/${data.length} templates from realtime stream');
+      }
       return results;
     });
   }

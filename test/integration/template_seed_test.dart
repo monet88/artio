@@ -205,6 +205,10 @@ void main() {
       }
     });
 
+    // NOTE: is_premium is NOT asserted here — admin can legitimately toggle
+    // premium status on any template. The seed migration sets all to false,
+    // but live DB state may differ.
+
     test('not all sort_order values are zero', () {
       final nonZeroCount = templates.where((t) => t.order > 0).length;
       expect(
