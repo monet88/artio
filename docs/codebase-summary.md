@@ -1,15 +1,10 @@
 # Codebase Summary
 
 **Project**: Artio - AI Image Generation SaaS
-**Generated**: 2026-02-28 (repomix v1.11.0)
-**Repomix Snapshot**: 143,439+ tokens, 668,912+ characters, 192+ files (core source files). Top token contributors:
-1. `supabase/functions/deno.lock` (5,038 tokens, 10,780 chars)
-2. `supabase/functions/generate-image/index.ts` (4,727 tokens, 18,818 chars)
-3. `supabase/migrations/20260128130000_add_25_templates.sql` (4,102 tokens, 14,869 chars)
-4. `admin/lib/features/templates/presentation/pages/template_editor_page.dart` (3,911 tokens, 20,353 chars)
-5. `supabase/config.toml` (3,596 tokens, 14,636 chars)
+**Updated**: 2026-03-04
+**Version**: 1.8
 
-**Summary**: Repomix confirms the clean architecture across the Flutter app, admin client, Supabase migrations, and Edge Functions. The codebase now has 145 non-generated Dart source files in lib/ with 7 features (auth, template_engine, gallery, credits, subscription, create, settings), plus 82 unit/widget test files and 5 integration test files.
+**Summary**: The codebase follows clean architecture across the Flutter app, admin client, Supabase migrations, and Edge Functions. The main app has 158 non-generated Dart source files in lib/ with 7 features (auth, template_engine, gallery, credits, subscription, create, settings), plus 82 unit/widget test files, 5 integration test files, and 2 admin test files. Total: ~14,115 LOC (lib), ~9,670 LOC (test), ~3,460 LOC (supabase), ~2,854 LOC (admin).
 
 ---
 
@@ -25,21 +20,21 @@ Artio is a Flutter-based cross-platform application implementing clean architect
 
 | Type | Count | Purpose |
 |------|-------|---------|
-| Dart source files (non-generated) | 145 | Main app source code |
-| Admin app files | 17 | Admin Flutter web app |
-| Test files | 87 (82 unit/widget + 5 integration files) | Unit, widget, integration tests |
+| Dart source files (non-generated) | 158 | Main app source code |
+| Admin app files | 22 | Admin Flutter web app |
+| Test files | 89 (82 unit/widget + 5 integration + 2 admin) | Unit, widget, integration tests |
 | Generated files (.freezed/.g.dart) | Auto-generated | Code generation artifacts (committed) |
 | Config files | ~10 | pubspec, analysis_options, etc. |
 | Documentation | 15+ | Plans, reports, roadmap, docs |
 
 ### Code Metrics
 
-- **Total Files**: 145 non-generated Dart source files in lib/
-- **Admin app**: 17 Dart files
-- **Supabase**: 12 SQL migrations, 3 Edge Functions + `_shared` module
-- **Test files**: 87 (82 unit/widget files + 5 integration files)
-- **Features**: 7 (auth:11, create:11, credits:9, gallery:21, settings:8, subscription:8, template_engine:27)
-- **Core subdirectories**: 8 (config, constants, design_system, exceptions, providers, services, state, utils)
+- **Total Files**: 158 non-generated Dart source files in lib/
+- **Admin app**: 22 Dart files
+- **Supabase**: 23 SQL migrations, 3 Edge Functions + `_shared` module
+- **Test files**: 89 (82 unit/widget + 5 integration + 2 admin)
+- **Features**: 7 (auth:13, create:11, credits:11, gallery:22, settings:8, subscription:8, template_engine:27)
+- **Core subdirectories**: 8 (config:2, constants:3, design_system:6, exceptions:1, providers:2, services:6, state:4, utils:8)
 - **Edge Functions**: 3 (generate-image, revenuecat-webhook, reward-ad) + `_shared` module
 
 ---
@@ -88,7 +83,7 @@ Artio is a Flutter-based cross-platform application implementing clean architect
 
 ## Key Features Implementation Status
 
-### ✓ Completed Features
+### ✓ Completed Features (All 7 features)
 
 #### 1. Authentication (auth feature)
 - **Domain Layer**: `UserModel`, `IAuthRepository`
@@ -146,29 +141,58 @@ Artio is a Flutter-based cross-platform application implementing clean architect
 - `lib/features/gallery/data/repositories/gallery_repository.dart`
 - `lib/features/gallery/presentation/widgets/masonry_image_grid.dart`
 
-#### 4. Settings (settings feature)
+#### 4. Credits (credits feature)
+- **Domain Layer**: `CreditBalance`, `ICreditRepository`
+- **Data Layer**: `CreditRepository` (Supabase integration)
+- **Presentation Layer**: Credit balance display, credit history, insufficient credit sheets
+- **Capabilities**:
+  - Credit balance tracking and display
+  - Credit transaction history with types (welcome_bonus, generation, purchase, refund, subscription, ad_reward)
+  - Insufficient credits bottom sheet (402 handling)
+  - Premium model gating UI
+
+#### 5. Subscription (subscription feature)
+- **Domain Layer**: Subscription models, `ISubscriptionRepository`
+- **Data Layer**: `SubscriptionRepository` (RevenueCat + Supabase integration)
+- **Presentation Layer**: Paywall screen, restore purchases
+- **Capabilities**:
+  - RevenueCat SDK integration (iOS/Android)
+  - Subscription tiers (Free/Pro/Ultra)
+  - Dark gradient paywall with animated plan cards
+  - Restore purchases flow
+  - RevenueCat webhook for server-side sync
+
+#### 6. Settings (settings feature)
 - **Architecture**: 3-layer clean architecture
 - **Capabilities**:
   - Theme switcher (light/dark/system)
   - Account management actions (sign out)
+  - Credit History screen
+  - Legal section (Privacy Policy, ToS, Licenses)
+  - Support section (Help, Report a Problem)
   - About dialog
 
-#### 5. Create (create feature)
+#### 7. Create (create feature)
 - **Architecture**: 3-layer clean architecture
 - **Capabilities**:
   - Text-to-image prompt input UI
   - Model selection and generation options
+  - Content moderation pre-check
   - Generation flow wired to shared `GenerationRepository` backend
 
-#### 6. Core Infrastructure
+#### 8. Core Infrastructure
 - **Exception Handling**: Sealed `AppException` class hierarchy
 - **Error Mapping**: `AppExceptionMapper` for user-friendly messages
 - **Constants Management**: Centralized in `AppConstants` + `AiModelConfig` (with `supportsImageInput`)
 - **Dependency Injection**: Riverpod providers for global dependencies
-- **Image Upload Service** (NEW): Parallel compression + upload to Storage
+- **Image Upload Service**: Parallel compression + upload to Storage
   - Auto-compresses images to max 2MB (JPEG quality 85%)
   - Returns Storage paths for Edge Function
   - Tracks upload progress
+- **Content Moderation**: Client-side prompt keyword filter (`ContentModerationService`)
+- **Connectivity**: Offline banner + connectivity-aware UX
+- **Onboarding**: 3-slide intro flow for first-time users
+- **Guest Mode**: Browse freely without login; auth required at action points
 
 ---
 
@@ -331,16 +355,17 @@ class UnknownException extends AppException { originalError? }
 
 ### Testing Status
 
-**Overall**: 82 unit/widget test files + 5 integration test files (87 total). 0 analyzer issues.
+**Overall**: 82 unit/widget test files + 5 integration test files + 2 admin test files (89 total). 0 analyzer issues.
 
 ### Test Coverage Areas
 
-- Repository tests (auth, template, gallery, generation, credits)
+- Repository tests (auth, template, gallery, generation, credits, subscription)
 - ViewModel/Provider tests
 - Widget tests for core components
 - Exception mapper tests (including SocketException/TimeoutException)
 - Model sync tests (exact ID + cost validation)
 - Integration tests for template generation flow
+- Admin template model and reorder tests
 
 ---
 
@@ -384,9 +409,13 @@ class UnknownException extends AppException { originalError? }
 ### RLS (Row Level Security)
 
 **Enforced in Supabase**:
-- `profiles`: Users can read all, update own
+- `profiles`: Users can read all, update own (restricted update columns)
 - `templates`: Read-only for users
 - `generation_jobs`: Users can CRUD own jobs
+- `user_credits`: Users can view own balance
+- `credit_transactions`: Users can view own transactions
+- `pending_ad_rewards`: Users can manage own ad claims
+- Storage buckets: Scoped to `{user_id}/` prefix with authenticated-only access
 
 ---
 
@@ -448,15 +477,15 @@ dart run build_runner watch
 
 ### Immediate Actions
 
-1. Complete RevenueCat dashboard setup (sandbox testing)
+1. Complete Stripe web integration for subscriptions
 2. Monitor Sentry error reports in production
 3. Run `flutter analyze` regularly to maintain zero errors
 
 ### Short-term (1-2 weeks)
 
-1. Complete Subscription purchases (RevenueCat + Stripe)
-2. Add repository method dartdocs
-3. Finish Admin app CRUD UI
+1. Complete Subscription purchases (Stripe web)
+2. Admin app production deployment
+3. Add repository method dartdocs
 
 ### Long-term (1-2 months)
 
@@ -474,6 +503,6 @@ dart run build_runner watch
 
 ---
 
-**Last Updated**: 2026-02-28 (v1.7 — test count refresh and structure verification updates)
-**Analysis Depth**: Comprehensive (repomix pack, verified against codebase)
-**Codebase Grade**: A- (95% architecture compliance, all 7 features complete, image input feature complete)
+**Last Updated**: 2026-03-04 (v1.8 — file count refresh, RevenueCat integration, security audit, feature details)
+**Analysis Depth**: Comprehensive (verified against codebase)
+**Codebase Grade**: A- (95% architecture compliance, all 7 features complete, RevenueCat + security hardened)

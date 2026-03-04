@@ -2,7 +2,7 @@
 
 Cross-platform AI image generation SaaS built with Flutter, Supabase, and Edge Functions.
 
-> Last updated: 2026-02-28 (synced to current codebase)
+> Last updated: 2026-03-04 (synced to current codebase)
 
 ## Repository Surfaces
 
@@ -39,8 +39,8 @@ Cross-platform AI image generation SaaS built with Flutter, Supabase, and Edge F
 - Edge functions:
   - `generate-image`: generation pipeline, model routing, credit deduction/refund, premium checks, rate limit
   - `reward-ad`: ad nonce + claim flow
-  - `revenuecat-webhook`: subscription status sync + credit grant
-- Migrations for templates, profiles, credits, subscriptions, rate limiting, and generation job fields
+  - `revenuecat-webhook`: subscription status sync + credit grant (validates webhook signature, logs events, manages `is_premium` flag)
+- Migrations for templates, profiles, credits, subscriptions, rate limiting, generation job fields, and security hardening (23 total)
 
 ## Generation Pipeline
 
@@ -219,6 +219,7 @@ Current test file count in this repo:
 
 - Unit/widget test files: 82 (`test/**/*_test.dart`)
 - Integration test files: 5 (`integration_test/*_test.dart`)
+- Admin test files: 2 (`admin/test/**/*_test.dart`)
 
 ## Key Documentation
 

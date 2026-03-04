@@ -64,6 +64,7 @@ app.*.map.json
 *.env
 *.env.*
 !*.env.example
+!.env.test.example
 *.key
 *.pem
 credentials.json
@@ -187,3 +188,6 @@ apkoutputs/
 
 # DR backups (local database dumps)
 backups/
+
+# PR Review tooling artifacts
+_prr/

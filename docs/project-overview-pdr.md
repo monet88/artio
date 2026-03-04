@@ -1,8 +1,8 @@
 # Project Overview & Product Development Requirements
 
 **Project**: Artio - AI Image Generation SaaS
-**Updated**: 2026-02-20
-**Version**: 1.5
+**Updated**: 2026-03-04
+**Version**: 1.6
 
 ---
 
@@ -150,7 +150,7 @@ Democratize AI image generation through intuitive templates and flexible text pr
 ### FR-5: Subscription & Credits System
 
 **Priority:** P1 (Monetization)
-**Status:** ~80% (credits done, RevenueCat wired, Stripe web pending)
+**Status:** ~90% (credits done, RevenueCat wired + webhook working, Stripe web pending)
 
 **User Stories:**
 - As a free user, I want to see my credit balance so I know how many generations I have left
@@ -161,8 +161,10 @@ Democratize AI image generation through intuitive templates and flexible text pr
 **Acceptance Criteria:**
 - [x] Free tier credits + per-model cost deduction are implemented
 - [x] Credit balance and transaction history are implemented
-- [ ] Pro tier: $9.99/month, unlimited generations
-- [x] RevenueCat SDK integration (iOS/Android) - initialized + user identity linked
+- [x] Credit history screen with type-based icons and color coding
+- [x] Pro/Ultra tiers: subscription plans with RevenueCat
+- [x] RevenueCat SDK integration (iOS/Android) - purchase + restore wiring
+- [x] RevenueCat webhook for server-side subscription sync + credit grant
 - [ ] Stripe integration (Web) - pending
 - [x] Rewarded ads with SSV (AdMob + `reward-ad` Edge Function)
 
@@ -276,10 +278,13 @@ Democratize AI image generation through intuitive templates and flexible text pr
 - GDPR compliance (data export/delete)
 
 **Implementation:**
-- Supabase RLS policies reviewed in Phase 4.6
+- Supabase RLS policies reviewed in Phase 4.6 and hardened in March 2026 security audit
 - Edge Function validates input_data against template schema
 - AppExceptionMapper sanitizes error messages (no stack traces)
 - Account deletion cascade deletes all user data
+- All `SECURITY DEFINER` functions have `SET search_path = public`
+- `EXECUTE` permission revoked from `authenticated` on sensitive RPCs
+- Storage bucket policies scope to `{user_id}/` prefix
 
 ---
 
@@ -415,13 +420,15 @@ Democratize AI image generation through intuitive templates and flexible text pr
 - Image viewer, download/share/delete
 
 ### Phase 6: Subscription & Credits (8h)
-**Status:** ~80% In Progress
+**Status:** ~90% In Progress
 - Credits system (user_credits, credit_transactions) - ✓ Complete
 - Premium model gating (insufficient credit sheets) - ✓ Complete
 - Rewarded ads with SSV (AdMob + Edge Function) - ✓ Complete
 - RevenueCat SDK initialized + user identity - ✓ Complete
-- Subscription tiers (Free/Pro) - In Progress
-- Stripe integration (Web) - Pending (final major item)
+- RevenueCat purchase/restore wiring - ✓ Complete
+- RevenueCat webhook (subscription sync + credit grant) - ✓ Complete
+- Subscription tiers (Free/Pro/Ultra) paywall UI - ✓ Complete
+- Stripe integration (Web) - Pending (final item)
 
 ### Phase 7: Settings Feature (3h)
 **Status:** ✓ Complete (2026-01-28)
@@ -452,8 +459,8 @@ Democratize AI image generation through intuitive templates and flexible text pr
 - Edge Case Fixes 2, Edge Case Hardening
 - Reward Ad SSV, Edge Case Resilience
 
-**Total Estimated Effort:** 48.5h + ~20h quality milestones
-**Current Progress:** ~92% (core features + quality milestones complete)
+**Total Estimated Effort:** 48.5h + ~22h quality milestones
+**Current Progress:** ~95% (core features + quality milestones + security audit complete)
 
 ---
 
@@ -590,6 +597,6 @@ See: `docs/code-standards.md` for detailed conventions
 
 ---
 
-**Document Version:** 1.5
-**Last Updated:** 2026-02-20
-**Next Review:** Post-Phase 6 (Subscription purchases implementation)
+**Document Version:** 1.6
+**Last Updated:** 2026-03-04
+**Next Review:** Post-Phase 6 (Stripe web integration)

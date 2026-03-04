@@ -8,6 +8,24 @@
 
 ## [Unreleased]
 
+### Fixed — RevenueCat Integration Blocking Bugs (2026-03-04)
+- **7 blocking bugs** resolved from red-team review of RevenueCat integration
+- Fixed subscription status sync between RevenueCat webhook and Supabase
+- Fixed credit grant on INITIAL_PURCHASE and RENEWAL events
+- Fixed entitlement expiration handling (CANCELLATION / EXPIRATION events)
+- Corrected `revenuecat_events` table logging with proper app_user_id mapping
+- Fixed `grant_subscription_credits` RPC with idempotency check
+- Fixed webhook signature validation with `REVENUECAT_WEBHOOK_SECRET`
+
+### Fixed — Supabase Security Audit (2026-03-04)
+- **Critical**: Added `SET search_path = public` to all `SECURITY DEFINER` functions
+- **High**: Fixed overly permissive RLS policies for storage buckets — scoped to `{user_id}/` prefix
+- **High**: Normalized function signatures across all database RPCs
+- **Medium**: Restricted `profiles` UPDATE policy to specific columns only
+- **Medium**: Revoked public schema usage from `anon` and `authenticated` roles
+- **Low**: Added missing indexes for RevenueCat event queries
+- 5 new migration files applied: `20260304000001` through `20260304100000`
+
 ### Fixed — Backlog Issues #48–#53 (2026-03-04)
 - **#49**: Assert `TemplateModel.toJson()` emits `sort_order` key, not `order` key — prevents regression on domain model serialization
 - **#51**: Add per-item try-catch in `watchTemplates()` realtime stream — matches error handling pattern in `_fetchTemplatesFromNetwork()`, prevents single malformed item from breaking entire stream
@@ -15,6 +33,9 @@
 - **#53**: Replace hardcoded template counts in `template_e2e_test` with flexible assertions — allows test to pass when admin adds new templates without modifying test constants
 - **#48**: Create `AdminTemplateModel` unit tests (9 tests) — covers fromJson/toJson, key mapping (sort_order), defaults (isPremium, isActive, aspectRatio, inputFields)
 - **#50**: Create reorder() notifier tests (5 tests) — covers upsert payload generation, empty list handling, state rollback on error
+
+### Added — CI/CD (2026-03-03)
+- Scheduled GitHub Actions cron job to keep Supabase free tier alive
 
 ### Added — Sprint 2: UX Improvements (2026-02-22)
 - **Onboarding flow** — 3-slide dark gradient intro screen shown to ALL first-time users (guest or logged-in). Persisted via SharedPreferences. Slides: "Create Stunning AI Art" / "Fast & Easy" / "Free Credits to Start"
