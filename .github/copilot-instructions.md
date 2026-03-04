@@ -1,4 +1,51 @@
-# Artio — Copilot Instructions
+# Flutter Project Instructions & Best Practices
+
+As an AI agent working on this repository, you MUST adhere to the following core principles and coding standards.
+
+## Core Tech Stack
+- **Language**: Dart 3 (Strong typing, null safety, exhaustive switch expressions)
+- **Framework**: Flutter
+- **State Management**: Riverpod (`@riverpod` codegen, `riverpod_annotation`)
+- **Dependency Injection**: Riverpod providers (no `get_it` / `injectable`)
+- **Architecture**: Clean Architecture (Data → Domain → Presentation)
+
+## Coding Standards
+- **Naming**: `PascalCase` for classes, `camelCase` for variables/functions, `snake_case` for files.
+- **Strong Typing**: NO `dynamic`. Use `Object?` or explicit types.
+- **Conciseness**: Keep files < 300 lines. Keep functions short (< 50 lines).
+- **Null Safety**: Avoid `!` operator. Prefer pattern matching or early returns.
+- **Logging**: Use `Log` class (from `app_logger.dart`). Avoid raw `print()`. `debugPrint` OK for non-critical init failures only.
+
+## Architecture & Data
+- **Repository Pattern**: DataSources handle raw IO (Dio, Isar, Firebase). Repositories handle orchestrating and domain mapping.
+- **Models**: Use `fromJson`/`toJson` factories. Data models live in `data/`, Domain entities in `domain/`, and UI states in `presentation/`.
+- **Forms**: Manage form state in BLoCs. Use pure validator functions in the domain layer.
+
+## UI & UX (Design System)
+- **Design Tokens**: ZERO hardcoded colors or spacing. Use `AppColors`, `AppSpacing`, `AppDimensions`, `AppGradients`.
+- **Widget Lifecycle**: Declare controllers/nodes as `late final` in `initState()` and dispose in `dispose()`.
+- **Performance**: NO heavy work in `build()`. Mandate isolates for JSON parsing > 1MB.
+- **Patterns**: NO nested ScrollViews in same direction. NO private `_buildWidget` methods (extract into classes). Use Slivers for complex lists.
+
+## Git Workflow
+- **Atomic Commits**: One commit = one logical change. Follow Conventional Commits: `type(scope): description`.
+- **Commit Bodies**: Include sub-messages to explain the "why" and "how" of changes.
+- **Pull Requests**: Ensure zero analysis warnings and passing tests before PR. Provide descriptive titles and internal/external change summaries.
+
+## Security
+- **Sensitive Data**: Use `flutter_secure_storage` for tokens and secrets (when adding token caching). Current non-sensitive prefs use `SharedPreferences`.
+- **Traffic**: All API communication MUST use HTTPS.
+
+## Testing Strategy (100% Coverage)
+- **Structure**: All test files MUST strictly mirror the `lib/` directory structure.
+- **Mocks**: Use `mocktail` for all dependency mocking.
+- **Principles**: 100% logic coverage for domain and bloc layers. Each test must be independent.
+
+## Environment & Flavors
+- **Configuration**: Use a single `main.dart`. Pass `--dart-define=ENV=development` (or `staging`). Env values loaded via `flutter_dotenv` from `.env.{ENV}` files.
+- **Secrets**: NEVER commit production secrets to Git. Use `.env.example` for key documentation.
+
+# Artio
 
 AI art generation SaaS. Flutter/Dart monorepo with three surfaces: **main app** (`/`), **admin app** (`/admin`), **backend** (`/supabase`). Confirm which surface you're editing before making changes.
 

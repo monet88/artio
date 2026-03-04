@@ -1,125 +1,171 @@
-# Artio Project Guidelines
+# Flutter Project Instructions & Best Practices
 
-AI art generation SaaS. Flutter/Dart monorepo with 3 active surfaces:
+As an AI agent working on this repository, you MUST adhere to the following core principles and coding standards.
 
-1. **Main app** (`/`) — end-user mobile app (`name: artio`)
-2. **Admin app** (`/admin`) — template/admin dashboard (`name: artio_admin`)
-3. **Backend** (`/supabase`) — SQL migrations + Edge Functions
+## Core Tech Stack
+- **Language**: Dart 3 (Strong typing, null safety, exhaustive switch expressions)
+- **Framework**: Flutter
+- **State Management**: Riverpod (`@riverpod` codegen, `riverpod_annotation`)
+- **Dependency Injection**: Riverpod providers (no `get_it` / `injectable`)
+- **Architecture**: Clean Architecture (Data → Domain → Presentation)
 
-**Stack:** Flutter 3.10+ / Dart 3.10+ / Riverpod codegen / GoRouter codegen / Supabase (Auth/DB/Storage/Edge Functions) / Freezed / Sentry
+## Coding Standards
+- **Naming**: `PascalCase` for classes, `camelCase` for variables/functions, `snake_case` for files.
+- **Strong Typing**: NO `dynamic`. Use `Object?` or explicit types.
+- **Conciseness**: Keep files < 300 lines. Keep functions short (< 50 lines).
+- **Null Safety**: Avoid `!` operator. Prefer pattern matching or early returns.
+- **Logging**: Use `Log` class (from `app_logger.dart`). Avoid raw `print()`. `debugPrint` OK for non-critical init failures only.
 
-> **Always read existing context first** — `docs/code-standards.md`, `docs/system-architecture.md`, `docs/project-overview-pdr.md`, `docs/development-roadmap.md`, `docs/project-changelog.md`, project memories — before analyzing source code.
+## Architecture & Data
+- **Repository Pattern**: DataSources handle raw IO (Dio, Isar, Firebase). Repositories handle orchestrating and domain mapping.
+- **Models**: Use `fromJson`/`toJson` factories. Data models live in `data/`, Domain entities in `domain/`, and UI states in `presentation/`.
+- **Forms**: Manage form state in BLoCs. Use pure validator functions in the domain layer.
 
----
+## UI & UX (Design System)
+- **Design Tokens**: ZERO hardcoded colors or spacing. Use `AppColors`, `AppSpacing`, `AppDimensions`, `AppGradients`.
+- **Widget Lifecycle**: Declare controllers/nodes as `late final` in `initState()` and dispose in `dispose()`.
+- **Performance**: NO heavy work in `build()`. Mandate isolates for JSON parsing > 1MB.
+- **Patterns**: NO nested ScrollViews in same direction. NO private `_buildWidget` methods (extract into classes). Use Slivers for complex lists.
+
+## Git Workflow
+- **Atomic Commits**: One commit = one logical change. Follow Conventional Commits: `type(scope): description`.
+- **Commit Bodies**: Include sub-messages to explain the "why" and "how" of changes.
+- **Pull Requests**: Ensure zero analysis warnings and passing tests before PR. Provide descriptive titles and internal/external change summaries.
+
+## Security
+- **Sensitive Data**: Use `flutter_secure_storage` for tokens and secrets (when adding token caching). Current non-sensitive prefs use `SharedPreferences`.
+- **Traffic**: All API communication MUST use HTTPS.
+
+## Testing Strategy (100% Coverage)
+- **Structure**: All test files MUST strictly mirror the `lib/` directory structure.
+- **Mocks**: Use `mocktail` for all dependency mocking.
+- **Principles**: 100% logic coverage for domain and bloc layers. Each test must be independent.
+
+## Environment & Flavors
+- **Configuration**: Use a single `main.dart`. Pass `--dart-define=ENV=development` (or `staging`). Env values loaded via `flutter_dotenv` from `.env.{ENV}` files.
+- **Secrets**: NEVER commit production secrets to Git. Use `.env.example` for key documentation.
+
+# Artio
+
+AI art generation SaaS. Flutter/Dart monorepo with three surfaces: **main app** (`/`), **admin app** (`/admin`), **backend** (`/supabase`). Confirm which surface you're editing before making changes.
 
 ## Architecture
 
-Feature-first clean architecture under `lib/features/*`.
-Each feature: `domain/` (interfaces/entities) · `data/` (repo impl) · `presentation/` (UI + Riverpod VMs).
-Dependency direction: **Presentation -> Domain <- Data**.
+Feature-first clean architecture under `lib/features/{name}/`. Each feature has three layers:
+- **domain/** — entities (`@freezed`), repository interfaces (`I{Name}Repository`)
+- **data/** — repository implementations, services (cache, API)
+- **presentation/** — screens, widgets, ViewModels (`@riverpod` codegen)
 
-Cross-cutting: `lib/core/` (config, providers, design system, exceptions, utilities) · `lib/routing/` (GoRouter + typed routes) · `lib/shared/` (shared widgets/shell/error UI)
+Dependency rule: **Presentation → Domain ← Data**. Never import `data/` from `presentation/`.
 
-### Navigation & Auth
+Cross-cutting code lives in `lib/core/` (config, constants, design system, exceptions, providers, services, state, utils), `lib/routing/`, `lib/shared/`, `lib/theme/`.
 
-- Router: `lib/routing/app_router.dart` · Routes: `lib/routing/routes/app_routes.dart`
-- AuthViewModel implements `Listenable`, drives router refresh/redirect
-
-### Image Generation Pipeline (core product flow)
-
+### Generation Pipeline (core product flow)
 ```
-UI/ViewModel -> Repository -> Edge Function -> AI provider (Kie/Gemini) -> Storage -> generation_jobs realtime -> UI
+UI/ViewModel → Repository → supabase/functions/generate-image → AI provider (KIE/Gemini) → Storage → generation_jobs (realtime) → UI
+```
+Credits use two-layer enforcement: client pre-check + server-authoritative `deduct_credits`/`refund_credits` RPC. Insufficient credits → HTTP 402. Keep model costs synced between `lib/core/constants/ai_models.dart` and `supabase/functions/_shared/model_config.ts`.
+
+## Code Patterns
+
+- **State management**: Always use `@riverpod` codegen from `riverpod_annotation` — never manual `StateNotifierProvider`. ViewModels extend `_$ClassName`. Async state via `AsyncValue.guard()`.
+- **Entities**: Always `@freezed` with Freezed union config: `union_key: "type"`, `union_value_case: pascal` (see `build.yaml`).
+- **Errors**: Sealed `AppException` hierarchy (Freezed union) in `lib/core/exceptions/app_exception.dart` with variants: `NetworkException`, `AuthException`, `StorageException`, `PaymentException`, `GenerationException`, `UnknownException`. Map to user strings via `AppExceptionMapper.toUserMessage()`.
+- **Routing**: `@TypedGoRoute` codegen in `lib/routing/routes/app_routes.dart`. Navigate with `const HomeRoute().go(context)` or `TemplateDetailRoute(id: id).push(context)`. Auth guard via router redirect driven by `AuthViewModel` implementing `Listenable`.
+- **Imports**: Use `package:artio/...` (not relative `../`). Generated files via `part` directives.
+- **Design system**: Use tokens from `lib/core/design_system/` (`AppSpacing`, `AppDimensions`, `AppGradients`) and `lib/theme/app_colors.dart` — never hardcode spacing/colors.
+
+## Naming Conventions
+
+| Type | File | Class |
+|------|------|-------|
+| Screen | `{name}_screen.dart` | `{Name}Screen` |
+| Model | `{name}_model.dart` | `{Name}Model` |
+| Repo interface | `i_{name}_repository.dart` | `I{Name}Repository` |
+| Repo impl | `{name}_repository.dart` | `{Name}Repository` |
+| ViewModel | `{name}_view_model.dart` | `{Name}ViewModel` |
+| Provider | `{name}_provider.dart` | `{name}Provider` (camelCase) |
+
+Files: snake_case. Classes: PascalCase. Prefer `const` > `final` > `var`.
+
+## Commands
+
+```bash
+# Run app (--dart-define=ENV required)
+flutter run --dart-define=ENV=development
+
+# Codegen (after changing @riverpod, @freezed, @TypedGoRoute)
+dart run build_runner build --delete-conflicting-outputs
+
+# Static analysis (uses very_good_analysis)
+flutter analyze
+
+# Tests (integration tests excluded by default)
+flutter test
+flutter test --tags integration
 ```
 
-Key files:
-- Client repo: `lib/features/template_engine/data/repositories/generation_repository.dart`
-- Create VM: `lib/features/create/presentation/view_models/create_view_model.dart`
-- Template VM: `lib/features/template_engine/presentation/view_models/generation_view_model.dart`
-- Job orchestration: `lib/features/template_engine/presentation/helpers/generation_job_manager.dart`
-- Edge function: `supabase/functions/generate-image/index.ts`
+Never hand-edit `*.g.dart` or `*.freezed.dart` files. Generated files are committed.
 
-### Credits (two-layer enforcement)
+## Testing
 
-1. **Client pre-check** — balance stream via credits provider
-2. **Server-authoritative** — `deduct_credits` / `refund_credits` RPC in edge function
+- Mock library: **mocktail** (not mockito). Shared mocks in `test/core/mocks/`.
+- Mock at repository interface level (`MockAuthRepository extends Mock implements IAuthRepository`).
+- Supabase future-like builders: use `thenAnswer`, not `thenReturn`.
+- For loading state tests: use `Completer<T>()` that never completes, not `Future.delayed`. `Future.delayed` is non-deterministic and causes flaky tests — Completer ensures the provider stays in `AsyncLoading` state deterministically.
+- Test structure mirrors `lib/` exactly. E2E flows in `integration_test/`.
+- Integration tests are tag-gated (`dart_test.yaml`): excluded from default `flutter test`.
 
-Insufficient credits must map to existing 402 handling path.
+## Backend (Edge Functions)
 
----
+Edge functions in `supabase/functions/` use Deno/TypeScript. Shared utilities in `_shared/` (CORS, credit logic, model config). Key functions:
+- `generate-image` — orchestrates AI generation, model routing, credit deduction/refund
+- `revenuecat-webhook` — subscription sync + credit grant
+- `reward-ad` — ad nonce + claim flow
 
-## Quick Map
+## Admin App (`/admin`)
 
-| Domain | Path |
-|--------|------|
-| Auth | `lib/features/auth/` |
-| Template Engine | `lib/features/template_engine/` |
-| Create | `lib/features/create/` |
-| Gallery | `lib/features/gallery/` |
-| Credits | `lib/features/credits/` |
-| Subscription | `lib/features/subscription/` |
-| Settings | `lib/features/settings/` |
-| Router | `lib/routing/app_router.dart` |
-| Design System | `lib/core/design_system/` |
-| Supabase DI | `lib/core/providers/supabase_provider.dart` |
-| Edge Functions | `supabase/functions/generate-image/index.ts` |
-| Shared Edge Utils | `supabase/functions/_shared/` |
-| AI Model Docs | `docs/kie-api/` |
+Separate Flutter web app (`admin/pubspec.yaml`). Simpler architecture than main app:
+- `core/` — constants, router, shell (scaffold layout), theme, utils
+- `features/{name}/` — `domain/entities/`, `presentation/pages/`, `providers/`
+- No `data/` layer — providers call Supabase directly
+- No `@freezed` entities — plain Dart classes
+- Shares Supabase project but has its OWN `.env` and `main.dart`
 
----
+Key difference: Admin uses `providers/` (plain Riverpod) not `presentation/providers/` with ViewModels.
 
-## Codegen
+## Supabase Migrations
 
-Generated files committed (`*.g.dart`, `*.freezed.dart`, router files). After changing `@riverpod` / Freezed / typed route annotations, run `build_runner build`. Do not hand-edit generated files.
+Migration naming: `YYYYMMDDHHMMSS_descriptive_name.sql` in `supabase/migrations/`. Create via `supabase migration new <name>` (auto-generates timestamp prefix).
 
----
+Key conventions:
+- All new tables MUST have RLS enabled (`ALTER TABLE ... ENABLE ROW LEVEL SECURITY`)
+- `SECURITY DEFINER` functions MUST include `SET search_path = public`
+- Credit-related functions use `advisory_xact_lock()` for concurrency safety
+- Never use triggers with `SECURITY DEFINER` — breaks `auth.uid()` context
 
-## Project-Specific Rules
+```bash
+supabase start                    # Start local Supabase (Docker required)
+supabase db reset                 # Reset DB + re-run all migrations
+supabase migration new <name>     # Create new migration file
+supabase functions serve           # Local edge function server
+supabase db diff --local          # Generate migration from local schema changes
+```
 
-- Confirm owning surface before editing (`/`, `/admin`, `/supabase`)
-- Always use `@riverpod` codegen (never manual `StateNotifierProvider` etc.)
-- Always use `@freezed` for domain entities
-- Use design tokens from `lib/core/design_system/` for UI values
-- Env config via `EnvConfig` (`lib/core/config/env_config.dart`)
-- Sentry: `lib/main.dart` + `lib/core/config/sentry_config.dart`
-- Prefer Dart MCP tools over shell commands (see section below)
+## Gotchas
 
----
+- `generation_repository.dart` retry wraps only the edge function call (Step 2), not the full operation — avoid duplicate `generation_jobs` row inserts.
+- Job ID comes from DB insert, NOT edge function response.
+- `SECURITY DEFINER` on Postgres trigger functions breaks `current_user` checks — avoid.
+- Linting: `very_good_analysis` with `public_member_api_docs: false` and `lines_longer_than_80_chars: false`.
+- **Credit cost sync is CRITICAL**: `lib/core/constants/ai_models.dart` (client) and `supabase/functions/_shared/model_config.ts` (server) MUST have matching costs. Server is authoritative — client costs are for display only.
+- `Purchases.getOfferings().current` can be null if RevenueCat dashboard has no "Current" offering marked — always null-check.
+- Admin/DB-premium users (`profiles.is_premium = true`) bypass RevenueCat entirely for subscription status — see `subscription_provider.dart:15`. Don't add RevenueCat checks to admin-granted premium logic.
 
-## Dart MCP Tools
+### Environment Setup
 
-Use `mcp__dart__*` tools for language-aware operations. Shell only when piping/special flags needed.
-
-| Tool | Use When |
-|------|----------|
-| `hover` | Type info, docs, inferred types for a symbol |
-| `resolve_workspace_symbol` | Find symbol declarations by name across workspace |
-| `signature_help` | Function/method parameter info at call site |
-| `analyze_files` | Static analysis — errors/warnings/lints |
-| `dart_fix` | Auto-fix lint issues |
-| `dart_format` | Format Dart files |
-| `run_tests` | Run Dart/Flutter tests |
-| `pub` | pub get, upgrade, etc. |
-| `pub_dev_search` | Search pub.dev for packages |
-
----
-
-## Known Gotchas
-
-- Mocktail + Supabase future-like builders: use `thenAnswer` over `thenReturn`
-- Keep model cost config synced between client constants and edge function
-- Keep retry scope safe — avoid duplicate `generation_jobs` row inserts
-- `generation_repository.dart` retry wraps only Step 2 (edge function call), not full operation
-- Job ID comes from DB insert, NOT Edge Function response
-- `SECURITY DEFINER` on trigger functions breaks `current_user` checks — avoid
-- Preserve least-privilege RPC/service-role access patterns
-
----
-
-## Test Layout
-
-- `test/features/` — feature unit/widget tests
-- `test/core/`, `test/shared/`, `test/routing/` — infra/shared
-- `test/integration/` — integration checks
-- `integration_test/` — end-to-end flows
-
----
+- **Two .env scopes**: Flutter app reads `.env.{ENV}` via `flutter_dotenv`; Edge Functions need SEPARATE secrets via `supabase secrets set`. Missing either → silent failures.
+- **`--dart-define=ENV` required**: Without it, defaults to `development` but `.env.development` must exist. Common error: app runs but keys are empty strings → blank screens, no crash.
+- **RevenueCat keys skip web**: `main.dart` guards with `!kIsWeb` — running `flutter run -d chrome` won't init RevenueCat. Subscription features silently fail on web debug.
+- **AdMob app IDs in native config**: `ADMOB_*` env vars alone aren't enough — must ALSO set `com.google.android.gms.ads.APPLICATION_ID` in `AndroidManifest.xml` and `GADApplicationIdentifier` in `Info.plist`. Mismatch → crash on app start.
+- **Supabase local vs remote**: `supabase start` uses local instance; app `.env` must point to local URL (`http://127.0.0.1:54321`). Mixing local app + remote DB = auth mismatches.
