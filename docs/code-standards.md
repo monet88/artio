@@ -1,7 +1,7 @@
 # Code Standards
 
 **Project**: Artio - AI Image Generation SaaS
-**Updated**: 2026-02-28
+**Updated**: 2026-03-04
 **Version**: 1.5
 
 ---
@@ -452,9 +452,11 @@ class AppConstants {
 
 ### Current Status
 
-- **Test files**: 82 unit/widget files + 5 integration files
-- **Test count**: 651+ unit tests + 15 integration tests
-- **Analyzer**: 0 errors
+- **Test files**:
+  - Main app: 82 unit/widget + 5 integration files (698 tests)
+  - Admin app: 2 unit files (14 tests)
+- **Test count**: 712 total (698 main + 14 admin)
+- **Analyzer**: 0 errors (both main + admin)
 - **Target**: 80%+ line coverage for production readiness
 
 ### Test Coverage Areas
@@ -653,4 +655,4 @@ flutter pub outdated
 
 ---
 
-**Last Updated**: 2026-02-28
+**Last Updated**: 2026-03-04

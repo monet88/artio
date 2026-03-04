@@ -204,5 +204,15 @@ void main() {
         );
       }
     });
+
+    test('not all sort_order values are zero', () {
+      final nonZeroCount = templates.where((t) => t.order > 0).length;
+      expect(
+        nonZeroCount,
+        greaterThan(0),
+        reason:
+            'At least one template must have sort_order > 0 — all zeros indicates missing seed data',
+      );
+    });
   });
 }

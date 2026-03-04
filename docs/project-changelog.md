@@ -1,12 +1,20 @@
 # Project Changelog
 
 **Project**: Artio - AI Image Generation SaaS
-**Updated**: 2026-02-22
+**Updated**: 2026-03-04
 **Format**: Changelog follows [Keep a Changelog](https://keepachangelog.com/) conventions
 
 ---
 
 ## [Unreleased]
+
+### Fixed — Backlog Issues #48–#53 (2026-03-04)
+- **#49**: Assert `TemplateModel.toJson()` emits `sort_order` key, not `order` key — prevents regression on domain model serialization
+- **#51**: Add per-item try-catch in `watchTemplates()` realtime stream — matches error handling pattern in `_fetchTemplatesFromNetwork()`, prevents single malformed item from breaking entire stream
+- **#52**: Strengthen `template_seed_test` with not-all-zero assertion — catches incomplete seed data scenarios where all sort_order values remain zero
+- **#53**: Replace hardcoded template counts in `template_e2e_test` with flexible assertions — allows test to pass when admin adds new templates without modifying test constants
+- **#48**: Create `AdminTemplateModel` unit tests (9 tests) — covers fromJson/toJson, key mapping (sort_order), defaults (isPremium, isActive, aspectRatio, inputFields)
+- **#50**: Create reorder() notifier tests (5 tests) — covers upsert payload generation, empty list handling, state rollback on error
 
 ### Added — Sprint 2: UX Improvements (2026-02-22)
 - **Onboarding flow** — 3-slide dark gradient intro screen shown to ALL first-time users (guest or logged-in). Persisted via SharedPreferences. Slides: "Create Stunning AI Art" / "Fast & Easy" / "Free Credits to Start"
@@ -41,24 +49,7 @@
 - Exception hierarchy cleanup and standardization
 - Sentry error tracking integration
 - AdMob rewarded ads with server-side verification (SSV)
-- Complete test coverage (651+ unit tests, 15 integration tests)
-
-### Changed
-- Tech debt cleanup and edge-case remediation
-- Init resilience improvements
-
-### Fixed
-- Auth redirect flow on protected routes
-- Force unauthenticated users to login page
-
----
-
-
-### Added
-- Exception hierarchy cleanup and standardization
-- Sentry error tracking integration
-- AdMob rewarded ads with server-side verification (SSV)
-- Complete test coverage (651+ unit tests, 15 integration tests)
+- Complete test coverage (712 tests: 698 main + 14 admin)
 
 ### Changed
 - Tech debt cleanup and edge-case remediation
