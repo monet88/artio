@@ -1,8 +1,8 @@
 # System Architecture
 
 **Project**: Artio - AI Image Generation SaaS
-**Updated**: 2026-02-28
-**Version**: 1.7
+**Updated**: 2026-03-04
+**Version**: 1.8
 
 ---
 
@@ -59,6 +59,12 @@ Both flows now post to `supabase/functions/generate-image/index.ts`, which deduc
 ┌─────────────────────────────────────────────────────┐
 │           Gemini API (Fallback AI Provider)         │
 │  • Multimodal image analysis and generation        │
+└─────────────────────────────────────────────────────┘
+                         ↓↑
+┌─────────────────────────────────────────────────────┐
+│              Google AdMob (Rewarded Ads)            │
+│  • Server-side verification (SSV)                  │
+│  • Credit earning via reward-ad Edge Function      │
 └─────────────────────────────────────────────────────┘
 
 **AI Model Reference**: See `docs/kie-api/` for complete model specifications
@@ -290,7 +296,38 @@ CREATE TABLE credit_transactions (
 
 CREATE INDEX idx_credits_user_id ON user_credits(user_id);
 CREATE INDEX idx_transactions_user_id ON credit_transactions(user_id);
+
+-- Pending ad rewards (rate-limited ad credit claims)
+CREATE TABLE pending_ad_rewards (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  nonce TEXT NOT NULL UNIQUE,
+  status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'claimed', 'expired')),
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- RevenueCat events log
+CREATE TABLE revenuecat_events (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  event_type TEXT NOT NULL,
+  app_user_id UUID REFERENCES auth.users(id),
+  product_id TEXT,
+  entitlement_id TEXT,
+  raw_payload JSONB NOT NULL,
+  processed_at TIMESTAMPTZ DEFAULT NOW()
+);
 ```
+
+### Database Functions (SECURITY DEFINER)
+
+All credit/subscription RPCs use `SECURITY DEFINER` with `SET search_path = public`:
+
+- `deduct_credits(p_user_id, p_amount, p_description)` — Atomic credit deduction with balance check
+- `refund_credits(p_user_id, p_amount, p_description)` — Credit refund on generation failure
+- `claim_ad_reward(p_user_id, p_nonce)` — Idempotent ad reward claim with nonce validation
+- `check_rate_limit(p_user_id, p_window_seconds, p_max_requests)` — Rate limiting
+- `handle_new_user()` — Trigger: seeds user_credits with welcome bonus
+- `grant_subscription_credits(p_user_id, p_amount)` — Grant credits on subscription purchase
 
 ### Row Level Security (RLS)
 
@@ -325,7 +362,23 @@ CREATE POLICY "Users can view own credits"
 ALTER TABLE credit_transactions ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can view own transactions"
   ON credit_transactions FOR SELECT USING (auth.uid() = user_id);
+
+-- Pending ad rewards: Users can manage own
+ALTER TABLE pending_ad_rewards ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users can manage own ad rewards"
+  ON pending_ad_rewards FOR ALL USING (auth.uid() = user_id);
+
+-- Storage: Authenticated users only, scoped to own prefix
+-- Bucket: generated-images (INSERT/SELECT restricted to {user_id}/ path)
 ```
+
+### Security Hardening (2026-03-04 Audit)
+
+- All `SECURITY DEFINER` functions have `SET search_path = public`
+- `EXECUTE` permission revoked from `authenticated` role on sensitive RPCs
+- RLS policies restrict `profiles` UPDATE to specific columns only
+- Storage bucket policies scope to `{user_id}/` prefix
+- Public schema usage revoked from `anon` and `authenticated` (granted selectively)
 
 ---
 
@@ -568,6 +621,40 @@ MaterialApp.router(
 
 ---
 
+## RevenueCat Integration
+
+### Webhook Flow
+
+```
+App Store / Play Store purchase event
+      ↓
+RevenueCat processes subscription
+      ↓
+RevenueCat sends webhook to Supabase Edge Function
+      ↓
+supabase/functions/revenuecat-webhook/index.ts:
+  1. Validates webhook signature (REVENUECAT_WEBHOOK_SECRET)
+  2. Extracts event type + app_user_id
+  3. Logs event to revenuecat_events table
+  4. On INITIAL_PURCHASE / RENEWAL:
+     - Grants subscription credits via grant_subscription_credits RPC
+     - Updates user_credits.is_premium = true
+  5. On EXPIRATION / CANCELLATION:
+     - Updates user_credits.is_premium = false
+      ↓
+Flutter app detects entitlement change via RevenueCat SDK listener
+```
+
+### Client Integration
+
+- `purchases_flutter` ^9.0.0 for iOS/Android
+- `SubscriptionRepository` wraps RevenueCat SDK
+- User identity linked on login via `Purchases.logIn(supabaseUserId)`
+- Entitlement check: `customerInfo.entitlements.active['pro']`
+- Paywall shows Pro/Ultra tiers with animated plan cards
+
+---
+
 ## Edge Functions (Supabase)
 
 ### generate_image Function
@@ -789,4 +876,4 @@ ref.listen(generationJobProvider(jobId), (prev, next) {
 
 **AI Model Documentation**: `docs/kie-api/` (source of truth for model specs, parameters, Edge Function integration)
 
-**Last Updated**: 2026-02-28 (v1.7 — admin architecture, monitoring status, and theme persistence updates)
+**Last Updated**: 2026-03-04 (v1.8 — RevenueCat integration, security audit, updated database schema)

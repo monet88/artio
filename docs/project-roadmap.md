@@ -1,8 +1,8 @@
 # Project Roadmap
 
 **Project**: Artio - AI Image Generation SaaS
-**Updated**: 2026-02-28
-**Status**: Phase 6 in progress (~80%); Phase 8 in progress (~85%); 10 post-phase milestones complete
+**Updated**: 2026-03-04
+**Status**: Phase 6 in progress (~90%); Phase 8 in progress (~85%); 12 post-phase milestones complete
 
 ---
 
@@ -88,31 +88,30 @@
 
 ### 🔄 In Progress
 
-**Phase 8: Admin App** (remaining ~0.5h of 3h)
-- Production deployment/hardening
-
-### ⏸ Pending
-
-**Phase 6: Subscription & Credits** (8h) - *IN PROGRESS (~80% complete)*
+**Phase 6: Subscription & Credits** (8h) - *IN PROGRESS (~90% complete)*
 - ✓ Credits system for free users (`user_credits`, `deduct_credits`/`refund_credits`, Edge Function + UI handling complete)
 - ✓ Premium-model gating (insufficient credit + premium sheets implemented)
 - ✓ Rewarded ads with SSV (AdMob + `reward-ad` Edge Function)
 - ✓ RevenueCat SDK initialized + user identity linked
-- Subscription tiers (Free/Pro purchases) - in progress
-- Stripe integration (Web) - pending
-
-**Plan 2: Credit, Premium & Rate Limit** (6h) - *Merged into Phase 6*
-- Database schema for credits/limits (complete)
-- Edge Function enforcement (complete)
-- Rate limiting & cooldown (pending)
+- ✓ RevenueCat purchase/restore wiring (iOS/Android)
+- ✓ RevenueCat webhook (subscription status sync + credit grant)
+- ✓ Subscription tiers (Free/Pro/Ultra) with paywall UI
+- Stripe integration (Web) - pending (final item)
 
 **Phase 8: Admin App** (~0.5h remaining - ~85% complete)
-- ✓ Separate Flutter web app for template management (17 Dart files)
+- ✓ Separate Flutter web app for template management (22 Dart files)
 - ✓ Admin role enforcement via RLS
 - ✓ Template model and router setup
 - ✓ Template CRUD UI (complete)
 - ✓ Drag-to-reorder templates (complete)
 - Production deployment/hardening (pending)
+
+### ⏸ Pending
+
+**Plan 2: Credit, Premium & Rate Limit** (6h) - *Merged into Phase 6*
+- Database schema for credits/limits (complete)
+- Edge Function enforcement (complete)
+- Rate limiting & cooldown (implemented via `check_rate_limit`)
 
 ### ✓ Post-Phase Milestones (Complete)
 
@@ -130,8 +129,8 @@ The following milestones were completed after the initial phase plan:
 | 8 | **Edge Case Hardening** | 2026-02 | Defensive coding improvements |
 | 9 | **Reward Ad SSV** | 2026-02 | AdMob rewarded ads + Edge Function SSV |
 | 10 | **Edge Case Resilience** | 2026-02-20 | Init try-catch, SocketException/Timeout, select validation |
-
-All milestone summaries archived in `.gsd/milestones/{name}/SUMMARY.md`.
+| 11 | **Supabase Security Audit** | 2026-03-04 | RLS policy fixes, function signature normalization, SECURITY DEFINER hardening, search_path enforcement |
+| 12 | **RevenueCat Integration Fixes** | 2026-03-04 | 7 blocking bugs fixed, webhook handler, subscription sync, credit grant on purchase |
 
 ---
 
@@ -214,12 +213,13 @@ All milestone summaries archived in `.gsd/milestones/{name}/SUMMARY.md`.
 | **Generation Engine** | 100% | ✓ Complete (Phase 4) |
 | **Architecture Quality** | 100% | ✓ Complete (Phase 4.6) |
 | **User Features** | 100% | ✓ Complete (Phase 5, 7) |
-| **Monetization** | ~80% | In Progress (Phase 6) - Credits + ads + RevenueCat SDK done, purchases pending |
+| **Monetization** | ~90% | In Progress (Phase 6) - Credits + ads + RevenueCat done, Stripe web pending |
 | **Admin Tools** | ~85% | In Progress (Phase 8) - CRUD + reorder done, deployment pending |
-| **Post-Phase Quality** | 100% | ✓ Complete (10 milestones: testing, edge cases, resilience) |
-| **Documentation** | 100% | Current (2026-02-28 v1.6 refresh) |
+| **Security** | 100% | ✓ Complete (Supabase audit: RLS, SECURITY DEFINER, search_path) |
+| **Post-Phase Quality** | 100% | ✓ Complete (12 milestones: testing, edge cases, resilience, security, RevenueCat) |
+| **Documentation** | 100% | Current (2026-03-04 v1.7 refresh) |
 
-**Total Project**: ~92% (core features + quality milestones complete)
+**Total Project**: ~95% (core features + quality milestones + security audit complete)
 
 ---
 
@@ -253,24 +253,19 @@ All milestone summaries archived in `.gsd/milestones/{name}/SUMMARY.md`.
 ## Next Steps
 
 ### Immediate
-1. **Execute Phase 6**: Implement Subscription & Credits system
-   - Database schema setup
-   - RevenueCat integration
-   - Credit deduction logic
-
-2. **Testing**:
-   - Expand E2E test coverage to Auth flow
-   - Verify all 25 templates generate correctly
+1. **Complete Phase 6**: Stripe web integration (final monetization item)
+2. **Admin deployment**: Production hardening for admin app
 
 ### Short-term (Next 2 Weeks)
-- Complete Monetization (Phase 6)
-- Build Admin App (Phase 8)
-- Prepare for Beta Launch
+- Stripe web payments
+- Admin app deployment
+- Beta launch preparation
+- Expand E2E test coverage
 
 ### Long-term (Month 1-2)
+- App Store / Play Store submissions
 - Marketing site launch
 - Beta user onboarding
-- App Store submissions
 
 ---
 
@@ -305,7 +300,8 @@ All milestone summaries archived in `.gsd/milestones/{name}/SUMMARY.md`.
 | 2026-02-19 | 1.3 | Phase progress update (Phase 6: 50%, Phase 8: 70%), date refresh, metrics verification |
 | 2026-02-20 | 1.4 | Tech Debt Cleanup (7 debts resolved, 651+15 tests) |
 | 2026-02-20 | 1.5 | Edge Case Resilience (init try-catch, SocketException/Timeout), Reward Ad SSV, 10 post-phase milestones documented |
-|| 2026-02-28 | 1.6 | Renamed to project-roadmap.md, updated Phase 6 (~80%), Phase 8 (~85%), overall ~92% |
+| 2026-02-28 | 1.6 | Renamed to project-roadmap.md, updated Phase 6 (~80%), Phase 8 (~85%), overall ~92% |
+| 2026-03-04 | 1.7 | Supabase security audit + RevenueCat fixes, Phase 6 (~90%), 12 milestones, overall ~95% |
 
 ---
 
@@ -318,4 +314,4 @@ All milestone summaries archived in `.gsd/milestones/{name}/SUMMARY.md`.
 
 ---
 
-**Last Updated**: 2026-02-28
+**Last Updated**: 2026-03-04

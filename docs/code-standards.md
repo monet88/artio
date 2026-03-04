@@ -60,7 +60,11 @@ lib/
 │   │   └── supabase_provider.dart     # Global dependencies
 │   ├── services/
 │   │   ├── haptic_service.dart        # Haptic feedback
-│   │   └── rewarded_ad_service.dart   # AdMob SSV
+│   │   ├── rewarded_ad_service.dart   # AdMob SSV
+│   │   ├── image_upload_service.dart   # Image compression + upload
+│   │   ├── content_moderation_service.dart # Prompt keyword filter
+│   │   ├── connectivity_service.dart   # Network monitoring
+│   │   └── revenuecat_service.dart     # RevenueCat SDK wrapper
 │   ├── state/
 │   │   └── user_scoped_providers.dart # User-scoped state providers
 │   └── utils/
@@ -453,20 +457,21 @@ class AppConstants {
 ### Current Status
 
 - **Test files**:
-  - Main app: 82 unit/widget + 5 integration files (698 tests)
-  - Admin app: 2 unit files (14 tests)
-- **Test count**: 712 total (698 main + 14 admin)
+  - Main app: 82 unit/widget + 5 integration files
+  - Admin app: 2 unit files
+- **Test count**: 712+ total
 - **Analyzer**: 0 errors (both main + admin)
 - **Target**: 80%+ line coverage for production readiness
 
 ### Test Coverage Areas
 
-- Repository tests (auth, template, gallery, generation, credits)
+- Repository tests (auth, template, gallery, generation, credits, subscription)
 - ViewModel/Provider tests
 - Widget tests for core components
 - Exception mapper tests (SocketException, TimeoutException)
 - Model sync tests (exact ID + cost validation)
 - Integration tests for template generation flow
+- Admin template model and reorder tests
 
 ### Required Test Structure
 
