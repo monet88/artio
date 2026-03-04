@@ -92,12 +92,17 @@ class AuthViewModel extends _$AuthViewModel implements Listenable {
   Future<void> _handleSignedIn() async {
     try {
       final authRepo = ref.read(authRepositoryProvider);
-      final user = await authRepo.getCurrentUserWithProfile();
-      if (user != null) {
-        state = AuthState.authenticated(user);
-      } else {
+      final supabaseUser = authRepo.currentUser;
+      if (supabaseUser == null) {
         state = const AuthState.unauthenticated();
+        return;
       }
+      // fetchOrCreateProfile handles RC login + profile creation.
+      // Use returned profile directly — no need for getCurrentUserWithProfile().
+      final profile = await authRepo.fetchOrCreateProfile(supabaseUser);
+      state = AuthState.authenticated(
+        UserModel.fromSupabaseUser(supabaseUser, profile: profile),
+      );
     } on Exception catch (e) {
       state = AuthState.error(AppExceptionMapper.toUserMessage(e));
     } finally {

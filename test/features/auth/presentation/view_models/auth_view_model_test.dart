@@ -9,7 +9,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:supabase_flutter/supabase_flutter.dart'
     as supabase
-    show AuthChangeEvent, AuthState, Session;
+    show AuthChangeEvent, AuthState, Session, User;
 
 import '../../../../core/fixtures/fixtures.dart';
 
@@ -402,10 +402,19 @@ void main() {
           async.elapse(Duration.zero);
 
           // Simulate auth state change (user signs in via OAuth callback)
-          final user = UserFixtures.authenticated();
+          // _handleSignedIn() now uses currentUser + fetchOrCreateProfile()
+          final fakeUser = _FakeUser();
+          when(() => mockAuthRepo.currentUser).thenReturn(fakeUser);
           when(
-            mockAuthRepo.getCurrentUserWithProfile,
-          ).thenAnswer((_) async => user);
+            () => mockAuthRepo.fetchOrCreateProfile(fakeUser),
+          ).thenAnswer(
+            (_) async => {
+              'id': 'test-user-123',
+              'display_name': 'Test User',
+              'credits': 10,
+              'is_premium': false,
+            },
+          );
 
           // Push auth event — this cancels the timer
           authStreamController.add(
@@ -435,3 +444,18 @@ void main() {
 
 /// Fake [supabase.Session] for triggering auth state changes in tests.
 class _FakeSession extends Fake implements supabase.Session {}
+
+/// Fake [supabase.User] for mocking currentUser in _handleSignedIn flow.
+class _FakeUser extends Fake implements supabase.User {
+  @override
+  String get id => 'test-user-123';
+
+  @override
+  String? get email => 'test@example.com';
+
+  @override
+  Map<String, dynamic>? get userMetadata => {'name': 'Test User'};
+
+  @override
+  String get createdAt => '2026-01-01T00:00:00.000Z';
+}

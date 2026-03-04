@@ -328,9 +328,11 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                         fontWeight: FontWeight.w800,
                       ),
                     ),
-                    const Text(
-                      'per month',
-                      style: TextStyle(
+                    Text(
+                      pkg.identifier.contains('yearly')
+                          ? 'per year'
+                          : 'per month',
+                      style: const TextStyle(
                         color: AppColors.textMuted,
                         fontSize: 11,
                       ),
