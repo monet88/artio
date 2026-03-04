@@ -267,7 +267,17 @@ class _TemplatesPageState extends ConsumerState<TemplatesPage> {
                   padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
                   itemCount: filtered.length,
                   onReorder: (oldIndex, newIndex) async {
-                    if (filtered.length != templates.length) return;
+                    if (filtered.length != templates.length) {
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content:
+                                Text('Clear filters before reordering'),
+                          ),
+                        );
+                      }
+                      return;
+                    }
                     try {
                       await ref
                           .read(templatesProvider.notifier)
