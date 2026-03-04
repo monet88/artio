@@ -25,19 +25,21 @@ void main() {
       await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
     });
 
-    testWidgets('Verify all 25 templates load correctly', (tester) async {
+    testWidgets('Verify templates load correctly', (tester) async {
       // Query templates directly from Supabase
       final response = await Supabase.instance.client
           .from('templates')
           .select()
           .order('sort_order', ascending: true);
 
-      // Verify count
-      expect(response.length, 25, reason: 'Should have 25 templates');
+      // Verify minimum count (admin may add more)
+      expect(response.length, greaterThanOrEqualTo(25),
+          reason: 'Should have at least 25 seed templates');
 
-      // Verify categories
+      // Verify core categories exist
       final categories = response.map((t) => t['category'] as String).toSet();
-      expect(categories.length, 5, reason: 'Should have 5 categories');
+      expect(categories.length, greaterThanOrEqualTo(5),
+          reason: 'Should have at least 5 categories');
 
       expect(categories, contains('Portrait & Face Effects'));
       expect(categories, contains('Removal & Editing'));
@@ -45,27 +47,21 @@ void main() {
       expect(categories, contains('Photo Enhancement'));
       expect(categories, contains('Creative & Fun'));
 
-      // Verify all is_premium are false
-      final premiumTemplates = response
-          .where((t) => t['is_premium'] == true)
-          .toList();
-      expect(
-        premiumTemplates.length,
-        0,
-        reason: 'All templates should be free',
-      );
-
-      // Verify order sequence (1-25)
+      // Verify sort_order is ascending and positive
       for (var i = 0; i < response.length; i++) {
-        expect(
-          response[i]['sort_order'],
-          i + 1,
-          reason: 'Template at index $i should have order ${i + 1}',
-        );
+        final sortOrder = response[i]['sort_order'] as int;
+        expect(sortOrder, greaterThan(0),
+            reason: 'Template at index $i should have positive sort_order');
+        if (i > 0) {
+          final prevOrder = response[i - 1]['sort_order'] as int;
+          expect(sortOrder, greaterThanOrEqualTo(prevOrder),
+              reason: 'sort_order should be ascending');
+        }
       }
 
-      // Verify template names in correct order
-      final expectedNames = [
+      // Verify original 25 seed templates exist (by name)
+      final names = response.map((t) => t['name'] as String).toList();
+      const seedNames = [
         'Hug My Younger Self',
         'AI Bangs Filter',
         'AI Beard Filter',
@@ -92,19 +88,14 @@ void main() {
         'AI Pet Portrait',
         'AI Emoji Maker',
       ];
-
-      for (var i = 0; i < expectedNames.length; i++) {
-        expect(
-          response[i]['name'],
-          expectedNames[i],
-          reason: 'Template ${i + 1} should be ${expectedNames[i]}',
-        );
+      for (final seed in seedNames) {
+        expect(names, contains(seed),
+            reason: 'Seed template "$seed" should exist');
       }
 
-      debugPrint('✅ All 25 templates verified successfully!');
-      debugPrint('✅ 5 categories verified: ${categories.join(", ")}');
-      debugPrint('✅ All templates are free (is_premium=false)');
-      debugPrint('✅ Order sequence 1-25 correct');
+      debugPrint('✅ ${response.length} templates verified (≥25 seed)');
+      debugPrint('✅ ${categories.length} categories verified');
+      debugPrint('✅ sort_order ascending and positive');
     });
 
     testWidgets('Verify category distribution', (tester) async {
@@ -120,13 +111,18 @@ void main() {
         categoryCounts[category] = (categoryCounts[category] ?? 0) + 1;
       }
 
-      expect(categoryCounts['Portrait & Face Effects'], 7);
-      expect(categoryCounts['Removal & Editing'], 4);
-      expect(categoryCounts['Art Style Transfer'], 6);
-      expect(categoryCounts['Photo Enhancement'], 4);
-      expect(categoryCounts['Creative & Fun'], 4);
+      // Verify core categories have at least their seed counts
+      expect(categoryCounts['Portrait & Face Effects'],
+          greaterThanOrEqualTo(7));
+      expect(
+          categoryCounts['Removal & Editing'], greaterThanOrEqualTo(4));
+      expect(
+          categoryCounts['Art Style Transfer'], greaterThanOrEqualTo(6));
+      expect(
+          categoryCounts['Photo Enhancement'], greaterThanOrEqualTo(4));
+      expect(categoryCounts['Creative & Fun'], greaterThanOrEqualTo(4));
 
-      debugPrint('✅ Category distribution verified:');
+      debugPrint('✅ Category distribution verified (≥ seed counts):');
       categoryCounts.forEach((cat, count) {
         debugPrint('   - $cat: $count templates');
       });

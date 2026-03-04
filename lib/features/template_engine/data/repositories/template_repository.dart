@@ -105,7 +105,21 @@ class TemplateRepository implements ITemplateRepository {
         .from('templates')
         .stream(primaryKey: ['id'])
         .order('sort_order', ascending: true)
-        .map((data) => data.map(TemplateModel.fromJson).toList());
+        .map((data) {
+      final results = <TemplateModel>[];
+      for (final item in data) {
+        try {
+          results.add(TemplateModel.fromJson(item));
+        } on Exception catch (e) {
+          Log.w('Failed to parse a template from realtime stream: $e');
+        }
+      }
+      if (results.length < data.length) {
+        Log.w(
+            'Parsed ${results.length}/${data.length} templates from realtime stream');
+      }
+      return results;
+    });
   }
 
   /// Internal: always goes to the network with retry.
