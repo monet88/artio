@@ -19,7 +19,7 @@ class Templates extends _$Templates {
     return Supabase.instance.client
         .from('templates')
         .stream(primaryKey: ['id'])
-        .order('order', ascending: true)
+        .order('sort_order', ascending: true)
         .map(
           (rows) =>
               rows.map((row) => AdminTemplateModel.fromJson(row)).toList(),
@@ -44,7 +44,7 @@ class Templates extends _$Templates {
     for (int i = 0; i < reorderedList.length; i++) {
       final dbOrder = i + 1;
       if (reorderedList[i].order != dbOrder) {
-        updates.add({'id': reorderedList[i].id, 'order': dbOrder});
+        updates.add({'id': reorderedList[i].id, 'sort_order': dbOrder});
       }
     }
 
@@ -267,23 +267,21 @@ class _TemplatesPageState extends ConsumerState<TemplatesPage> {
                   padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
                   itemCount: filtered.length,
                   onReorder: (oldIndex, newIndex) async {
-                    // Map filtered indices back to original indices
-                    final allTemplates = templates;
-                    final oldItem = filtered[oldIndex];
-                    final newItem = newIndex < filtered.length
-                        ? filtered[newIndex > oldIndex
-                              ? newIndex - 1
-                              : newIndex]
-                        : filtered.last;
-                    final realOldIndex = allTemplates.indexOf(oldItem);
-                    final realNewIndex = allTemplates.indexOf(newItem);
-
-                    if (realOldIndex == -1 || realNewIndex == -1) return;
-
+                    if (filtered.length != templates.length) {
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content:
+                                Text('Clear filters before reordering'),
+                          ),
+                        );
+                      }
+                      return;
+                    }
                     try {
                       await ref
                           .read(templatesProvider.notifier)
-                          .reorder(realOldIndex, realNewIndex);
+                          .reorder(oldIndex, newIndex);
                     } catch (e) {
                       if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(

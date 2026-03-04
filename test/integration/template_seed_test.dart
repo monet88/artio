@@ -31,7 +31,7 @@ void main() {
         .from('templates')
         .select()
         .eq('is_active', true)
-        .order('order', ascending: true);
+        .order('sort_order', ascending: true);
 
     templates = [];
     for (final raw in response as List) {

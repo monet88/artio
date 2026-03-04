@@ -30,7 +30,7 @@ void main() {
           'input_fields': <Map<String, dynamic>>[],
           'default_aspect_ratio': '1:1',
           'is_premium': false,
-          'order': 1,
+          'sort_order': 1,
         };
 
         final template = TemplateModel.fromJson(json);
@@ -80,7 +80,7 @@ void main() {
           ],
           'default_aspect_ratio': '16:9',
           'is_premium': true,
-          'order': 5,
+          'sort_order': 5,
         };
 
         final template = TemplateModel.fromJson(json);

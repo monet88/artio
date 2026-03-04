@@ -157,16 +157,16 @@ class _TemplateEditorPageState extends ConsumerState<TemplateEditorPage>
       } else {
         final maxOrderRes = await Supabase.instance.client
             .from('templates')
-            .select('order')
-            .order('order', ascending: false)
+            .select('sort_order')
+            .order('sort_order', ascending: false)
             .limit(1)
             .maybeSingle();
 
-        final nextOrder = (maxOrderRes?['order'] as int? ?? 0) + 1;
+        final nextOrder = (maxOrderRes?['sort_order'] as int? ?? 0) + 1;
 
         await Supabase.instance.client.from('templates').insert({
           ...updates,
-          'order': nextOrder,
+          'sort_order': nextOrder,
         });
       }
 

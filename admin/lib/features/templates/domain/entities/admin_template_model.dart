@@ -12,7 +12,7 @@ class AdminTemplateModel with _$AdminTemplateModel {
     required String description,
     required String category,
     @JsonKey(name: 'prompt_template') required String promptTemplate,
-    @JsonKey(name: 'order') required int order,
+    @JsonKey(name: 'sort_order') @Default(0) int order,
     @JsonKey(name: 'is_premium') @Default(false) bool isPremium,
     @JsonKey(name: 'is_active') @Default(true) bool isActive,
     @JsonKey(name: 'thumbnail_url') String? thumbnailUrl,

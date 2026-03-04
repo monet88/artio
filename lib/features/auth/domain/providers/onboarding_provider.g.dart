@@ -8,7 +8,7 @@ part of 'onboarding_provider.dart';
 
 String _$onboardingDoneHash() => r'8034dd8611410b1c5c4b6db4904e89a56cd431fb';
 
-/// Returns [true] if the user has already completed onboarding.
+/// Returns `true` if the user has already completed onboarding.
 /// Persisted across sessions via SharedPreferences.
 ///
 /// Copied from [onboardingDone].

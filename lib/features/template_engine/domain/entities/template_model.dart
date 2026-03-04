@@ -19,7 +19,7 @@ class TemplateModel with _$TemplateModel {
     @Default('1:1')
     String defaultAspectRatio,
     @JsonKey(name: 'is_premium') @Default(false) bool isPremium,
-    @Default(0) int order,
+    @JsonKey(name: 'sort_order') @Default(0) int order,
   }) = _TemplateModel;
 
   factory TemplateModel.fromJson(Map<String, dynamic> json) =>
