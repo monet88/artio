@@ -256,9 +256,16 @@ The following milestones were completed after the initial phase plan:
 1. **Complete Phase 6**: Stripe web integration (final monetization item)
 2. **Admin deployment**: Production hardening for admin app
 
+### Pre-Release Checklist
+- [ ] **AdMob production IDs**: Replace placeholder ad unit IDs in `lib/core/services/rewarded_ad_service.dart` with real IDs from AdMob dashboard (Android + iOS)
+- [ ] **Privacy Policy URL**: Host privacy policy and update URL in `lib/features/settings/presentation/widgets/settings_sections.dart`
+- [ ] **Terms of Service URL**: Host ToS and update URL in same file
+- [ ] **Help & FAQ URL**: Host help centre and update URL in same file
+
 ### Short-term (Next 2 Weeks)
 - Stripe web payments
 - Admin app deployment
+- Pre-release checklist items above
 - Beta launch preparation
 - Expand E2E test coverage
 
