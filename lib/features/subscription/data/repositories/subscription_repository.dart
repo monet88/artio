@@ -37,7 +37,7 @@ class SubscriptionRepository implements ISubscriptionRepository {
       return packages
           .map(
             (p) => SubscriptionPackage(
-              identifier: p.identifier,
+              identifier: p.storeProduct.identifier,
               priceString: p.storeProduct.priceString,
               nativePackage: p,
             ),

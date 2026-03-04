@@ -83,13 +83,22 @@ Deno.serve(async (req) => {
             .maybeSingle();
 
         if (!profile) {
-            console.error(
-                `[revenuecat-webhook] CRITICAL: app_user_id ${appUserId} not linked to any profile. Skipping.`
+            console.error(JSON.stringify({
+                level: "error",
+                source: "revenuecat-webhook",
+                event_type: eventType,
+                event_id: eventId,
+                app_user_id: appUserId,
+                product_id: productId,
+                message: "User not linked. Returning 500 for retry.",
+            }));
+            return new Response(
+                JSON.stringify({ error: "User not linked", retryable: true }),
+                {
+                    status: 500,
+                    headers: { "Content-Type": "application/json" },
+                },
             );
-            return new Response(JSON.stringify({ ok: true, skipped: true }), {
-                status: 200,
-                headers: { "Content-Type": "application/json" },
-            });
         }
 
         const userId = profile.id;
@@ -216,9 +225,10 @@ Deno.serve(async (req) => {
             }
 
             case "PRODUCT_CHANGE": {
-                const tierInfo = getTierInfo(productId);
+                const newProductId = event.new_product_id ?? productId;
+                const tierInfo = getTierInfo(newProductId);
                 if (!tierInfo) {
-                    console.warn(`[revenuecat-webhook] Unknown product for change: ${productId}`);
+                    console.warn(`[revenuecat-webhook] Unknown product for change: ${newProductId}`);
                     break;
                 }
 
