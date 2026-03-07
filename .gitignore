@@ -158,9 +158,11 @@ WARP.md
 .repomixignore
 .mcp.json
 plans/
+plans/reports/
 pr-review/
 .serena/
 PROJECT_RULES.md
+.codepilot-uploads/
 
 # Build artifacts
 release-manifest.json
@@ -191,3 +193,4 @@ backups/
 
 # PR Review tooling artifacts
 _prr/
+CLAUDE.OLD.md
