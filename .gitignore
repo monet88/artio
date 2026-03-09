@@ -143,6 +143,10 @@ integration_test/.test_coverage.dart
 /web/.dart_tool/
 
 # Agents & Tools (AI IDEs)
+.agent/
+.agents/
+.claude/
+.gemini/
 .app-template/
 .codex/
 .cursor/
