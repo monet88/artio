@@ -36,7 +36,27 @@ class SubscriptionCard extends ConsumerWidget {
             child: CircularProgressIndicator(),
           ),
         ),
-        error: (_, __) => const SizedBox.shrink(),
+        error: (_, __) => Padding(
+          padding: const EdgeInsets.all(AppSpacing.sm),
+          child: Row(
+            children: [
+              Icon(
+                Icons.error_outline,
+                color: Theme.of(context).colorScheme.error,
+                size: 20,
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: Text(
+                  'Unable to load subscription info. Pull to refresh.',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.error,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
         data: (status) {
           if (status.isFree) {
             return Row(
@@ -90,10 +110,13 @@ class SubscriptionCard extends ConsumerWidget {
                 children: [
                   Icon(Icons.star, color: theme.colorScheme.primary),
                   const SizedBox(width: AppSpacing.sm),
-                  Text(
-                    '$tierLabel Plan',
-                    style: theme.textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
+                  Expanded(
+                    child: Text(
+                      '$tierLabel Plan',
+                      style: theme.textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ],
@@ -104,6 +127,7 @@ class SubscriptionCard extends ConsumerWidget {
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: theme.colorScheme.onSurfaceVariant,
                 ),
+                overflow: TextOverflow.ellipsis,
               ),
               if (creditBalance != null) ...[
                 const SizedBox(height: AppSpacing.xs),
@@ -113,6 +137,7 @@ class SubscriptionCard extends ConsumerWidget {
                     color: theme.colorScheme.primary,
                     fontWeight: FontWeight.w600,
                   ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
               const SizedBox(height: AppSpacing.sm),

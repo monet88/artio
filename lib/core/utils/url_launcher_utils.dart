@@ -3,7 +3,20 @@ import 'package:url_launcher/url_launcher.dart';
 
 /// Opens a URL in the device browser, silently logging any failures.
 Future<void> launchUrlSafely(BuildContext context, String url) async {
-  final uri = Uri.parse(url);
+  final Uri uri;
+  try {
+    uri = Uri.parse(url);
+  } on FormatException {
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Invalid URL'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+    return;
+  }
   if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -12,6 +25,30 @@ Future<void> launchUrlSafely(BuildContext context, String url) async {
           behavior: SnackBarBehavior.floating,
         ),
       );
+    }
+  }
+}
+
+/// Opens a URL in an in-app web view (no external browser).
+Future<void> launchInAppUrl(BuildContext context, String url) async {
+  final Uri uri;
+  try {
+    uri = Uri.parse(url);
+  } on FormatException {
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Invalid URL'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+    return;
+  }
+  if (!await launchUrl(uri, mode: LaunchMode.inAppWebView)) {
+    // Fall back to external browser if in-app view is not supported.
+    if (context.mounted) {
+      await launchUrlSafely(context, url);
     }
   }
 }
