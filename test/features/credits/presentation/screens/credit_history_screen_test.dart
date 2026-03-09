@@ -32,7 +32,7 @@ void main() {
           creditHistoryProvider().overrideWith(
             (_) async => [
               _tx(type: 'welcome_bonus', amount: 50),
-              _tx(type: 'generation', amount: -10),
+              _tx(amount: -10),
             ],
           ),
           creditBalanceNotifierProvider.overrideWith(_FakeBalance150.new),

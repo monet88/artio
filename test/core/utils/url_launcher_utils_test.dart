@@ -9,6 +9,8 @@ class _FakeUrlLauncherPlatform extends UrlLauncherPlatform {
   bool returnSuccess = true;
 
   @override
+  // noSuchMethod overrides Object.noSuchMethod which is not annotated in the
+  // platform interface — the annotate_overrides lint is a false positive here.
   // ignore: annotate_overrides
   dynamic noSuchMethod(Invocation invocation) => null;
 
