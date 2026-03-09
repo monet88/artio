@@ -168,11 +168,7 @@ class SettingsSections extends ConsumerWidget {
               title: 'Privacy Policy',
               trailing: SettingsChevronArrow(isDark: isDark),
               isDark: isDark,
-              onTap: () => launchUrlSafely(
-                context,
-                // TODO(legal): Replace with your hosted Privacy Policy URL
-                'https://artio.app/privacy',
-              ),
+              onTap: () => launchInAppUrl(context, 'https://artio.app/privacy'),
             ),
             SettingsDivider(isDark: isDark),
             SettingsTile(
@@ -181,11 +177,7 @@ class SettingsSections extends ConsumerWidget {
               title: 'Terms of Service',
               trailing: SettingsChevronArrow(isDark: isDark),
               isDark: isDark,
-              onTap: () => launchUrlSafely(
-                context,
-                // TODO(legal): Replace with your hosted Terms of Service URL
-                'https://artio.app/terms',
-              ),
+              onTap: () => launchInAppUrl(context, 'https://artio.app/terms'),
             ),
             SettingsDivider(isDark: isDark),
             SettingsTile(

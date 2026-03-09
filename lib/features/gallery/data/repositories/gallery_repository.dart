@@ -114,7 +114,8 @@ class GalleryRepository implements IGalleryRepository {
         var query = _supabase
             .from('generation_jobs')
             .select('*, templates(name)')
-            .isFilter('deleted_at', null);
+            .isFilter('deleted_at', null)
+            .eq('status', 'completed');
 
         if (templateId != null) {
           query = query.eq('template_id', templateId);

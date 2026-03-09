@@ -189,7 +189,9 @@ class _CreateScreenState extends ConsumerState<CreateScreen> {
                 const SizedBox(height: AppSpacing.sm),
                 Text(
                   'Create high quality images from your prompt',
-                  style: Theme.of(context).textTheme.bodyMedium,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
                 ),
                 const SizedBox(height: AppSpacing.lg),
                 const CreditBalanceChip(),

@@ -16,6 +16,17 @@ Future<void> launchUrlSafely(BuildContext context, String url) async {
   }
 }
 
+/// Opens a URL in an in-app web view (no external browser).
+Future<void> launchInAppUrl(BuildContext context, String url) async {
+  final uri = Uri.parse(url);
+  if (!await launchUrl(uri, mode: LaunchMode.inAppWebView)) {
+    // Fall back to external browser if in-app view is not supported.
+    if (context.mounted) {
+      await launchUrlSafely(context, url);
+    }
+  }
+}
+
 /// Sends an email using the device's mail app.
 Future<void> launchEmailSafely(
   BuildContext context, {
