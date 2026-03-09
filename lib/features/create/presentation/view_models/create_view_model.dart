@@ -127,10 +127,21 @@ class CreateViewModel extends _$CreateViewModel {
       );
 
       if (eligibility.isDenied) {
+        final reason = eligibility.denialReason ?? '';
+        final isCreditError =
+            reason.toLowerCase().contains('credit') ||
+            reason.toLowerCase().contains('insufficient');
         state = AsyncError(
-          AppException.generation(
-            message: eligibility.denialReason ?? 'Generation not allowed',
-          ),
+          isCreditError
+              ? AppException.payment(
+                  message: reason.isNotEmpty ? reason : 'Insufficient credits',
+                  code: 'insufficient_credits',
+                )
+              : AppException.generation(
+                  message: reason.isNotEmpty
+                      ? reason
+                      : 'Generation not allowed',
+                ),
           StackTrace.current,
         );
         return;

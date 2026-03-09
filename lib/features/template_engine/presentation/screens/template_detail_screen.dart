@@ -3,10 +3,13 @@ import 'dart:async';
 import 'package:artio/core/config/sentry_config.dart';
 import 'package:artio/core/constants/ai_models.dart';
 import 'package:artio/core/design_system/app_spacing.dart';
+import 'package:artio/core/exceptions/app_exception.dart';
 import 'package:artio/core/services/image_upload_service.dart';
 import 'package:artio/core/state/auth_view_model_provider.dart';
+import 'package:artio/core/state/credit_balance_state_provider.dart';
 import 'package:artio/core/utils/app_exception_mapper.dart';
 import 'package:artio/features/auth/presentation/state/auth_state.dart';
+import 'package:artio/features/credits/presentation/widgets/insufficient_credits_sheet.dart';
 import 'package:artio/features/template_engine/domain/entities/generation_job_model.dart';
 import 'package:artio/features/template_engine/domain/entities/input_field_model.dart';
 import 'package:artio/features/template_engine/domain/entities/template_model.dart';
@@ -41,6 +44,7 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
   final Set<String> _reportedErrors = <String>{};
   final _formKey = GlobalKey<FormState>();
   bool _isUploading = false;
+  bool _isPaymentError = false;
   ProviderSubscription<AsyncValue<TemplateModel?>>? _templateErrorSub;
   ProviderSubscription<AsyncValue<GenerationJobModel?>>? _jobErrorSub;
   ProviderSubscription? _premiumSub;
@@ -115,21 +119,19 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
       setState(() => _isUploading = true);
       try {
         final orderedFiles = template.inputFields
-            .where(
-                (f) => f.type == 'image' && _imageFiles.containsKey(f.name))
+            .where((f) => f.type == 'image' && _imageFiles.containsKey(f.name))
             .map((f) => _imageFiles[f.name]!)
             .toList();
 
-        imageInputs = await ref.read(imageUploadServiceProvider).uploadAll(
-              files: orderedFiles,
-              userId: userId,
-            );
+        imageInputs = await ref
+            .read(imageUploadServiceProvider)
+            .uploadAll(files: orderedFiles, userId: userId);
       } on Object catch (e) {
         if (mounted) {
           setState(() => _isUploading = false);
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Upload failed: $e')),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('Upload failed: $e')));
         }
         return;
       }
@@ -179,6 +181,18 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
         next.whenOrNull(
           error: (error, stackTrace) {
             _captureOnce(error, stackTrace);
+            final isPayment = error is PaymentException;
+            if (mounted) setState(() => _isPaymentError = isPayment);
+            if (isPayment) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (mounted) _showInsufficientCreditsSheet();
+              });
+            }
+          },
+          data: (_) {
+            if (_isPaymentError && mounted) {
+              setState(() => _isPaymentError = false);
+            }
           },
         );
       },
@@ -218,6 +232,20 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
         });
       },
       fireImmediately: true,
+    );
+  }
+
+  void _showInsufficientCreditsSheet() {
+    final balance =
+        ref.read(creditBalanceNotifierProvider).valueOrNull?.balance ?? 0;
+    final modelId = ref.read(generationOptionsProvider).modelId;
+    final model = AiModels.getById(modelId);
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (_) => InsufficientCreditsSheet(
+        currentBalance: balance,
+        requiredCredits: model?.creditCost ?? 0,
+      ),
     );
   }
 
@@ -270,12 +298,12 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
                               _inputValues[field.name] = value,
                           onImageChanged: field.type == 'image'
                               ? (file) => setState(() {
-                                    if (file != null) {
-                                      _imageFiles[field.name] = file;
-                                    } else {
-                                      _imageFiles.remove(field.name);
-                                    }
-                                  })
+                                  if (file != null) {
+                                    _imageFiles[field.name] = file;
+                                  } else {
+                                    _imageFiles.remove(field.name);
+                                  }
+                                })
                               : null,
                           imageFile: _imageFiles[field.name],
                         ),
@@ -330,19 +358,23 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
                   onChanged: (modelId) => ref
                       .read(generationOptionsProvider.notifier)
                       .updateModel(modelId),
-                  filterSupportsImageInput:
-                      _hasImageInput(template) ? true : null,
+                  filterSupportsImageInput: _hasImageInput(template)
+                      ? true
+                      : null,
                 ),
                 const SizedBox(height: AppSpacing.lg),
                 GenerationStateSection(
                   jobAsync: jobAsync,
-                  isGenerating: _isUploading ||
+                  isGenerating:
+                      _isUploading ||
                       ref
                           .read(generationViewModelProvider.notifier)
                           .isGenerating,
+                  isPaymentError: _isPaymentError,
                   onGenerate: () => unawaited(_handleGenerate(template)),
                   onReset: () =>
                       ref.read(generationViewModelProvider.notifier).reset(),
+                  onUpgrade: _showInsufficientCreditsSheet,
                 ),
               ],
             ),

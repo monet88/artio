@@ -71,47 +71,49 @@ class _InsufficientCreditsSheetState
     final adService = ref.watch(rewardedAdServiceProvider);
     final isSubscriber = _isSubscriber;
 
-    return Padding(
-      padding: const EdgeInsets.all(AppSpacing.lg),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Text('💎', style: TextStyle(fontSize: 48)),
-          const SizedBox(height: AppSpacing.md),
-          Text('Not enough credits', style: theme.textTheme.titleLarge),
-          const SizedBox(height: AppSpacing.sm),
-          Text(
-            'This model costs ${widget.requiredCredits} credits, '
-            'but you only have ${widget.currentBalance}.',
-            style: theme.textTheme.bodyMedium,
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: AppSpacing.lg),
-
-          if (isSubscriber) ...[
-            // Subscriber: show renewal info + ad option + manage link
-            _buildRenewalInfo(theme),
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('💎', style: TextStyle(fontSize: 48)),
+            const SizedBox(height: AppSpacing.md),
+            Text('Not enough credits', style: theme.textTheme.titleLarge),
             const SizedBox(height: AppSpacing.sm),
-            _buildAdButton(adsRemainingAsync, adService),
-            const SizedBox(height: AppSpacing.sm),
-            _buildManageSubscriptionButton(),
-          ] else ...[
-            // Free user: ad button + upgrade option
-            _buildAdButton(adsRemainingAsync, adService),
-            const SizedBox(height: AppSpacing.sm),
-            _buildUpgradeButton(),
-          ],
-
-          const SizedBox(height: AppSpacing.sm),
-          SizedBox(
-            width: double.infinity,
-            child: OutlinedButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Dismiss'),
+            Text(
+              'This model costs ${widget.requiredCredits} credits, '
+              'but you only have ${widget.currentBalance}.',
+              style: theme.textTheme.bodyMedium,
+              textAlign: TextAlign.center,
             ),
-          ),
-          const SizedBox(height: AppSpacing.sm),
-        ],
+            const SizedBox(height: AppSpacing.lg),
+
+            if (isSubscriber) ...[
+              // Subscriber: show renewal info + ad option + manage link
+              _buildRenewalInfo(theme),
+              const SizedBox(height: AppSpacing.sm),
+              _buildAdButton(adsRemainingAsync, adService),
+              const SizedBox(height: AppSpacing.sm),
+              _buildManageSubscriptionButton(),
+            ] else ...[
+              // Free user: ad button + upgrade option
+              _buildAdButton(adsRemainingAsync, adService),
+              const SizedBox(height: AppSpacing.sm),
+              _buildUpgradeButton(),
+            ],
+
+            const SizedBox(height: AppSpacing.sm),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Dismiss'),
+              ),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+          ],
+        ),
       ),
     );
   }
