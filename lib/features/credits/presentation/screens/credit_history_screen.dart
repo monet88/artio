@@ -37,12 +37,18 @@ class CreditHistoryScreen extends ConsumerWidget {
               if (transactions.isEmpty)
                 const SliverFillRemaining(child: _EmptyHistoryState())
               else
-                SliverList.separated(
-                  itemCount: transactions.length,
-                  separatorBuilder: (_, __) =>
-                      const Divider(height: 1, indent: 56),
-                  itemBuilder: (context, index) =>
-                      _TransactionTile(transaction: transactions[index]),
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
+                  sliver: SliverList.separated(
+                    itemCount: transactions.length,
+                    separatorBuilder: (_, __) =>
+                        const Divider(height: 1, indent: 56),
+                    itemBuilder: (context, index) =>
+                        _TransactionTile(transaction: transactions[index]),
+                  ),
                 ),
             ],
           );
