@@ -194,12 +194,17 @@ class AuthRepository implements IAuthRepository {
         EnvConfig.revenuecatGoogleKey.isEmpty) {
       return;
     }
+    // Always update DB regardless of RC logIn result.
     try {
-      await Purchases.logIn(userId);
       await _supabase
           .from('profiles')
           .update({'revenuecat_app_user_id': userId})
           .eq('id', userId);
+    } on Object catch (e) {
+      Log.w('RevenueCat DB update failed (non-blocking): $e');
+    }
+    try {
+      await Purchases.logIn(userId);
     } on Object catch (e) {
       Log.w('RevenueCat logIn failed (non-blocking): $e');
     }

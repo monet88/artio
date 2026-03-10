@@ -67,21 +67,22 @@ Deno.serve(async (req) => {
       .eq("id", userId)
       .maybeSingle();
 
-    if (profileErr || !profile?.revenuecat_app_user_id) {
+    // Fall back to userId directly — RC app user ID is always set to
+    // Supabase user ID via Purchases.logIn(userId) in auth flow.
+    const rcUserId = profile?.revenuecat_app_user_id ?? userId;
+
+    if (profileErr) {
       console.error(
-        "[sync-subscription] Profile not found or RC ID missing:",
+        "[sync-subscription] Profile fetch error:",
+        userId,
+        profileErr,
+      );
+    } else if (!profile?.revenuecat_app_user_id) {
+      console.warn(
+        "[sync-subscription] revenuecat_app_user_id missing, using userId as fallback:",
         userId,
       );
-      return new Response(
-        JSON.stringify({ error: "Profile not linked to RevenueCat" }),
-        {
-          status: 400,
-          headers: { "Content-Type": "application/json" },
-        },
-      );
     }
-
-    const rcUserId = profile.revenuecat_app_user_id;
 
     // 2. Fetch active entitlements from RevenueCat V2 API (8s timeout)
     const rcController = new AbortController();
