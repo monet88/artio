@@ -1,5 +1,6 @@
 import 'package:artio/core/design_system/app_spacing.dart';
 import 'package:artio/core/state/auth_view_model_provider.dart';
+import 'package:artio/core/state/subscription_state_provider.dart';
 import 'package:artio/core/utils/app_exception_mapper.dart';
 import 'package:artio/features/settings/domain/providers/notifications_provider.dart';
 import 'package:artio/features/settings/presentation/widgets/settings_sections.dart';
@@ -113,6 +114,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authViewModelProvider);
+    final subStatus = ref.watch(subscriptionNotifierProvider);
     final isLoggedIn = authState.maybeMap(
       authenticated: (_) => true,
       orElse: () => false,
@@ -121,10 +123,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       authenticated: (s) => s.user.email,
       orElse: () => '',
     );
-    final isPremium = authState.maybeMap(
-      authenticated: (s) => s.user.isPremium,
-      orElse: () => false,
-    );
+    // Prefer RevenueCat SDK data (immediate) over DB value (webhook-dependent).
+    // Falls back to DB if RevenueCat hasn't loaded yet.
+    final isPremium = subStatus.valueOrNull?.isActive ??
+        authState.maybeMap(
+          authenticated: (s) => s.user.isPremium,
+          orElse: () => false,
+        ) ??
+        false;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
