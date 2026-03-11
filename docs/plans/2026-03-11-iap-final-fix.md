@@ -24,6 +24,8 @@
 
 **Fix:** sync-subscription chỉ update is_premium/tier khi RC có entitlement, không bao giờ downgrade, không bao giờ grant credits.
 
+**Testing constraint:** Không test qua ADB/WiFi vì IAP yêu cầu app được cài từ Play Store. Quy trình: build AAB → upload Play Console Internal Testing → cài trên thiết bị từ Play Store → test.
+
 ---
 
 ## Task 1: Fix sync-subscription edge function
@@ -31,11 +33,106 @@
 **Files:**
 - Modify: `supabase/functions/sync-subscription/index.ts`
 
-**Exact changes cần làm:**
+**Step 1: Verify vị trí cần edit**
 
-Tìm đoạn từ dòng `const isPremium = resolvedTier !== null;` đến hết response (khoảng dòng 146–228). Thay toàn bộ phần đó bằng code sau:
+```bash
+grep -n "const isPremium" supabase/functions/sync-subscription/index.ts
+```
+Expected: `146:    const isPremium = resolvedTier !== null;`
 
-```typescript
+**Step 2: Thay thế bằng Edit tool**
+
+Dùng Edit tool với **exact** old_string sau (từ dòng 146 đến hết file):
+
+```
+    const isPremium = resolvedTier !== null;
+
+    // 4. Update subscription status in profiles
+    const { error: statusErr } = await supabase.rpc(
+      "update_subscription_status",
+      {
+        p_user_id: userId,
+        p_is_premium: isPremium,
+        p_tier: resolvedTier,
+        p_expires_at: resolvedExpiresAt,
+      },
+    );
+
+    if (statusErr) {
+      console.error(
+        "[sync-subscription] update_subscription_status error:",
+        statusErr,
+      );
+      return new Response(
+        JSON.stringify({ error: "Failed to update subscription status" }),
+        {
+          status: 500,
+          headers: { "Content-Type": "application/json" },
+        },
+      );
+    }
+
+    // 5. Grant credits if active subscription AND not already granted this billing period
+    if (isPremium && resolvedCredits > 0) {
+      const billingPeriodStart = new Date();
+      billingPeriodStart.setDate(billingPeriodStart.getDate() - 30);
+
+      const { data: existing } = await supabase
+        .from("credit_transactions")
+        .select("id")
+        .eq("user_id", userId)
+        .eq("type", "subscription")
+        .gte("created_at", billingPeriodStart.toISOString())
+        .maybeSingle();
+
+      if (!existing) {
+        const referenceId = `rc-sync-${userId}-${resolvedExpiresAt ?? "unlimited"}`;
+        const { error: creditErr } = await supabase.rpc(
+          "grant_subscription_credits",
+          {
+            p_user_id: userId,
+            p_amount: resolvedCredits,
+            p_description: `${resolvedTier} subscription — sync`,
+            p_reference_id: referenceId,
+          },
+        );
+
+        if (creditErr) {
+          console.error(
+            "[sync-subscription] grant_subscription_credits error:",
+            creditErr,
+          );
+          // Non-fatal: subscription status already updated
+        }
+      }
+    }
+
+    console.log(
+      `[sync-subscription] Synced user ${userId}: tier=${resolvedTier ?? "free"}, premium=${isPremium}`,
+    );
+
+    return new Response(
+      JSON.stringify({
+        ok: true,
+        tier: resolvedTier,
+        is_premium: isPremium,
+        expires_at: resolvedExpiresAt,
+      }),
+      { status: 200, headers: { "Content-Type": "application/json" } },
+    );
+  } catch (error) {
+    console.error("[sync-subscription] Unexpected error:", error);
+    return new Response(JSON.stringify({ error: "Internal server error" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+});
+```
+
+new_string (thay thế toàn bộ phần trên):
+
+```
     const isPremium = resolvedTier !== null;
 
     // GUARD: If RC returns no active entitlements, do NOT touch Supabase.
@@ -60,7 +157,7 @@ Tìm đoạn từ dòng `const isPremium = resolvedTier !== null;` đến hết 
       );
     }
 
-    // Update is_premium + tier only (NO credit grant here — webhook owns credits)
+    // Update is_premium + tier only (NO credit grant — webhook owns credits)
     const { error: statusErr } = await supabase.rpc(
       "update_subscription_status",
       {
@@ -105,35 +202,20 @@ Tìm đoạn từ dòng `const isPremium = resolvedTier !== null;` đến hết 
 });
 ```
 
-**Step 1: Xác nhận vị trí cần edit**
+**Step 3: Verify — không còn grant_subscription_credits**
 
 ```bash
-grep -n "const isPremium\|// 4. Update\|// 5. Grant credits\|grant_subscription_credits\|return new Response" \
+grep -n "grant_subscription_credits\|// 5. Grant\|billingPeriodStart\|rc-sync-" \
   supabase/functions/sync-subscription/index.ts
 ```
-
-Ghi nhớ dòng bắt đầu `const isPremium` và dòng cuối cùng của file (`});`).
-
-**Step 2: Thay thế toàn bộ từ `const isPremium` đến cuối file**
-
-Dùng Edit tool — `old_string` là toàn bộ từ `    const isPremium = resolvedTier !== null;` đến `});` (cuối file), `new_string` là code trong block trên.
-
-**Step 3: Verify file không còn `grant_subscription_credits`**
-
-```bash
-grep -n "grant_subscription_credits\|purchased_credits\|// 5. Grant" \
-  supabase/functions/sync-subscription/index.ts
-```
-
 Expected: **không có output** (đã xóa hoàn toàn credit grant section).
 
-**Step 4: Verify có `no_active_entitlements` guard**
+**Step 4: Verify — có guard mới**
 
 ```bash
 grep -n "no_active_entitlements\|synced: false\|synced: true" \
   supabase/functions/sync-subscription/index.ts
 ```
-
 Expected: thấy cả 3 strings.
 
 **Step 5: Commit**
@@ -150,9 +232,14 @@ git commit -m "fix(sync-subscription): remove credit grant (webhook owns credits
 **Files:**
 - Modify: `lib/features/subscription/presentation/providers/subscription_provider.dart:59-68`
 
-**Step 1: Thay thế toàn bộ method `_syncToSupabase()`**
+> Note: `_syncToSupabase()` là fire-and-forget (non-blocking). Không cần test mới — existing tests tại
+> `test/features/subscription/presentation/providers/subscription_provider_test.dart`
+> đã cover purchase/restore state machine. Thay đổi này chỉ là logging.
 
-Tìm đoạn:
+**Step 1: Thay thế method `_syncToSupabase()`**
+
+Dùng Edit tool với exact old_string:
+
 ```dart
   /// Call sync-subscription edge function then refresh auth state.
   /// Non-blocking: errors are logged but never surface to user.
@@ -168,11 +255,11 @@ Tìm đoạn:
   }
 ```
 
-Thay bằng:
+new_string:
+
 ```dart
   /// Call sync-subscription edge function then refresh auth state.
   /// Non-blocking: errors are logged but never surface to user.
-  /// Logs sync result for debugging RC ↔ Supabase integration.
   Future<void> _syncToSupabase() async {
     try {
       final supabase = ref.read(supabaseClientProvider);
@@ -200,7 +287,6 @@ Thay bằng:
 ```bash
 flutter analyze lib/features/subscription/presentation/providers/subscription_provider.dart
 ```
-
 Expected: `No issues found!`
 
 **Step 3: Chạy tests**
@@ -208,8 +294,7 @@ Expected: `No issues found!`
 ```bash
 flutter test --exclude-tags=integration
 ```
-
-Expected: `All tests passed!`
+Expected: `All tests passed!` (703+ tests)
 
 **Step 4: Commit**
 
@@ -222,25 +307,35 @@ git commit -m "fix(subscription): log sync-subscription response for RC debuggin
 
 ## Task 3: Deploy sync-subscription lên Supabase production
 
-**Pre-check: Supabase CLI đã login chưa?**
+**Step 1: Verify supabase CLI version và syntax**
 
 ```bash
-supabase projects list
+supabase --version
+```
+Expected: `2.x.x` (nếu < 2.67.1 thì update)
+
+```bash
+# Verify deploy command syntax (dry-run bằng --help)
+supabase functions deploy --help | head -10
 ```
 
-Nếu thấy `Error: You need to be logged in`, chạy:
+**Step 2: Verify supabase CLI đã login**
+
+```bash
+supabase projects list 2>&1 | head -5
+```
+
+Nếu thấy `not logged in` hoặc `Error`:
 ```bash
 supabase login
+# Mở browser, login với account owner của project kytbmplsazsiwndppoji
 ```
-(mở browser, login với account owner của project `kytbmplsazsiwndppoji`)
 
-**Step 1: Verify secrets đã set**
+**Step 3: Verify secrets đã set**
 
 ```bash
-supabase secrets list --project-ref kytbmplsazsiwndppoji 2>/dev/null || \
-  echo "CLI not linked — check via Supabase Dashboard → Settings → Edge Functions → Secrets"
+supabase secrets list --project-ref kytbmplsazsiwndppoji
 ```
-
 Phải có: `REVENUECAT_SECRET_KEY`, `REVENUECAT_PROJECT_ID`
 
 Nếu thiếu `REVENUECAT_SECRET_KEY`:
@@ -249,105 +344,95 @@ supabase secrets set REVENUECAT_SECRET_KEY=<value> --project-ref kytbmplsazsiwnd
 ```
 Lấy value từ: RC Dashboard → API Keys → V2 API Keys → Secret key.
 
-**Step 2: Deploy edge function**
+**Step 4: Deploy**
 
 ```bash
 cd /Users/mini4/1space/artio
 supabase functions deploy sync-subscription --project-ref kytbmplsazsiwndppoji
 ```
-
 Expected: `Deployed Function sync-subscription on project kytbmplsazsiwndppoji`
 
-**Step 3: Smoke test — gọi function với user thực để verify không crash**
-
+Nếu `--project-ref` không được nhận, thử:
 ```bash
-# Dùng token của user đang login (lấy từ Supabase Dashboard → Authentication → Users → chọn user → copy JWT)
-# Hoặc skip step này và verify qua logcat trong Task 4
-echo "Deploy verified — proceed to Task 4"
+supabase link --project-ref kytbmplsazsiwndppoji
+supabase functions deploy sync-subscription
 ```
 
 ---
 
-## Task 4: End-to-end test trên SM-A536E
+## Task 4: Build AAB + Upload + E2E Test
 
-**Pre-condition:**
-- App v9+ đã cài từ Internal Testing track
-- Email license tester đã đăng nhập
-- ADB connected: `adb devices` phải thấy thiết bị
+**Lưu ý:** Test IAP phải cài app từ Play Store (Internal Testing track), không thể test qua ADB install trực tiếp vì Google Play Billing bị block với sideloaded APK.
 
-**Step 1: Chạy logcat để monitor**
+**Step 1: Build release AAB**
 
 ```bash
-adb -s 192.168.1.25:45305 logcat -s flutter 2>/dev/null | grep -E "Subscription|sync|RC\]|revenuecat|purchase|entitlement" &
-LOGCAT_PID=$!
-echo "Logcat PID: $LOGCAT_PID"
+cd /Users/mini4/1space/artio
+flutter build appbundle --dart-define=ENV=production --release
+```
+Expected: `Built build/app/outputs/bundle/release/app-release.aab`
+
+Bump version trước nếu cần:
+```bash
+# Trong pubspec.yaml: version: 1.0.0+10 (tăng build number)
 ```
 
-**Step 2: Test purchase flow**
+**Step 2: Upload lên Play Console Internal Testing**
 
-Trên thiết bị:
-1. Login bằng email license tester (chưa từng mua)
+1. Vào Play Console → Internal Testing → Create new release
+2. Upload `build/app/outputs/bundle/release/app-release.aab`
+3. Save và Publish release
+
+**Step 3: Cài trên thiết bị**
+
+Trên SM-A536E (đăng nhập email license tester):
+1. Mở Play Store → tìm "Artio" hoặc dùng link Internal Testing
+2. Update/Install app mới
+3. Verify version đúng trong Settings
+
+**Step 4: Test purchase flow**
+
+Trên thiết bị (email license tester, chưa từng mua):
+1. Đăng nhập app
 2. Vào Create → tap Upgrade → chọn Ultra → Subscribe Now
-3. Hoàn tất Google Play dialog
+3. Hoàn tất Google Play dialog với payment method test
+4. Kiểm tra: phải thấy "🎉 Subscription activated!" + "Ultra plan premium" trong Settings
 
-**Expected logcat output (theo thứ tự):**
-```
-[RC] purchase error? — nếu không có error là OK
-[Subscription] sync skipped: no_active_entitlements  (RC chưa kịp process, normal)
-  HOẶC
-[Subscription] sync OK: tier=ultra, is_premium=true  (RC đã process, cũng OK)
-🎉 Subscription activated!  (từ paywall_screen)
-```
-
-**Step 3: Verify Supabase sau 30 giây**
+**Step 5: Verify Supabase (sau 30-60 giây)**
 
 ```bash
 SERVICE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt5dGJtcGxzYXpzaXduZHBwb2ppIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MTA0MTI5MSwiZXhwIjoyMDg2NjE3MjkxfQ.ItnOIiw6NB39PIeyQlE-OJ-AwSKnO_qUuel2_obc590"
 
-# Check profiles
+# Profiles: is_premium=true?
 curl -s "https://kytbmplsazsiwndppoji.supabase.co/rest/v1/profiles?select=email,is_premium,subscription_tier&order=updated_at.desc&limit=3" \
-  -H "apikey: $SERVICE_KEY" \
-  -H "Authorization: Bearer $SERVICE_KEY"
+  -H "apikey: $SERVICE_KEY" -H "Authorization: Bearer $SERVICE_KEY"
 
-# Check user_credits balance
+# user_credits: balance tăng 500?
 curl -s "https://kytbmplsazsiwndppoji.supabase.co/rest/v1/user_credits?select=user_id,balance&order=updated_at.desc&limit=3" \
-  -H "apikey: $SERVICE_KEY" \
-  -H "Authorization: Bearer $SERVICE_KEY"
+  -H "apikey: $SERVICE_KEY" -H "Authorization: Bearer $SERVICE_KEY"
 
-# Check credit_transactions
-curl -s "https://kytbmplsazsiwndppoji.supabase.co/rest/v1/credit_transactions?select=user_id,amount,type,description,reference_id,created_at&order=created_at.desc&limit=5" \
-  -H "apikey: $SERVICE_KEY" \
-  -H "Authorization: Bearer $SERVICE_KEY"
+# credit_transactions: chỉ 1 subscription entry?
+curl -s "https://kytbmplsazsiwndppoji.supabase.co/rest/v1/credit_transactions?select=user_id,amount,type,reference_id,created_at&order=created_at.desc&limit=5" \
+  -H "apikey: $SERVICE_KEY" -H "Authorization: Bearer $SERVICE_KEY"
 ```
 
 **Expected:**
-- profiles: `is_premium: true`, `subscription_tier: "ultra"`
-- user_credits: balance tăng 500 (từ welcome bonus + subscription grant)
-- credit_transactions: có entry `type: "subscription"`, `amount: 500`, `reference_id` là RC event ID (không phải `rc-sync-xxx`)
+- `is_premium: true`, `subscription_tier: "ultra"` ✅
+- `user_credits.balance` tăng đúng 500 ✅
+- **Chỉ 1** credit_transaction type=subscription (reference_id là RC event ID, không phải `rc-sync-xxx`) ✅
 
-**Step 4: Verify KHÔNG có double-grant**
+**Step 6: Verify RC Dashboard**
 
-```bash
-# Đếm số subscription transactions trong 1 giờ qua cho user này
-curl -s "https://kytbmplsazsiwndppoji.supabase.co/rest/v1/credit_transactions?select=amount,type,reference_id,created_at&type=eq.subscription&order=created_at.desc&limit=10" \
-  -H "apikey: $SERVICE_KEY" \
-  -H "Authorization: Bearer $SERVICE_KEY"
-```
+RC Dashboard → Customers → tìm email vừa test:
+- Phải có active entitlement "ultra"
+- Overview → Active Subscribers: tăng
 
-Expected: **chỉ 1 subscription entry** (không phải 2 với 2 reference_id khác nhau).
+**Step 7: Test Restore**
 
-**Step 5: Test Restore**
-
-Logout → login lại bằng cùng email → vào Paywall → tap "Restore":
+Logout → login lại cùng email → vào Paywall → tap "Restore":
 - Phải thấy "✅ Purchases restored!"
-- Settings: "Ultra plan premium"
-- user_credits balance: không thay đổi (không duplicate)
-
-**Step 6: Dừng logcat**
-
-```bash
-kill $LOGCAT_PID 2>/dev/null || true
-```
+- Settings: "Ultra plan premium" vẫn còn
+- `user_credits.balance` không thay đổi (không duplicate)
 
 ---
 
@@ -359,7 +444,6 @@ kill $LOGCAT_PID 2>/dev/null || true
 flutter analyze
 flutter test --exclude-tags=integration
 ```
-
 Expected: No issues, All tests passed (703+).
 
 **Step 2: Push**
@@ -375,13 +459,15 @@ PR #69 sẽ tự động update với commits mới.
 ## Checklist hoàn thiện
 
 - [ ] Task 1: sync-subscription không còn credit grant section
-- [ ] Task 1: sync-subscription return early khi RC empty
-- [ ] Task 2: _syncToSupabase() logs response rõ
-- [ ] Task 3: edge function deployed
+- [ ] Task 1: sync-subscription return early khi RC empty (no downgrade)
+- [ ] Task 1: response trả `{synced: true/false}` thay vì `{ok: true}`
+- [ ] Task 2: `_syncToSupabase()` parse + log response
+- [ ] Task 3: edge function deployed thành công
+- [ ] Task 4: Build AAB v10+ uploaded lên Internal Testing
 - [ ] Task 4: RC Dashboard hiện active subscriber
-- [ ] Task 4: Supabase is_premium=true sau purchase
-- [ ] Task 4: user_credits.balance tăng đúng 500 (chỉ 1 lần)
-- [ ] Task 4: credit_transactions: chỉ 1 subscription entry (webhook reference_id)
-- [ ] Task 4: Restore flow hoạt động
-- [ ] Task 5: flutter analyze No issues
-- [ ] Task 5: All tests passed
+- [ ] Task 4: Supabase `is_premium=true`, `subscription_tier="ultra"`
+- [ ] Task 4: `user_credits.balance` += 500 (1 lần, từ webhook)
+- [ ] Task 4: credit_transactions có đúng 1 subscription entry với RC eventId
+- [ ] Task 4: Restore flow hoạt động, balance không đổi
+- [ ] Task 5: `flutter analyze` No issues
+- [ ] Task 5: `flutter test` All 703+ passed
