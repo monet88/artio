@@ -70,10 +70,13 @@ class SubscriptionRepository implements ISubscriptionRepository {
         );
       }
       // RC error code 28 = ITEM_ALREADY_OWNED (Google Play).
-      // User already has an active subscription — auto-restore to sync state.
+      // User already has an active subscription — fetch current CustomerInfo
+      // directly instead of calling restorePurchases(), which can fail with
+      // allowSharingPlayStoreAccount=false when the receipt was made under a
+      // different RC user session.
       if (e.code == '28') {
-        Log.w('[RC] ITEM_ALREADY_OWNED — auto-restoring purchases');
-        return restore();
+        Log.w('[RC] ITEM_ALREADY_OWNED — fetching current CustomerInfo');
+        return getStatus();
       }
       throw AppException.payment(
         message: e.message ?? 'Purchase failed',

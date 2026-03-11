@@ -479,6 +479,20 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
         return;
       }
 
+      // Verify subscription is actually active before claiming success.
+      final status = purchaseState.valueOrNull;
+      if (status == null || !status.isActive) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Purchase processed. If credits are missing, tap Restore.',
+            ),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+        return;
+      }
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('🎉 Subscription activated! Welcome to Premium.'),

@@ -153,10 +153,10 @@ void main() {
     });
 
     // ITEM_ALREADY_OWNED: khi user đã mua subscription trên Google Play
-    // nhưng RC chưa sync → purchase() tự động gọi restore() thay vì báo lỗi.
+    // nhưng RC chưa sync → purchase() tự động gọi getStatus() thay vì báo lỗi.
     // Contract: purchase() phải trả về SubscriptionStatus hợp lệ (không throw).
     test(
-        'purchase with ITEM_ALREADY_OWNED returns active status via restore',
+        'purchase with ITEM_ALREADY_OWNED returns active status via getStatus',
         () async {
       const activeStatus = SubscriptionStatus(
         tier: 'pro',
@@ -164,7 +164,7 @@ void main() {
         willRenew: true,
       );
 
-      // Simulate: implementation detects error code '28' → delegates to restore()
+      // Simulate: implementation detects error code '28' → delegates to getStatus()
       when(() => mockRepo.purchase(any())).thenAnswer(
         (_) async => activeStatus,
       );
