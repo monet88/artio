@@ -364,18 +364,29 @@ supabase functions deploy sync-subscription
 
 **Lưu ý:** Test IAP phải cài app từ Play Store (Internal Testing track), không thể test qua ADB install trực tiếp vì Google Play Billing bị block với sideloaded APK.
 
-**Step 1: Build release AAB**
+**Step 1: Bump version (BẮT BUỘC — Play Console từ chối build number cũ)**
+
+Hiện tại: `version: 1.0.0+9` trong `pubspec.yaml`.
+Sửa thành `1.0.0+10`:
+
+```bash
+sed -i '' 's/^version: 1.0.0+9/version: 1.0.0+10/' pubspec.yaml
+grep "^version:" pubspec.yaml
+```
+Expected: `version: 1.0.0+10`
+
+```bash
+git add pubspec.yaml
+git commit -m "chore: bump version to 1.0.0+10 for IAP fix build"
+```
+
+**Step 2: Build release AAB**
 
 ```bash
 cd /Users/mini4/1space/artio
 flutter build appbundle --dart-define=ENV=production --release
 ```
 Expected: `Built build/app/outputs/bundle/release/app-release.aab`
-
-Bump version trước nếu cần:
-```bash
-# Trong pubspec.yaml: version: 1.0.0+10 (tăng build number)
-```
 
 **Step 2: Upload lên Play Console Internal Testing**
 
