@@ -145,12 +145,34 @@ Deno.serve(async (req) => {
 
     const isPremium = resolvedTier !== null;
 
-    // 4. Update subscription status in profiles
+    // GUARD: If RC returns no active entitlements, do NOT touch Supabase.
+    // Reasons this happens:
+    //   - Pub/Sub not yet propagated (eventual consistency, usually <5s)
+    //   - Sandbox purchase not yet server-side validated
+    //   - RC processing in flight
+    // Downgrading here would undo a successful purchase immediately.
+    // Credit grants are handled exclusively by revenuecat-webhook (INITIAL_PURCHASE event)
+    // to prevent double-grant (different reference_ids would bypass ON CONFLICT).
+    if (!isPremium) {
+      console.warn(
+        `[sync-subscription] RC returned 0 entitlements for ${userId} — skipping Supabase update`,
+      );
+      return new Response(
+        JSON.stringify({
+          synced: false,
+          reason: "no_active_entitlements",
+          message: "RC has no active entitlements. Supabase not modified.",
+        }),
+        { status: 200, headers: { "Content-Type": "application/json" } },
+      );
+    }
+
+    // Update is_premium + tier only (NO credit grant — webhook owns credits)
     const { error: statusErr } = await supabase.rpc(
       "update_subscription_status",
       {
         p_user_id: userId,
-        p_is_premium: isPremium,
+        p_is_premium: true,
         p_tier: resolvedTier,
         p_expires_at: resolvedExpiresAt,
       },
@@ -163,57 +185,19 @@ Deno.serve(async (req) => {
       );
       return new Response(
         JSON.stringify({ error: "Failed to update subscription status" }),
-        {
-          status: 500,
-          headers: { "Content-Type": "application/json" },
-        },
+        { status: 500, headers: { "Content-Type": "application/json" } },
       );
     }
 
-    // 5. Grant credits if active subscription AND not already granted this billing period
-    if (isPremium && resolvedCredits > 0) {
-      const billingPeriodStart = new Date();
-      billingPeriodStart.setDate(billingPeriodStart.getDate() - 30);
-
-      const { data: existing } = await supabase
-        .from("credit_transactions")
-        .select("id")
-        .eq("user_id", userId)
-        .eq("type", "subscription")
-        .gte("created_at", billingPeriodStart.toISOString())
-        .maybeSingle();
-
-      if (!existing) {
-        const referenceId = `rc-sync-${userId}-${resolvedExpiresAt ?? "unlimited"}`;
-        const { error: creditErr } = await supabase.rpc(
-          "grant_subscription_credits",
-          {
-            p_user_id: userId,
-            p_amount: resolvedCredits,
-            p_description: `${resolvedTier} subscription — sync`,
-            p_reference_id: referenceId,
-          },
-        );
-
-        if (creditErr) {
-          console.error(
-            "[sync-subscription] grant_subscription_credits error:",
-            creditErr,
-          );
-          // Non-fatal: subscription status already updated
-        }
-      }
-    }
-
     console.log(
-      `[sync-subscription] Synced user ${userId}: tier=${resolvedTier ?? "free"}, premium=${isPremium}`,
+      `[sync-subscription] Synced ${userId}: tier=${resolvedTier}, expires=${resolvedExpiresAt ?? "unlimited"}`,
     );
 
     return new Response(
       JSON.stringify({
-        ok: true,
+        synced: true,
         tier: resolvedTier,
-        is_premium: isPremium,
+        is_premium: true,
         expires_at: resolvedExpiresAt,
       }),
       { status: 200, headers: { "Content-Type": "application/json" } },
