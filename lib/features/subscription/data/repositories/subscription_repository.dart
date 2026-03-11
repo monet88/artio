@@ -2,6 +2,7 @@ import 'package:artio/core/exceptions/app_exception.dart';
 import 'package:artio/features/subscription/domain/entities/subscription_package.dart';
 import 'package:artio/features/subscription/domain/entities/subscription_status.dart';
 import 'package:artio/features/subscription/domain/repositories/i_subscription_repository.dart';
+import 'package:artio/utils/logger_service.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
@@ -60,12 +61,19 @@ class SubscriptionRepository implements ISubscriptionRepository {
       );
       return _mapCustomerInfo(result.customerInfo);
     } on PlatformException catch (e) {
+      Log.e('[RC] purchase error code=${e.code} message=${e.message}');
       // RevenueCat error code 1 = purchase cancelled by user
       if (e.code == '1') {
         throw const AppException.payment(
           message: 'Purchase cancelled',
           code: 'user_cancelled',
         );
+      }
+      // RC error code 28 = ITEM_ALREADY_OWNED (Google Play).
+      // User already has an active subscription — auto-restore to sync state.
+      if (e.code == '28') {
+        Log.w('[RC] ITEM_ALREADY_OWNED — auto-restoring purchases');
+        return restore();
       }
       throw AppException.payment(
         message: e.message ?? 'Purchase failed',
@@ -90,6 +98,7 @@ class SubscriptionRepository implements ISubscriptionRepository {
   /// Maps RevenueCat [CustomerInfo] to our domain entity.
   SubscriptionStatus _mapCustomerInfo(CustomerInfo info) {
     final active = info.entitlements.active;
+    Log.d('[RC] active entitlements: ${active.keys.toList()}');
 
     String? tier;
     if (active.containsKey(SubscriptionTiers.ultra)) {

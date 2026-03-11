@@ -1,4 +1,5 @@
 import 'package:artio/core/design_system/app_spacing.dart';
+import 'package:artio/core/utils/app_exception_mapper.dart';
 import 'package:artio/features/subscription/domain/entities/subscription_package.dart';
 import 'package:artio/features/subscription/domain/entities/subscription_status.dart';
 import 'package:artio/features/subscription/presentation/providers/subscription_provider.dart';
@@ -463,15 +464,28 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
     setState(() => _isPurchasing = true);
     try {
       await ref.read(subscriptionNotifierProvider.notifier).purchase(pkg);
-      if (mounted) {
+      if (!mounted) return;
+
+      // AsyncValue.guard never throws — check state explicitly for errors.
+      final purchaseState = ref.read(subscriptionNotifierProvider);
+      if (purchaseState.hasError) {
+        final err = purchaseState.error!;
+        final msg = err.toString().toLowerCase().contains('cancel')
+            ? 'Purchase cancelled.'
+            : AppExceptionMapper.toUserMessage(err);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('🎉 Subscription activated! Welcome to Premium.'),
-            behavior: SnackBarBehavior.floating,
-          ),
+          SnackBar(content: Text(msg), behavior: SnackBarBehavior.floating),
         );
-        Navigator.of(context).pop();
+        return;
       }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('🎉 Subscription activated! Welcome to Premium.'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      Navigator.of(context).pop();
     } on Exception catch (e) {
       if (mounted) {
         final msg = e.toString().toLowerCase().contains('cancel')

@@ -176,6 +176,22 @@ void main() {
     });
 
     group('PaymentException mapping', () {
+      test('maps "insufficient credits" to credits message', () {
+        const error = PaymentException(message: 'Insufficient credits');
+
+        final message = AppExceptionMapper.toUserMessage(error);
+
+        expect(message, 'Not enough credits. Watch an ad or upgrade your plan.');
+      });
+
+      test('maps "credit" keyword to credits message', () {
+        const error = PaymentException(message: 'Low credit balance');
+
+        final message = AppExceptionMapper.toUserMessage(error);
+
+        expect(message, 'Not enough credits. Watch an ad or upgrade your plan.');
+      });
+
       test('maps "cancelled" payment to friendly message', () {
         const error = PaymentException(message: 'Payment cancelled by user');
 
