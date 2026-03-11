@@ -59,11 +59,21 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
   Future<void> _syncToSupabase() async {
     try {
       final supabase = ref.read(supabaseClientProvider);
-      await supabase.functions.invoke('sync-subscription');
+      final response = await supabase.functions.invoke('sync-subscription');
+      final body = response.data as Map<String, dynamic>?;
+      if (body?['synced'] == false) {
+        Log.w(
+          '[Subscription] sync skipped: ${body?['reason']} — ${body?['message']}',
+        );
+      } else {
+        Log.i(
+          '[Subscription] sync OK: tier=${body?['tier']}, is_premium=${body?['is_premium']}',
+        );
+      }
       // Refresh auth state so UserProfileCard picks up new is_premium from DB.
       ref.invalidate(authViewModelProvider);
     } on Object catch (e) {
-      Log.w('sync-subscription failed (non-blocking): $e');
+      Log.w('[Subscription] sync-subscription failed (non-blocking): $e');
     }
   }
 }
