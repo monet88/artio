@@ -155,36 +155,68 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Grant credits — idempotent via purchaseToken (orderId GPA.xxx).
-    // If RC webhook later fires with the same orderId as transaction_id,
-    // grant_subscription_credits will deduplicate via reference_id.
-    const referenceId = `gp-${purchaseToken}`;
-    const { error: creditErr } = await supabase.rpc(
-      "grant_subscription_credits",
-      {
-        p_user_id: user.id,
-        p_amount: tierInfo.credits,
-        p_description: `${tierInfo.tier} subscription — Google Play purchase`,
-        p_reference_id: referenceId,
-      },
-    );
-    if (creditErr) {
+    // Rate-limit check: prevent credit farming via fabricated GPA-format tokens.
+    // An attacker who knows the regex could call this endpoint repeatedly with
+    // unique fake tokens (each new reference_id bypasses ON CONFLICT dedup).
+    // Guard: if the user already received subscription credits in the past 25 days,
+    // skip the grant — they are still within their active billing cycle.
+    const cutoff = new Date(
+      Date.now() - 25 * 24 * 60 * 60 * 1000,
+    ).toISOString();
+    const { data: recentGrants, error: grantCheckErr } = await supabase
+      .from("credit_transactions")
+      .select("id")
+      .eq("user_id", user.id)
+      .eq("type", "subscription_credit")
+      .gt("created_at", cutoff)
+      .limit(1);
+
+    if (grantCheckErr) {
       console.error(
-        "[verify-google-purchase] grant_subscription_credits error:",
-        creditErr,
+        "[verify-google-purchase] grant check error:",
+        grantCheckErr,
       );
-      // credits already granted (idempotency) or DB error — don't fail the response
     }
 
-    console.log(
-      `[verify-google-purchase] Granted ${user.id}: tier=${tierInfo.tier}, ${tierInfo.credits} credits, ref=${referenceId}`,
-    );
+    const alreadyGranted = !grantCheckErr && (recentGrants?.length ?? 0) > 0;
+
+    if (alreadyGranted) {
+      console.log(
+        `[verify-google-purchase] Credits already granted this cycle for ${user.id} — skipping`,
+      );
+    } else {
+      // Grant credits — idempotent via purchaseToken (orderId GPA.xxx).
+      // If RC webhook later fires with the same orderId as transaction_id,
+      // grant_subscription_credits will deduplicate via reference_id.
+      const referenceId = `gp-${purchaseToken}`;
+      const { error: creditErr } = await supabase.rpc(
+        "grant_subscription_credits",
+        {
+          p_user_id: user.id,
+          p_amount: tierInfo.credits,
+          p_description: `${tierInfo.tier} subscription — Google Play purchase`,
+          p_reference_id: referenceId,
+        },
+      );
+      if (creditErr) {
+        console.error(
+          "[verify-google-purchase] grant_subscription_credits error:",
+          creditErr,
+        );
+        // credits already granted (idempotency) or DB error — don't fail the response
+      } else {
+        console.log(
+          `[verify-google-purchase] Granted ${user.id}: tier=${tierInfo.tier}, ${tierInfo.credits} credits, ref=${referenceId}`,
+        );
+      }
+    }
 
     return new Response(
       JSON.stringify({
         verified: true,
         tier: tierInfo.tier,
-        credits: tierInfo.credits,
+        credits: alreadyGranted ? 0 : tierInfo.credits,
+        credits_already_granted: alreadyGranted,
       }),
       {
         status: 200,

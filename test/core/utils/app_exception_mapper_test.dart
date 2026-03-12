@@ -184,12 +184,21 @@ void main() {
         expect(message, 'Not enough credits. Watch an ad or upgrade your plan.');
       });
 
-      test('maps "credit" keyword to credits message', () {
+      test('maps "credit balance" to credits message', () {
         const error = PaymentException(message: 'Low credit balance');
 
         final message = AppExceptionMapper.toUserMessage(error);
 
         expect(message, 'Not enough credits. Watch an ad or upgrade your plan.');
+      });
+
+      test('does not map "credit card declined" to credits message', () {
+        // "credit card declined" must map to payment declined, not credits error
+        const error = PaymentException(message: 'Credit card declined');
+
+        final message = AppExceptionMapper.toUserMessage(error);
+
+        expect(message, 'Payment was declined. Please try another method.');
       });
 
       test('maps "cancelled" payment to friendly message', () {

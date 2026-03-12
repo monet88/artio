@@ -80,14 +80,14 @@ class AppExceptionMapper {
   static String _paymentMessage(String message) {
     final lower = message.toLowerCase();
 
-    if (lower.contains('insufficient') || lower.contains('credit')) {
-      return 'Not enough credits. Watch an ad or upgrade your plan.';
-    }
     if (lower.contains('cancelled') || lower.contains('canceled')) {
       return 'Payment was cancelled.';
     }
     if (lower.contains('declined')) {
       return 'Payment was declined. Please try another method.';
+    }
+    if (lower.contains('insufficient credits') || lower.contains('credit balance') || lower.contains('not enough credits')) {
+      return 'Not enough credits. Watch an ad or upgrade your plan.';
     }
 
     return 'Payment could not be processed. Please try again.';
