@@ -60,10 +60,10 @@ Deno.serve(async (req) => {
     const supabase = getSupabaseClient();
     const userId = user.id;
 
-    // 1. Get revenuecat_app_user_id from profile
+    // 1. Get revenuecat_app_user_id + current premium state from profile
     const { data: profile, error: profileErr } = await supabase
       .from("profiles")
-      .select("revenuecat_app_user_id")
+      .select("revenuecat_app_user_id, is_premium, updated_at")
       .eq("id", userId)
       .maybeSingle();
 
@@ -145,23 +145,58 @@ Deno.serve(async (req) => {
 
     const isPremium = resolvedTier !== null;
 
-    // GUARD: If RC returns no active entitlements, do NOT touch Supabase.
-    // Reasons this happens:
-    //   - Pub/Sub not yet propagated (eventual consistency, usually <5s)
-    //   - Sandbox purchase not yet server-side validated
-    //   - RC processing in flight
-    // Downgrading here would undo a successful purchase immediately.
-    // Credit grants are handled exclusively by revenuecat-webhook (INITIAL_PURCHASE event)
-    // to prevent double-grant (different reference_ids would bypass ON CONFLICT).
+    // GUARD: If RC returns no active entitlements, check whether we should downgrade.
+    // Race condition: verify-google-purchase sets is_premium=true immediately after purchase,
+    // but RC may not yet know about the purchase (Pub/Sub latency, usually <5s).
+    // To avoid immediately undoing a successful purchase, skip downgrade within 5 minutes
+    // of the profile being set premium. After 5 minutes, trust RC as authoritative.
     if (!isPremium) {
+      const profileUpdatedAt = profile?.updated_at
+        ? new Date(profile.updated_at)
+        : null;
+      const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
+      const isRecentlyUpdated =
+        profile?.is_premium === true &&
+        profileUpdatedAt !== null &&
+        profileUpdatedAt > fiveMinutesAgo;
+
+      if (isRecentlyUpdated) {
+        console.warn(
+          `[sync-subscription] RC returned 0 entitlements for ${userId} but profile was updated < 5min ago — skipping (RC processing in flight)`,
+        );
+        return new Response(
+          JSON.stringify({
+            synced: false,
+            reason: "rc_processing_in_flight",
+            message:
+              "RC has no active entitlements but profile is recent. Skipping to avoid race condition.",
+          }),
+          { status: 200, headers: { "Content-Type": "application/json" } },
+        );
+      }
+
+      // Profile not recently updated — RC is authoritative. Downgrade user.
       console.warn(
-        `[sync-subscription] RC returned 0 entitlements for ${userId} — skipping Supabase update`,
+        `[sync-subscription] RC returned 0 entitlements for ${userId} — downgrading`,
       );
+      const { error: downgradeErr } = await supabase.rpc(
+        "update_subscription_status",
+        {
+          p_user_id: userId,
+          p_is_premium: false,
+          p_tier: null,
+          p_expires_at: null,
+        },
+      );
+      if (downgradeErr) {
+        console.error("[sync-subscription] downgrade error:", downgradeErr);
+      }
       return new Response(
         JSON.stringify({
-          synced: false,
+          synced: true,
+          is_premium: false,
           reason: "no_active_entitlements",
-          message: "RC has no active entitlements. Supabase not modified.",
+          message: "RC has no active entitlements. User downgraded.",
         }),
         { status: 200, headers: { "Content-Type": "application/json" } },
       );

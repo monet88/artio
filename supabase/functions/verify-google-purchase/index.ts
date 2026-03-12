@@ -27,17 +27,14 @@ function getTierInfo(
 
 /**
  * Validate purchaseToken format to prevent fake/exploited grants.
- * Accepts:
- *   - Real Google Play order IDs: GPA.XXXX-XXXX-XXXX-XXXXX
- *   - App fallback (empty orderId case): rc-{productId}-{unixMs}
- * Rejects anything else (e.g. "fake-1", random strings).
+ * Only accepts real Google Play order IDs (GPA.XXXX-XXXX-XXXX-XXXXX).
+ * Timestamp-based fallback tokens (rc-...) were removed because any
+ * authenticated user could forge them with arbitrary timestamps to
+ * repeatedly claim credits.
  */
 function isValidPurchaseToken(token: string): boolean {
   // Real Google Play order ID: GPA.digits-digits-digits-digits
-  if (/^GPA\.\d{4}-\d{4}-\d{4}-\d+$/.test(token)) return true;
-  // App-generated fallback: rc-artio_{tier}_{period}-{13-digit unix ms}
-  if (/^rc-artio_(ultra|pro)_[a-z]+-\d{10,13}$/.test(token)) return true;
-  return false;
+  return /^GPA\.\d{4}-\d{4}-\d{4}-\d+$/.test(token);
 }
 
 Deno.serve(async (req) => {

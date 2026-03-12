@@ -412,7 +412,7 @@ Trên thiết bị (email license tester, chưa từng mua):
 **Step 5: Verify Supabase (sau 30-60 giây)**
 
 ```bash
-SERVICE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt5dGJtcGxzYXpzaXduZHBwb2ppIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MTA0MTI5MSwiZXhwIjoyMDg2NjE3MjkxfQ.ItnOIiw6NB39PIeyQlE-OJ-AwSKnO_qUuel2_obc590"
+SERVICE_KEY="<supabase-service-role-key-from-project-settings>"
 
 # Profiles: is_premium=true?
 curl -s "https://kytbmplsazsiwndppoji.supabase.co/rest/v1/profiles?select=email,is_premium,subscription_tier&order=updated_at.desc&limit=3" \

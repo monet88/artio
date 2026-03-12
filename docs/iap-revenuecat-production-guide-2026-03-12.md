@@ -183,7 +183,8 @@ function isValidPurchaseToken(token: string): boolean {
 ## 5. Deployment Commands
 
 ```bash
-SUPABASE_ACCESS_TOKEN=sbp_f0e0e7294e048a8949a9aa4dafcca38b33d947fd
+# Export access token từ Supabase Dashboard → Account → Access Tokens
+export SUPABASE_ACCESS_TOKEN=<your-supabase-access-token>
 
 # Deploy với --no-verify-jwt (REQUIRED cho tất cả functions gọi từ Flutter app)
 supabase functions deploy verify-google-purchase --no-verify-jwt --project-ref kytbmplsazsiwndppoji
@@ -212,8 +213,8 @@ supabase functions deploy revenuecat-webhook     --no-verify-jwt --project-ref k
 ### Confirmed Working (2026-03-12)
 | User | Purchase | Credits | Reference ID |
 |------|----------|---------|--------------|
-| imthankman@gmail.com | Ultra | 500 | `gp-GPA.3347-3642-0945-30030` |
-| nammetask@gmail.com | Ultra | 500 | `gp-GPA.3382-8927-4180-53692` |
+| test-user-01@example.com | Ultra | 500 | `gp-GPA.3347-3642-0945-30030` |
+| test-user-02@example.com | Ultra | 500 | `gp-GPA.3382-8927-4180-53692` |
 
 ---
 

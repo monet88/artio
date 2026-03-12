@@ -61,16 +61,19 @@ class SubscriptionRepository implements ISubscriptionRepository {
         PurchaseParams.package(nativePkg),
       );
 
-      // Always call verify-google-purchase after successful RC purchase.
-      // transactionIdentifier on Android = orderId (GPA.xxx) — may be empty
-      // for new subscriptions with free trials. Use timestamp fallback so edge
-      // function is always called and Supabase is always updated.
+      // Call verify-google-purchase only when orderId (GPA.xxx) is available.
+      // transactionIdentifier on Android = orderId — may be empty for free trials.
+      // When empty, skip immediate verify: RC webhook (INITIAL_PURCHASE event)
+      // will grant credits once the Pub/Sub pipeline fires.
+      // Note: timestamp-based fallback tokens were removed to prevent forged
+      // credit grants (user could call edge function with arbitrary timestamps).
       final rawToken = result.storeTransaction.transactionIdentifier;
       final productId = package.identifier;
-      final purchaseRef = rawToken.isNotEmpty
-          ? rawToken
-          : 'rc-$productId-${DateTime.now().millisecondsSinceEpoch}';
-      await _verifyWithGooglePlay(purchaseRef, productId);
+      if (rawToken.isNotEmpty) {
+        await _verifyWithGooglePlay(rawToken, productId);
+      } else {
+        Log.w('[RC] orderId empty (free trial?) — skipping immediate verify, RC webhook will handle credits');
+      }
 
       return _mapCustomerInfo(result.customerInfo);
     } on PlatformException catch (e) {

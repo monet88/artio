@@ -55,7 +55,7 @@ Fix toàn bộ IAP flow để: purchase → RC server nhận → RC webhook fire
 
 ## Kết quả test (2026-03-11 ~17:43)
 
-**Email test:** `galaxypro710@gmail.com`
+**Email test:** `test-user-01@example.com`
 **Device:** SM-A536E (Samsung A53)
 **App version:** 1.0.0+10 (Internal Testing)
 

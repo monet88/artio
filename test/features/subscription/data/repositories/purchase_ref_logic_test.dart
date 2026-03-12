@@ -1,59 +1,46 @@
-// Tests for the purchaseRef fallback logic in SubscriptionRepository.purchase().
+// Tests for the purchaseRef logic in SubscriptionRepository.purchase().
 //
 // The real implementation calls RC SDK statics (Purchases.purchase) which
 // cannot be mocked in unit tests. These tests verify the pure Dart logic:
-//   - Real orderId (GPA.xxx) → used as-is
-//   - Empty orderId (free trial) → timestamp fallback format
-//   - Fallback token format matches GPA validation regex in edge function
+//   - Real orderId (GPA.xxx) → used as-is, verify-google-purchase is called
+//   - Empty orderId (free trial) → skip verify, RC webhook handles credits
+//   - GPA validation regex matches only real Google Play order IDs
+//
+// NOTE: rc- timestamp fallback was removed (security fix). Users could forge
+// arbitrary timestamps to repeatedly claim credits. Empty orderId now skips
+// the edge function call entirely; RC webhook (INITIAL_PURCHASE event)
+// grants credits when Pub/Sub pipeline processes the purchase.
 import 'package:flutter_test/flutter_test.dart';
 
-/// Extracted pure logic from SubscriptionRepository.purchase()
-/// so it can be tested without RC SDK dependencies.
-String buildPurchaseRef(String rawToken, String productId, int timestampMs) {
-  return rawToken.isNotEmpty
-      ? rawToken
-      : 'rc-$productId-$timestampMs';
+/// Returns the orderId to send to verify-google-purchase, or null when the
+/// edge function should be skipped (empty orderId = free trial case).
+/// Mirrors logic in SubscriptionRepository.purchase().
+String? buildPurchaseRef(String rawToken) {
+  return rawToken.isNotEmpty ? rawToken : null;
 }
 
 /// GPA validation regex — mirrors isValidPurchaseToken() in edge function.
+/// Only accepts real Google Play order IDs; rc- fallback removed for security.
 final _gpaRegex = RegExp(r'^GPA\.\d{4}-\d{4}-\d{4}-\d+$');
-final _fallbackRegex =
-    RegExp(r'^rc-artio_(ultra|pro)_[a-z]+-\d{10,13}$');
 
 bool isValidPurchaseToken(String token) {
-  return _gpaRegex.hasMatch(token) || _fallbackRegex.hasMatch(token);
+  return _gpaRegex.hasMatch(token);
 }
 
 void main() {
   group('buildPurchaseRef', () {
-    test('uses real orderId when transactionIdentifier is non-empty', () {
+    test('returns real orderId when transactionIdentifier is non-empty', () {
       const orderId = 'GPA.1234-5678-9012-34567';
-      final ref = buildPurchaseRef(orderId, 'artio_ultra_monthly', 0);
-      expect(ref, equals(orderId));
+      expect(buildPurchaseRef(orderId), equals(orderId));
     });
 
-    test('uses timestamp fallback when transactionIdentifier is empty', () {
-      const productId = 'artio_ultra_monthly';
-      const ts = 1773322872759;
-      final ref = buildPurchaseRef('', productId, ts);
-      expect(ref, equals('rc-artio_ultra_monthly-1773322872759'));
+    test('returns null when transactionIdentifier is empty (free trial — skip verify)', () {
+      expect(buildPurchaseRef(''), isNull);
     });
 
-    test('fallback format uses productId correctly for pro tier', () {
-      const productId = 'artio_pro_monthly';
-      const ts = 1773300000000;
-      final ref = buildPurchaseRef('', productId, ts);
-      expect(ref, startsWith('rc-artio_pro_monthly-'));
-      expect(ref, equals('rc-artio_pro_monthly-1773300000000'));
-    });
-
-    test('real orderId is never replaced even when fallback timestamp differs',
-        () {
+    test('real orderId is consistent across calls', () {
       const orderId = 'GPA.3347-3642-0945-30030';
-      final ref1 = buildPurchaseRef(orderId, 'artio_ultra_monthly', 111);
-      final ref2 = buildPurchaseRef(orderId, 'artio_ultra_monthly', 999);
-      expect(ref1, equals(ref2));
-      expect(ref1, equals(orderId));
+      expect(buildPurchaseRef(orderId), equals(buildPurchaseRef(orderId)));
     });
   });
 
@@ -62,20 +49,6 @@ void main() {
       expect(isValidPurchaseToken('GPA.1234-5678-9012-34567'), isTrue);
       expect(isValidPurchaseToken('GPA.3347-3642-0945-30030'), isTrue);
       expect(isValidPurchaseToken('GPA.3382-8927-4180-53692'), isTrue);
-    });
-
-    test('accepts rc- fallback token for ultra tier', () {
-      expect(
-        isValidPurchaseToken('rc-artio_ultra_monthly-1773322872759'),
-        isTrue,
-      );
-    });
-
-    test('accepts rc- fallback token for pro tier', () {
-      expect(
-        isValidPurchaseToken('rc-artio_pro_monthly-1773300000000'),
-        isTrue,
-      );
     });
 
     test('rejects fake/arbitrary strings', () {
@@ -90,24 +63,23 @@ void main() {
       expect(isValidPurchaseToken('GPA.12345-6789-0123-45678'), isFalse);
     });
 
-    test('rejects rc- token with unknown tier', () {
-      expect(
-        isValidPurchaseToken('rc-artio_gold_monthly-1773322872759'),
-        isFalse,
-      );
-    });
-
-    test('fallback from buildPurchaseRef passes validation', () {
-      const productId = 'artio_ultra_monthly';
-      const ts = 1773322872759;
-      final ref = buildPurchaseRef('', productId, ts);
-      expect(isValidPurchaseToken(ref), isTrue);
+    test('rejects rc- fallback tokens (removed: security risk)', () {
+      // These were previously accepted but removed to prevent credit forgery.
+      // Users could generate unique timestamps to repeatedly claim credits.
+      expect(isValidPurchaseToken('rc-artio_ultra_monthly-1773322872759'), isFalse);
+      expect(isValidPurchaseToken('rc-artio_pro_monthly-1773300000000'), isFalse);
     });
 
     test('real orderId from buildPurchaseRef passes validation', () {
       const orderId = 'GPA.3347-3642-0945-30030';
-      final ref = buildPurchaseRef(orderId, 'artio_ultra_monthly', 0);
-      expect(isValidPurchaseToken(ref), isTrue);
+      final ref = buildPurchaseRef(orderId);
+      expect(ref, isNotNull);
+      expect(isValidPurchaseToken(ref!), isTrue);
+    });
+
+    test('null result from buildPurchaseRef means skip edge function call', () {
+      // Empty orderId (free trial) → null → do NOT call verify-google-purchase
+      expect(buildPurchaseRef(''), isNull);
     });
   });
 }
