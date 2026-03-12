@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 part 'subscription_repository.g.dart';
 
@@ -59,6 +60,17 @@ class SubscriptionRepository implements ISubscriptionRepository {
       final result = await Purchases.purchase(
         PurchaseParams.package(nativePkg),
       );
+
+      // Extract purchase token from RC SDK transaction (Android only).
+      // transactionIdentifier = purchase token on Android, used to validate with Google Play API.
+      final purchaseToken = result.storeTransaction.transactionIdentifier;
+      final productId = package.identifier;
+      if (purchaseToken.isNotEmpty) {
+        await _verifyWithGooglePlay(purchaseToken, productId);
+      } else {
+        Log.w('[RC] No purchase token in transaction — skipping Google Play verify');
+      }
+
       return _mapCustomerInfo(result.customerInfo);
     } on PlatformException catch (e) {
       Log.e('[RC] purchase error code=${e.code} message=${e.message}');
@@ -82,6 +94,26 @@ class SubscriptionRepository implements ISubscriptionRepository {
         message: e.message ?? 'Purchase failed',
         code: e.code,
       );
+    }
+  }
+
+  /// Validate purchase with Google Play Publisher API via Supabase edge function.
+  /// Non-blocking: errors logged but do NOT throw (don't break purchase flow).
+  Future<void> _verifyWithGooglePlay(String purchaseToken, String productId) async {
+    try {
+      final supabase = Supabase.instance.client;
+      final response = await supabase.functions.invoke(
+        'verify-google-purchase',
+        body: {'purchaseToken': purchaseToken, 'productId': productId},
+      );
+      final body = response.data as Map<String, dynamic>?;
+      if (body?['verified'] == true) {
+        Log.i('[RC] GP verify OK: tier=${body?['tier']}, credits=${body?['credits']}');
+      } else {
+        Log.w('[RC] GP verify skipped: ${body?['reason']}');
+      }
+    } on Object catch (e) {
+      Log.w('[RC] verify-google-purchase failed (non-blocking): $e');
     }
   }
 
