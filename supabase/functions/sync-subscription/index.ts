@@ -189,6 +189,10 @@ Deno.serve(async (req) => {
       );
       if (downgradeErr) {
         console.error("[sync-subscription] downgrade error:", downgradeErr);
+        return new Response(
+          JSON.stringify({ error: "Failed to downgrade subscription status" }),
+          { status: 500, headers: { "Content-Type": "application/json" } },
+        );
       }
       return new Response(
         JSON.stringify({
