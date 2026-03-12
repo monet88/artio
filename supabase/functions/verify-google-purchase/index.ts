@@ -203,8 +203,9 @@ Deno.serve(async (req) => {
           creditErr,
         );
         // credits: 0 — do not report credits as granted when RPC failed.
-        // Subscription status is already updated; user can contact support
-        // or wait for RC webhook to grant credits.
+        // Subscription tier/status is NOT set here (intentionally omitted to prevent
+        // tier escalation via client-supplied productId). RC webhook sets authoritative
+        // tier. User can contact support or wait for webhook to grant credits.
       } else {
         creditsGranted = tierInfo.credits;
         console.log(

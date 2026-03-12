@@ -131,11 +131,9 @@ if (isRecentlyUpdated) {
 
 ```typescript
 function isValidPurchaseToken(token: string): boolean {
-  // Real Google Play order ID: GPA.XXXX-XXXX-XXXX-XXXXX
-  if (/^GPA\.\d{4}-\d{4}-\d{4}-\d+$/.test(token)) return true;
-  // App-generated fallback for empty orderId case
-  if (/^rc-artio_(ultra|pro)_[a-z]+-\d{10,13}$/.test(token)) return true;
-  return false;
+  // Only accept real Google Play order IDs: GPA.XXXX-XXXX-XXXX-XXXXX
+  // rc-... timestamp fallback was removed — any user could forge arbitrary timestamps.
+  return /^GPA\.\d{4}-\d{4}-\d{4}-\d+$/.test(token);
 }
 ```
 
@@ -156,9 +154,9 @@ function isValidPurchaseToken(token: string): boolean {
 ### Flutter
 
 **`lib/features/subscription/data/repositories/subscription_repository.dart`**
-- Xóa guard `if (rawToken.isNotEmpty)` → luôn gọi `_verifyWithGooglePlay`
-- Thêm timestamp fallback khi orderId rỗng
-- Fix lint: `'rc-${productId}-'` → `'rc-$productId-'`
+- Thêm guard `if (rawToken.isNotEmpty)` → chỉ gọi `_verifyWithGooglePlay` khi orderId có giá trị
+- Xóa timestamp fallback `rc-...` — ai cũng có thể forge token giả
+- `unawaited(_verifyWithGooglePlay(...))` — non-blocking, không delay success UI
 
 **`lib/features/subscription/presentation/providers/subscription_provider.dart`**
 - `_syncToSupabase()`: parse và log response rõ `synced:false/true`

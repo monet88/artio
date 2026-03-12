@@ -372,7 +372,8 @@ Deno.serve(async (req) => {
       }
     }
 
-    // Always return 200 to prevent RevenueCat retries
+    // Return 200 for successfully processed or non-critical events.
+    // Critical failures (EXPIRATION/PRODUCT_CHANGE RPC errors) return 500 above to trigger RC retries.
     return new Response(JSON.stringify({ ok: true }), {
       status: 200,
       headers: { "Content-Type": "application/json" },
