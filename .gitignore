@@ -149,8 +149,12 @@ integration_test/.test_coverage.dart
 /web/.dart_tool/
 
 # Agents & Tools (AI IDEs)
-# NOTE: .agent/, .claude/, .gemini/, .cursor/, .codex/ moved to .git/info/exclude
-# so IDE tools (Cursor, Gemini, Claude Code) can still read them without gitignore errors.
+.agent/
+.agents/
+.claude/
+.gemini/
+.codex/
+.cursor/
 .app-template/
 # Allow GitHub Actions workflows
 !.github/
