@@ -187,10 +187,17 @@ Deno.serve(async (req) => {
         "[verify-google-purchase] grant check error:",
         grantCheckErr,
       );
+      // Fail-closed: rate-limit check is a security control.
+      // A transient DB error must not silently bypass it and grant credits.
+      return new Response(
+        JSON.stringify({ error: "Failed to verify credit grant eligibility" }),
+        { status: 500, headers: { "Content-Type": "application/json" } },
+      );
     }
 
-    const alreadyGranted = !grantCheckErr && (recentGrants?.length ?? 0) > 0;
+    const alreadyGranted = (recentGrants?.length ?? 0) > 0;
 
+    let creditsGranted = 0;
     if (alreadyGranted) {
       console.log(
         `[verify-google-purchase] Credits already granted this cycle for ${user.id} — skipping`,
@@ -214,10 +221,13 @@ Deno.serve(async (req) => {
           "[verify-google-purchase] grant_subscription_credits error:",
           creditErr,
         );
-        // credits already granted (idempotency) or DB error — don't fail the response
+        // credits: 0 — do not report credits as granted when RPC failed.
+        // Subscription status is already updated; user can contact support
+        // or wait for RC webhook to grant credits.
       } else {
+        creditsGranted = tierInfo.credits;
         console.log(
-          `[verify-google-purchase] Granted ${user.id}: tier=${tierInfo.tier}, ${tierInfo.credits} credits, ref=${referenceId}`,
+          `[verify-google-purchase] Granted ${user.id}: tier=${tierInfo.tier}, ${creditsGranted} credits, ref=${referenceId}`,
         );
       }
     }
@@ -226,7 +236,7 @@ Deno.serve(async (req) => {
       JSON.stringify({
         verified: true,
         tier: tierInfo.tier,
-        credits: alreadyGranted ? 0 : tierInfo.credits,
+        credits: creditsGranted,
         credits_already_granted: alreadyGranted,
       }),
       {
