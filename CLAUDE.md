@@ -120,8 +120,27 @@ Never hand-edit `*.g.dart` or `*.freezed.dart` files. Generated files are commit
 
 Edge functions in `supabase/functions/` use Deno/TypeScript. Shared utilities in `_shared/` (CORS, credit logic, model config). Key functions:
 - `generate-image` — orchestrates AI generation, model routing, credit deduction/refund
-- `revenuecat-webhook` — subscription sync + credit grant
+- `verify-google-purchase` — fast-path credit grant after purchase (non-blocking, called by Flutter)
+- `sync-subscription` — syncs tier/expiry from RevenueCat V2 API (no credit grant)
+- `revenuecat-webhook` — authoritative subscription + credit grant (server-to-server, Pub/Sub pipeline)
 - `reward-ad` — ad nonce + claim flow
+
+### IAP / RevenueCat Critical Facts
+
+**Edge function responsibilities** (never mix these up):
+- `verify-google-purchase`: grants credits ONLY — does NOT update subscription tier (prevents client-side tier escalation via `productId`)
+- `sync-subscription`: updates tier/expiry ONLY — does NOT grant credits
+- `revenuecat-webhook`: both tier + credits — authoritative source
+
+**`--no-verify-jwt` required** for all Flutter-called functions: Supabase gateway uses HS256 but GoTrue v2 issues ES256 tokens — mismatch → 401 for all requests. Functions validate JWT internally via `auth.getUser()`.
+
+**Double-grant prevention**: Both `verify-google-purchase` and `revenuecat-webhook` INITIAL_PURCHASE check `credit_transactions WHERE type='subscription' AND created_at > 25 days ago`. Whichever fires first wins; the second skips. The rate-limit query MUST use `type='subscription'` — that's what `grant_subscription_credits` RPC inserts. Using `type='subscription_credit'` makes the guard a no-op.
+
+**Downgrade**: Pass `p_tier: 'free'` (NOT `null`) to `update_subscription_status` — `subscription_tier` column default is `'free'`, not null.
+
+**Flutter**: After `Purchases.purchase()`, both `_verifyWithGooglePlay()` and `_syncToSupabase()` are called with `unawaited()` — non-blocking so success UI shows immediately. `StoreTransaction.transactionIdentifier` on Android = orderId (`GPA.xxx`), NOT purchaseToken.
+
+**`.env.production` safety**: `SUPABASE_SERVICE_ROLE_KEY`, `GEMINI_API_KEY`, `KIE_API_KEY` must NEVER be in `.env.production` (bundled in APK). Set via `supabase secrets set KEY=value --project-ref kytbmplsazsiwndppoji`. Safe to bundle: `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `REVENUECAT_*_KEY`, `ADMOB_*`.
 
 ## Admin App (`/admin`)
 
