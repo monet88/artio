@@ -1,4 +1,5 @@
 import 'package:artio/core/design_system/app_spacing.dart';
+import 'package:artio/core/exceptions/app_exception.dart';
 import 'package:artio/core/utils/app_exception_mapper.dart';
 import 'package:artio/features/subscription/domain/entities/subscription_package.dart';
 import 'package:artio/features/subscription/domain/entities/subscription_status.dart';
@@ -470,11 +471,13 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
       final purchaseState = ref.read(subscriptionNotifierProvider);
       if (purchaseState.hasError) {
         final err = purchaseState.error!;
-        final msg = err.toString().toLowerCase().contains('cancel')
-            ? 'Purchase cancelled.'
-            : AppExceptionMapper.toUserMessage(err);
+        final isCancelled = err is PaymentException && err.code == 'user_cancelled';
+        if (isCancelled) return; // user dismissed — silent, no snackbar
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(msg), behavior: SnackBarBehavior.floating),
+          SnackBar(
+            content: Text(AppExceptionMapper.toUserMessage(err)),
+            behavior: SnackBarBehavior.floating,
+          ),
         );
         return;
       }
@@ -502,11 +505,11 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
       Navigator.of(context).pop();
     } on Exception catch (e) {
       if (mounted) {
-        final msg = e.toString().toLowerCase().contains('cancel')
-            ? 'Purchase cancelled.'
-            : 'Purchase failed. Please try again.';
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(msg), behavior: SnackBarBehavior.floating),
+          SnackBar(
+            content: Text(AppExceptionMapper.toUserMessage(e)),
+            behavior: SnackBarBehavior.floating,
+          ),
         );
       }
     } finally {

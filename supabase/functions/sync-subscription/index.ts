@@ -117,13 +117,13 @@ Deno.serve(async (req) => {
     }
 
     const rcData = (await rcRes.json()) as {
-      items: Array<{ entitlement_id: string; expires_at: number }>;
+      // RC V2 API returns expires_at as ISO 8601 string or null (lifetime)
+      items: Array<{ entitlement_id: string; expires_at: string | null }>;
     };
 
     // 3. Determine highest tier from active entitlements
     // Priority: ultra > pro > free
     let resolvedTier: string | null = null;
-    let resolvedCredits = 0;
     let resolvedExpiresAt: string | null = null;
 
     // Check ultra first, then pro
@@ -135,7 +135,6 @@ Deno.serve(async (req) => {
       if (match) {
         const info = ENTITLEMENT_MAP[entitlementId];
         resolvedTier = info.tier;
-        resolvedCredits = info.credits;
         resolvedExpiresAt = match.expires_at
           ? new Date(match.expires_at).toISOString()
           : null;

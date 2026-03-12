@@ -113,6 +113,8 @@ class SubscriptionRepository implements ISubscriptionRepository {
       final body = response.data as Map<String, dynamic>?;
       if (body?['verified'] == true) {
         Log.i('[RC] GP verify OK: tier=${body?['tier']}, credits=${body?['credits']}');
+      } else if (body?['error'] != null) {
+        Log.w('[RC] GP verify error from server: ${body?['error']}');
       } else {
         Log.w('[RC] GP verify skipped: ${body?['reason']}');
       }
