@@ -69,7 +69,7 @@ class SubscriptionRepository implements ISubscriptionRepository {
       final productId = package.identifier;
       final purchaseRef = rawToken.isNotEmpty
           ? rawToken
-          : 'rc-${productId}-${DateTime.now().millisecondsSinceEpoch}';
+          : 'rc-$productId-${DateTime.now().millisecondsSinceEpoch}';
       await _verifyWithGooglePlay(purchaseRef, productId);
 
       return _mapCustomerInfo(result.customerInfo);
