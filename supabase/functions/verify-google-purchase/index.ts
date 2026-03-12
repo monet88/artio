@@ -25,6 +25,21 @@ function getTierInfo(
   return null;
 }
 
+/**
+ * Validate purchaseToken format to prevent fake/exploited grants.
+ * Accepts:
+ *   - Real Google Play order IDs: GPA.XXXX-XXXX-XXXX-XXXXX
+ *   - App fallback (empty orderId case): rc-{productId}-{unixMs}
+ * Rejects anything else (e.g. "fake-1", random strings).
+ */
+function isValidPurchaseToken(token: string): boolean {
+  // Real Google Play order ID: GPA.digits-digits-digits-digits
+  if (/^GPA\.\d{4}-\d{4}-\d{4}-\d+$/.test(token)) return true;
+  // App-generated fallback: rc-artio_{tier}_{period}-{13-digit unix ms}
+  if (/^rc-artio_(ultra|pro)_[a-z]+-\d{10,13}$/.test(token)) return true;
+  return false;
+}
+
 Deno.serve(async (req) => {
   if (req.method !== "POST") {
     return new Response(JSON.stringify({ error: "Method not allowed" }), {
@@ -79,6 +94,20 @@ Deno.serve(async (req) => {
       JSON.stringify({
         error: "Body must include purchaseToken and productId",
       }),
+      {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      },
+    );
+  }
+
+  // Validate purchaseToken format — blocks fake/crafted tokens
+  if (!isValidPurchaseToken(purchaseToken)) {
+    console.warn(
+      `[verify-google-purchase] Invalid purchaseToken format: "${purchaseToken}" for user ${user.id}`,
+    );
+    return new Response(
+      JSON.stringify({ error: "Invalid purchaseToken format" }),
       {
         status: 400,
         headers: { "Content-Type": "application/json" },
