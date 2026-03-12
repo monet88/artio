@@ -48,6 +48,7 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
   ProviderSubscription<AsyncValue<TemplateModel?>>? _templateErrorSub;
   ProviderSubscription<AsyncValue<GenerationJobModel?>>? _jobErrorSub;
   ProviderSubscription? _premiumSub;
+  ProviderSubscription<AsyncValue<TemplateModel?>>? _modelAutoSwitchSub;
 
   String _buildPrompt(TemplateModel template) {
     var prompt = template.promptTemplate;
@@ -213,7 +214,7 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
     });
 
     // Auto-switch to image-capable model when template data arrives
-    ref.listenManual<AsyncValue<TemplateModel?>>(
+    _modelAutoSwitchSub = ref.listenManual<AsyncValue<TemplateModel?>>(
       templateByIdProvider(widget.templateId),
       (previous, next) {
         next.whenData((template) {
@@ -254,6 +255,7 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
     _templateErrorSub?.close();
     _jobErrorSub?.close();
     _premiumSub?.close();
+    _modelAutoSwitchSub?.close();
     super.dispose();
   }
 

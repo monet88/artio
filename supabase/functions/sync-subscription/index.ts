@@ -5,7 +5,9 @@ const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const REVENUECAT_SECRET_KEY = Deno.env.get("REVENUECAT_SECRET_KEY")!;
 
-const RC_PROJECT_ID = Deno.env.get("REVENUECAT_PROJECT_ID") ?? "proj7a945f6d";
+const RC_PROJECT_ID = Deno.env.get("REVENUECAT_PROJECT_ID");
+if (!RC_PROJECT_ID)
+  throw new Error("REVENUECAT_PROJECT_ID env var is required");
 
 /** Map RevenueCat entitlement ID → tier name + monthly credits. */
 const ENTITLEMENT_MAP: Record<string, { tier: string; credits: number }> = {

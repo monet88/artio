@@ -9,6 +9,17 @@
 // returns the orderId (GPA.xxx), NOT the purchaseToken. The Google Play Developer
 // API requires the purchaseToken (not orderId), so we cannot do server-side GP
 // validation here. RC server-side validation via webhook handles that separately.
+//
+// SECURITY CONTRACT (understand before modifying):
+//   - purchaseToken (orderId) is CLIENT-SUPPLIED and only validated by format (GPA regex).
+//     We cannot verify it corresponds to a real purchase by this specific user.
+//   - productId is CLIENT-SUPPLIED and determines the credit amount granted (500 or 200).
+//     A user with a real GPA token could claim a higher tier than they purchased.
+//   - Mitigations in place:
+//       1. GPA format validation blocks obviously fake tokens.
+//       2. 25-day per-user rate limit prevents farming via unique fabricated tokens.
+//       3. RC webhook is the authoritative credit source — when Pub/Sub pipeline
+//          is confirmed stable, credit grants here should be removed entirely.
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
