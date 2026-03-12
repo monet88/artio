@@ -61,15 +61,16 @@ class SubscriptionRepository implements ISubscriptionRepository {
         PurchaseParams.package(nativePkg),
       );
 
-      // Extract purchase token from RC SDK transaction (Android only).
-      // transactionIdentifier = purchase token on Android, used to validate with Google Play API.
-      final purchaseToken = result.storeTransaction.transactionIdentifier;
+      // Always call verify-google-purchase after successful RC purchase.
+      // transactionIdentifier on Android = orderId (GPA.xxx) — may be empty
+      // for new subscriptions with free trials. Use timestamp fallback so edge
+      // function is always called and Supabase is always updated.
+      final rawToken = result.storeTransaction.transactionIdentifier;
       final productId = package.identifier;
-      if (purchaseToken.isNotEmpty) {
-        await _verifyWithGooglePlay(purchaseToken, productId);
-      } else {
-        Log.w('[RC] No purchase token in transaction — skipping Google Play verify');
-      }
+      final purchaseRef = rawToken.isNotEmpty
+          ? rawToken
+          : 'rc-${productId}-${DateTime.now().millisecondsSinceEpoch}';
+      await _verifyWithGooglePlay(purchaseRef, productId);
 
       return _mapCustomerInfo(result.customerInfo);
     } on PlatformException catch (e) {
