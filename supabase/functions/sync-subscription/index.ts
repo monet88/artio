@@ -128,8 +128,8 @@ Deno.serve(async (req) => {
     let resolvedTier: string | null = null;
     let resolvedExpiresAt: string | null = null;
 
-    // Check ultra first, then pro
-    const tierPriority = ["entl0aba27660b", "entl2665d1fa2e"];
+    // Priority order derived from ENTITLEMENT_MAP key insertion order (ultra → pro).
+    const tierPriority = Object.keys(ENTITLEMENT_MAP);
     for (const entitlementId of tierPriority) {
       const match = rcData.items.find(
         (e) => e.entitlement_id === entitlementId,

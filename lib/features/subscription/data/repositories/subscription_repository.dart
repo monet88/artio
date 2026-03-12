@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:artio/core/exceptions/app_exception.dart';
 import 'package:artio/features/subscription/domain/entities/subscription_package.dart';
 import 'package:artio/features/subscription/domain/entities/subscription_status.dart';
@@ -70,7 +72,8 @@ class SubscriptionRepository implements ISubscriptionRepository {
       final rawToken = result.storeTransaction.transactionIdentifier;
       final productId = package.identifier;
       if (rawToken.isNotEmpty) {
-        await _verifyWithGooglePlay(rawToken, productId);
+        // Non-blocking: user already charged — don't delay success UI.
+        unawaited(_verifyWithGooglePlay(rawToken, productId));
       } else {
         Log.w('[RC] orderId empty (free trial?) — skipping immediate verify, RC webhook will handle credits');
       }

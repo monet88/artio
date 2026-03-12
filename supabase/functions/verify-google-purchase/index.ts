@@ -142,29 +142,10 @@ Deno.serve(async (req) => {
       auth: { persistSession: false },
     });
 
-    // Update subscription status
-    const { error: statusErr } = await supabase.rpc(
-      "update_subscription_status",
-      {
-        p_user_id: user.id,
-        p_is_premium: true,
-        p_tier: tierInfo.tier,
-        p_expires_at: null, // expiry managed by RC webhook when it fires
-      },
-    );
-    if (statusErr) {
-      console.error(
-        "[verify-google-purchase] update_subscription_status error:",
-        statusErr,
-      );
-      return new Response(
-        JSON.stringify({ error: "Failed to update subscription status" }),
-        {
-          status: 500,
-          headers: { "Content-Type": "application/json" },
-        },
-      );
-    }
+    // Note: update_subscription_status is intentionally omitted here.
+    // productId is client-supplied, so setting tier from it before verifying
+    // ownership would allow tier escalation (e.g., claiming ultra with a pro token).
+    // The RC webhook fires within seconds and sets the authoritative tier+expiry.
 
     // Rate-limit check: prevent credit farming via fabricated GPA-format tokens.
     // An attacker who knows the regex could call this endpoint repeatedly with

@@ -303,6 +303,13 @@ Deno.serve(async (req) => {
             "[revenuecat-webhook] update_subscription_status error:",
             statusErr,
           );
+          // Return 500 so RC retries — user must not remain premium after expiry.
+          return new Response(
+            JSON.stringify({
+              error: "Failed to downgrade subscription status",
+            }),
+            { status: 500, headers: { "Content-Type": "application/json" } },
+          );
         }
 
         console.log(
