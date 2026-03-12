@@ -1,8 +1,12 @@
+import 'dart:async';
+
+import 'package:artio/core/providers/supabase_provider.dart';
 import 'package:artio/features/auth/presentation/state/auth_state.dart';
 import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
 import 'package:artio/features/subscription/domain/entities/subscription_package.dart';
 import 'package:artio/features/subscription/domain/entities/subscription_status.dart';
 import 'package:artio/features/subscription/domain/providers/subscription_repository_provider.dart';
+import 'package:artio/utils/logger_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -30,22 +34,51 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
     return repo.getStatus();
   }
 
-  /// Purchase a subscription package and update state.
+  /// Purchase a subscription package, sync to Supabase, and update state.
   Future<void> purchase(SubscriptionPackage package) async {
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async {
       final repo = ref.read(subscriptionRepositoryProvider);
-      return repo.purchase(package);
+      final result = await repo.purchase(package);
+      // Non-blocking: sync runs in background so success state shows immediately.
+      // User has already been charged — don't make them wait for edge function.
+      unawaited(_syncToSupabase());
+      return result;
     });
   }
 
-  /// Restore previous purchases and update state.
+  /// Restore previous purchases, sync to Supabase, and update state.
   Future<void> restore() async {
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async {
       final repo = ref.read(subscriptionRepositoryProvider);
-      return repo.restore();
+      final result = await repo.restore();
+      unawaited(_syncToSupabase());
+      return result;
     });
+  }
+
+  /// Call sync-subscription edge function then refresh auth state.
+  /// Non-blocking: errors are logged but never surface to user.
+  Future<void> _syncToSupabase() async {
+    try {
+      final supabase = ref.read(supabaseClientProvider);
+      final response = await supabase.functions.invoke('sync-subscription');
+      final body = response.data as Map<String, dynamic>?;
+      if (body?['synced'] == false) {
+        Log.w(
+          '[Subscription] sync skipped: ${body?['reason']} — ${body?['message']}',
+        );
+      } else {
+        Log.i(
+          '[Subscription] sync OK: tier=${body?['tier']}, is_premium=${body?['is_premium']}',
+        );
+      }
+      // Refresh auth state so UserProfileCard picks up new is_premium from DB.
+      ref.invalidate(authViewModelProvider);
+    } on Object catch (e) {
+      Log.w('[Subscription] sync-subscription failed (non-blocking): $e');
+    }
   }
 }
 

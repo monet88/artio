@@ -27,7 +27,7 @@ final offeringsProvider =
 // ignore: unused_element
 typedef OfferingsRef = AutoDisposeFutureProviderRef<List<SubscriptionPackage>>;
 String _$subscriptionNotifierHash() =>
-    r'77028fd91ef4f28d28d1618d99cfe49c5542e4fc';
+    r'8b01da09a983fc2975b64dd6cc687a7a8f60c3fc';
 
 /// See also [SubscriptionNotifier].
 @ProviderFor(SubscriptionNotifier)

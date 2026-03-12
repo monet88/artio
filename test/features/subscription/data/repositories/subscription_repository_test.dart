@@ -152,6 +152,62 @@ void main() {
       );
     });
 
+    // ITEM_ALREADY_OWNED: khi user đã mua subscription trên Google Play
+    // nhưng RC chưa sync → purchase() tự động gọi getStatus() thay vì báo lỗi.
+    // Contract: purchase() phải trả về SubscriptionStatus hợp lệ (không throw).
+    test(
+        'purchase with ITEM_ALREADY_OWNED returns active status via getStatus',
+        () async {
+      const activeStatus = SubscriptionStatus(
+        tier: 'pro',
+        isActive: true,
+        willRenew: true,
+      );
+
+      // Simulate: implementation detects error code '28' → delegates to getStatus()
+      when(() => mockRepo.purchase(any())).thenAnswer(
+        (_) async => activeStatus,
+      );
+
+      final result = await mockRepo.purchase(
+        const SubscriptionPackage(
+          identifier: 'pro_monthly',
+          priceString: r'$9.99',
+          nativePackage: 'native',
+        ),
+      );
+
+      expect(result.isActive, isTrue);
+      expect(result.isPro, isTrue);
+      expect(result.tier, 'pro');
+    });
+
+    test('purchase throws payment error on unrecognized SDK error', () async {
+      when(() => mockRepo.purchase(any())).thenThrow(
+        const AppException.payment(
+          message: 'Purchase failed',
+          code: 'unknown_error',
+        ),
+      );
+
+      expect(
+        () => mockRepo.purchase(
+          const SubscriptionPackage(
+            identifier: 'pro',
+            priceString: r'$9.99',
+            nativePackage: 'native',
+          ),
+        ),
+        throwsA(
+          isA<PaymentException>().having(
+            (e) => e.code,
+            'code',
+            'unknown_error',
+          ),
+        ),
+      );
+    });
+
     test('restore returns updated status', () async {
       when(() => mockRepo.restore()).thenAnswer(
         (_) async => const SubscriptionStatus(tier: 'ultra', isActive: true),
