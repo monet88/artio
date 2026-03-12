@@ -159,7 +159,7 @@ Deno.serve(async (req) => {
       .from("credit_transactions")
       .select("id")
       .eq("user_id", user.id)
-      .eq("type", "subscription_credit")
+      .eq("type", "subscription") // grant_subscription_credits inserts type='subscription'
       .gt("created_at", cutoff)
       .limit(1);
 

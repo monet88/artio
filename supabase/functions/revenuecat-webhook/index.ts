@@ -147,7 +147,7 @@ Deno.serve(async (req) => {
 
         // Guard: prevent double-grant when verify-google-purchase already ran.
         // Both paths use different reference_id formats so ON CONFLICT dedup won't fire.
-        // Solution: check for any subscription_credit grant in the last 25 days.
+        // Solution: check for any subscription grant in the last 25 days.
         const cutoff = new Date(
           Date.now() - 25 * 24 * 60 * 60 * 1000,
         ).toISOString();
@@ -155,7 +155,7 @@ Deno.serve(async (req) => {
           .from("credit_transactions")
           .select("id")
           .eq("user_id", userId)
-          .eq("type", "subscription_credit")
+          .eq("type", "subscription")
           .gt("created_at", cutoff)
           .limit(1);
 
@@ -346,6 +346,11 @@ Deno.serve(async (req) => {
           console.error(
             "[revenuecat-webhook] update_subscription_status error:",
             statusErr,
+          );
+          // Return 500 so RC retries — user must not stay on wrong tier.
+          return new Response(
+            JSON.stringify({ error: "Failed to update subscription status" }),
+            { status: 500, headers: { "Content-Type": "application/json" } },
           );
         }
 

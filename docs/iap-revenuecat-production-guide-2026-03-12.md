@@ -16,8 +16,8 @@ Flutter App (purchases_flutter 9.x)
   ├── Purchases.purchase() → RC SDK validates on-device
   │       │
   │       ├── [Step 1 — Immediate] verify-google-purchase edge fn
-  │       │       → update_subscription_status (is_premium=true, tier)
   │       │       → grant_subscription_credits (reference_id: gp-GPA.xxx)
+  │       │       → NO tier update (RC webhook sets authoritative tier)
   │       │
   │       └── [Step 2 — After purchase] sync-subscription edge fn
   │               → RC V2 API → update_subscription_status only (NO credits)
@@ -68,16 +68,17 @@ if (rawToken.isNotEmpty) {
 }
 ```
 
-**Fix:**
+**Fix (current):**
 ```dart
-// Luôn gọi — dùng timestamp fallback khi orderId rỗng
-final purchaseRef = rawToken.isNotEmpty
-    ? rawToken
-    : 'rc-$productId-${DateTime.now().millisecondsSinceEpoch}';
-await _verifyWithGooglePlay(purchaseRef, productId);
+// Chỉ gọi khi orderId có giá trị — timestamp fallback đã bị xóa (security risk)
+if (rawToken.isNotEmpty) {
+  unawaited(_verifyWithGooglePlay(rawToken, productId));
+} else {
+  Log.w('[RC] orderId empty — skipping immediate verify, RC webhook will handle');
+}
 ```
 
-**Note:** `purchases_flutter 9.x` trả `StoreTransaction.transactionIdentifier` = Google Play **orderId** (`GPA.xxx`), KHÔNG phải purchaseToken. Có thể rỗng với free trial subscriptions.
+**Note:** `purchases_flutter 9.x` trả `StoreTransaction.transactionIdentifier` = Google Play **orderId** (`GPA.xxx`), KHÔNG phải purchaseToken. Timestamp-based fallback (`rc-...`) đã bị **xóa** — user có thể forge token giả để lấy credits không giới hạn.
 
 ---
 
@@ -107,12 +108,15 @@ Google Play → Cloud Pub/Sub topic → RC subscribes → RC fires webhook → S
 
 **Triệu chứng:** User mua xong → sync-subscription gọi RC API → RC chưa nhận purchase → RC trả empty entitlements → sync-subscription set `is_premium=false`.
 
-**Fix:** Thêm guard:
+**Fix (current):** 5-minute grace window + downgrade sau đó:
 ```typescript
-// Nếu RC trả 0 entitlements → KHÔNG update Supabase, không downgrade
-if (Object.keys(activeEntitlements).length === 0) {
-  return { synced: false, reason: "no_active_entitlements" };
+// Nếu RC trả 0 entitlements VÀ profile.updated_at < 5 phút → skip (RC đang xử lý)
+// Nếu RC trả 0 entitlements VÀ profile.updated_at >= 5 phút → downgrade (RC authoritative)
+const isRecentlyUpdated = profile?.is_premium === true && profileUpdatedAt > fiveMinutesAgo;
+if (isRecentlyUpdated) {
+  return { synced: false, reason: "rc_processing_in_flight" };
 }
+// else: gọi update_subscription_status với is_premium=false
 ```
 
 ---
