@@ -1,14 +1,19 @@
 // supabase/functions/verify-google-purchase/index.ts
+//
+// Called by the Flutter app immediately after a successful Purchases.purchase().
+// The RC SDK validates the purchase on-device against Google Play, so we trust
+// the client claim. We use the orderId (GPA.xxx) — the only token exposed by
+// purchases_flutter — as an idempotency key to prevent double-grants.
+//
+// NOTE: purchases_flutter 9.x StoreTransaction.transactionIdentifier on Android
+// returns the orderId (GPA.xxx), NOT the purchaseToken. The Google Play Developer
+// API requires the purchaseToken (not orderId), so we cannot do server-side GP
+// validation here. RC server-side validation via webhook handles that separately.
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const GOOGLE_PLAY_SERVICE_ACCOUNT_JSON = Deno.env.get(
-  "GOOGLE_PLAY_SERVICE_ACCOUNT_JSON",
-)!;
-
-const PACKAGE_NAME = "com.artio.artio";
 
 /** Map product ID prefix → tier name + credits */
 function getTierInfo(
@@ -18,69 +23,6 @@ function getTierInfo(
     return { tier: "ultra", credits: 500 };
   if (productId.startsWith("artio_pro_")) return { tier: "pro", credits: 200 };
   return null;
-}
-
-/** Generate a Google OAuth2 access token using service account JWT (RS256). */
-async function getGoogleAccessToken(): Promise<string> {
-  const sa = JSON.parse(GOOGLE_PLAY_SERVICE_ACCOUNT_JSON);
-  const now = Math.floor(Date.now() / 1000);
-  const header = { alg: "RS256", typ: "JWT" };
-  const payload = {
-    iss: sa.client_email,
-    scope: "https://www.googleapis.com/auth/androidpublisher",
-    aud: "https://oauth2.googleapis.com/token",
-    iat: now,
-    exp: now + 3600,
-  };
-
-  const encode = (obj: unknown) =>
-    btoa(JSON.stringify(obj))
-      .replace(/=/g, "")
-      .replace(/\+/g, "-")
-      .replace(/\//g, "_");
-
-  const signingInput = `${encode(header)}.${encode(payload)}`;
-
-  // Import RSA private key
-  const pemBody = sa.private_key
-    .replace("-----BEGIN RSA PRIVATE KEY-----", "")
-    .replace("-----END RSA PRIVATE KEY-----", "")
-    .replace("-----BEGIN PRIVATE KEY-----", "")
-    .replace("-----END PRIVATE KEY-----", "")
-    .replace(/\s/g, "");
-  const keyBytes = Uint8Array.from(atob(pemBody), (c) => c.charCodeAt(0));
-  const cryptoKey = await crypto.subtle.importKey(
-    "pkcs8",
-    keyBytes,
-    { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" },
-    false,
-    ["sign"],
-  );
-
-  const signature = await crypto.subtle.sign(
-    "RSASSA-PKCS1-v1_5",
-    cryptoKey,
-    new TextEncoder().encode(signingInput),
-  );
-  const sigB64 = btoa(String.fromCharCode(...new Uint8Array(signature)))
-    .replace(/=/g, "")
-    .replace(/\+/g, "-")
-    .replace(/\//g, "_");
-
-  const jwt = `${signingInput}.${sigB64}`;
-
-  // Exchange JWT for access token
-  const tokenRes = await fetch("https://oauth2.googleapis.com/token", {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: `grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&assertion=${jwt}`,
-  });
-  if (!tokenRes.ok) {
-    const err = await tokenRes.text();
-    throw new Error(`Google OAuth2 token error: ${err}`);
-  }
-  const { access_token } = (await tokenRes.json()) as { access_token: string };
-  return access_token;
 }
 
 Deno.serve(async (req) => {
@@ -120,6 +62,8 @@ Deno.serve(async (req) => {
   }
 
   // Parse request body
+  // purchaseToken = orderId (GPA.xxx) from StoreTransaction.transactionIdentifier
+  // productId = store product identifier (e.g. "artio_pro_monthly")
   let purchaseToken: string;
   let productId: string;
   try {
@@ -144,6 +88,9 @@ Deno.serve(async (req) => {
 
   const tierInfo = getTierInfo(productId);
   if (!tierInfo) {
+    console.warn(
+      `[verify-google-purchase] Unknown productId: ${productId} for user ${user.id}`,
+    );
     return new Response(
       JSON.stringify({ error: `Unknown productId: ${productId}` }),
       {
@@ -154,67 +101,6 @@ Deno.serve(async (req) => {
   }
 
   try {
-    // Call Google Play Publisher API (subscriptionsv2 — works for both old and new subscription model,
-    // does NOT require productId in the URL, avoids 404 if productId format differs).
-    const accessToken = await getGoogleAccessToken();
-    const gpUrl = `https://androidpublisher.googleapis.com/androidpublisher/v3/applications/${PACKAGE_NAME}/purchases/subscriptionsv2/tokens/${purchaseToken}`;
-    const gpRes = await fetch(gpUrl, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
-
-    if (!gpRes.ok) {
-      const errBody = await gpRes.text();
-      console.error(
-        "[verify-google-purchase] Google Play API error:",
-        gpRes.status,
-        errBody,
-      );
-      return new Response(
-        JSON.stringify({
-          error: "Google Play validation failed",
-          detail: errBody,
-        }),
-        {
-          status: 502,
-          headers: { "Content-Type": "application/json" },
-        },
-      );
-    }
-
-    const gpData = (await gpRes.json()) as {
-      subscriptionState?: string; // "SUBSCRIPTION_STATE_ACTIVE", "SUBSCRIPTION_STATE_CANCELED", etc.
-      latestOrderId?: string;
-      lineItems?: Array<{ productId: string; expiryTime?: string }>;
-    };
-
-    console.log(
-      `[verify-google-purchase] GP v2 response for ${user.id}: state=${gpData.subscriptionState} orderId=${gpData.latestOrderId}`,
-    );
-
-    // subscriptionState ACTIVE = valid subscription
-    if (gpData.subscriptionState !== "SUBSCRIPTION_STATE_ACTIVE") {
-      return new Response(
-        JSON.stringify({
-          verified: false,
-          reason: `subscriptionState=${gpData.subscriptionState}`,
-        }),
-        {
-          status: 200,
-          headers: { "Content-Type": "application/json" },
-        },
-      );
-    }
-
-    // Detect tier from lineItems[0].productId (e.g. "artio_pro_monthly" or "artio_pro")
-    const lineProductId = gpData.lineItems?.[0]?.productId ?? productId;
-    const resolvedTierInfo =
-      getTierInfo(lineProductId) ?? getTierInfo(productId) ?? tierInfo;
-
-    const orderId = gpData.latestOrderId ?? purchaseToken; // fallback to token if no orderId
-    const expiresAt = gpData.lineItems?.[0]?.expiryTime
-      ? new Date(gpData.lineItems[0].expiryTime).toISOString()
-      : null;
-
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
       auth: { persistSession: false },
     });
@@ -225,8 +111,8 @@ Deno.serve(async (req) => {
       {
         p_user_id: user.id,
         p_is_premium: true,
-        p_tier: resolvedTierInfo.tier,
-        p_expires_at: expiresAt,
+        p_tier: tierInfo.tier,
+        p_expires_at: null, // expiry managed by RC webhook when it fires
       },
     );
     if (statusErr) {
@@ -243,14 +129,17 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Grant credits (idempotent via orderId — same orderId RC webhook uses as transaction_id)
+    // Grant credits — idempotent via purchaseToken (orderId GPA.xxx).
+    // If RC webhook later fires with the same orderId as transaction_id,
+    // grant_subscription_credits will deduplicate via reference_id.
+    const referenceId = `gp-${purchaseToken}`;
     const { error: creditErr } = await supabase.rpc(
       "grant_subscription_credits",
       {
         p_user_id: user.id,
-        p_amount: resolvedTierInfo.credits,
-        p_description: `${resolvedTierInfo.tier} subscription — verified via Google Play API`,
-        p_reference_id: `gp-${orderId}`,
+        p_amount: tierInfo.credits,
+        p_description: `${tierInfo.tier} subscription — Google Play purchase`,
+        p_reference_id: referenceId,
       },
     );
     if (creditErr) {
@@ -258,19 +147,18 @@ Deno.serve(async (req) => {
         "[verify-google-purchase] grant_subscription_credits error:",
         creditErr,
       );
-      // Don't fail — subscription status already updated
+      // credits already granted (idempotency) or DB error — don't fail the response
     }
 
     console.log(
-      `[verify-google-purchase] Verified ${user.id}: tier=${resolvedTierInfo.tier}, ${resolvedTierInfo.credits} credits, orderId=${orderId}`,
+      `[verify-google-purchase] Granted ${user.id}: tier=${tierInfo.tier}, ${tierInfo.credits} credits, ref=${referenceId}`,
     );
 
     return new Response(
       JSON.stringify({
         verified: true,
-        tier: resolvedTierInfo.tier,
-        credits: resolvedTierInfo.credits,
-        orderId,
+        tier: tierInfo.tier,
+        credits: tierInfo.credits,
       }),
       {
         status: 200,
