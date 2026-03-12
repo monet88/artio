@@ -249,7 +249,9 @@ Deno.serve(async (req) => {
           );
         }
 
-        // Grant credits (idempotent via event_id)
+        // Grant credits (idempotent via event_id — no 25-day rate-limit check needed here.
+        // RENEWAL events have unique eventIds; grant_subscription_credits deduplicates via
+        // reference_id = eventId, so RC retries of the same event are safe.)
         const { error: creditErr } = await supabase.rpc(
           "grant_subscription_credits",
           {
@@ -294,7 +296,7 @@ Deno.serve(async (req) => {
           {
             p_user_id: userId,
             p_is_premium: false,
-            p_tier: null,
+            p_tier: "free", // explicit 'free' — RPC does SET subscription_tier = p_tier, so null would write NULL (not default)
             p_expires_at: null,
           },
         );
