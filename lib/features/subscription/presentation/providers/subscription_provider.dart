@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:artio/core/providers/supabase_provider.dart';
 import 'package:artio/features/auth/presentation/state/auth_state.dart';
 import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
@@ -38,7 +40,9 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
     state = await AsyncValue.guard(() async {
       final repo = ref.read(subscriptionRepositoryProvider);
       final result = await repo.purchase(package);
-      await _syncToSupabase();
+      // Non-blocking: sync runs in background so success state shows immediately.
+      // User has already been charged — don't make them wait for edge function.
+      unawaited(_syncToSupabase());
       return result;
     });
   }
@@ -49,7 +53,7 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
     state = await AsyncValue.guard(() async {
       final repo = ref.read(subscriptionRepositoryProvider);
       final result = await repo.restore();
-      await _syncToSupabase();
+      unawaited(_syncToSupabase());
       return result;
     });
   }
