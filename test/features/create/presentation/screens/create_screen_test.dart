@@ -3,6 +3,7 @@ import 'package:artio/features/auth/presentation/state/auth_state.dart';
 import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
 import 'package:artio/features/create/presentation/create_screen.dart';
 import 'package:artio/features/create/presentation/view_models/create_view_model.dart';
+import 'package:artio/features/credits/presentation/widgets/insufficient_credits_sheet.dart';
 import 'package:artio/features/template_engine/domain/entities/generation_job_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -36,6 +37,21 @@ class _FailedCreateViewModel extends CreateViewModel {
       prompt: 'A prompt',
       status: JobStatus.failed,
       errorMessage: 'Provider failed',
+    ),
+  );
+}
+
+/// Simulates a job that failed due to insufficient credits.
+class _CreditFailedCreateViewModel extends CreateViewModel {
+  @override
+  AsyncValue<GenerationJobModel?> build() => const AsyncData(
+    GenerationJobModel(
+      id: 'job-credit',
+      userId: 'user-1',
+      templateId: 'free-text',
+      prompt: 'A prompt',
+      status: JobStatus.failed,
+      errorMessage: 'Payment could not be processed',
     ),
   );
 }
@@ -116,7 +132,9 @@ void main() {
       expect(find.text('Create Account'), findsOneWidget);
     });
 
-    testWidgets('shows failed job feedback snackbar', (tester) async {
+    testWidgets('shows failed job feedback snackbar for non-credit errors', (
+      tester,
+    ) async {
       const authenticatedState = AuthState.authenticated(
         UserModel(id: 'user-1', email: 'user@example.com'),
       );
@@ -130,7 +148,31 @@ void main() {
       );
       await tester.pumpAndSettle();
 
+      // Non-credit error → plain SnackBar, no InsufficientCreditsSheet
       expect(find.text('Provider failed'), findsOneWidget);
+      expect(find.byType(InsufficientCreditsSheet), findsNothing);
     });
+
+    testWidgets(
+      'shows InsufficientCreditsSheet when job fails with credit error message',
+      (tester) async {
+        const authenticatedState = AuthState.authenticated(
+          UserModel(id: 'user-1', email: 'user@example.com'),
+        );
+
+        await tester.pumpApp(
+          const CreateScreen(),
+          overrides: buildOverrides(
+            authState: authenticatedState,
+            createViewModel: _CreditFailedCreateViewModel(),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        // Credit error in failed job → InsufficientCreditsSheet, no SnackBar
+        expect(find.byType(InsufficientCreditsSheet), findsOneWidget);
+        expect(find.text('Payment could not be processed'), findsNothing);
+      },
+    );
   });
 }

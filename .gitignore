@@ -69,6 +69,7 @@ app.*.map.json
 *.pem
 credentials.json
 service-account*.json
+*-revenuecat-*.json
 firebase-debug.log
 firestore-debug.log
 
@@ -77,6 +78,11 @@ firestore-debug.log
 
 # RevenueCat
 # (No specific patterns needed, keys go in .env)
+
+# Signing keystores (NEVER commit)
+*.jks
+*.keystore
+keystore.properties
 
 # Platform-specific
 /android/.gradle/
@@ -143,9 +149,13 @@ integration_test/.test_coverage.dart
 /web/.dart_tool/
 
 # Agents & Tools (AI IDEs)
-.app-template/
+.agent/
+.agents/
+.claude/
+.gemini/
 .codex/
 .cursor/
+.app-template/
 # Allow GitHub Actions workflows
 !.github/
 .github/*

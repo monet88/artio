@@ -1,4 +1,6 @@
 import 'package:artio/core/design_system/app_spacing.dart';
+import 'package:artio/core/exceptions/app_exception.dart';
+import 'package:artio/core/utils/app_exception_mapper.dart';
 import 'package:artio/features/subscription/domain/entities/subscription_package.dart';
 import 'package:artio/features/subscription/domain/entities/subscription_status.dart';
 import 'package:artio/features/subscription/presentation/providers/subscription_provider.dart';
@@ -463,22 +465,51 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
     setState(() => _isPurchasing = true);
     try {
       await ref.read(subscriptionNotifierProvider.notifier).purchase(pkg);
-      if (mounted) {
+      if (!mounted) return;
+
+      // AsyncValue.guard never throws — check state explicitly for errors.
+      final purchaseState = ref.read(subscriptionNotifierProvider);
+      if (purchaseState.hasError) {
+        final err = purchaseState.error!;
+        final isCancelled = err is PaymentException && err.code == 'user_cancelled';
+        if (isCancelled) return; // user dismissed — silent, no snackbar
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('🎉 Subscription activated! Welcome to Premium.'),
+          SnackBar(
+            content: Text(AppExceptionMapper.toUserMessage(err)),
             behavior: SnackBarBehavior.floating,
           ),
         );
-        Navigator.of(context).pop();
+        return;
       }
+
+      // Verify subscription is actually active before claiming success.
+      final status = purchaseState.valueOrNull;
+      if (status == null || !status.isActive) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Purchase processed. If credits are missing, tap Restore.',
+            ),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+        return;
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('🎉 Subscription activated! Welcome to Premium.'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      Navigator.of(context).pop();
     } on Exception catch (e) {
       if (mounted) {
-        final msg = e.toString().toLowerCase().contains('cancel')
-            ? 'Purchase cancelled.'
-            : 'Purchase failed. Please try again.';
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(msg), behavior: SnackBarBehavior.floating),
+          SnackBar(
+            content: Text(AppExceptionMapper.toUserMessage(e)),
+            behavior: SnackBarBehavior.floating,
+          ),
         );
       }
     } finally {

@@ -114,7 +114,8 @@ class GalleryRepository implements IGalleryRepository {
         var query = _supabase
             .from('generation_jobs')
             .select('*, templates(name)')
-            .isFilter('deleted_at', null);
+            .isFilter('deleted_at', null)
+            .eq('status', 'completed');
 
         if (templateId != null) {
           query = query.eq('template_id', templateId);
@@ -129,12 +130,8 @@ class GalleryRepository implements IGalleryRepository {
         for (final row in response as List) {
           final job = row as Map<String, dynamic>;
           final urls = (job['result_urls'] as List?) ?? [];
-          if (urls.isEmpty && job['status'] != 'completed') {
-            items.add(parseJob(job, 0));
-          } else {
-            for (var i = 0; i < urls.length; i++) {
-              items.add(parseJob(job, i));
-            }
+          for (var i = 0; i < urls.length; i++) {
+            items.add(parseJob(job, i));
           }
         }
 

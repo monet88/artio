@@ -1,3 +1,5 @@
+exclude_tags: integration
+
 tags:
   integration:
     # Integration tests require external services (Supabase, etc.)

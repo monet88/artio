@@ -78,6 +78,12 @@ Future<void> main() async {
           await Purchases.setLogLevel(LogLevel.debug);
         }
         await Purchases.configure(PurchasesConfiguration(rcKey));
+        // Allow linking existing Google Play receipts that were purchased
+        // before RevenueCat integration, or before the user logged in.
+        // Required for restorePurchases() to work when a receipt was made
+        // under a different RC session (anonymous user, reinstall, etc.).
+        // ignore: deprecated_member_use
+        await Purchases.setAllowSharingStoreAccount(true);
       } on Object catch (e) {
         debugPrint('RevenueCat init failed (non-blocking): $e');
       }

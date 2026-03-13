@@ -57,6 +57,8 @@ class GenerationStateSection extends StatelessWidget {
     required this.isGenerating,
     required this.onGenerate,
     required this.onReset,
+    this.isPaymentError = false,
+    this.onUpgrade,
     super.key,
   });
 
@@ -64,6 +66,12 @@ class GenerationStateSection extends StatelessWidget {
   final bool isGenerating;
   final VoidCallback onGenerate;
   final VoidCallback onReset;
+
+  /// Whether the last error was a payment/credit error.
+  final bool isPaymentError;
+
+  /// Called when the user taps the upgrade CTA on a credit error.
+  final VoidCallback? onUpgrade;
 
   @override
   Widget build(BuildContext context) {
@@ -76,15 +84,22 @@ class GenerationStateSection extends StatelessWidget {
             style: TextStyle(color: Theme.of(context).colorScheme.error),
           ),
           const SizedBox(height: AppSpacing.sm),
-          FilledButton(
-            onPressed: isGenerating
-                ? null
-                : () {
-                    onReset();
-                    onGenerate();
-                  },
-            child: const Text('Retry'),
-          ),
+          if (isPaymentError && onUpgrade != null)
+            FilledButton.icon(
+              onPressed: onUpgrade,
+              icon: const Icon(Icons.star_outline, size: 18),
+              label: const Text('Upgrade Plan'),
+            )
+          else
+            FilledButton(
+              onPressed: isGenerating
+                  ? null
+                  : () {
+                      onReset();
+                      onGenerate();
+                    },
+              child: const Text('Retry'),
+            ),
         ],
       ),
       data: (job) {

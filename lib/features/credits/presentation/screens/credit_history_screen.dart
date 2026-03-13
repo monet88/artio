@@ -1,3 +1,4 @@
+import 'package:artio/core/state/credit_balance_state_provider.dart';
 import 'package:artio/core/utils/app_exception_mapper.dart';
 import 'package:artio/features/credits/domain/entities/credit_transaction.dart';
 import 'package:artio/features/credits/presentation/providers/credit_history_provider.dart';
@@ -16,6 +17,7 @@ class CreditHistoryScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final historyAsync = ref.watch(creditHistoryProvider());
+    final creditBalance = ref.watch(creditBalanceNotifierProvider).valueOrNull;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Credit History')),
@@ -27,17 +29,83 @@ class CreditHistoryScreen extends ConsumerWidget {
           onRetry: () => ref.invalidate(creditHistoryProvider),
         ),
         data: (transactions) {
-          if (transactions.isEmpty) {
-            return const _EmptyHistoryState();
-          }
-          return ListView.separated(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            itemCount: transactions.length,
-            separatorBuilder: (_, __) => const Divider(height: 1, indent: 56),
-            itemBuilder: (context, index) =>
-                _TransactionTile(transaction: transactions[index]),
+          return CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(
+                child: _BalanceHeader(balance: creditBalance?.balance),
+              ),
+              if (transactions.isEmpty)
+                const SliverFillRemaining(child: _EmptyHistoryState())
+              else
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
+                  sliver: SliverList.separated(
+                    itemCount: transactions.length,
+                    separatorBuilder: (_, __) =>
+                        const Divider(height: 1, indent: 56),
+                    itemBuilder: (context, index) =>
+                        _TransactionTile(transaction: transactions[index]),
+                  ),
+                ),
+            ],
           );
         },
+      ),
+    );
+  }
+}
+
+// ── Balance header ────────────────────────────────────────────────────────────
+
+class _BalanceHeader extends StatelessWidget {
+  const _BalanceHeader({required this.balance});
+
+  final int? balance;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        decoration: BoxDecoration(
+          color: theme.colorScheme.primaryContainer,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              Icons.toll_rounded,
+              color: theme.colorScheme.onPrimaryContainer,
+              size: 28,
+            ),
+            const SizedBox(width: 12),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Current Balance',
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onPrimaryContainer.withValues(
+                      alpha: 0.7,
+                    ),
+                  ),
+                ),
+                Text(
+                  balance != null ? '$balance credits' : '—',
+                  style: theme.textTheme.headlineSmall?.copyWith(
+                    color: theme.colorScheme.onPrimaryContainer,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -42,15 +42,26 @@ class _CreateScreenState extends ConsumerState<CreateScreen> {
         final previousFailedJob = previous?.valueOrNull;
         if (failedJob?.status == JobStatus.failed &&
             previousFailedJob?.status != JobStatus.failed) {
-          final failedMessage =
-              failedJob?.errorMessage?.trim().isNotEmpty ?? false
-              ? failedJob!.errorMessage!.trim()
-              : 'Generation failed. Please try again.';
+          final msg = failedJob?.errorMessage?.trim() ?? '';
+          final isCreditError =
+              msg.toLowerCase().contains('credit') ||
+              msg.toLowerCase().contains('payment') ||
+              msg.toLowerCase().contains('insufficient');
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (!mounted) return;
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(failedMessage)));
+            if (isCreditError) {
+              _showInsufficientCreditsSheet();
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    msg.isNotEmpty
+                        ? msg
+                        : 'Generation failed. Please try again.',
+                  ),
+                ),
+              );
+            }
           });
         }
 
@@ -189,7 +200,9 @@ class _CreateScreenState extends ConsumerState<CreateScreen> {
                 const SizedBox(height: AppSpacing.sm),
                 Text(
                   'Create high quality images from your prompt',
-                  style: Theme.of(context).textTheme.bodyMedium,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
                 ),
                 const SizedBox(height: AppSpacing.lg),
                 const CreditBalanceChip(),
