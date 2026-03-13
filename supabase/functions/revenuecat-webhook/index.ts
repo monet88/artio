@@ -375,7 +375,8 @@ Deno.serve(async (req) => {
     }
 
     // Return 200 for successfully processed or non-critical events.
-    // Critical failures (EXPIRATION/PRODUCT_CHANGE RPC errors) return 500 above to trigger RC retries.
+    // Any RPC failure in a critical handler (INITIAL_PURCHASE, RENEWAL, EXPIRATION, PRODUCT_CHANGE)
+    // returns 500 above — those paths never reach here.
     return new Response(JSON.stringify({ ok: true }), {
       status: 200,
       headers: { "Content-Type": "application/json" },
