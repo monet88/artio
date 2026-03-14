@@ -70,9 +70,9 @@ class SettingsSections extends ConsumerWidget {
                 onTap: isPremium
                     ? () => launchUrlSafely(
                           context,
-                          Platform.isIOS
-                              ? 'https://apps.apple.com/account/subscriptions'
-                              : 'https://play.google.com/store/account/subscriptions',
+                          Platform.isAndroid
+                              ? 'https://play.google.com/store/account/subscriptions'
+                              : 'https://apps.apple.com/account/subscriptions',
                         )
                     : () => const PaywallRoute().push<void>(context),
               ),

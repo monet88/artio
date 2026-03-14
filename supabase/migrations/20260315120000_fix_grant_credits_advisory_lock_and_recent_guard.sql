@@ -71,3 +71,6 @@ SET search_path = public;
 -- Revoking only from 'authenticated' leaves 'anon' able to call this SECURITY DEFINER function.
 REVOKE ALL ON FUNCTION grant_subscription_credits(UUID, INTEGER, TEXT, TEXT, BOOLEAN) FROM PUBLIC;
 REVOKE ALL ON FUNCTION grant_subscription_credits(UUID, INTEGER, TEXT, TEXT, BOOLEAN) FROM authenticated;
+-- Re-grant to service_role explicitly: after revoking from PUBLIC, service_role loses EXECUTE
+-- because it inherited from PUBLIC. Edge functions run as service_role and must retain access.
+GRANT EXECUTE ON FUNCTION grant_subscription_credits(UUID, INTEGER, TEXT, TEXT, BOOLEAN) TO service_role;
