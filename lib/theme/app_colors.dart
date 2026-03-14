@@ -95,6 +95,11 @@ abstract class AppColors {
   /// Premium plan tile icon background (settings screen)
   static const premiumPlanIcon = Color(0xFF9B59B6);
 
+  /// Settings icon backgrounds (Legal/Support section)
+  static const settingsPrivacyIcon = Color(0xFF5B8BF0);
+  static const settingsTermsIcon = Color(0xFF7B61FF);
+  static const settingsHelpIcon = Color(0xFF34C759);
+
   /// Semantic colors with better contrast for dark backgrounds
   static const errorDark = Color(0xFFEF9A9A);
   static const successDark = Color(0xFFA5D6A7);

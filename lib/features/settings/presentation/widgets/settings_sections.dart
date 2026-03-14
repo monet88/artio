@@ -180,7 +180,7 @@ class SettingsSections extends ConsumerWidget {
           children: [
             SettingsTile(
               icon: Icons.privacy_tip_outlined,
-              iconBgColor: const Color(0xFF5B8BF0),
+              iconBgColor: AppColors.settingsPrivacyIcon,
               title: 'Privacy Policy',
               trailing: SettingsChevronArrow(isDark: isDark),
               isDark: isDark,
@@ -189,7 +189,7 @@ class SettingsSections extends ConsumerWidget {
             SettingsDivider(isDark: isDark),
             SettingsTile(
               icon: Icons.gavel_outlined,
-              iconBgColor: const Color(0xFF7B61FF),
+              iconBgColor: AppColors.settingsTermsIcon,
               title: 'Terms of Service',
               trailing: SettingsChevronArrow(isDark: isDark),
               isDark: isDark,
@@ -221,7 +221,7 @@ class SettingsSections extends ConsumerWidget {
           children: [
             SettingsTile(
               icon: Icons.help_outline_rounded,
-              iconBgColor: const Color(0xFF34C759),
+              iconBgColor: AppColors.settingsHelpIcon,
               title: 'Help & FAQ',
               trailing: SettingsChevronArrow(isDark: isDark),
               isDark: isDark,

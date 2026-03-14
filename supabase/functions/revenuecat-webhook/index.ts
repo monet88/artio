@@ -33,7 +33,16 @@ Deno.serve(async (req) => {
     });
   }
 
-  // Verify webhook auth header (manual constant-time comparison)
+  // H1: Guard against empty-string secret (env var set to "" bypasses auth otherwise)
+  if (!REVENUECAT_WEBHOOK_SECRET) {
+    console.error("[revenuecat-webhook] REVENUECAT_WEBHOOK_SECRET is not set");
+    return new Response(JSON.stringify({ error: "Server misconfigured" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
+  // Verify webhook auth header (no early-exit XOR comparison — length and bytes both checked).
   // crypto.subtle.timingSafeEqual is not available in Supabase Edge Runtime.
   const authHeader = req.headers.get("Authorization");
   const expectedAuth = `Bearer ${REVENUECAT_WEBHOOK_SECRET}`;
@@ -143,51 +152,18 @@ Deno.serve(async (req) => {
           );
         }
 
-        // Guard: prevent double-grant when verify-google-purchase already ran.
-        // Both paths use different reference_id formats so ON CONFLICT dedup won't fire.
-        // Solution: check for any subscription grant in the last 25 days.
-        const cutoff = new Date(
-          Date.now() - 25 * 24 * 60 * 60 * 1000,
-        ).toISOString();
-        const { data: recentGrants, error: grantCheckErr } = await supabase
-          .from("credit_transactions")
-          .select("id")
-          .eq("user_id", userId)
-          .eq("type", "subscription")
-          .gt("created_at", cutoff)
-          .limit(1);
-
-        if (grantCheckErr) {
-          console.error(
-            "[revenuecat-webhook] grant check error:",
-            grantCheckErr,
-          );
-          return new Response(
-            JSON.stringify({
-              error: "Failed to verify credit grant eligibility",
-            }),
-            {
-              status: 500,
-              headers: { "Content-Type": "application/json" },
-            },
-          );
-        }
-
-        if ((recentGrants?.length ?? 0) > 0) {
-          console.log(
-            `[revenuecat-webhook] INITIAL_PURCHASE: credits already granted this cycle for ${userId} — skipping duplicate`,
-          );
-          break;
-        }
-
-        // Grant credits (idempotent via event_id)
-        const { error: creditErr } = await supabase.rpc(
+        // Grant credits (idempotent via event_id).
+        // p_check_recent_grant=true moves the 25-day guard inside the RPC, under an
+        // advisory lock, eliminating the TOCTOU race with verify-google-purchase
+        // (which uses a different reference_id format so ON CONFLICT alone won't dedup).
+        const { data: grantResult, error: creditErr } = await supabase.rpc(
           "grant_subscription_credits",
           {
             p_user_id: userId,
             p_amount: tierInfo.credits,
             p_description: `${tierInfo.tier} subscription — initial purchase`,
             p_reference_id: eventId,
+            p_check_recent_grant: true,
           },
         );
         if (creditErr) {
@@ -202,6 +178,13 @@ Deno.serve(async (req) => {
               headers: { "Content-Type": "application/json" },
             },
           );
+        }
+
+        if (grantResult?.granted === false) {
+          console.log(
+            `[revenuecat-webhook] INITIAL_PURCHASE: credits already granted this cycle for ${userId} — skipping duplicate (reason: ${grantResult?.reason})`,
+          );
+          break;
         }
 
         console.log(
@@ -250,13 +233,14 @@ Deno.serve(async (req) => {
         // Grant credits (idempotent via event_id — no 25-day rate-limit check needed here.
         // RENEWAL events have unique eventIds; grant_subscription_credits deduplicates via
         // reference_id = eventId, so RC retries of the same event are safe.)
-        const { error: creditErr } = await supabase.rpc(
+        const { data: grantResult, error: creditErr } = await supabase.rpc(
           "grant_subscription_credits",
           {
             p_user_id: userId,
             p_amount: tierInfo.credits,
             p_description: `${tierInfo.tier} subscription — renewal`,
             p_reference_id: eventId,
+            p_check_recent_grant: false,
           },
         );
         if (creditErr) {
@@ -322,10 +306,16 @@ Deno.serve(async (req) => {
         const newProductId = event.new_product_id ?? productId;
         const tierInfo = getTierInfo(newProductId);
         if (!tierInfo) {
-          console.warn(
-            `[revenuecat-webhook] Unknown product for change: ${newProductId}`,
+          console.error(
+            `[revenuecat-webhook] Unknown product for PRODUCT_CHANGE: ${newProductId} — returning 500 so RC retries`,
           );
-          break;
+          // Return 500: unknown product on a tier change could mean the user switched
+          // to a free/unrecognised plan. Retrying gives ops a chance to add the product
+          // mapping before the user's tier gets stuck at their old premium tier.
+          return new Response(
+            JSON.stringify({ error: `Unknown product: ${newProductId}` }),
+            { status: 500, headers: { "Content-Type": "application/json" } },
+          );
         }
 
         const expiresAt = event.expiration_at_ms

@@ -116,8 +116,8 @@ class AuthRepository implements IAuthRepository {
 
   @override
   Future<void> signOut() async {
-    await _revenuecatLogOut();
     await _supabase.auth.signOut();
+    await _revenuecatLogOut();
   }
 
   @override
@@ -138,8 +138,14 @@ class AuthRepository implements IAuthRepository {
   Future<UserModel?> getCurrentUserWithProfile() async {
     final user = currentUser;
     if (user == null) return null;
-    final profile = await _fetchUserProfile(user.id);
-    return UserModel.fromSupabaseUser(user, profile: profile);
+    try {
+      final profile = await _fetchUserProfile(user.id);
+      return UserModel.fromSupabaseUser(user, profile: profile);
+    } on AppException {
+      rethrow;
+    } catch (e) {
+      throw AppException.auth(message: e.toString());
+    }
   }
 
   @override
@@ -148,8 +154,14 @@ class AuthRepository implements IAuthRepository {
     if (user == null) {
       throw const AppException.auth(message: 'No authenticated user');
     }
-    final profile = await _fetchUserProfile(user.id);
-    return UserModel.fromSupabaseUser(user, profile: profile);
+    try {
+      final profile = await _fetchUserProfile(user.id);
+      return UserModel.fromSupabaseUser(user, profile: profile);
+    } on AppException {
+      rethrow;
+    } catch (e) {
+      throw AppException.auth(message: e.toString());
+    }
   }
 
   Future<Map<String, dynamic>?> _fetchUserProfile(String userId) async {

@@ -46,8 +46,9 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
       unawaited(_syncToSupabase());
       return result;
     });
-    // Force credit balance refresh after purchase so UI shows updated credits
-    // once verify-google-purchase or the RC webhook grants them.
+    // Schedule a credit balance refresh — actual new credits will appear once
+    // _syncToSupabase() completes. This preemptive invalidation handles any
+    // Realtime delay.
     if (state.hasValue) {
       ref.invalidate(creditBalanceNotifierProvider);
     }
@@ -83,12 +84,13 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
           '[Subscription] sync OK: tier=${body?['tier']}, is_premium=${body?['is_premium']}',
         );
       }
+    } on Object catch (e) {
+      Log.w('[Subscription] sync-subscription failed (non-blocking): $e');
+    } finally {
       // Refresh auth + credit balance after sync so UI reflects new tier and credits.
       ref
         ..invalidate(authViewModelProvider)
         ..invalidate(creditBalanceNotifierProvider);
-    } on Object catch (e) {
-      Log.w('[Subscription] sync-subscription failed (non-blocking): $e');
     }
   }
 }
