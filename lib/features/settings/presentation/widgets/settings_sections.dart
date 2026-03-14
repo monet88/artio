@@ -1,3 +1,5 @@
+import 'dart:io' show Platform;
+
 import 'package:artio/core/design_system/app_spacing.dart';
 import 'package:artio/core/design_system/app_typography.dart';
 import 'package:artio/core/utils/url_launcher_utils.dart';
@@ -68,7 +70,9 @@ class SettingsSections extends ConsumerWidget {
                 onTap: isPremium
                     ? () => launchUrlSafely(
                           context,
-                          'https://play.google.com/store/account/subscriptions',
+                          Platform.isIOS
+                              ? 'https://apps.apple.com/account/subscriptions'
+                              : 'https://play.google.com/store/account/subscriptions',
                         )
                     : () => const PaywallRoute().push<void>(context),
               ),

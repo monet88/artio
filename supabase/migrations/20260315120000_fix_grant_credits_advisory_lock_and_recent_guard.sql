@@ -67,4 +67,7 @@ END;
 $$ LANGUAGE plpgsql SECURITY DEFINER
 SET search_path = public;
 
+-- Revoke from PUBLIC first (PostgreSQL grants EXECUTE to PUBLIC by default on new functions).
+-- Revoking only from 'authenticated' leaves 'anon' able to call this SECURITY DEFINER function.
+REVOKE ALL ON FUNCTION grant_subscription_credits(UUID, INTEGER, TEXT, TEXT, BOOLEAN) FROM PUBLIC;
 REVOKE ALL ON FUNCTION grant_subscription_credits(UUID, INTEGER, TEXT, TEXT, BOOLEAN) FROM authenticated;
