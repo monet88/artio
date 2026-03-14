@@ -158,6 +158,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   isDark: isDark,
                   version: _version,
                   isLoggedIn: isLoggedIn,
+                  isPremium: isPremium,
                   onResetPassword: () => _resetPassword(context, email),
                   onSignOut: () => _signOut(context),
                 ),

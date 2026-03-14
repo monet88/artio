@@ -14,6 +14,7 @@ void main() {
     bool isDark = false,
     String? version = '1.0.0',
     bool isLoggedIn = true,
+    bool isPremium = false,
   }) {
     return ProviderScope(
       child: MaterialApp(
@@ -24,6 +25,7 @@ void main() {
               isDark: isDark,
               version: version,
               isLoggedIn: isLoggedIn,
+              isPremium: isPremium,
               onResetPassword: () {},
               onSignOut: () {},
             ),

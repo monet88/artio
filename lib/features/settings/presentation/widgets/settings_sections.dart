@@ -16,6 +16,7 @@ class SettingsSections extends ConsumerWidget {
     required this.isDark,
     required this.version,
     required this.isLoggedIn,
+    required this.isPremium,
     required this.onResetPassword,
     required this.onSignOut,
     super.key,
@@ -25,6 +26,7 @@ class SettingsSections extends ConsumerWidget {
   final bool isDark;
   final String? version;
   final bool isLoggedIn;
+  final bool isPremium;
   final VoidCallback onResetPassword;
   final VoidCallback onSignOut;
 
@@ -55,6 +57,15 @@ class SettingsSections extends ConsumerWidget {
                 trailing: SettingsChevronArrow(isDark: isDark),
                 onTap: onResetPassword,
                 isDark: isDark,
+              ),
+              SettingsDivider(isDark: isDark),
+              SettingsTile(
+                icon: Icons.workspace_premium_rounded,
+                iconBgColor: const Color(0xFF9B59B6),
+                title: isPremium ? 'Manage Plan' : 'Upgrade Plan',
+                trailing: SettingsChevronArrow(isDark: isDark),
+                isDark: isDark,
+                onTap: () => const PaywallRoute().push<void>(context),
               ),
               SettingsDivider(isDark: isDark),
               SettingsTile(
