@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:artio/core/providers/supabase_provider.dart';
+import 'package:artio/core/state/credit_balance_state_provider.dart';
 import 'package:artio/features/auth/presentation/state/auth_state.dart';
 import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
 import 'package:artio/features/subscription/domain/entities/subscription_package.dart';
@@ -45,6 +46,11 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
       unawaited(_syncToSupabase());
       return result;
     });
+    // Force credit balance refresh after purchase so UI shows updated credits
+    // once verify-google-purchase or the RC webhook grants them.
+    if (state.hasValue) {
+      ref.invalidate(creditBalanceNotifierProvider);
+    }
   }
 
   /// Restore previous purchases, sync to Supabase, and update state.
@@ -56,6 +62,9 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
       unawaited(_syncToSupabase());
       return result;
     });
+    if (state.hasValue) {
+      ref.invalidate(creditBalanceNotifierProvider);
+    }
   }
 
   /// Call sync-subscription edge function then refresh auth state.
@@ -74,8 +83,10 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
           '[Subscription] sync OK: tier=${body?['tier']}, is_premium=${body?['is_premium']}',
         );
       }
-      // Refresh auth state so UserProfileCard picks up new is_premium from DB.
-      ref.invalidate(authViewModelProvider);
+      // Refresh auth + credit balance after sync so UI reflects new tier and credits.
+      ref
+        ..invalidate(authViewModelProvider)
+        ..invalidate(creditBalanceNotifierProvider);
     } on Object catch (e) {
       Log.w('[Subscription] sync-subscription failed (non-blocking): $e');
     }
