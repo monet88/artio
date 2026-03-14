@@ -65,7 +65,12 @@ class SettingsSections extends ConsumerWidget {
                 title: isPremium ? 'Manage Plan' : 'Upgrade Plan',
                 trailing: SettingsChevronArrow(isDark: isDark),
                 isDark: isDark,
-                onTap: () => const PaywallRoute().push<void>(context),
+                onTap: isPremium
+                    ? () => launchUrlSafely(
+                          context,
+                          'https://play.google.com/store/account/subscriptions',
+                        )
+                    : () => const PaywallRoute().push<void>(context),
               ),
               SettingsDivider(isDark: isDark),
               SettingsTile(

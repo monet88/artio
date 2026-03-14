@@ -7,8 +7,8 @@
 
 ## 1. Bối cảnh
 
-- **Tài khoản test:** `halo@gmail.com` (Supabase UUID: `c23863a5-c041-411b-9f16-0505281ba53b`)
-- **Thiết bị:** Samsung A53, IP `192.168.1.25:45305`, cài app qua Google Play **Internal Testing**
+- **Tài khoản test:** `<test-email>` (Supabase UUID: `<user-uuid>`)
+- **Thiết bị:** Samsung A53, IP `<device-ip>`, cài app qua Google Play **Internal Testing**
 - **Hiện tượng:** Mua Pro + Ultra, RC dashboard hiển thị webhook "Failure/Retrying", balance vẫn giữ nguyên 20 credits (chỉ có welcome bonus)
 - **RC app_user_id** = Supabase UUID (correct — dùng `Purchases.logIn(userId)`)
 
@@ -18,7 +18,7 @@
 
 ### 2.1 Xác nhận kết nối thiết bị và logcat
 - App release build → Dart/Flutter logs không ra logcat, chỉ thấy native logs
-- RC event payloads từ dashboard: tất cả có `app_user_id = c23863a5-...`, môi trường SANDBOX, `renewal_number` 1 và 2
+- RC event payloads từ dashboard: tất cả có `app_user_id = <uuid>`, môi trường SANDBOX, `renewal_number` 1 và 2
 
 ### 2.2 Trạng thái DB ban đầu
 ```sql
@@ -184,34 +184,34 @@ User mua gói
 
 ## 5. Kiểm chứng
 
-### Test thủ công halo@gmail.com (webhook)
+### Test thủ công user-A (webhook)
 ```bash
-curl -X POST https://kytbmplsazsiwndppoji.supabase.co/functions/v1/revenuecat-webhook \
-  -H "Authorization: Bearer 67b6cd6c..." \
-  -d '{"event":{"type":"INITIAL_PURCHASE","id":"test-debug-003","app_user_id":"c23863a5-...","product_id":"artio_ultra_monthly:..."}}'
+curl -X POST https://<project-ref>.supabase.co/functions/v1/revenuecat-webhook \
+  -H "Authorization: Bearer <REVENUECAT_WEBHOOK_SECRET>" \
+  -d '{"event":{"type":"INITIAL_PURCHASE","id":"test-debug-003","app_user_id":"<user-uuid>","product_id":"artio_ultra_monthly:..."}}'
 # → {"ok":true} HTTP 200
 # → balance: 20 → 520 ✅
 ```
 
-### Test thủ công adstudio@gmail.com (webhook)
+### Test thủ công user-B (webhook)
 ```bash
 # → {"ok":true} HTTP 200
 # → balance: 20 → 220 ✅, subscription_tier=pro, is_premium=true ✅
 ```
 
-### DB state sau fix (halo@gmail.com)
+### DB state sau fix (user-A — Ultra)
 ```
 subscription_tier: ultra
 is_premium: true
-revenuecat_app_user_id: c23863a5-c041-411b-9f16-0505281ba53b ✅
+revenuecat_app_user_id: <user-uuid> ✅
 balance: 520 (20 welcome + 500 ultra)
 ```
 
-### DB state sau fix (adstudio@gmail.com)
+### DB state sau fix (user-B — Pro)
 ```
 subscription_tier: pro
 is_premium: true
-revenuecat_app_user_id: bb41d8dc-3c02-46cd-9a80-53ef620e94a4 ✅
+revenuecat_app_user_id: <user-uuid> ✅
 balance: 220 (20 welcome + 200 pro)
 ```
 
