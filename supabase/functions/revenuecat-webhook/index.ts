@@ -33,19 +33,17 @@ Deno.serve(async (req) => {
     });
   }
 
-  // Verify webhook auth header (timing-safe comparison)
+  // Verify webhook auth header (manual constant-time comparison)
+  // crypto.subtle.timingSafeEqual is not available in Supabase Edge Runtime.
   const authHeader = req.headers.get("Authorization");
   const expectedAuth = `Bearer ${REVENUECAT_WEBHOOK_SECRET}`;
   const encoder = new TextEncoder();
-  const authValid =
-    authHeader !== null &&
-    authHeader.length === expectedAuth.length &&
-    // timingSafeEqual is a Deno extension to SubtleCrypto, not in Web Crypto API types
-    (
-      crypto.subtle as unknown as {
-        timingSafeEqual(a: BufferSource, b: BufferSource): boolean;
-      }
-    ).timingSafeEqual(encoder.encode(authHeader), encoder.encode(expectedAuth));
+  const a = encoder.encode(authHeader ?? "");
+  const b = encoder.encode(expectedAuth);
+  let diff = a.length ^ b.length;
+  const len = Math.min(a.length, b.length);
+  for (let i = 0; i < len; i++) diff |= a[i] ^ b[i];
+  const authValid = authHeader !== null && diff === 0;
   if (!authValid) {
     console.error(
       "[revenuecat-webhook] Invalid or missing authorization header",
