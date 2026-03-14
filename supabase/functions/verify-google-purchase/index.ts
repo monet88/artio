@@ -147,71 +147,49 @@ Deno.serve(async (req) => {
     // ownership would allow tier escalation (e.g., claiming ultra with a pro token).
     // The RC webhook fires within seconds and sets the authoritative tier+expiry.
 
-    // Rate-limit check: prevent credit farming via fabricated GPA-format tokens.
-    // An attacker who knows the regex could call this endpoint repeatedly with
-    // unique fake tokens (each new reference_id bypasses ON CONFLICT dedup).
-    // Guard: if the user already received subscription credits in the past 25 days,
-    // skip the grant — they are still within their active billing cycle.
-    const cutoff = new Date(
-      Date.now() - 25 * 24 * 60 * 60 * 1000,
-    ).toISOString();
-    const { data: recentGrants, error: grantCheckErr } = await supabase
-      .from("credit_transactions")
-      .select("id")
-      .eq("user_id", user.id)
-      .eq("type", "subscription") // grant_subscription_credits inserts type='subscription'
-      .gt("created_at", cutoff)
-      .limit(1);
-
-    if (grantCheckErr) {
+    // Grant credits — idempotent via purchaseToken (orderId GPA.xxx).
+    // p_check_recent_grant=true moves the 25-day guard inside the RPC, under an
+    // advisory lock, eliminating the TOCTOU race between this function and
+    // revenuecat-webhook INITIAL_PURCHASE (which uses a different reference_id format).
+    const referenceId = `gp-${purchaseToken}`;
+    const { data: grantResult, error: creditErr } = await supabase.rpc(
+      "grant_subscription_credits",
+      {
+        p_user_id: user.id,
+        p_amount: tierInfo.credits,
+        p_description: `${tierInfo.tier} subscription — Google Play purchase`,
+        p_reference_id: referenceId,
+        p_check_recent_grant: true,
+      },
+    );
+    if (creditErr) {
       console.error(
-        "[verify-google-purchase] grant check error:",
-        grantCheckErr,
+        "[verify-google-purchase] grant_subscription_credits error:",
+        creditErr,
       );
-      // Fail-closed: rate-limit check is a security control.
-      // A transient DB error must not silently bypass it and grant credits.
       return new Response(
-        JSON.stringify({ error: "Failed to verify credit grant eligibility" }),
+        JSON.stringify({ error: "Failed to grant subscription credits" }),
         { status: 500, headers: { "Content-Type": "application/json" } },
       );
     }
 
-    const alreadyGranted = (recentGrants?.length ?? 0) > 0;
-
     let creditsGranted = 0;
-    if (alreadyGranted) {
+    const alreadyGranted = grantResult?.granted === false;
+
+    if (
+      grantResult?.granted === false &&
+      grantResult?.reason === "recent_grant_exists"
+    ) {
       console.log(
         `[verify-google-purchase] Credits already granted this cycle for ${user.id} — skipping`,
       );
-    } else {
-      // Grant credits — idempotent via purchaseToken (orderId GPA.xxx).
-      // If RC webhook later fires with the same orderId as transaction_id,
-      // grant_subscription_credits will deduplicate via reference_id.
-      const referenceId = `gp-${purchaseToken}`;
-      const { error: creditErr } = await supabase.rpc(
-        "grant_subscription_credits",
-        {
-          p_user_id: user.id,
-          p_amount: tierInfo.credits,
-          p_description: `${tierInfo.tier} subscription — Google Play purchase`,
-          p_reference_id: referenceId,
-        },
+    } else if (grantResult?.granted === true) {
+      creditsGranted = tierInfo.credits;
+      console.log(
+        `[verify-google-purchase] Granted ${user.id}: tier=${tierInfo.tier}, ${creditsGranted} credits, ref=${referenceId}`,
       );
-      if (creditErr) {
-        console.error(
-          "[verify-google-purchase] grant_subscription_credits error:",
-          creditErr,
-        );
-        // credits: 0 — do not report credits as granted when RPC failed.
-        // Subscription status is already updated; user can contact support
-        // or wait for RC webhook to grant credits.
-      } else {
-        creditsGranted = tierInfo.credits;
-        console.log(
-          `[verify-google-purchase] Granted ${user.id}: tier=${tierInfo.tier}, ${creditsGranted} credits, ref=${referenceId}`,
-        );
-      }
     }
+    // grantResult?.reason === 'duplicate_reference_id': same GPA token seen before — no-op.
 
     return new Response(
       JSON.stringify({

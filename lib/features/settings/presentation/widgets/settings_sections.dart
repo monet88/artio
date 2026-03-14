@@ -1,3 +1,5 @@
+import 'dart:io' show Platform;
+
 import 'package:artio/core/design_system/app_spacing.dart';
 import 'package:artio/core/design_system/app_typography.dart';
 import 'package:artio/core/utils/url_launcher_utils.dart';
@@ -16,6 +18,7 @@ class SettingsSections extends ConsumerWidget {
     required this.isDark,
     required this.version,
     required this.isLoggedIn,
+    required this.isPremium,
     required this.onResetPassword,
     required this.onSignOut,
     super.key,
@@ -25,6 +28,7 @@ class SettingsSections extends ConsumerWidget {
   final bool isDark;
   final String? version;
   final bool isLoggedIn;
+  final bool isPremium;
   final VoidCallback onResetPassword;
   final VoidCallback onSignOut;
 
@@ -55,6 +59,22 @@ class SettingsSections extends ConsumerWidget {
                 trailing: SettingsChevronArrow(isDark: isDark),
                 onTap: onResetPassword,
                 isDark: isDark,
+              ),
+              SettingsDivider(isDark: isDark),
+              SettingsTile(
+                icon: Icons.workspace_premium_rounded,
+                iconBgColor: AppColors.premiumPlanIcon,
+                title: isPremium ? 'Manage Plan' : 'Upgrade Plan',
+                trailing: SettingsChevronArrow(isDark: isDark),
+                isDark: isDark,
+                onTap: isPremium
+                    ? () => launchUrlSafely(
+                          context,
+                          Platform.isAndroid
+                              ? 'https://play.google.com/store/account/subscriptions'
+                              : 'https://apps.apple.com/account/subscriptions',
+                        )
+                    : () => const PaywallRoute().push<void>(context),
               ),
               SettingsDivider(isDark: isDark),
               SettingsTile(
@@ -164,7 +184,7 @@ class SettingsSections extends ConsumerWidget {
           children: [
             SettingsTile(
               icon: Icons.privacy_tip_outlined,
-              iconBgColor: const Color(0xFF5B8BF0),
+              iconBgColor: AppColors.settingsPrivacyIcon,
               title: 'Privacy Policy',
               trailing: SettingsChevronArrow(isDark: isDark),
               isDark: isDark,
@@ -173,7 +193,7 @@ class SettingsSections extends ConsumerWidget {
             SettingsDivider(isDark: isDark),
             SettingsTile(
               icon: Icons.gavel_outlined,
-              iconBgColor: const Color(0xFF7B61FF),
+              iconBgColor: AppColors.settingsTermsIcon,
               title: 'Terms of Service',
               trailing: SettingsChevronArrow(isDark: isDark),
               isDark: isDark,
@@ -205,7 +225,7 @@ class SettingsSections extends ConsumerWidget {
           children: [
             SettingsTile(
               icon: Icons.help_outline_rounded,
-              iconBgColor: const Color(0xFF34C759),
+              iconBgColor: AppColors.settingsHelpIcon,
               title: 'Help & FAQ',
               trailing: SettingsChevronArrow(isDark: isDark),
               isDark: isDark,

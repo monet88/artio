@@ -1,272 +1,306 @@
-# IAP RevenueCat Production Guide — 2026-03-12
+# IAP RevenueCat Production Guide — Artio (Updated 2026-03-13)
 
 > **Trạng thái:** Production-verified ✅ — 3 real purchases confirmed end-to-end
 > **Stack:** Flutter 3.x + purchases_flutter 9.x + RevenueCat + Supabase Edge Functions
 > **Dự án:** Artio (`com.artio.artio`, Supabase: `kytbmplsazsiwndppoji`)
 
-Đây là tài liệu đầy đủ về toàn bộ quá trình setup, debug, và fix IAP flow cho Artio. Bao gồm tất cả các lỗi đã gặp, root cause, và giải pháp đã verify trên production.
-
 ---
 
-## 1. Architecture Cuối (Đã Hoạt Động)
+## 1. Architecture Hiện Tại (Đã Hoạt Động)
 
 ```
 Flutter App (purchases_flutter 9.x)
   │
   ├── Purchases.purchase() → RC SDK validates on-device
   │       │
-  │       ├── [Step 1 — Immediate] verify-google-purchase edge fn
+  │       ├── [Immediate, non-blocking] verify-google-purchase edge fn
+  │       │       → 25-day rate limit check (prevents double-grant + credit farming)
   │       │       → grant_subscription_credits (reference_id: gp-GPA.xxx)
-  │       │       → NO tier update (RC webhook sets authoritative tier)
+  │       │       → NO tier update (RC webhook is authoritative for tier)
   │       │
-  │       └── [Step 2 — After purchase] sync-subscription edge fn
-  │               → RC V2 API → update_subscription_status only (NO credits)
+  │       └── [Immediate, non-blocking] sync-subscription edge fn
+  │               → RC V2 API active_entitlements
+  │               → update_subscription_status (tier + expiry, NO credits)
+  │               → 5-min grace window prevents race-condition downgrade
   │
-  └── [Async — khi RC webhook hoạt động] revenuecat-webhook edge fn
-          → update_subscription_status
-          → grant_subscription_credits (reference_id: RC event UUID)
+  └── [Async — RC Pub/Sub pipeline] revenuecat-webhook edge fn
+          INITIAL_PURCHASE → 25-day rate limit check → grant_subscription_credits
+          RENEWAL          → grant_subscription_credits (idempotent via event.id)
+          EXPIRATION       → update_subscription_status(is_premium=false, tier='free')
+          PRODUCT_CHANGE   → update_subscription_status (new tier)
 ```
 
-**Design decision quan trọng:**
-- `verify-google-purchase` = fallback tức thì, hoạt động 100% ngay cả khi RC webhook chưa ổn
-- `sync-subscription` = sync trạng thái RC → DB, **KHÔNG** grant credits
-- `revenuecat-webhook` = authoritative khi RC pipeline ổn định
+**Design principles:**
+- `verify-google-purchase` = fast-path credit grant, runs even before RC webhook fires
+- `sync-subscription` = syncs tier/expiry from RC, never grants credits
+- `revenuecat-webhook` = authoritative source for tier + renewal credits
+- Both `verify-google-purchase` AND `revenuecat-webhook` guard against double-grant via 25-day rate limit
 
 ---
 
-## 2. Root Causes Đã Tìm Ra
+## 2. Security Model
 
-### 🔴 Root Cause #1: JWT ES256 vs HS256 Mismatch (CRITICAL)
+### Threat: Credit Farming via Fabricated Tokens
 
-**Triệu chứng:** App mua hàng thành công, UI hiện premium, nhưng Supabase không cập nhật.
+**Attack:** Authenticated user calls `verify-google-purchase` with fake tokens matching the GPA regex to collect unlimited credits.
 
-**Root cause:** Edge functions deployed với default `verify_jwt=true`. Supabase gateway verify JWT bằng HS256 (symmetric). GoTrue v2 issue JWT bằng ES256 (asymmetric). Mismatch → tất cả request bị reject `{"code":401,"message":"Invalid JWT"}`.
+**Mitigations (layered):**
 
-`FunctionException` trong Flutter bị catch và log warn — **không throw ra ngoài** → purchase flow tiếp tục bình thường nhưng edge function không bao giờ chạy.
+| Layer | Mechanism | Where |
+|-------|-----------|-------|
+| 1 | GPA format validation — only `GPA.\d{4}-\d{4}-\d{4}-\d+` accepted | `isValidPurchaseToken()` |
+| 2 | 25-day rate limit — query `credit_transactions` where `type='subscription'` | Both `verify-google-purchase` + `revenuecat-webhook` INITIAL_PURCHASE |
+| 3 | Rate limit fail-closed — DB error → HTTP 500, not silent bypass | Both edge functions |
 
-**Fix:**
+**CRITICAL:** Query uses `type='subscription'` — this is what `grant_subscription_credits` RPC inserts. Do NOT use `type='subscription_credit'` (wrong, would make guard a no-op).
+
+### Threat: Tier Escalation
+
+**Attack:** User with a valid Pro GPA token claims Ultra tier by sending `productId: artio_ultra_*`.
+
+**Mitigation:** `verify-google-purchase` intentionally omits `update_subscription_status`. Only RC webhook (server-to-server) sets authoritative tier. Client-supplied `productId` only determines credit amount for the fast-path grant.
+
+### Threat: Double Credit Grant
+
+**Risk:** `verify-google-purchase` and `revenuecat-webhook` can both fire for the same purchase using different `reference_id` formats (`gp-GPA.xxx` vs RC `event.id`) — `ON CONFLICT` dedup won't catch this.
+
+**Mitigation:** 25-day rate limit in BOTH functions. Whichever fires first sets the grant; the second sees a recent grant and skips.
+
+**Known gap (TOCTOU P2):** Two concurrent requests with unique tokens can both pass the SELECT check before either INSERT lands. Tracked as follow-up for DB-level atomic enforcement.
+
+---
+
+## 3. Edge Functions — Behavior Reference
+
+### `verify-google-purchase`
+
+**Deployed with:** `--no-verify-jwt` (function handles JWT internally via `userClient.auth.getUser()`)
+
+**Flow:**
+1. Validate JWT → get `user.id`
+2. Parse `purchaseToken` + `productId` from body
+3. Validate GPA format — reject non-`GPA.xxx` tokens
+4. Lookup `productId` prefix → tier + credits
+5. Query `credit_transactions` (type=`subscription`, last 25 days) → fail-closed on DB error
+6. If recent grant found → skip (return `credits_already_granted: true`)
+7. Call `grant_subscription_credits` → `reference_id = gp-{purchaseToken}`
+8. Return `{ verified: true, tier, credits, credits_already_granted }`
+
+**Does NOT:** Update subscription tier or `is_premium` — RC webhook owns this.
+
+### `sync-subscription`
+
+**Deployed with:** `--no-verify-jwt`
+
+**Flow:**
+1. Validate JWT → get `user.id`
+2. Fetch `revenuecat_app_user_id` + `is_premium` + `updated_at` from `profiles`
+3. Call RC V2 API: `GET /v2/projects/{RC_PROJECT_ID}/customers/{rcUserId}/active_entitlements`
+4. If RC returns active entitlements → `update_subscription_status(is_premium=true, tier, expires_at)`
+5. If RC returns empty:
+   - If `is_premium=true` AND `updated_at < 5 min ago` → skip (race condition: RC hasn't processed purchase yet)
+   - Otherwise → `update_subscription_status(is_premium=false, tier='free')`
+
+**Does NOT:** Grant credits.
+
+### `revenuecat-webhook`
+
+**Auth:** `Authorization: Bearer {REVENUECAT_WEBHOOK_SECRET}` (timing-safe comparison)
+
+**INITIAL_PURCHASE:**
+1. Query `credit_transactions` (type=`subscription`, last 25 days) — prevents double-grant with `verify-google-purchase`
+2. If recent grant → skip (log + break, return 200)
+3. `update_subscription_status(is_premium=true, tier, expires_at)`
+4. `grant_subscription_credits` → `reference_id = event.id` (RC event UUID)
+
+**RENEWAL:**
+1. `update_subscription_status(is_premium=true, tier, expires_at)`
+2. `grant_subscription_credits` → `reference_id = event.id` (idempotent — RC retries same event.id)
+
+**EXPIRATION:**
+1. `update_subscription_status(is_premium=false, tier='free', expires_at=null)`
+2. Return 500 on RPC failure → RC retries
+
+**PRODUCT_CHANGE:**
+1. `update_subscription_status(is_premium=true, new_tier, expires_at)`
+2. Return 500 on RPC failure → RC retries
+
+---
+
+## 4. Flutter Code — Key Points
+
+### `subscription_repository.dart`
+
+```dart
+// After successful Purchases.purchase():
+final rawToken = result.storeTransaction.transactionIdentifier; // GPA.xxx or empty
+final productId = package.identifier;
+
+if (rawToken.isNotEmpty) {
+  // Non-blocking — user already charged, don't delay success UI
+  unawaited(_verifyWithGooglePlay(rawToken, productId));
+} else {
+  // Empty orderId shouldn't happen (no free trials configured)
+  Log.w('[RC] orderId empty — skipping verify, RC webhook will handle');
+}
+```
+
+**`transactionIdentifier` on Android** = orderId (`GPA.xxx`), NOT purchaseToken. These are different:
+- orderId = human-readable order reference (what we have)
+- purchaseToken = long token needed for Google Play Developer API (what we don't have)
+
+### `subscription_provider.dart`
+
+```dart
+// Non-blocking sync — show success immediately after purchase
+final result = await repo.purchase(package);
+unawaited(_syncToSupabase()); // runs in background
+return result;
+```
+
+### Error Handling
+
+```dart
+// Cancellation — silent, no snackbar
+final isCancelled = err is PaymentException && err.code == 'user_cancelled';
+if (isCancelled) return;
+
+// All other errors → AppExceptionMapper
+SnackBar(content: Text(AppExceptionMapper.toUserMessage(err)));
+```
+
+**`app_exception_mapper.dart` check order** (important — wrong order caused bugs):
+1. `cancelled` / `canceled` → "Payment was cancelled."
+2. `declined` → "Payment was declined."
+3. `insufficient credits` / `credit balance` / `not enough credits` → "Not enough credits."
+4. Default → "Payment could not be processed."
+
+---
+
+## 5. Database Schema — Key Facts
+
+```sql
+-- credit_transactions.type values (CHECK constraint)
+'welcome_bonus' | 'ad_reward' | 'generation' | 'refund' |
+'subscription' | 'purchase' | 'daily_reset' | 'admin_grant' | 'manual'
+
+-- grant_subscription_credits RPC inserts type='subscription' (NOT 'subscription_credit')
+-- Rate-limit queries MUST use .eq("type", "subscription")
+
+-- profiles.subscription_tier default = 'free' (NOT null)
+-- Downgrade: p_tier='free', NOT p_tier=null
+```
+
+---
+
+## 6. Deployment
+
 ```bash
-# Redeploy tất cả functions với --no-verify-jwt
+export SUPABASE_ACCESS_TOKEN=<token from Supabase Dashboard → Account → Access Tokens>
+
+# ALL functions require --no-verify-jwt (ES256 vs HS256 mismatch otherwise)
 supabase functions deploy verify-google-purchase --no-verify-jwt --project-ref kytbmplsazsiwndppoji
 supabase functions deploy sync-subscription      --no-verify-jwt --project-ref kytbmplsazsiwndppoji
 supabase functions deploy revenuecat-webhook     --no-verify-jwt --project-ref kytbmplsazsiwndppoji
 ```
 
-**Security:** `--no-verify-jwt` an toàn vì function tự handle JWT qua `userClient.auth.getUser()`. Nếu token invalid → `getUser()` trả null → function return 401.
+**Why `--no-verify-jwt`:** Supabase gateway verifies JWT with HS256 (symmetric) but GoTrue v2 issues ES256 (asymmetric). Mismatch → 401 for all requests. Functions handle JWT internally via `userClient.auth.getUser()` — if token invalid, function returns 401 itself.
+
+**Security of `--no-verify-jwt`:** Safe — each function validates user via `auth.getUser()`. `revenuecat-webhook` uses bearer secret instead.
 
 ---
 
-### 🔴 Root Cause #2: Empty orderId Guard Blocking Function Call
+## 7. `.env.production` — What NOT to Include
 
-**Triệu chứng:** `verify-google-purchase` không được gọi với một số subscription.
-
-**Code cũ (sai):**
-```dart
-// Chỉ gọi nếu rawToken không rỗng → bỏ qua free trial subscriptions!
-if (rawToken.isNotEmpty) {
-  await _verifyWithGooglePlay(rawToken, productId);
-}
+**NEVER in `.env.production`** (bundled in APK — extractable by anyone):
+```
+SUPABASE_SERVICE_ROLE_KEY  → bypasses all RLS, server-side only
+GEMINI_API_KEY             → read by edge functions via Supabase secrets
+KIE_API_KEY                → read by edge functions via Supabase secrets
+GITHUB_TOKEN               → CI/CD only
 ```
 
-**Fix (current):**
-```dart
-// Chỉ gọi khi orderId có giá trị — timestamp fallback đã bị xóa (security risk)
-if (rawToken.isNotEmpty) {
-  unawaited(_verifyWithGooglePlay(rawToken, productId));
-} else {
-  Log.w('[RC] orderId empty — skipping immediate verify, RC webhook will handle');
-}
+Set server-side keys via:
+```bash
+supabase secrets set SUPABASE_SERVICE_ROLE_KEY=<key> \
+                     GEMINI_API_KEY=<key> \
+                     KIE_API_KEY=<key> \
+                     --project-ref kytbmplsazsiwndppoji
 ```
 
-**Note:** `purchases_flutter 9.x` trả `StoreTransaction.transactionIdentifier` = Google Play **orderId** (`GPA.xxx`), KHÔNG phải purchaseToken. Timestamp-based fallback (`rc-...`) đã bị **xóa** — user có thể forge token giả để lấy credits không giới hạn.
+**Safe to bundle** (client-facing by design):
+```
+SUPABASE_URL, SUPABASE_ANON_KEY, REVENUECAT_*_KEY, ADMOB_*, SENTRY_DSN
+```
 
 ---
 
-### 🟡 Root Cause #3: RC Webhook Pipeline (Pub/Sub) Chưa Hoạt Động
+## 8. Troubleshooting
 
-**Triệu chứng:** RC Dashboard hiện 0 customers, không có webhook events nào.
+### User purchased but credits = 0
 
-**Root cause:** RC webhook URL đã set nhưng Pub/Sub pipeline chưa được cấu hình → RC server không nhận được purchase events từ Google Play.
+1. Check Supabase → `credit_transactions` — is there a row with `reference_id LIKE 'gp-%'`?
+2. If yes → credits granted, check `user_credits.balance`
+3. If no → `verify-google-purchase` logs? Was token valid GPA format?
+4. Was `SUPABASE_ACCESS_TOKEN` correct when deploying? (wrong token = old function version still running)
 
-**Full pipeline cần có:**
+### User purchased but `is_premium = false`
+
+1. `sync-subscription` ran but RC returned empty → check 5-min grace window
+2. RC webhook fired EXPIRATION before INITIAL_PURCHASE? Check RC event order in logs
+3. `sync-subscription` returned 5xx? Check edge function logs
+
+### RC webhook = 0 events
+
+Full pipeline needed:
 ```
 Google Play → Cloud Pub/Sub topic → RC subscribes → RC fires webhook → Supabase
 ```
 
-**Status hiện tại (2026-03-12):** Pub/Sub đã setup (connected ✅), nhưng 0 RC webhook events trong toàn bộ lịch sử. `verify-google-purchase` là SOLE credit granter.
-
-**Checklist debug RC webhook:**
-1. RC Dashboard → App → Play Store → RTDN → status "Connected to Google ✅"?
-2. RC Dashboard → cạnh "No notifications received" → click "Send a test?" → counter tăng?
-3. Google Cloud Console → Pub/Sub → Subscriptions → có subscription format `revenuecat-*` do RC tạo?
-4. RC Dashboard → Integrations → Webhooks → URL đúng chưa? Environment = "Sandbox and Production"?
-5. Supabase → Edge Functions → `revenuecat-webhook` → Logs → có request nào không?
+Debug checklist:
+1. RC Dashboard → App → Google Play → RTDN → "Connected to Google ✅"?
+2. RC Dashboard → send test notification → counter increases?
+3. Google Cloud Console → Pub/Sub → Subscriptions → has `revenuecat-*` subscription?
+4. Supabase → Edge Functions → `revenuecat-webhook` → Logs → any requests?
 
 ---
 
-### 🟡 Root Cause #4: sync-subscription Downgrade User
-
-**Triệu chứng:** User mua xong → sync-subscription gọi RC API → RC chưa nhận purchase → RC trả empty entitlements → sync-subscription set `is_premium=false`.
-
-**Fix (current):** 5-minute grace window + downgrade sau đó:
-```typescript
-// Nếu RC trả 0 entitlements VÀ profile.updated_at < 5 phút → skip (RC đang xử lý)
-// Nếu RC trả 0 entitlements VÀ profile.updated_at >= 5 phút → downgrade (RC authoritative)
-const isRecentlyUpdated = profile?.is_premium === true && profileUpdatedAt > fiveMinutesAgo;
-if (isRecentlyUpdated) {
-  return { synced: false, reason: "rc_processing_in_flight" };
-}
-// else: gọi update_subscription_status với is_premium=false
-```
-
----
-
-## 3. Security Fixes
-
-### GPA Format Validation
-
-**Risk:** Authenticated user có thể gọi `verify-google-purchase` với fake `purchaseToken` bất kỳ để lấy credits không giới hạn (e.g., `fake-1`, `fake-2`...).
-
-**Fix:** Validate format trước khi DB writes:
-
-```typescript
-function isValidPurchaseToken(token: string): boolean {
-  // Real Google Play order ID: GPA.XXXX-XXXX-XXXX-XXXXX
-  if (/^GPA\.\d{4}-\d{4}-\d{4}-\d+$/.test(token)) return true;
-  // App-generated fallback for empty orderId case
-  if (/^rc-artio_(ultra|pro)_[a-z]+-\d{10,13}$/.test(token)) return true;
-  return false;
-}
-```
-
-**Deployed:** Function v7 (2026-03-12)
-
-### Double-Grant Risk (Pending)
-
-**Risk:** `verify-google-purchase` dùng `reference_id = gp-{orderId}`. RC webhook dùng `reference_id = {event.id}` (UUID). Hai giá trị khác nhau → `ON CONFLICT` không dedup → user có thể nhận credits 2 lần khi RC webhook hoạt động.
-
-**Trạng thái hiện tại:** RC webhook = 0 events → chưa xảy ra double-grant. Low risk.
-
-**Kế hoạch:** Khi RC webhook confirmed stable → xóa `grant_subscription_credits` khỏi `verify-google-purchase`. Chỉ giữ `update_subscription_status`.
-
----
-
-## 4. Files Đã Thay Đổi
-
-### Flutter
-
-**`lib/features/subscription/data/repositories/subscription_repository.dart`**
-- Xóa guard `if (rawToken.isNotEmpty)` → luôn gọi `_verifyWithGooglePlay`
-- Thêm timestamp fallback khi orderId rỗng
-- Fix lint: `'rc-${productId}-'` → `'rc-$productId-'`
-
-**`lib/features/subscription/presentation/providers/subscription_provider.dart`**
-- `_syncToSupabase()`: parse và log response rõ `synced:false/true`
-
-### Supabase Edge Functions
-
-**`supabase/functions/verify-google-purchase/index.ts`** (v7)
-- Thêm `isValidPurchaseToken()` — GPA format validation
-- Không gọi Google Play Developer API (orderId ≠ purchaseToken)
-- Dùng orderId làm idempotency key
-
-**`supabase/functions/sync-subscription/index.ts`** (v6)
-- Thêm guard: RC empty → return `{synced: false}`, không downgrade
-- Xóa hoàn toàn `grant_subscription_credits` call
-
-**`supabase/functions/revenuecat-webhook/index.ts`** (v10)
-- Dùng `event.id` làm reference_id (RC event UUID)
-
-### Config
-
-**`dart_test.yaml`**
-- Thêm `exclude_tags: integration` → fix 1 test fail giả do template_seed_test.dart
-
----
-
-## 5. Deployment Commands
-
-```bash
-# Export access token từ Supabase Dashboard → Account → Access Tokens
-export SUPABASE_ACCESS_TOKEN=<your-supabase-access-token>
-
-# Deploy với --no-verify-jwt (REQUIRED cho tất cả functions gọi từ Flutter app)
-supabase functions deploy verify-google-purchase --no-verify-jwt --project-ref kytbmplsazsiwndppoji
-supabase functions deploy sync-subscription      --no-verify-jwt --project-ref kytbmplsazsiwndppoji
-supabase functions deploy revenuecat-webhook     --no-verify-jwt --project-ref kytbmplsazsiwndppoji
-```
-
----
-
-## 6. Pre-check Checklist (Post-Fix)
-
-### Flutter
-- [x] `flutter analyze` — 0 issues
-- [x] `flutter test` — 703/703 pass
-- [x] Empty orderId → timestamp fallback implemented
-- [x] Error code 1 (cancelled) handled silently
-- [x] Error code 28 (already owned) → `getCustomerInfo()` instead of `restorePurchases()`
-
-### Supabase
-- [x] Tất cả functions deployed `--no-verify-jwt`
-- [x] `verify-google-purchase` có GPA format validation
-- [x] `sync-subscription` KHÔNG grant credits
-- [x] DB columns đúng: `profiles.is_premium`, `profiles.subscription_tier`, `user_credits.balance`
-- [x] Credit transactions có `reference_id = gp-GPA.xxx`
-
-### Confirmed Working (2026-03-12)
-| User | Purchase | Credits | Reference ID |
-|------|----------|---------|--------------|
-| test-user-01@example.com | Ultra | 500 | `gp-GPA.3347-3642-0945-30030` |
-| test-user-02@example.com | Ultra | 500 | `gp-GPA.3382-8927-4180-53692` |
-
----
-
-## 7. Việc Cần Làm Tiếp (Backlog)
-
-| Priority | Task | Reason |
-|---|---|---|
-| HIGH | Debug RC Pub/Sub → xác nhận webhook nhận events | RC = 0 events. Cần để double-grant risk thành 0 |
-| HIGH | Khi RC webhook stable → xóa credit grant khỏi `verify-google-purchase` | Loại bỏ double-grant risk |
-| MEDIUM | Thêm iOS flow (StoreKit) | App hiện chỉ có Android |
-| LOW | RC Dashboard → verify customer appears sau purchase | Hiện tại 0 customers visible |
-
----
-
-## 8. Xác Nhận DB Sau Setup
+## 9. Verify DB Health
 
 ```sql
--- Kiểm tra user được cập nhật đúng sau purchase
 SELECT
   p.is_premium,
   p.subscription_tier,
   p.premium_expires_at,
   uc.balance,
   ct.reference_id,
-  ct.description
+  ct.created_at as grant_time
 FROM profiles p
 JOIN user_credits uc ON uc.user_id = p.id
 LEFT JOIN LATERAL (
-  SELECT reference_id, description
+  SELECT reference_id, created_at
   FROM credit_transactions
-  WHERE user_id = p.id AND reference_id LIKE 'gp-%'
+  WHERE user_id = p.id AND type = 'subscription'
   ORDER BY created_at DESC LIMIT 1
 ) ct ON true
 WHERE p.is_premium = true
 ORDER BY p.updated_at DESC
 LIMIT 10;
 
--- Expected kết quả healthy:
+-- Healthy state:
 -- is_premium = true
--- subscription_tier = 'ultra' hoặc 'pro'
--- balance = welcome_bonus + subscription_credits - usage
--- reference_id = 'gp-GPA.xxxx-xxxx-xxxx-xxxxx'
+-- subscription_tier = 'ultra' OR 'pro'
+-- reference_id = 'gp-GPA.xxxx-xxxx-xxxx-xxxxx' (from verify fn)
+--             OR RC event UUID (from webhook)
 ```
 
 ---
 
-## 9. Liên Quan
+## 10. Known Issues / Backlog
 
-- `docs/iap-revenuecat-setup-log-2026-03-11.md` — debug log ngày 11/03
-- `supabase/migrations/20260304100000_fix_credit_idempotency_and_rc_index.sql` — DB schema
-- `.agent/skills/iap-revenuecat/SKILL.md` — reusable skill template cho dự án khác
+| Priority | Issue | Status |
+|----------|-------|--------|
+| P2 | TOCTOU race in 25-day rate limit — two concurrent requests can both pass SELECT before INSERT | Open — needs DB-level atomic enforcement |
+| MEDIUM | Confirm RC Pub/Sub webhook receiving events in production | Unverified — 0 events in history |
+| MEDIUM | iOS StoreKit flow not implemented | Not started |
+| LOW | When RC webhook confirmed stable → consider removing credit grant from `verify-google-purchase` | Deferred |

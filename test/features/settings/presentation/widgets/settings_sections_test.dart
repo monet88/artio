@@ -14,6 +14,7 @@ void main() {
     bool isDark = false,
     String? version = '1.0.0',
     bool isLoggedIn = true,
+    bool isPremium = false,
   }) {
     return ProviderScope(
       child: MaterialApp(
@@ -24,6 +25,7 @@ void main() {
               isDark: isDark,
               version: version,
               isLoggedIn: isLoggedIn,
+              isPremium: isPremium,
               onResetPassword: () {},
               onSignOut: () {},
             ),
@@ -94,6 +96,30 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Logout'), findsNothing);
+    });
+
+    testWidgets('shows Upgrade Plan tile when not premium', (tester) async {
+      await tester.pumpWidget(buildWidget());
+      await tester.pumpAndSettle();
+
+      expect(find.text('Upgrade Plan'), findsOneWidget);
+      expect(find.text('Manage Plan'), findsNothing);
+    });
+
+    testWidgets('shows Manage Plan tile when premium', (tester) async {
+      await tester.pumpWidget(buildWidget(isPremium: true));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Manage Plan'), findsOneWidget);
+      expect(find.text('Upgrade Plan'), findsNothing);
+    });
+
+    testWidgets('hides plan tile when not logged in', (tester) async {
+      await tester.pumpWidget(buildWidget(isLoggedIn: false));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Upgrade Plan'), findsNothing);
+      expect(find.text('Manage Plan'), findsNothing);
     });
   });
 }
