@@ -61,7 +61,7 @@ class SettingsSections extends ConsumerWidget {
               SettingsDivider(isDark: isDark),
               SettingsTile(
                 icon: Icons.workspace_premium_rounded,
-                iconBgColor: const Color(0xFF9B59B6),
+                iconBgColor: AppColors.premiumPlanIcon,
                 title: isPremium ? 'Manage Plan' : 'Upgrade Plan',
                 trailing: SettingsChevronArrow(isDark: isDark),
                 isDark: isDark,

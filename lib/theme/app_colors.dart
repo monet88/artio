@@ -92,6 +92,9 @@ abstract class AppColors {
   static const premium = Color(0xFFFFA500);
   static const premiumBadgeBackground = Color(0x26FFA500);
 
+  /// Premium plan tile icon background (settings screen)
+  static const premiumPlanIcon = Color(0xFF9B59B6);
+
   /// Semantic colors with better contrast for dark backgrounds
   static const errorDark = Color(0xFFEF9A9A);
   static const successDark = Color(0xFFA5D6A7);
