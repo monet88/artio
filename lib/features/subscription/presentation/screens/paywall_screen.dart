@@ -1,6 +1,7 @@
 import 'package:artio/core/design_system/app_spacing.dart';
 import 'package:artio/core/exceptions/app_exception.dart';
 import 'package:artio/core/utils/app_exception_mapper.dart';
+import 'package:artio/core/utils/url_launcher_utils.dart';
 import 'package:artio/features/subscription/domain/entities/subscription_package.dart';
 import 'package:artio/features/subscription/domain/entities/subscription_status.dart';
 import 'package:artio/features/subscription/presentation/providers/subscription_provider.dart';
@@ -368,7 +369,60 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
     );
   }
 
+  Widget _buildComplianceText(BuildContext context) {
+    return Text.rich(
+      TextSpan(
+        style: const TextStyle(
+          color: AppColors.textMuted,
+          fontSize: 11,
+          height: 1.5,
+        ),
+        children: [
+          const TextSpan(text: 'By subscribing you agree to our '),
+          WidgetSpan(
+            alignment: PlaceholderAlignment.middle,
+            child: GestureDetector(
+              onTap: () => launchInAppUrl(context, 'https://artio.app/terms'),
+              child: const Text(
+                'Terms of Service',
+                style: TextStyle(
+                  color: AppColors.primaryCta,
+                  fontSize: 11,
+                  decoration: TextDecoration.underline,
+                  decorationColor: AppColors.primaryCta,
+                ),
+              ),
+            ),
+          ),
+          const TextSpan(text: ' and '),
+          WidgetSpan(
+            alignment: PlaceholderAlignment.middle,
+            child: GestureDetector(
+              onTap: () => launchInAppUrl(context, 'https://artio.app/privacy'),
+              child: const Text(
+                'Privacy Policy',
+                style: TextStyle(
+                  color: AppColors.primaryCta,
+                  fontSize: 11,
+                  decoration: TextDecoration.underline,
+                  decorationColor: AppColors.primaryCta,
+                ),
+              ),
+            ),
+          ),
+          const TextSpan(
+            text: '. Subscription auto-renews unless cancelled at least '
+                '24 hours before the end of the current period. '
+                'Manage or cancel anytime in your account settings.',
+          ),
+        ],
+      ),
+      textAlign: TextAlign.center,
+    );
+  }
+
   Widget _buildBottomCTA(bool isDark) {
+    // Bottom inset is handled by the SafeArea wrapping the entire screen content.
     return Container(
       padding: const EdgeInsets.fromLTRB(
         AppSpacing.lg,
@@ -446,13 +500,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                   ),
           ),
           const SizedBox(height: AppSpacing.xs),
-
-          // Legal fine print
-          const Text(
-            'Cancel anytime. Subscriptions auto-renew unless cancelled.',
-            textAlign: TextAlign.center,
-            style: TextStyle(color: AppColors.textMuted, fontSize: 11),
-          ),
+          _buildComplianceText(context),
         ],
       ),
     );

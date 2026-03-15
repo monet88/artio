@@ -1,4 +1,5 @@
 import 'package:artio/core/design_system/app_spacing.dart';
+import 'package:artio/core/widgets/bottom_sheet_body.dart';
 import 'package:artio/routing/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 
@@ -7,8 +8,7 @@ import 'package:flutter/material.dart';
 void showAuthGateSheet(BuildContext context) {
   showModalBottomSheet<void>(
     context: context,
-    builder: (sheetContext) => Padding(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+    builder: (sheetContext) => BottomSheetBody(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

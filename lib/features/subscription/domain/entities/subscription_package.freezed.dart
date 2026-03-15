@@ -26,6 +26,10 @@ mixin _$SubscriptionPackage {
   /// The native SDK package object (cast back in the data layer).
   Object get nativePackage => throw _privateConstructorUsedError;
 
+  /// Localized introductory/trial price string, e.g. "Free for 3 days".
+  /// Null if no trial is offered for this package.
+  String? get introductoryPriceString => throw _privateConstructorUsedError;
+
   /// Create a copy of SubscriptionPackage
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -40,7 +44,12 @@ abstract class $SubscriptionPackageCopyWith<$Res> {
     $Res Function(SubscriptionPackage) then,
   ) = _$SubscriptionPackageCopyWithImpl<$Res, SubscriptionPackage>;
   @useResult
-  $Res call({String identifier, String priceString, Object nativePackage});
+  $Res call({
+    String identifier,
+    String priceString,
+    Object nativePackage,
+    String? introductoryPriceString,
+  });
 }
 
 /// @nodoc
@@ -61,6 +70,7 @@ class _$SubscriptionPackageCopyWithImpl<$Res, $Val extends SubscriptionPackage>
     Object? identifier = null,
     Object? priceString = null,
     Object? nativePackage = null,
+    Object? introductoryPriceString = freezed,
   }) {
     return _then(
       _value.copyWith(
@@ -75,6 +85,10 @@ class _$SubscriptionPackageCopyWithImpl<$Res, $Val extends SubscriptionPackage>
             nativePackage: null == nativePackage
                 ? _value.nativePackage
                 : nativePackage,
+            introductoryPriceString: freezed == introductoryPriceString
+                ? _value.introductoryPriceString
+                : introductoryPriceString // ignore: cast_nullable_to_non_nullable
+                      as String?,
           )
           as $Val,
     );
@@ -90,7 +104,12 @@ abstract class _$$SubscriptionPackageImplCopyWith<$Res>
   ) = __$$SubscriptionPackageImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String identifier, String priceString, Object nativePackage});
+  $Res call({
+    String identifier,
+    String priceString,
+    Object nativePackage,
+    String? introductoryPriceString,
+  });
 }
 
 /// @nodoc
@@ -110,6 +129,7 @@ class __$$SubscriptionPackageImplCopyWithImpl<$Res>
     Object? identifier = null,
     Object? priceString = null,
     Object? nativePackage = null,
+    Object? introductoryPriceString = freezed,
   }) {
     return _then(
       _$SubscriptionPackageImpl(
@@ -124,6 +144,10 @@ class __$$SubscriptionPackageImplCopyWithImpl<$Res>
         nativePackage: null == nativePackage
             ? _value.nativePackage
             : nativePackage,
+        introductoryPriceString: freezed == introductoryPriceString
+            ? _value.introductoryPriceString
+            : introductoryPriceString // ignore: cast_nullable_to_non_nullable
+                  as String?,
       ),
     );
   }
@@ -136,6 +160,7 @@ class _$SubscriptionPackageImpl implements _SubscriptionPackage {
     required this.identifier,
     required this.priceString,
     required this.nativePackage,
+    this.introductoryPriceString,
   });
 
   /// Store product identifier (e.g., 'artio_pro_monthly').
@@ -150,9 +175,14 @@ class _$SubscriptionPackageImpl implements _SubscriptionPackage {
   @override
   final Object nativePackage;
 
+  /// Localized introductory/trial price string, e.g. "Free for 3 days".
+  /// Null if no trial is offered for this package.
+  @override
+  final String? introductoryPriceString;
+
   @override
   String toString() {
-    return 'SubscriptionPackage(identifier: $identifier, priceString: $priceString, nativePackage: $nativePackage)';
+    return 'SubscriptionPackage(identifier: $identifier, priceString: $priceString, nativePackage: $nativePackage, introductoryPriceString: $introductoryPriceString)';
   }
 
   @override
@@ -167,7 +197,12 @@ class _$SubscriptionPackageImpl implements _SubscriptionPackage {
             const DeepCollectionEquality().equals(
               other.nativePackage,
               nativePackage,
-            ));
+            ) &&
+            (identical(
+                  other.introductoryPriceString,
+                  introductoryPriceString,
+                ) ||
+                other.introductoryPriceString == introductoryPriceString));
   }
 
   @override
@@ -176,6 +211,7 @@ class _$SubscriptionPackageImpl implements _SubscriptionPackage {
     identifier,
     priceString,
     const DeepCollectionEquality().hash(nativePackage),
+    introductoryPriceString,
   );
 
   /// Create a copy of SubscriptionPackage
@@ -195,6 +231,7 @@ abstract class _SubscriptionPackage implements SubscriptionPackage {
     required final String identifier,
     required final String priceString,
     required final Object nativePackage,
+    final String? introductoryPriceString,
   }) = _$SubscriptionPackageImpl;
 
   /// Store product identifier (e.g., 'artio_pro_monthly').
@@ -208,6 +245,11 @@ abstract class _SubscriptionPackage implements SubscriptionPackage {
   /// The native SDK package object (cast back in the data layer).
   @override
   Object get nativePackage;
+
+  /// Localized introductory/trial price string, e.g. "Free for 3 days".
+  /// Null if no trial is offered for this package.
+  @override
+  String? get introductoryPriceString;
 
   /// Create a copy of SubscriptionPackage
   /// with the given fields replaced by the non-null parameter values.
