@@ -106,14 +106,14 @@ Flutter App (purchases_flutter 9.x)
 **Auth:** `Authorization: Bearer {REVENUECAT_WEBHOOK_SECRET}` (timing-safe comparison)
 
 **INITIAL_PURCHASE:**
-1. Query `credit_transactions` (type=`subscription`, last 25 days) — prevents double-grant with `verify-google-purchase`
-2. If recent grant → skip (log + break, return 200)
-3. `update_subscription_status(is_premium=true, tier, expires_at)`
-4. `grant_subscription_credits` → `reference_id = event.id` (RC event UUID)
+1. `update_subscription_status(is_premium=true, tier, expires_at)`
+2. `grant_subscription_credits(p_check_recent_grant=true)` → 25-day guard runs INSIDE RPC under advisory lock (atomic, no TOCTOU) → `reference_id = event.id` (RC event UUID)
+3. If RPC returns `{ granted: false }` → skip (already granted by `verify-google-purchase` this cycle)
 
 **RENEWAL:**
 1. `update_subscription_status(is_premium=true, tier, expires_at)`
-2. `grant_subscription_credits` → `reference_id = event.id` (idempotent — RC retries same event.id)
+2. `grant_subscription_credits(p_check_recent_grant=false)` → `reference_id = event.id` (idempotent — RC retries same event.id deduplicated via ON CONFLICT)
+3. If RPC returns `{ granted: false, reason: "duplicate_reference_id" }` → log + skip (RC retry of same RENEWAL event)
 
 **EXPIRATION:**
 1. `update_subscription_status(is_premium=false, tier='free', expires_at=null)`

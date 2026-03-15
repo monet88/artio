@@ -257,6 +257,13 @@ Deno.serve(async (req) => {
           );
         }
 
+        if (grantResult?.granted === false) {
+          console.log(
+            `[revenuecat-webhook] RENEWAL: duplicate event ${eventId} for ${userId} — skipping (reason: ${grantResult?.reason})`,
+          );
+          break;
+        }
+
         console.log(
           `[revenuecat-webhook] RENEWAL: ${tierInfo.tier}, ${tierInfo.credits} credits for ${appUserId}`,
         );
