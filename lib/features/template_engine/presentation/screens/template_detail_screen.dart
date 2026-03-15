@@ -275,8 +275,27 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
       appBar: AppBar(title: const Text('Generate')),
       body: templateAsync.when(
         loading: () => const LoadingStateWidget(),
-        error: (e, _) =>
-            Center(child: Text(AppExceptionMapper.toUserMessage(e))),
+        error: (e, _) => Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                AppExceptionMapper.toUserMessage(e),
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.error,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: AppSpacing.md),
+              FilledButton.icon(
+                onPressed: () =>
+                    ref.invalidate(templateByIdProvider(widget.templateId)),
+                icon: const Icon(Icons.refresh_rounded, size: 18),
+                label: const Text('Try Again'),
+              ),
+            ],
+          ),
+        ),
         data: (template) {
           if (template == null) {
             return const Center(child: Text('Template not found'));
