@@ -6,6 +6,7 @@ description: >
   and Flutter SDK integration. Includes gotchas, 2024-2025 policy changes, and pre-check checklist.
   Updated 2026-03-15 with production-verified fixes: JWT ES256/HS256 mismatch, GPA token validation,
   verify-google-purchase fallback pattern, RC webhook Pub/Sub setup, webhook secret mismatch (Gotcha #17).
+  RC auth raw token (no Bearer prefix), event.id null sandbox fallback (Gotcha #18).
 skills:
   - mobile-developer
   - backend-specialist
@@ -13,7 +14,7 @@ skills:
 
 # IAP + RevenueCat Setup Skill
 
-> **Last Updated:** 2026-03-15 (Production-verified on Artio app — E2E confirmed 4 test accounts + webhook secret mismatch root cause documented)
+> **Last Updated:** 2026-03-16 (Production-verified v16 internal testing — RC webhook working, 4 events Sent, 820 credits. Gotcha #18 added: event.id null sandbox. Auth format corrected: raw token no Bearer prefix.)
 > **Stack:** Flutter + RevenueCat + Google Play + Supabase Edge Functions
 
 ---
