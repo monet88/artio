@@ -28,6 +28,7 @@ void main() {
               isPremium: isPremium,
               onResetPassword: () {},
               onSignOut: () {},
+              onRestore: () {},
             ),
           ),
         ),
@@ -59,14 +60,6 @@ void main() {
 
       expect(find.text('Appearance'), findsOneWidget);
       expect(find.text('Theme'), findsOneWidget);
-    });
-
-    testWidgets('shows Notifications section with toggle', (tester) async {
-      await tester.pumpWidget(buildWidget());
-      await tester.pumpAndSettle();
-
-      expect(find.text('Notifications'), findsOneWidget);
-      expect(find.text('Push Notifications'), findsOneWidget);
     });
 
     testWidgets('shows About section with version', (tester) async {
@@ -120,6 +113,51 @@ void main() {
 
       expect(find.text('Upgrade Plan'), findsNothing);
       expect(find.text('Manage Plan'), findsNothing);
+    });
+
+    testWidgets('shows Restore Purchases tile when logged in', (tester) async {
+      await tester.pumpWidget(buildWidget());
+      await tester.pumpAndSettle();
+
+      expect(find.text('Restore Purchases'), findsOneWidget);
+    });
+
+    testWidgets('hides Restore Purchases tile when not logged in',
+        (tester) async {
+      await tester.pumpWidget(buildWidget(isLoggedIn: false));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Restore Purchases'), findsNothing);
+    });
+
+    testWidgets('calls onRestore when Restore Purchases tile tapped',
+        (tester) async {
+      var called = false;
+      await tester.pumpWidget(
+        ProviderScope(
+          child: MaterialApp(
+            home: Scaffold(
+              body: SingleChildScrollView(
+                child: SettingsSections(
+                  email: 'test@example.com',
+                  isDark: false,
+                  version: '1.0.0',
+                  isLoggedIn: true,
+                  isPremium: false,
+                  onResetPassword: () {},
+                  onSignOut: () {},
+                  onRestore: () {
+                    called = true;
+                  },
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Restore Purchases'));
+      expect(called, isTrue);
     });
   });
 }

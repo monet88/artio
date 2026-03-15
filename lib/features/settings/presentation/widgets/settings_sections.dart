@@ -3,7 +3,6 @@ import 'dart:io' show Platform;
 import 'package:artio/core/design_system/app_spacing.dart';
 import 'package:artio/core/design_system/app_typography.dart';
 import 'package:artio/core/utils/url_launcher_utils.dart';
-import 'package:artio/features/settings/domain/providers/notifications_provider.dart';
 import 'package:artio/features/settings/presentation/widgets/settings_helpers.dart';
 import 'package:artio/features/settings/presentation/widgets/theme_switcher.dart';
 import 'package:artio/routing/routes/app_routes.dart';
@@ -22,6 +21,7 @@ class SettingsSections extends ConsumerWidget {
     required this.isPremium,
     required this.onResetPassword,
     required this.onSignOut,
+    required this.onRestore,
     super.key,
   });
 
@@ -32,6 +32,7 @@ class SettingsSections extends ConsumerWidget {
   final bool isPremium;
   final VoidCallback onResetPassword;
   final VoidCallback onSignOut;
+  final VoidCallback onRestore;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -90,6 +91,15 @@ class SettingsSections extends ConsumerWidget {
               ),
               SettingsDivider(isDark: isDark),
               SettingsTile(
+                icon: Icons.restore_rounded,
+                iconBgColor: AppColors.info,
+                title: 'Restore Purchases',
+                trailing: SettingsChevronArrow(isDark: isDark),
+                isDark: isDark,
+                onTap: kIsWeb ? null : onRestore,
+              ),
+              SettingsDivider(isDark: isDark),
+              SettingsTile(
                 icon: Icons.toll_rounded,
                 iconBgColor: AppColors.primaryCta,
                 title: 'Credit History',
@@ -133,32 +143,6 @@ class SettingsSections extends ConsumerWidget {
                   const SizedBox(height: AppSpacing.sm),
                   const ThemeSwitcher(),
                 ],
-              ),
-            ),
-          ],
-        ),
-
-        const SizedBox(height: AppSpacing.lg),
-
-        // ── Notifications ──────────────────────────────────────
-        const SettingsSectionLabel(label: 'Notifications'),
-        const SizedBox(height: AppSpacing.sm),
-        SettingsCard(
-          isDark: isDark,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4),
-              child: SwitchListTile(
-                secondary: const SettingsIconBg(
-                  icon: Icons.notifications_outlined,
-                  color: AppColors.primaryCta,
-                ),
-                title: const Text('Push Notifications'),
-                subtitle: const Text('Receive updates about your generations'),
-                value: ref.watch(notificationsNotifierProvider),
-                onChanged: (value) => ref
-                    .read(notificationsNotifierProvider.notifier)
-                    .setState(value: value),
               ),
             ),
           ],

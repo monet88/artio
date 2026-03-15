@@ -164,6 +164,7 @@ supabase db diff --local          # Generate migration from local schema changes
 - **Credit cost sync is CRITICAL**: `lib/core/constants/ai_models.dart` (client) and `supabase/functions/_shared/model_config.ts` (server) MUST have matching costs. Server is authoritative — client costs are for display only.
 - `Purchases.getOfferings().current` can be null if RevenueCat dashboard has no "Current" offering marked — always null-check.
 - Admin/DB-premium users (`profiles.is_premium = true`) bypass RevenueCat entirely for subscription status — see `subscription_provider.dart:15`. Don't add RevenueCat checks to admin-granted premium logic.
+- **RC webhook secret mismatch = silent 401 failures**: `REVENUECAT_WEBHOOK_SECRET` in Supabase secrets MUST exactly match the Authorization token configured in the RC dashboard (Project Settings → Integrations → Webhooks). If they differ, ALL webhook events fail with 401. RC shows "Failure" (no retry) for 4xx responses. Verify by testing the webhook endpoint directly with both values — only the correct one returns 200. Fix: update Supabase secret via management API or `supabase secrets set` to match what RC dashboard shows.
 
 ### Environment Setup
 
