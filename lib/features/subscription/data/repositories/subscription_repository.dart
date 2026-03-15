@@ -44,8 +44,9 @@ class SubscriptionRepository implements ISubscriptionRepository {
               identifier: p.storeProduct.identifier,
               priceString: p.storeProduct.priceString,
               nativePackage: p,
-              introductoryPriceString:
-                  p.storeProduct.introductoryPrice?.priceString,
+              introductoryPriceString: _formatIntroductoryOffer(
+                p.storeProduct.introductoryPrice,
+              ),
             ),
           )
           .toList();
@@ -139,6 +140,23 @@ class SubscriptionRepository implements ISubscriptionRepository {
         code: e.code,
       );
     }
+  }
+
+  /// Composes a human-readable introductory offer description that includes
+  /// both the duration and the price (e.g. "Free for 3 days", "$1.99 for 1 month").
+  /// Returns null if no introductory offer is present or period unit is unknown.
+  String? _formatIntroductoryOffer(IntroductoryPrice? intro) {
+    if (intro == null) return null;
+    final n = intro.periodNumberOfUnits;
+    final period = switch (intro.periodUnit) {
+      PeriodUnit.day => n == 1 ? '1 day' : '$n days',
+      PeriodUnit.week => n == 1 ? '1 week' : '$n weeks',
+      PeriodUnit.month => n == 1 ? '1 month' : '$n months',
+      PeriodUnit.year => n == 1 ? '1 year' : '$n years',
+      PeriodUnit.unknown => null,
+    };
+    if (period == null) return null;
+    return '${intro.priceString} for $period';
   }
 
   /// Maps RevenueCat [CustomerInfo] to our domain entity.
