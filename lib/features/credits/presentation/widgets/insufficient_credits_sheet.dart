@@ -3,6 +3,7 @@ import 'package:artio/core/design_system/app_spacing.dart';
 import 'package:artio/core/exceptions/app_exception.dart';
 import 'package:artio/core/services/rewarded_ad_service.dart';
 import 'package:artio/core/state/subscription_state_provider.dart';
+import 'package:artio/core/widgets/bottom_sheet_body.dart';
 import 'package:artio/features/credits/presentation/providers/ad_reward_provider.dart';
 import 'package:artio/routing/routes/app_routes.dart';
 import 'package:flutter/material.dart';
@@ -72,8 +73,7 @@ class _InsufficientCreditsSheetState
     final isSubscriber = _isSubscriber;
 
     return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.lg),
+      child: BottomSheetBody(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
