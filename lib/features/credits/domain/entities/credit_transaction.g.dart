@@ -15,6 +15,7 @@ _$CreditTransactionImpl _$$CreditTransactionImplFromJson(
   type: json['type'] as String,
   createdAt: DateTime.parse(json['createdAt'] as String),
   referenceId: json['referenceId'] as String?,
+  description: json['description'] as String?,
 );
 
 Map<String, dynamic> _$$CreditTransactionImplToJson(
@@ -26,4 +27,5 @@ Map<String, dynamic> _$$CreditTransactionImplToJson(
   'type': instance.type,
   'createdAt': instance.createdAt.toIso8601String(),
   'referenceId': instance.referenceId,
+  'description': instance.description,
 };

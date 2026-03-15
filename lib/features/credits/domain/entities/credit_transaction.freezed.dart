@@ -25,10 +25,15 @@ mixin _$CreditTransaction {
   String get userId => throw _privateConstructorUsedError;
   int get amount => throw _privateConstructorUsedError;
 
-  /// One of: 'generation', 'welcome_bonus', 'ad_reward', 'subscription', 'refund', 'manual'
+  /// One of: 'welcome_bonus', 'ad_reward', 'generation', 'refund',
+  /// 'subscription', 'purchase', 'daily_reset', 'admin_grant', 'manual'
   String get type => throw _privateConstructorUsedError;
   DateTime get createdAt => throw _privateConstructorUsedError;
   String? get referenceId => throw _privateConstructorUsedError;
+
+  /// Human-readable description of the transaction.
+  /// Populated server-side by SECURITY DEFINER functions.
+  String? get description => throw _privateConstructorUsedError;
 
   /// Serializes this CreditTransaction to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -54,6 +59,7 @@ abstract class $CreditTransactionCopyWith<$Res> {
     String type,
     DateTime createdAt,
     String? referenceId,
+    String? description,
   });
 }
 
@@ -78,6 +84,7 @@ class _$CreditTransactionCopyWithImpl<$Res, $Val extends CreditTransaction>
     Object? type = null,
     Object? createdAt = null,
     Object? referenceId = freezed,
+    Object? description = freezed,
   }) {
     return _then(
       _value.copyWith(
@@ -105,6 +112,10 @@ class _$CreditTransactionCopyWithImpl<$Res, $Val extends CreditTransaction>
                 ? _value.referenceId
                 : referenceId // ignore: cast_nullable_to_non_nullable
                       as String?,
+            description: freezed == description
+                ? _value.description
+                : description // ignore: cast_nullable_to_non_nullable
+                      as String?,
           )
           as $Val,
     );
@@ -127,6 +138,7 @@ abstract class _$$CreditTransactionImplCopyWith<$Res>
     String type,
     DateTime createdAt,
     String? referenceId,
+    String? description,
   });
 }
 
@@ -150,6 +162,7 @@ class __$$CreditTransactionImplCopyWithImpl<$Res>
     Object? type = null,
     Object? createdAt = null,
     Object? referenceId = freezed,
+    Object? description = freezed,
   }) {
     return _then(
       _$CreditTransactionImpl(
@@ -177,6 +190,10 @@ class __$$CreditTransactionImplCopyWithImpl<$Res>
             ? _value.referenceId
             : referenceId // ignore: cast_nullable_to_non_nullable
                   as String?,
+        description: freezed == description
+            ? _value.description
+            : description // ignore: cast_nullable_to_non_nullable
+                  as String?,
       ),
     );
   }
@@ -192,6 +209,7 @@ class _$CreditTransactionImpl implements _CreditTransaction {
     required this.type,
     required this.createdAt,
     this.referenceId,
+    this.description,
   });
 
   factory _$CreditTransactionImpl.fromJson(Map<String, dynamic> json) =>
@@ -204,7 +222,8 @@ class _$CreditTransactionImpl implements _CreditTransaction {
   @override
   final int amount;
 
-  /// One of: 'generation', 'welcome_bonus', 'ad_reward', 'subscription', 'refund', 'manual'
+  /// One of: 'welcome_bonus', 'ad_reward', 'generation', 'refund',
+  /// 'subscription', 'purchase', 'daily_reset', 'admin_grant', 'manual'
   @override
   final String type;
   @override
@@ -212,9 +231,14 @@ class _$CreditTransactionImpl implements _CreditTransaction {
   @override
   final String? referenceId;
 
+  /// Human-readable description of the transaction.
+  /// Populated server-side by SECURITY DEFINER functions.
+  @override
+  final String? description;
+
   @override
   String toString() {
-    return 'CreditTransaction(id: $id, userId: $userId, amount: $amount, type: $type, createdAt: $createdAt, referenceId: $referenceId)';
+    return 'CreditTransaction(id: $id, userId: $userId, amount: $amount, type: $type, createdAt: $createdAt, referenceId: $referenceId, description: $description)';
   }
 
   @override
@@ -229,7 +253,9 @@ class _$CreditTransactionImpl implements _CreditTransaction {
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.referenceId, referenceId) ||
-                other.referenceId == referenceId));
+                other.referenceId == referenceId) &&
+            (identical(other.description, description) ||
+                other.description == description));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -242,6 +268,7 @@ class _$CreditTransactionImpl implements _CreditTransaction {
     type,
     createdAt,
     referenceId,
+    description,
   );
 
   /// Create a copy of CreditTransaction
@@ -269,6 +296,7 @@ abstract class _CreditTransaction implements CreditTransaction {
     required final String type,
     required final DateTime createdAt,
     final String? referenceId,
+    final String? description,
   }) = _$CreditTransactionImpl;
 
   factory _CreditTransaction.fromJson(Map<String, dynamic> json) =
@@ -281,13 +309,19 @@ abstract class _CreditTransaction implements CreditTransaction {
   @override
   int get amount;
 
-  /// One of: 'generation', 'welcome_bonus', 'ad_reward', 'subscription', 'refund', 'manual'
+  /// One of: 'welcome_bonus', 'ad_reward', 'generation', 'refund',
+  /// 'subscription', 'purchase', 'daily_reset', 'admin_grant', 'manual'
   @override
   String get type;
   @override
   DateTime get createdAt;
   @override
   String? get referenceId;
+
+  /// Human-readable description of the transaction.
+  /// Populated server-side by SECURITY DEFINER functions.
+  @override
+  String? get description;
 
   /// Create a copy of CreditTransaction
   /// with the given fields replaced by the non-null parameter values.

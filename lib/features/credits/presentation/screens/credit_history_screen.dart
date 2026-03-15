@@ -225,6 +225,21 @@ class _TransactionConfig {
         color: AppColors.success,
         label: 'Generation Refund',
       ),
+      'purchase' => const _TransactionConfig(
+        icon: Icons.shopping_cart_rounded,
+        color: AppColors.success,
+        label: 'Credit Purchase',
+      ),
+      'daily_reset' => const _TransactionConfig(
+        icon: Icons.refresh_rounded,
+        color: AppColors.info,
+        label: 'Daily Reset',
+      ),
+      'admin_grant' => const _TransactionConfig(
+        icon: Icons.shield_rounded,
+        color: AppColors.premium,
+        label: 'Admin Grant',
+      ),
       'manual' => const _TransactionConfig(
         icon: Icons.admin_panel_settings_outlined,
         color: AppColors.warning,

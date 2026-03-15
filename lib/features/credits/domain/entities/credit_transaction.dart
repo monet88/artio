@@ -10,10 +10,15 @@ class CreditTransaction with _$CreditTransaction {
     required String userId,
     required int amount,
 
-    /// One of: 'generation', 'welcome_bonus', 'ad_reward', 'subscription', 'refund', 'manual'
+    /// One of: 'welcome_bonus', 'ad_reward', 'generation', 'refund',
+    /// 'subscription', 'purchase', 'daily_reset', 'admin_grant', 'manual'
     required String type,
     required DateTime createdAt,
     String? referenceId,
+
+    /// Human-readable description of the transaction.
+    /// Populated server-side by SECURITY DEFINER functions.
+    String? description,
   }) = _CreditTransaction;
 
   factory CreditTransaction.fromJson(Map<String, dynamic> json) =>

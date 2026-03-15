@@ -1,6 +1,6 @@
 # Flutter Project Instructions & Best Practices
 
-As an AI agent working on this repository, you MUST adhere to the following core principles and coding standards.
+As an AI agent working on this repository, you MUST adhere to the following core principles and coding standards. These are synthesized from the individual skills in the `.claude/skills/` directory.
 
 ## Core Tech Stack
 - **Language**: Dart 3 (Strong typing, null safety, exhaustive switch expressions)
@@ -45,6 +45,9 @@ As an AI agent working on this repository, you MUST adhere to the following core
 - **Configuration**: Use a single `main.dart`. Pass `--dart-define=ENV=development` (or `staging`). Env values loaded via `flutter_dotenv` from `.env.{ENV}` files.
 - **Secrets**: NEVER commit production secrets to Git. Use `.env.example` for key documentation.
 
+---
+> Refer to specific files inside `.claude/skills/` for detailed rules on Networking, UI/UX, etc.
+
 # Artio
 
 AI art generation SaaS. Flutter/Dart monorepo with three surfaces: **main app** (`/`), **admin app** (`/admin`), **backend** (`/supabase`). Confirm which surface you're editing before making changes.
@@ -88,25 +91,6 @@ Credits use two-layer enforcement: client pre-check + server-authoritative `dedu
 
 Files: snake_case. Classes: PascalCase. Prefer `const` > `final` > `var`.
 
-## Commands
-
-```bash
-# Run app (--dart-define=ENV required)
-flutter run --dart-define=ENV=development
-
-# Codegen (after changing @riverpod, @freezed, @TypedGoRoute)
-dart run build_runner build --delete-conflicting-outputs
-
-# Static analysis (uses very_good_analysis)
-flutter analyze
-
-# Tests (integration tests excluded by default)
-flutter test
-flutter test --tags integration
-```
-
-Never hand-edit `*.g.dart` or `*.freezed.dart` files. Generated files are committed.
-
 ## Testing
 
 - Mock library: **mocktail** (not mockito). Shared mocks in `test/core/mocks/`.
@@ -134,7 +118,7 @@ Edge functions in `supabase/functions/` use Deno/TypeScript. Shared utilities in
 
 **`--no-verify-jwt` required** for all Flutter-called functions: Supabase gateway uses HS256 but GoTrue v2 issues ES256 tokens — mismatch → 401 for all requests. Functions validate JWT internally via `auth.getUser()`.
 
-**Double-grant prevention**: Both `verify-google-purchase` and `revenuecat-webhook` INITIAL_PURCHASE check `credit_transactions WHERE type='subscription' AND created_at > 25 days ago`. Whichever fires first wins; the second skips. The rate-limit query MUST use `type='subscription'` — that's what `grant_subscription_credits` RPC inserts. Using `type='subscription_credit'` makes the guard a no-op.
+**Double-grant prevention**: Both `verify-google-purchase` and `revenuecat-webhook` INITIAL_PURCHASE call `grant_subscription_credits` with `p_check_recent_grant=true`. The 25-day guard runs inside the RPC under an advisory lock (atomic — no TOCTOU race). Whichever fires first wins; the second gets `{ granted: false, reason: 'recent_grant_exists' }`. The internal query uses `type='subscription'` — that's what the RPC inserts. RENEWAL events skip this guard (`p_check_recent_grant=false`) and rely on `reference_id` dedup instead.
 
 **Downgrade**: Pass `p_tier: 'free'` (NOT `null`) to `update_subscription_status` — `subscription_tier` column default is `'free'`, not null.
 
