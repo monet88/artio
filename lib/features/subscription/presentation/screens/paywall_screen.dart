@@ -80,12 +80,6 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
 
                       // ── Hero section ────────────────────────────────
                       _buildHero(),
-
-                      // ── Trial badge (shown only when introductory offer available) ──
-                      if (_hasTrialOffer(packages)) ...[
-                        const SizedBox(height: AppSpacing.sm),
-                        _buildTrialBadge(packages),
-                      ],
                       const SizedBox(height: AppSpacing.xl),
 
                       // ── Benefits grid ───────────────────────────────
@@ -372,47 +366,6 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
       'Free plan: 10 welcome credits + earn more by watching ads',
       textAlign: TextAlign.center,
       style: TextStyle(color: AppColors.white40, fontSize: 12, height: 1.5),
-    );
-  }
-
-  bool _hasTrialOffer(List<SubscriptionPackage> packages) =>
-      packages.any((p) => p.introductoryPriceString != null);
-
-  Widget _buildTrialBadge(List<SubscriptionPackage> packages) {
-    final trialPackage = packages.firstWhere(
-      (p) => p.introductoryPriceString != null,
-      orElse: () => packages.first,
-    );
-    final trialPrice = trialPackage.introductoryPriceString;
-    if (trialPrice == null) return const SizedBox.shrink();
-
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.md,
-        vertical: AppSpacing.sm,
-      ),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [AppColors.gradientStart, AppColors.gradientEnd],
-        ),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Text('🎉', style: TextStyle(fontSize: 16)),
-          const SizedBox(width: AppSpacing.xs),
-          Text(
-            'Start with $trialPrice — then auto-renews',
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ),
     );
   }
 
