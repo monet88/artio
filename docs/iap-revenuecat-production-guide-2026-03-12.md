@@ -49,7 +49,7 @@ Flutter App (purchases_flutter 9.x)
 | Layer | Mechanism | Where |
 |-------|-----------|-------|
 | 1 | GPA format validation — only `GPA.\d{4}-\d{4}-\d{4}-\d+` accepted | `isValidPurchaseToken()` |
-| 2 | 25-day rate limit — query `credit_transactions` where `type='subscription'` | Both `verify-google-purchase` + `revenuecat-webhook` INITIAL_PURCHASE |
+| 2 | 25-day rate limit — runs inside `grant_subscription_credits` RPC when called with `p_check_recent_grant=true` (atomic under advisory lock) | Both `verify-google-purchase` + `revenuecat-webhook` INITIAL_PURCHASE |
 | 3 | Rate limit fail-closed — DB error → HTTP 500, not silent bypass | Both edge functions |
 
 **CRITICAL:** Query uses `type='subscription'` — this is what `grant_subscription_credits` RPC inserts. Do NOT use `type='subscription_credit'` (wrong, would make guard a no-op).
@@ -106,10 +106,9 @@ Flutter App (purchases_flutter 9.x)
 **Auth:** `Authorization: Bearer {REVENUECAT_WEBHOOK_SECRET}` (timing-safe comparison)
 
 **INITIAL_PURCHASE:**
-1. Query `credit_transactions` (type=`subscription`, last 25 days) — prevents double-grant with `verify-google-purchase`
-2. If recent grant → skip (log + break, return 200)
-3. `update_subscription_status(is_premium=true, tier, expires_at)`
-4. `grant_subscription_credits` → `reference_id = event.id` (RC event UUID)
+1. `update_subscription_status(is_premium=true, tier, expires_at)`
+2. `grant_subscription_credits` with `p_check_recent_grant=true` → the 25-day guard runs inside the RPC under an advisory lock (atomic, prevents double-grant with `verify-google-purchase`). `reference_id = event.id` (RC event UUID)
+3. If RPC returns `{ granted: false }` → skip (log + break, return 200)
 
 **RENEWAL:**
 1. `update_subscription_status(is_premium=true, tier, expires_at)`

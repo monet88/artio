@@ -118,7 +118,7 @@ Edge functions in `supabase/functions/` use Deno/TypeScript. Shared utilities in
 
 **`--no-verify-jwt` required** for all Flutter-called functions: Supabase gateway uses HS256 but GoTrue v2 issues ES256 tokens — mismatch → 401 for all requests. Functions validate JWT internally via `auth.getUser()`.
 
-**Double-grant prevention**: Both `verify-google-purchase` and `revenuecat-webhook` INITIAL_PURCHASE check `credit_transactions WHERE type='subscription' AND created_at > 25 days ago`. Whichever fires first wins; the second skips. The rate-limit query MUST use `type='subscription'` — that's what `grant_subscription_credits` RPC inserts. Using `type='subscription_credit'` makes the guard a no-op.
+**Double-grant prevention**: Both `verify-google-purchase` and `revenuecat-webhook` INITIAL_PURCHASE call `grant_subscription_credits` with `p_check_recent_grant=true`. The 25-day guard runs inside the RPC under an advisory lock (atomic — no TOCTOU race). Whichever fires first wins; the second gets `{ granted: false, reason: 'recent_grant_exists' }`. The internal query uses `type='subscription'` — that's what the RPC inserts. RENEWAL events skip this guard (`p_check_recent_grant=false`) and rely on `reference_id` dedup instead.
 
 **Downgrade**: Pass `p_tier: 'free'` (NOT `null`) to `update_subscription_status` — `subscription_tier` column default is `'free'`, not null.
 
