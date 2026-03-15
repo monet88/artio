@@ -43,7 +43,8 @@ Deno.serve(async (req) => {
   }
 
   // Verify webhook auth header (no early-exit XOR comparison — length and bytes both checked).
-  // crypto.subtle.timingSafeEqual is not available in Supabase Edge Runtime.
+  // crypto.subtle.timingSafeEqual is available in Deno via type cast (see IAP SKILL.md Gotcha #11)
+  // but we use a manual XOR loop here — simpler, zero deps, and equally timing-safe.
   // RC sends the Authorization header value EXACTLY as configured in the dashboard (no auto-added
   // "Bearer " prefix). Store just the raw token in REVENUECAT_WEBHOOK_SECRET and compare directly.
   const authHeader = req.headers.get("Authorization");
@@ -87,6 +88,16 @@ Deno.serve(async (req) => {
     // producing a different reference_id each time and breaking deduplication
     // (same event retried → different ID → grants credits multiple times).
     // 'no-timestamp' is a fixed sentinel: idempotent across retries.
+    // If all three IDs are null (malformed event), log a warning so ops can investigate.
+    if (
+      !event.id &&
+      !event.transaction_id &&
+      event.event_timestamp_ms == null
+    ) {
+      console.error(
+        `[revenuecat-webhook] All event ID fields null — using no-timestamp sentinel. Event may not deduplicate correctly if multiple such events exist for user ${appUserId} type ${eventType}.`,
+      );
+    }
     const eventId: string =
       event.id ??
       event.transaction_id ??
