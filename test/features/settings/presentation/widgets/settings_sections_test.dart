@@ -130,8 +130,12 @@ void main() {
       expect(find.text('Restore Purchases'), findsNothing);
     });
 
-    testWidgets('calls onRestore when Restore Purchases tile tapped',
+    testWidgets(
+        'Restore Purchases tile is disabled on non-mobile (desktop test host)',
         (tester) async {
+      // RevenueCat only supports Android/iOS. On the macOS test host,
+      // Platform.isAndroid and Platform.isIOS are both false → tile is
+      // disabled (onTap = null) so tapping it must NOT invoke the callback.
       var called = false;
       await tester.pumpWidget(
         ProviderScope(
@@ -156,8 +160,8 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Restore Purchases'));
-      expect(called, isTrue);
+      await tester.tap(find.text('Restore Purchases'), warnIfMissed: false);
+      expect(called, isFalse);
     });
   });
 }

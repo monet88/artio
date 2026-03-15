@@ -67,11 +67,19 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   Future<void> _restorePurchases(BuildContext context) async {
     try {
       await ref.read(subscriptionNotifierProvider.notifier).restore();
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('✅ Purchases restored!')),
-        );
-      }
+      if (!context.mounted) return;
+      // restore() uses AsyncValue.guard — failures are stored in state, not thrown.
+      // Check state.hasError to show the correct message.
+      final hasError = ref.read(subscriptionNotifierProvider).hasError;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            hasError
+                ? 'Restore failed. Please try again.'
+                : '✅ Purchases restored!',
+          ),
+        ),
+      );
     } on Object {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
