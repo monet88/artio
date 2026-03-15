@@ -76,9 +76,15 @@ Deno.serve(async (req) => {
     }
 
     const eventType: string = event.type;
-    const eventId: string = event.id;
     const appUserId: string = event.app_user_id;
     const productId: string = event.product_id ?? "";
+    // RC events should include 'id' (UUID) but sandbox may omit it.
+    // Fall back to transaction_id (GPA.xxx) so p_reference_id is never null
+    // — a null reference_id causes grant_subscription_credits to throw.
+    const eventId: string =
+      event.id ??
+      event.transaction_id ??
+      `${appUserId}-${eventType}-${event.event_timestamp_ms ?? Date.now()}`;
 
     console.log(
       `[revenuecat-webhook] Event: ${eventType}, id: ${eventId}, user: ${appUserId}, product: ${productId}`,
