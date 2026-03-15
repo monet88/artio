@@ -69,16 +69,18 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       await ref.read(subscriptionNotifierProvider.notifier).restore();
       if (!context.mounted) return;
       // restore() uses AsyncValue.guard — failures are stored in state, not thrown.
-      // Check state.hasError to show the correct message.
-      final hasError = ref.read(subscriptionNotifierProvider).hasError;
+      // Check state.hasError first, then isActive to show the correct message.
+      final subState = ref.read(subscriptionNotifierProvider);
+      final String message;
+      if (subState.hasError) {
+        message = 'Restore failed. Please try again.';
+      } else if (subState.valueOrNull?.isActive == true) {
+        message = '✅ Purchases restored!';
+      } else {
+        message = 'No active subscription found.';
+      }
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            hasError
-                ? 'Restore failed. Please try again.'
-                : '✅ Purchases restored!',
-          ),
-        ),
+        SnackBar(content: Text(message)),
       );
     } on Object {
       if (context.mounted) {

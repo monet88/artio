@@ -4,9 +4,10 @@ description: >
   Complete In-App Purchase (IAP) setup guide using RevenueCat for Flutter/mobile apps.
   Covers Google Play Console, Google Cloud Console, RevenueCat dashboard, Supabase webhook,
   and Flutter SDK integration. Includes gotchas, 2024-2025 policy changes, and pre-check checklist.
-  Updated 2026-03-15 with production-verified fixes: JWT ES256/HS256 mismatch, GPA token validation,
+  Updated 2026-03-16 with production-verified fixes: JWT ES256/HS256 mismatch, GPA token validation,
   verify-google-purchase fallback pattern, RC webhook Pub/Sub setup, webhook secret mismatch (Gotcha #17).
   RC auth raw token (no Bearer prefix), event.id null sandbox fallback (Gotcha #18).
+  Date.now() idempotency fix (Gotcha #18 example corrected).
 skills:
   - mobile-developer
   - backend-specialist
@@ -70,8 +71,7 @@ Flutter App
 - Code must compare `authHeader` **directly** against `REVENUECAT_WEBHOOK_SECRET` (raw token, no prefix).
 - ❌ WRONG: `const expectedAuth = \`Bearer \${REVENUECAT_WEBHOOK_SECRET}\`` — causes permanent 401 on ALL events.
 - ✅ CORRECT: `const expectedAuth = REVENUECAT_WEBHOOK_SECRET;`
-- Use timing-safe comparison to prevent timing attacks.
-- ⚠️ `crypto.subtle.timingSafeEqual` **NOT available** in Supabase Deno Edge Runtime → throws `TypeError` → every request returns 500 → RC retries forever. Use manual XOR loop (see Gotcha #11).
+- Use timing-safe comparison to prevent timing attacks — see Gotcha #11 for the correct type-cast pattern (`crypto.subtle.timingSafeEqual` IS available in Supabase Edge Runtime).
 
 **Where `REVENUECAT_WEBHOOK_SECRET` comes from:**
 ```
@@ -382,10 +382,12 @@ RC sandbox events sometimes omit the `event.id` field (or send it as null). The 
 const eventId: string =
   event.id ??
   event.transaction_id ??                                    // GPA.xxx on Android
-  `${appUserId}-${eventType}-${event.event_timestamp_ms ?? Date.now()}`;
+  `${appUserId}-${eventType}-${event.event_timestamp_ms ?? "no-timestamp"}`;
 ```
 
-This ensures `p_reference_id` is NEVER null while still being idempotent (same event = same generated ID).
+This ensures `p_reference_id` is NEVER null while staying idempotent across RC retries.
+⚠️ Do NOT use `Date.now()` as last resort — it changes on every retry, producing a different
+`reference_id` each time and breaking deduplication (same event retried → duplicate credit grant).
 
 ---
 

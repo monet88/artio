@@ -130,6 +130,11 @@ void main() {
       expect(find.text('Restore Purchases'), findsNothing);
     });
 
+    // Note: the mobile-enabled path (Platform.isAndroid || Platform.isIOS == true →
+    // onRestore is invoked on tap) cannot be covered here because dart:io's Platform
+    // class reflects the real test-runner OS (macOS) and cannot be mocked in unit
+    // tests without refactoring to use package:platform (LocalPlatform/FakePlatform).
+    // TODO(test): add Restore Purchases coverage in integration_test/settings_flow_test.dart.
     testWidgets(
         'Restore Purchases tile is disabled on non-mobile (desktop test host)',
         (tester) async {
