@@ -12,6 +12,7 @@
 --      inside the same transaction, under the lock.
 --   3. Return JSONB so callers can distinguish: granted=true, duplicate_reference_id,
 --      or recent_grant_exists (instead of opaque VOID).
+--   4. Guard p_reference_id IS NOT NULL — a NULL value bypasses ON CONFLICT dedup.
 -- =============================================================================
 
 -- Must DROP the old VOID-returning function before replacing with JSONB return type.
@@ -32,6 +33,13 @@ BEGIN
   -- hashtext produces a stable INT4; casting to BIGINT satisfies pg_advisory_xact_lock.
   v_lock_key := hashtext(p_user_id::TEXT)::BIGINT;
   PERFORM pg_advisory_xact_lock(v_lock_key);
+
+  -- Guard: reference_id must not be NULL.
+  -- A NULL reference_id bypasses ON CONFLICT deduplication (the partial index
+  -- excludes NULLs), allowing unlimited credit grants for the same event.
+  IF p_reference_id IS NULL THEN
+    RAISE EXCEPTION 'grant_subscription_credits: p_reference_id must not be NULL';
+  END IF;
 
   -- Optional 25-day recent-grant guard (for INITIAL_PURCHASE paths where two callers
   -- with different reference_ids may race — ON CONFLICT alone won't deduplicate them).
