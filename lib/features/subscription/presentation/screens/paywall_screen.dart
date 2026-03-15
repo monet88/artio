@@ -1,6 +1,7 @@
 import 'package:artio/core/design_system/app_spacing.dart';
 import 'package:artio/core/exceptions/app_exception.dart';
 import 'package:artio/core/utils/app_exception_mapper.dart';
+import 'package:artio/core/utils/url_launcher_utils.dart';
 import 'package:artio/features/subscription/domain/entities/subscription_package.dart';
 import 'package:artio/features/subscription/domain/entities/subscription_status.dart';
 import 'package:artio/features/subscription/presentation/providers/subscription_provider.dart';

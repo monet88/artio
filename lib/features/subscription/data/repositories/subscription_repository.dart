@@ -44,6 +44,8 @@ class SubscriptionRepository implements ISubscriptionRepository {
               identifier: p.storeProduct.identifier,
               priceString: p.storeProduct.priceString,
               nativePackage: p,
+              introductoryPriceString:
+                  p.storeProduct.introductoryPrice?.priceString,
             ),
           )
           .toList();
