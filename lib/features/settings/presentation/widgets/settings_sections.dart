@@ -8,6 +8,7 @@ import 'package:artio/features/settings/presentation/widgets/settings_helpers.da
 import 'package:artio/features/settings/presentation/widgets/theme_switcher.dart';
 import 'package:artio/routing/routes/app_routes.dart';
 import 'package:artio/theme/app_colors.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -68,13 +69,24 @@ class SettingsSections extends ConsumerWidget {
                 trailing: SettingsChevronArrow(isDark: isDark),
                 isDark: isDark,
                 onTap: isPremium
-                    ? () => launchUrlSafely(
-                          context,
-                          Platform.isAndroid
-                              ? 'https://play.google.com/store/account/subscriptions'
-                              : 'https://apps.apple.com/account/subscriptions',
-                        )
-                    : () => const PaywallRoute().push<void>(context),
+                    ? () {
+                        if (Platform.isAndroid) {
+                          launchUrlSafely(
+                            context,
+                            'https://play.google.com/store/account/subscriptions',
+                          );
+                        } else if (Platform.isIOS) {
+                          launchUrlSafely(
+                            context,
+                            'https://apps.apple.com/account/subscriptions',
+                          );
+                        }
+                        // Desktop/web: no-op — no mobile subscription management page
+                      }
+                    : () {
+                        if (!kIsWeb) const PaywallRoute().push<void>(context);
+                        // kIsWeb: RevenueCat not configured for web — do nothing
+                      },
               ),
               SettingsDivider(isDark: isDark),
               SettingsTile(
