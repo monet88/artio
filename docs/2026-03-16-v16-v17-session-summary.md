@@ -139,7 +139,7 @@ onTap: (kIsWeb || !(Platform.isAndroid || Platform.isIOS)) ? null : onRestore,
 - `revenuecat-webhook` deployed với auth fix + eventId fallback
 - `REVENUECAT_WEBHOOK_SECRET` = raw token (khớp RC dashboard)
 - 4 RC events "Sent" trong RC Dashboard ✅
-- User `playabc@gmail.com`: 820 credits ✅
+- User `test-user@example.com`: 820 credits ✅
 
 ### Repository (main branch)
 - `version: 1.0.0+17` trong `pubspec.yaml`

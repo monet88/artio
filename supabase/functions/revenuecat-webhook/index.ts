@@ -83,10 +83,14 @@ Deno.serve(async (req) => {
     // RC events should include 'id' (UUID) but sandbox may omit it.
     // Fall back to transaction_id (GPA.xxx) so p_reference_id is never null
     // — a null reference_id causes grant_subscription_credits to throw.
+    // ⚠️ Do NOT use Date.now() as last resort — it changes on every RC retry,
+    // producing a different reference_id each time and breaking deduplication
+    // (same event retried → different ID → grants credits multiple times).
+    // 'no-timestamp' is a fixed sentinel: idempotent across retries.
     const eventId: string =
       event.id ??
       event.transaction_id ??
-      `${appUserId}-${eventType}-${event.event_timestamp_ms ?? Date.now()}`;
+      `${appUserId}-${eventType}-${event.event_timestamp_ms ?? "no-timestamp"}`;
 
     console.log(
       `[revenuecat-webhook] Event: ${eventType}, id: ${eventId}, user: ${appUserId}, product: ${productId}`,
