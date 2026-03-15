@@ -22,6 +22,7 @@ class SettingsSections extends ConsumerWidget {
     required this.isPremium,
     required this.onResetPassword,
     required this.onSignOut,
+    required this.onRestore,
     super.key,
   });
 
@@ -32,6 +33,7 @@ class SettingsSections extends ConsumerWidget {
   final bool isPremium;
   final VoidCallback onResetPassword;
   final VoidCallback onSignOut;
+  final VoidCallback onRestore;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -87,6 +89,15 @@ class SettingsSections extends ConsumerWidget {
                         if (!kIsWeb) const PaywallRoute().push<void>(context);
                         // kIsWeb: RevenueCat not configured for web — do nothing
                       },
+              ),
+              SettingsDivider(isDark: isDark),
+              SettingsTile(
+                icon: Icons.restore_rounded,
+                iconBgColor: AppColors.info,
+                title: 'Restore Purchases',
+                trailing: SettingsChevronArrow(isDark: isDark),
+                isDark: isDark,
+                onTap: kIsWeb ? null : onRestore,
               ),
               SettingsDivider(isDark: isDark),
               SettingsTile(
