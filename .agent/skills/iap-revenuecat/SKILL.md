@@ -4,8 +4,8 @@ description: >
   Complete In-App Purchase (IAP) setup guide using RevenueCat for Flutter/mobile apps.
   Covers Google Play Console, Google Cloud Console, RevenueCat dashboard, Supabase webhook,
   and Flutter SDK integration. Includes gotchas, 2024-2025 policy changes, and pre-check checklist.
-  Updated 2026-03-12 with production-verified fixes: JWT ES256/HS256 mismatch, GPA token validation,
-  verify-google-purchase fallback pattern, RC webhook Pub/Sub setup.
+  Updated 2026-03-15 with production-verified fixes: JWT ES256/HS256 mismatch, GPA token validation,
+  verify-google-purchase fallback pattern, RC webhook Pub/Sub setup, webhook secret mismatch (Gotcha #17).
 skills:
   - mobile-developer
   - backend-specialist
@@ -13,7 +13,7 @@ skills:
 
 # IAP + RevenueCat Setup Skill
 
-> **Last Updated:** 2026-03-15 (Production-verified on Artio app — E2E confirmed 4 test accounts)
+> **Last Updated:** 2026-03-15 (Production-verified on Artio app — E2E confirmed 4 test accounts + webhook secret mismatch root cause documented)
 > **Stack:** Flutter + RevenueCat + Google Play + Supabase Edge Functions
 
 ---
@@ -64,11 +64,21 @@ Flutter App
 - Service Account JSON = Server credential for RevenueCat to verify purchases
 - **Both are required** — different purpose
 
-### 6. Webhook Auth Header Format
+### 6. Webhook Auth Header Format + Secret Creation
 - RevenueCat sends: `Authorization: Bearer YOUR_SECRET`
 - Code must compare: `authHeader === \`Bearer \${secret}\``
 - Use timing-safe comparison to prevent timing attacks
 - ⚠️ `crypto.subtle.timingSafeEqual` **NOT available** in Supabase Deno Edge Runtime → throws `TypeError` → every request returns 500 → RC retries forever. Use manual XOR loop (see Gotcha #11)
+
+**Where `REVENUECAT_WEBHOOK_SECRET` comes from:**
+```
+1. YOU generate a random secret (e.g., openssl rand -hex 32)
+2. Enter it in RC Dashboard → Project Settings → Integrations → Webhooks → "Authorization header" field
+3. Set the SAME value in Supabase: supabase secrets set REVENUECAT_WEBHOOK_SECRET=<same-value>
+
+⚠️ TWO PLACES must have IDENTICAL values. If set at different times → mismatch → ALL events 401.
+See Gotcha #17 for how to diagnose and fix mismatch.
+```
 
 ### 7. AAB Rebuild Required After .env Changes
 - `.env` files are Flutter assets → bundled into APK/AAB
@@ -269,6 +279,85 @@ applied to the production DB → RPC call fails → 500 → RC retries every few
 
 **Note:** RC Pub/Sub pipeline being connected (transactions visible in RC dashboard) does NOT
 mean webhooks work — the pipeline can be connected but webhooks still fail if the edge function returns 5xx.
+
+---
+
+### 17. 🆕 RC Webhook All Events Return 401 — Secret Mismatch Between RC Dashboard and Supabase
+
+> **Root cause confirmed in production (2026-03-15)**
+
+**Symptom:** ALL RC webhook events show "Failure" in RC Dashboard (not "Retrying").
+No credits granted. No subscription updates. Edge function responds 401 to every request.
+
+**Why "Failure" not "Retrying":**
+- RC retries only on **5xx** responses (server errors)
+- RC marks **4xx** as permanent failure — no retry
+- Secret mismatch → 401 (Unauthorized) → RC gives up immediately
+
+**Root cause:** `REVENUECAT_WEBHOOK_SECRET` set in Supabase has a **different value** than
+the Authorization token configured in RC Dashboard. They were set at different times with
+different random values and nobody noticed the mismatch.
+
+**This secret has TWO sources you must keep in sync:**
+```
+SOURCE 1: RC Dashboard → Project Settings → Integrations → Webhooks → Authorization header
+           (value RC sends in every request)
+
+SOURCE 2: Supabase → supabase secrets set REVENUECAT_WEBHOOK_SECRET=<value>
+           (value edge function reads via Deno.env.get("REVENUECAT_WEBHOOK_SECRET"))
+
+MUST BE IDENTICAL. Set them together in one session. Never set one without updating the other.
+```
+
+**How to generate the secret:**
+```bash
+# Generate a secure random secret (do this ONCE, copy to both places)
+openssl rand -hex 32
+# Example output: 67b6cd6c03af0394e543f7e8b88771b27e8dbce368e42d664d6f9863d964273e
+```
+
+**How to diagnose secret mismatch:**
+```bash
+# Step 1: Get current Supabase secret value
+SUPABASE_ACCESS_TOKEN=<your-token>
+curl -s "https://api.supabase.com/v1/projects/<ref>/secrets" \
+  -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" | \
+  python3 -c "import json,sys; [print(s['value']) for s in json.load(sys.stdin) if s['name']=='REVENUECAT_WEBHOOK_SECRET']"
+
+# Step 2: Test webhook with that value
+curl -s -w "\nHTTP: %{http_code}" \
+  "https://<ref>.supabase.co/functions/v1/revenuecat-webhook" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <supabase-secret-value>" \
+  -d '{"event":{"type":"RENEWAL","id":"test-001","app_user_id":"<rc-app-user-id>","product_id":"<product-id>"}}' \
+  -X POST
+
+# If HTTP 200 → secret matches, RC uses same value → webhook works ✅
+# If HTTP 401 → secret in Supabase ≠ secret in RC Dashboard → update to match
+```
+
+**Fix:**
+```bash
+# Option A: Update Supabase to match RC Dashboard (look up RC value in dashboard)
+curl -s -X POST "https://api.supabase.com/v1/projects/<ref>/secrets" \
+  -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '[{"name":"REVENUECAT_WEBHOOK_SECRET","value":"<rc-dashboard-value>"}]'
+
+# Option B: Generate new secret, update BOTH places
+NEW_SECRET=$(openssl rand -hex 32)
+# 1. Update RC Dashboard webhook Authorization field → paste $NEW_SECRET
+# 2. Update Supabase:
+supabase secrets set REVENUECAT_WEBHOOK_SECRET=$NEW_SECRET --project-ref <ref>
+```
+
+**Verify fix with E2E test:**
+```bash
+# After fixing, trigger a test event and confirm credits granted
+curl -s "https://<ref>.supabase.co/rest/v1/credit_transactions?reference_id=eq.test-001" \
+  -H "apikey: $ANON_KEY" -H "Authorization: Bearer $SERVICE_KEY"
+# Should return the transaction → webhook processed successfully
+```
 
 ---
 
@@ -716,14 +805,30 @@ Future<void> _syncToSupabase() async {
 ### PHASE 8: Webhook Setup
 
 #### 8.1 RevenueCat Webhook Config
+
+**⚠️ Generate secret FIRST, then set in BOTH places in same session:**
+```bash
+# Step 1: Generate secret
+SECRET=$(openssl rand -hex 32)
+echo "Your secret: $SECRET"
+
+# Step 2: Set in Supabase IMMEDIATELY
+supabase secrets set REVENUECAT_WEBHOOK_SECRET=$SECRET --project-ref YOUR_REF
+
+# Step 3: Open RC Dashboard → Integrations → Webhooks → paste $SECRET in Authorization header
+```
+
 ```
 RevenueCat → Integrations → Webhooks → + New webhook
   Name: Supabase Webhook
   URL: https://YOUR_PROJECT.supabase.co/functions/v1/revenuecat-webhook
-  Authorization header: YOUR_SECRET_VALUE
+  Authorization header: <paste the same $SECRET value from above>
   Environment: Production and Sandbox  ← BOTH! Sandbox for testing
   Events: Initial purchase ✅, Renewal ✅, Product change ✅, Cancellation ✅, Expiration ✅
 ```
+
+**⚠️ CRITICAL:** RC Dashboard and Supabase secrets MUST have identical values.
+If set at different times/sessions → mismatch → all events return 401 "Failure" (see Gotcha #17).
 
 #### 8.2 Verify webhook is receiving
 ```
@@ -762,10 +867,11 @@ If no events → webhook pipeline not working → debug Pub/Sub first
 - [ ] Offerings configured → one marked as **Current** (or `getOfferings().current` returns null)
 - [ ] Public API key (`goog_xxx`) added to app `.env`
 - [ ] Webhook configured: correct URL + secret + **Sandbox AND Production**
+- [ ] **Secret sync verified**: test webhook endpoint with `Authorization: Bearer <supabase-secret-value>` → must return 200 (not 401). 401 = secret mismatch → fix before going live (see Gotcha #17)
 
 ### Supabase Edge Functions
 - [ ] All functions deployed with `--no-verify-jwt` ← critical!
-- [ ] `REVENUECAT_WEBHOOK_SECRET` set in secrets
+- [ ] `REVENUECAT_WEBHOOK_SECRET` set in secrets **AND matches RC Dashboard Authorization header exactly** (see Gotcha #17)
 - [ ] `REVENUECAT_PROJECT_ID` set in secrets (required by sync-subscription) ← easy to miss!
 - [ ] `verify-google-purchase` has GPA format validation
 - [ ] `sync-subscription` does NOT grant credits (only status sync)
@@ -816,6 +922,7 @@ If no events → webhook pipeline not working → debug Pub/Sub first
 | `ITEM_ALREADY_OWNED` (error 28) | User already subscribed | Call `Purchases.getCustomerInfo()` directly (not `restorePurchases()`) |
 | Double-grant when RC webhook activates | `gp-` and RC event.id are different reference_ids | Remove `grant_subscription_credits` from `verify-google-purchase` when webhook confirmed stable |
 | All webhook events return 500 immediately | `crypto.subtle.timingSafeEqual` not in Supabase runtime → throws on auth check | Replace with manual XOR loop (Gotcha #11) |
+| All webhook events return 401, show "Failure" (not "Retrying") | `REVENUECAT_WEBHOOK_SECRET` in Supabase ≠ Authorization token in RC Dashboard | Diagnose + fix via Gotcha #17. RC only retries 5xx, not 4xx → "Failure" = permanent |
 | RC webhook "User not linked" 500 on new signups | `revenuecat_app_user_id` = NULL because RC login ran before profile INSERT | Fix order: INSERT profile → then `_revenuecatLogIn()`. Include field in INSERT (Gotcha #12) |
 | UI credits not updating after purchase | Only `authViewModelProvider` invalidated, `creditBalanceNotifierProvider` not refreshed | Invalidate both providers in `purchase()`, `restore()`, and `_syncToSupabase()` |
 | All edge function calls return 503 BOOT_ERROR | Top-level `throw` at module init → function won't start | Move env var validation inside `Deno.serve()` handler (Gotcha #14). Set `REVENUECAT_PROJECT_ID` secret |
