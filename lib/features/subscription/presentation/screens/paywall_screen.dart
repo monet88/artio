@@ -80,6 +80,12 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
 
                       // ── Hero section ────────────────────────────────
                       _buildHero(),
+
+                      // ── Trial badge (shown only when introductory offer available) ──
+                      if (_hasTrialOffer(packages)) ...[
+                        const SizedBox(height: AppSpacing.sm),
+                        _buildTrialBadge(packages),
+                      ],
                       const SizedBox(height: AppSpacing.xl),
 
                       // ── Benefits grid ───────────────────────────────
@@ -369,13 +375,107 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
     );
   }
 
-  Widget _buildBottomCTA(bool isDark) {
+  bool _hasTrialOffer(List<SubscriptionPackage> packages) =>
+      packages.any((p) => p.introductoryPriceString != null);
+
+  Widget _buildTrialBadge(List<SubscriptionPackage> packages) {
+    final trialPackage = packages.firstWhere(
+      (p) => p.introductoryPriceString != null,
+      orElse: () => packages.first,
+    );
+    final trialPrice = trialPackage.introductoryPriceString;
+    if (trialPrice == null) return const SizedBox.shrink();
+
     return Container(
-      padding: const EdgeInsets.fromLTRB(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.sm,
+      ),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [AppColors.gradientStart, AppColors.gradientEnd],
+        ),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Text('🎉', style: TextStyle(fontSize: 16)),
+          const SizedBox(width: AppSpacing.xs),
+          Text(
+            'Start with $trialPrice — then auto-renews',
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildComplianceText(BuildContext context) {
+    return Text.rich(
+      TextSpan(
+        style: const TextStyle(
+          color: AppColors.textMuted,
+          fontSize: 11,
+          height: 1.5,
+        ),
+        children: [
+          const TextSpan(text: 'By subscribing you agree to our '),
+          WidgetSpan(
+            alignment: PlaceholderAlignment.middle,
+            child: GestureDetector(
+              onTap: () => launchInAppUrl(context, 'https://artio.app/terms'),
+              child: const Text(
+                'Terms of Service',
+                style: TextStyle(
+                  color: AppColors.primaryCta,
+                  fontSize: 11,
+                  decoration: TextDecoration.underline,
+                  decorationColor: AppColors.primaryCta,
+                ),
+              ),
+            ),
+          ),
+          const TextSpan(text: ' and '),
+          WidgetSpan(
+            alignment: PlaceholderAlignment.middle,
+            child: GestureDetector(
+              onTap: () => launchInAppUrl(context, 'https://artio.app/privacy'),
+              child: const Text(
+                'Privacy Policy',
+                style: TextStyle(
+                  color: AppColors.primaryCta,
+                  fontSize: 11,
+                  decoration: TextDecoration.underline,
+                  decorationColor: AppColors.primaryCta,
+                ),
+              ),
+            ),
+          ),
+          const TextSpan(
+            text: '. Subscription auto-renews unless cancelled at least '
+                '24 hours before the end of the current period. '
+                'Manage or cancel anytime in your account settings.',
+          ),
+        ],
+      ),
+      textAlign: TextAlign.center,
+    );
+  }
+
+  Widget _buildBottomCTA(bool isDark) {
+    final bottomInset = MediaQuery.of(context).viewPadding.bottom;
+    return Container(
+      padding: EdgeInsets.fromLTRB(
         AppSpacing.lg,
         AppSpacing.md,
         AppSpacing.lg,
-        AppSpacing.xl,
+        AppSpacing.xl + bottomInset,
       ),
       decoration: BoxDecoration(
         color: AppColors.darkBackground.withValues(alpha: 0.95),
@@ -447,13 +547,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                   ),
           ),
           const SizedBox(height: AppSpacing.xs),
-
-          // Legal fine print
-          const Text(
-            'Cancel anytime. Subscriptions auto-renew unless cancelled.',
-            textAlign: TextAlign.center,
-            style: TextStyle(color: AppColors.textMuted, fontSize: 11),
-          ),
+          _buildComplianceText(context),
         ],
       ),
     );
