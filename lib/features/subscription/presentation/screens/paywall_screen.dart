@@ -469,13 +469,13 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
   }
 
   Widget _buildBottomCTA(bool isDark) {
-    final bottomInset = MediaQuery.of(context).viewPadding.bottom;
+    // Bottom inset is handled by the SafeArea wrapping the entire screen content.
     return Container(
-      padding: EdgeInsets.fromLTRB(
+      padding: const EdgeInsets.fromLTRB(
         AppSpacing.lg,
         AppSpacing.md,
         AppSpacing.lg,
-        AppSpacing.xl + bottomInset,
+        AppSpacing.xl,
       ),
       decoration: BoxDecoration(
         color: AppColors.darkBackground.withValues(alpha: 0.95),
