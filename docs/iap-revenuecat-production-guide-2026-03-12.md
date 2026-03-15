@@ -66,7 +66,7 @@ Flutter App (purchases_flutter 9.x)
 
 **Mitigation:** 25-day rate limit in BOTH functions. Whichever fires first sets the grant; the second sees a recent grant and skips.
 
-**Known gap (TOCTOU P2):** Two concurrent requests with unique tokens can both pass the SELECT check before either INSERT lands. Tracked as follow-up for DB-level atomic enforcement.
+**TOCTOU race (Fixed — migration `20260315120000`):** Previously, two concurrent requests with unique tokens could both pass the SELECT check before either INSERT landed. Fixed by moving the advisory lock and 25-day guard inside `grant_subscription_credits` RPC (`p_check_recent_grant=true`), making the guard + insert atomic under a per-user lock.
 
 ---
 
@@ -81,10 +81,8 @@ Flutter App (purchases_flutter 9.x)
 2. Parse `purchaseToken` + `productId` from body
 3. Validate GPA format — reject non-`GPA.xxx` tokens
 4. Lookup `productId` prefix → tier + credits
-5. Query `credit_transactions` (type=`subscription`, last 25 days) → fail-closed on DB error
-6. If recent grant found → skip (return `credits_already_granted: true`)
-7. Call `grant_subscription_credits` → `reference_id = gp-{purchaseToken}`
-8. Return `{ verified: true, tier, credits, credits_already_granted }`
+5. Call `grant_subscription_credits` RPC with `p_check_recent_grant=true` — the 25-day guard runs inside the RPC under an advisory lock (atomic, no TOCTOU race)
+6. Return `{ verified: true, tier, credits, credits_already_granted }`
 
 **Does NOT:** Update subscription tier or `is_premium` — RC webhook owns this.
 
@@ -300,7 +298,7 @@ LIMIT 10;
 
 | Priority | Issue | Status |
 |----------|-------|--------|
-| P2 | TOCTOU race in 25-day rate limit — two concurrent requests can both pass SELECT before INSERT | Open — needs DB-level atomic enforcement |
+| ~~P2~~ | ~~TOCTOU race in 25-day rate limit — two concurrent requests can both pass SELECT before INSERT~~ | Fixed in migration `20260315120000` — guard now runs inside `grant_subscription_credits` RPC under advisory lock |
 | MEDIUM | Confirm RC Pub/Sub webhook receiving events in production | Unverified — 0 events in history |
 | MEDIUM | iOS StoreKit flow not implemented | Not started |
 | LOW | When RC webhook confirmed stable → consider removing credit grant from `verify-google-purchase` | Deferred |

@@ -268,7 +268,7 @@ Version: 1.0.0+14
 
 1. [ ] Upload AAB v14 lên Google Play Internal Testing
 2. [ ] Install và test: đăng ký account mới → mua gói → verify credits cập nhật ngay
-3. [ ] Kiểm tra RC dashboard cho adstudio@gmail.com events (sau khi RC gửi)
+3. [ ] Kiểm tra RC dashboard cho <test-email> events (sau khi RC gửi)
 4. [ ] Verify `user_credits` table có Realtime enabled trong Supabase Dashboard
 5. [ ] Sau khi E2E confirmed: cân nhắc update `iap-revenuecat` SKILL.md với 3 bugs mới tìm
 6. [ ] Merge PR #70 vào main sau khi test pass
