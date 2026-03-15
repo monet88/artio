@@ -1,3 +1,5 @@
+import 'dart:io' show Platform;
+
 import 'package:artio/core/design_system/app_spacing.dart';
 import 'package:artio/core/design_system/app_typography.dart';
 import 'package:artio/core/utils/url_launcher_utils.dart';
@@ -6,6 +8,7 @@ import 'package:artio/features/settings/presentation/widgets/settings_helpers.da
 import 'package:artio/features/settings/presentation/widgets/theme_switcher.dart';
 import 'package:artio/routing/routes/app_routes.dart';
 import 'package:artio/theme/app_colors.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -16,6 +19,7 @@ class SettingsSections extends ConsumerWidget {
     required this.isDark,
     required this.version,
     required this.isLoggedIn,
+    required this.isPremium,
     required this.onResetPassword,
     required this.onSignOut,
     super.key,
@@ -25,6 +29,7 @@ class SettingsSections extends ConsumerWidget {
   final bool isDark;
   final String? version;
   final bool isLoggedIn;
+  final bool isPremium;
   final VoidCallback onResetPassword;
   final VoidCallback onSignOut;
 
@@ -55,6 +60,33 @@ class SettingsSections extends ConsumerWidget {
                 trailing: SettingsChevronArrow(isDark: isDark),
                 onTap: onResetPassword,
                 isDark: isDark,
+              ),
+              SettingsDivider(isDark: isDark),
+              SettingsTile(
+                icon: Icons.workspace_premium_rounded,
+                iconBgColor: AppColors.premiumPlanIcon,
+                title: isPremium ? 'Manage Plan' : 'Upgrade Plan',
+                trailing: SettingsChevronArrow(isDark: isDark),
+                isDark: isDark,
+                onTap: isPremium
+                    ? () {
+                        if (Platform.isAndroid) {
+                          launchUrlSafely(
+                            context,
+                            'https://play.google.com/store/account/subscriptions',
+                          );
+                        } else if (Platform.isIOS) {
+                          launchUrlSafely(
+                            context,
+                            'https://apps.apple.com/account/subscriptions',
+                          );
+                        }
+                        // Desktop/web: no-op — no mobile subscription management page
+                      }
+                    : () {
+                        if (!kIsWeb) const PaywallRoute().push<void>(context);
+                        // kIsWeb: RevenueCat not configured for web — do nothing
+                      },
               ),
               SettingsDivider(isDark: isDark),
               SettingsTile(
@@ -164,7 +196,7 @@ class SettingsSections extends ConsumerWidget {
           children: [
             SettingsTile(
               icon: Icons.privacy_tip_outlined,
-              iconBgColor: const Color(0xFF5B8BF0),
+              iconBgColor: AppColors.settingsPrivacyIcon,
               title: 'Privacy Policy',
               trailing: SettingsChevronArrow(isDark: isDark),
               isDark: isDark,
@@ -173,7 +205,7 @@ class SettingsSections extends ConsumerWidget {
             SettingsDivider(isDark: isDark),
             SettingsTile(
               icon: Icons.gavel_outlined,
-              iconBgColor: const Color(0xFF7B61FF),
+              iconBgColor: AppColors.settingsTermsIcon,
               title: 'Terms of Service',
               trailing: SettingsChevronArrow(isDark: isDark),
               isDark: isDark,
@@ -205,7 +237,7 @@ class SettingsSections extends ConsumerWidget {
           children: [
             SettingsTile(
               icon: Icons.help_outline_rounded,
-              iconBgColor: const Color(0xFF34C759),
+              iconBgColor: AppColors.settingsHelpIcon,
               title: 'Help & FAQ',
               trailing: SettingsChevronArrow(isDark: isDark),
               isDark: isDark,

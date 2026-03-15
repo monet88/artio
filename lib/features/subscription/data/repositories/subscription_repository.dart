@@ -118,7 +118,11 @@ class SubscriptionRepository implements ISubscriptionRepository {
       );
       final body = response.data as Map<String, dynamic>?;
       if (body?['verified'] == true) {
-        Log.i('[RC] GP verify OK: tier=${body?['tier']}, credits=${body?['credits']}');
+        if (body?['credits'] == 0 && body?['credits_already_granted'] != true) {
+          Log.w('[RC] GP verify: grant may have failed — credits:0 from server');
+        } else {
+          Log.i('[RC] GP verify OK: tier=${body?['tier']}, credits=${body?['credits']}');
+        }
       } else if (body?['error'] != null) {
         Log.w('[RC] GP verify error from server: ${body?['error']}');
       } else {

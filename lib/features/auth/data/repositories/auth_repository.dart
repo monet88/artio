@@ -60,8 +60,10 @@ class AuthRepository implements IAuthRepository {
       if (response.user == null) {
         throw const AppException.auth(message: 'Sign up failed');
       }
-      await _revenuecatLogIn(response.user!.id);
+      // Create profile BEFORE RevenueCat login so the UPDATE in
+      // _revenuecatLogIn finds an existing row to write revenuecat_app_user_id.
       await _createUserProfile(response.user!.id, email);
+      await _revenuecatLogIn(response.user!.id);
       return UserModel.fromSupabaseUser(response.user!);
     } on AppException {
       rethrow;
@@ -114,8 +116,8 @@ class AuthRepository implements IAuthRepository {
 
   @override
   Future<void> signOut() async {
-    await _revenuecatLogOut();
     await _supabase.auth.signOut();
+    await _revenuecatLogOut();
   }
 
   @override
@@ -136,8 +138,14 @@ class AuthRepository implements IAuthRepository {
   Future<UserModel?> getCurrentUserWithProfile() async {
     final user = currentUser;
     if (user == null) return null;
-    final profile = await _fetchUserProfile(user.id);
-    return UserModel.fromSupabaseUser(user, profile: profile);
+    try {
+      final profile = await _fetchUserProfile(user.id);
+      return UserModel.fromSupabaseUser(user, profile: profile);
+    } on AppException {
+      rethrow;
+    } catch (e) {
+      throw AppException.auth(message: e.toString());
+    }
   }
 
   @override
@@ -146,8 +154,14 @@ class AuthRepository implements IAuthRepository {
     if (user == null) {
       throw const AppException.auth(message: 'No authenticated user');
     }
-    final profile = await _fetchUserProfile(user.id);
-    return UserModel.fromSupabaseUser(user, profile: profile);
+    try {
+      final profile = await _fetchUserProfile(user.id);
+      return UserModel.fromSupabaseUser(user, profile: profile);
+    } on AppException {
+      rethrow;
+    } catch (e) {
+      throw AppException.auth(message: e.toString());
+    }
   }
 
   Future<Map<String, dynamic>?> _fetchUserProfile(String userId) async {
@@ -161,12 +175,13 @@ class AuthRepository implements IAuthRepository {
 
   @override
   Future<Map<String, dynamic>?> fetchOrCreateProfile(User user) async {
-    await _revenuecatLogIn(user.id);
     var profile = await _fetchUserProfile(user.id);
     if (profile == null) {
+      // Create profile BEFORE RevenueCat login so revenuecat_app_user_id is set.
       await _createUserProfile(user.id, user.email ?? '');
       profile = await _fetchUserProfile(user.id);
     }
+    await _revenuecatLogIn(user.id);
     return profile;
   }
 
@@ -177,6 +192,8 @@ class AuthRepository implements IAuthRepository {
         'email': email,
         'credits': AppConstants.defaultCredits,
         'is_premium': false,
+        // Set immediately so RC webhook can find this user via revenuecat_app_user_id.
+        'revenuecat_app_user_id': userId,
         'created_at': DateTime.now().toIso8601String(),
       });
     } on PostgrestException catch (e) {

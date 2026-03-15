@@ -185,7 +185,7 @@ Deno.serve(async (req) => {
         {
           p_user_id: userId,
           p_is_premium: false,
-          p_tier: null,
+          p_tier: "free", // explicit 'free' — column default is 'free', not null
           p_expires_at: null,
         },
       );
