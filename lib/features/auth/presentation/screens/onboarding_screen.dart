@@ -199,7 +199,6 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   ),
                 ),
 
-                const SizedBox(height: 48),
               ],
             ),
           ),

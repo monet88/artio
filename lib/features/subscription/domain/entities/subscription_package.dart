@@ -14,5 +14,9 @@ class SubscriptionPackage with _$SubscriptionPackage {
 
     /// The native SDK package object (cast back in the data layer).
     required Object nativePackage,
+
+    /// Localized introductory/trial price string, e.g. "Free for 3 days".
+    /// Null if no trial is offered for this package.
+    String? introductoryPriceString,
   }) = _SubscriptionPackage;
 }

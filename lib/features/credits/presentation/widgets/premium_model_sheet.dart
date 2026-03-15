@@ -1,4 +1,5 @@
 import 'package:artio/core/design_system/app_spacing.dart';
+import 'package:artio/core/widgets/bottom_sheet_body.dart';
 import 'package:artio/routing/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 
@@ -12,8 +13,7 @@ class PremiumModelSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Padding(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+    return BottomSheetBody(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
