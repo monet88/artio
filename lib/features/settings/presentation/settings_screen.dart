@@ -75,6 +75,23 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     }
   }
 
+  Future<void> _restorePurchases(BuildContext context) async {
+    try {
+      await ref.read(subscriptionNotifierProvider.notifier).restore();
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('✅ Purchases restored!')),
+        );
+      }
+    } on Object {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Restore failed. Please try again.')),
+        );
+      }
+    }
+  }
+
   Future<void> _signOut(BuildContext context) async {
     final confirmed = await showDialog<bool>(
       context: context,
@@ -161,6 +178,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   isPremium: isPremium,
                   onResetPassword: () => _resetPassword(context, email),
                   onSignOut: () => _signOut(context),
+                  onRestore: () => _restorePurchases(context),
                 ),
                 const SizedBox(height: AppSpacing.xxl),
               ],
