@@ -65,15 +65,19 @@ Flutter App
 - **Both are required** — different purpose
 
 ### 6. Webhook Auth Header Format + Secret Creation
-- RevenueCat sends: `Authorization: Bearer YOUR_SECRET`
-- Code must compare: `authHeader === \`Bearer \${secret}\``
-- Use timing-safe comparison to prevent timing attacks
-- ⚠️ `crypto.subtle.timingSafeEqual` **NOT available** in Supabase Deno Edge Runtime → throws `TypeError` → every request returns 500 → RC retries forever. Use manual XOR loop (see Gotcha #11)
+- RevenueCat sends the Authorization header value **EXACTLY as you entered it in the dashboard** — NO automatic `Bearer ` prefix is added.
+- Code must compare `authHeader` **directly** against `REVENUECAT_WEBHOOK_SECRET` (raw token, no prefix).
+- ❌ WRONG: `const expectedAuth = \`Bearer \${REVENUECAT_WEBHOOK_SECRET}\`` — causes permanent 401 on ALL events.
+- ✅ CORRECT: `const expectedAuth = REVENUECAT_WEBHOOK_SECRET;`
+- Use timing-safe comparison to prevent timing attacks.
+- ⚠️ `crypto.subtle.timingSafeEqual` **NOT available** in Supabase Deno Edge Runtime → throws `TypeError` → every request returns 500 → RC retries forever. Use manual XOR loop (see Gotcha #11).
 
 **Where `REVENUECAT_WEBHOOK_SECRET` comes from:**
 ```
 1. YOU generate a random secret (e.g., openssl rand -hex 32)
 2. Enter it in RC Dashboard → Project Settings → Integrations → Webhooks → "Authorization header" field
+   ⚠️ Enter ONLY the raw token — RC sends this value as-is as the Authorization header.
+   Do NOT add "Bearer " in the dashboard field.
 3. Set the SAME value in Supabase: supabase secrets set REVENUECAT_WEBHOOK_SECRET=<same-value>
 
 ⚠️ TWO PLACES must have IDENTICAL values. If set at different times → mismatch → ALL events 401.
@@ -318,22 +322,18 @@ openssl rand -hex 32
 
 **How to diagnose secret mismatch:**
 ```bash
-# Step 1: Get current Supabase secret value
-SUPABASE_ACCESS_TOKEN=<your-token>
-curl -s "https://api.supabase.com/v1/projects/<ref>/secrets" \
-  -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" | \
-  python3 -c "import json,sys; [print(s['value']) for s in json.load(sys.stdin) if s['name']=='REVENUECAT_WEBHOOK_SECRET']"
-
-# Step 2: Test webhook with that value
+# Test webhook with the raw secret value (NO Bearer prefix — RC sends raw token as-is)
 curl -s -w "\nHTTP: %{http_code}" \
   "https://<ref>.supabase.co/functions/v1/revenuecat-webhook" \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer <supabase-secret-value>" \
+  -H "Authorization: <supabase-secret-value>" \
   -d '{"event":{"type":"RENEWAL","id":"test-001","app_user_id":"<rc-app-user-id>","product_id":"<product-id>"}}' \
   -X POST
 
-# If HTTP 200 → secret matches, RC uses same value → webhook works ✅
-# If HTTP 401 → secret in Supabase ≠ secret in RC Dashboard → update to match
+# Expected results:
+# HTTP 500 "User not linked" → auth PASSED (secret correct, user just not in DB) ✅
+# HTTP 200               → auth PASSED and event processed ✅
+# HTTP 401               → auth FAILED → secret mismatch → fix it
 ```
 
 **Fix:**
@@ -358,6 +358,33 @@ curl -s "https://<ref>.supabase.co/rest/v1/credit_transactions?reference_id=eq.t
   -H "apikey: $ANON_KEY" -H "Authorization: Bearer $SERVICE_KEY"
 # Should return the transaction → webhook processed successfully
 ```
+
+---
+
+### 18. 🆕 RC Sandbox `event.id` Is Null → `p_reference_id` NULL → DB Exception → 500 Loop
+
+> **Root cause confirmed in production (2026-03-15)**
+
+**Symptom:** RC sandbox RENEWAL/INITIAL_PURCHASE events return 500 "Retrying" immediately.
+Logs show: `grant_subscription_credits error: ERROR: p_reference_id cannot be null`.
+
+**Why:** The `grant_subscription_credits` RPC has a guard: `IF p_reference_id IS NULL THEN RAISE EXCEPTION`.
+RC sandbox events sometimes omit the `event.id` field (or send it as null). The webhook code uses
+`event.id` as `p_reference_id` — when null → exception → 500 → RC retries forever.
+
+**Production vs Sandbox:**
+- Production RC events: always include `id` (UUID like `00BE64D3-...`)
+- Sandbox RC events: may omit `id` field or include it inconsistently
+
+**Fix:** Add fallback chain for `eventId` in the webhook handler:
+```typescript
+const eventId: string =
+  event.id ??
+  event.transaction_id ??                                    // GPA.xxx on Android
+  `${appUserId}-${eventType}-${event.event_timestamp_ms ?? Date.now()}`;
+```
+
+This ensures `p_reference_id` is NEVER null while still being idempotent (same event = same generated ID).
 
 ---
 
@@ -867,7 +894,7 @@ If no events → webhook pipeline not working → debug Pub/Sub first
 - [ ] Offerings configured → one marked as **Current** (or `getOfferings().current` returns null)
 - [ ] Public API key (`goog_xxx`) added to app `.env`
 - [ ] Webhook configured: correct URL + secret + **Sandbox AND Production**
-- [ ] **Secret sync verified**: test webhook endpoint with `Authorization: Bearer <supabase-secret-value>` → must return 200 (not 401). 401 = secret mismatch → fix before going live (see Gotcha #17)
+- [ ] **Secret sync verified**: test webhook endpoint with raw token (NO Bearer prefix): `curl -H "Authorization: <raw-secret>" <webhook-url>` → 500 "User not linked" or 200 = auth OK ✅; 401 = secret mismatch → fix before going live (see Gotcha #17)
 
 ### Supabase Edge Functions
 - [ ] All functions deployed with `--no-verify-jwt` ← critical!

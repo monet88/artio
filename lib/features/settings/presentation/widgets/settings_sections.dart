@@ -96,7 +96,10 @@ class SettingsSections extends ConsumerWidget {
                 title: 'Restore Purchases',
                 trailing: SettingsChevronArrow(isDark: isDark),
                 isDark: isDark,
-                onTap: kIsWeb ? null : onRestore,
+                // RevenueCat only supports Android and iOS — disable on web and desktop.
+                onTap: (kIsWeb || !(Platform.isAndroid || Platform.isIOS))
+                    ? null
+                    : onRestore,
               ),
               SettingsDivider(isDark: isDark),
               SettingsTile(
