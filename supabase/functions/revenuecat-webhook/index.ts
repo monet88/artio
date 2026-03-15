@@ -44,8 +44,10 @@ Deno.serve(async (req) => {
 
   // Verify webhook auth header (no early-exit XOR comparison — length and bytes both checked).
   // crypto.subtle.timingSafeEqual is not available in Supabase Edge Runtime.
+  // RC sends the Authorization header value EXACTLY as configured in the dashboard (no auto-added
+  // "Bearer " prefix). Store just the raw token in REVENUECAT_WEBHOOK_SECRET and compare directly.
   const authHeader = req.headers.get("Authorization");
-  const expectedAuth = `Bearer ${REVENUECAT_WEBHOOK_SECRET}`;
+  const expectedAuth = REVENUECAT_WEBHOOK_SECRET;
   const encoder = new TextEncoder();
   const a = encoder.encode(authHeader ?? "");
   const b = encoder.encode(expectedAuth);
