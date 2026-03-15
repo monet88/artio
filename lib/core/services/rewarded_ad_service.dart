@@ -12,9 +12,10 @@ const _testAdUnitIdAndroid = 'ca-app-pub-3940256099942544/5224354917';
 const _testAdUnitIdIos = 'ca-app-pub-3940256099942544/1712485313';
 
 /// Production ad unit IDs — used in release builds only.
-// TODO(admob): Replace these with real IDs from AdMob dashboard before first release.
-const _prodAdUnitIdAndroid = 'ca-app-pub-XXXXX/YYYYY';
-const _prodAdUnitIdIos = 'ca-app-pub-XXXXX/ZZZZZ';
+// TODO(admob): Replace with real AdMob rewarded ad unit IDs from dashboard before production launch.
+// Using Google test IDs for now so release builds still function during sandbox testing.
+const _prodAdUnitIdAndroid = 'ca-app-pub-3940256099942544/5224354917';
+const _prodAdUnitIdIos = 'ca-app-pub-3940256099942544/1712485313';
 
 String get _adUnitId {
   final isAndroid = defaultTargetPlatform == TargetPlatform.android;

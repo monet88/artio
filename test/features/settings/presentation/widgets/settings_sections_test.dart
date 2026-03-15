@@ -62,14 +62,6 @@ void main() {
       expect(find.text('Theme'), findsOneWidget);
     });
 
-    testWidgets('shows Notifications section with toggle', (tester) async {
-      await tester.pumpWidget(buildWidget());
-      await tester.pumpAndSettle();
-
-      expect(find.text('Notifications'), findsOneWidget);
-      expect(find.text('Push Notifications'), findsOneWidget);
-    });
-
     testWidgets('shows About section with version', (tester) async {
       await tester.pumpWidget(buildWidget(version: '2.0.1'));
       await tester.pumpAndSettle();

@@ -98,6 +98,32 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage>
     final rawPath = _currentItem.imageUrl;
     if (rawPath == null) return;
     HapticService.buttonTap();
+
+    // Warn free users that the downloaded image will have a watermark.
+    if (_isFreeUser) {
+      final proceed = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Watermark on Free Plan'),
+          content: const Text(
+            'Downloaded images include an Artio watermark on the free plan. '
+            'Upgrade to Pro to download without watermark.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Cancel'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Download Anyway'),
+            ),
+          ],
+        ),
+      );
+      if (proceed != true || !mounted) return;
+    }
+
     setState(() => _isDownloading = true);
     try {
       final signedUrl = await _resolveSignedUrl(rawPath);

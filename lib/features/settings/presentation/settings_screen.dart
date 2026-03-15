@@ -2,13 +2,11 @@ import 'package:artio/core/design_system/app_spacing.dart';
 import 'package:artio/core/state/auth_view_model_provider.dart';
 import 'package:artio/core/state/subscription_state_provider.dart';
 import 'package:artio/core/utils/app_exception_mapper.dart';
-import 'package:artio/features/settings/domain/providers/notifications_provider.dart';
 import 'package:artio/features/settings/presentation/widgets/settings_sections.dart';
 import 'package:artio/features/settings/presentation/widgets/subscription_card.dart';
 import 'package:artio/features/settings/presentation/widgets/user_profile_card.dart';
 import 'package:artio/shared/widgets/loading_state_widget.dart';
 import 'package:artio/theme/app_colors.dart';
-import 'package:artio/utils/logger_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -30,15 +28,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   void initState() {
     super.initState();
     _loadVersion();
-    _initNotifications();
-  }
-
-  Future<void> _initNotifications() async {
-    try {
-      await ref.read(notificationsNotifierProvider.notifier).init();
-    } on Exception catch (error, stackTrace) {
-      Log.e('Failed to load notification settings', error, stackTrace);
-    }
   }
 
   Future<void> _loadVersion() async {
