@@ -41,9 +41,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: MediaQuery(
-            data: MediaQueryData(
-              viewPadding: EdgeInsets.only(bottom: 0),
-            ),
+            data: MediaQueryData(),
             child: Scaffold(
               body: BottomSheetBody(
                 child: SizedBox(),
@@ -71,9 +69,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: MediaQuery(
-            data: MediaQueryData(
-              viewPadding: EdgeInsets.only(bottom: 0),
-            ),
+            data: MediaQueryData(),
             child: Scaffold(
               body: BottomSheetBody(
                 padding: customPadding,
