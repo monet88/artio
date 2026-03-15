@@ -188,8 +188,21 @@ Deno.serve(async (req) => {
       console.log(
         `[verify-google-purchase] Granted ${user.id}: tier=${tierInfo.tier}, ${creditsGranted} credits, ref=${referenceId}`,
       );
+    } else if (
+      grantResult?.granted === false &&
+      grantResult?.reason === "duplicate_reference_id"
+    ) {
+      // Same reference_id seen before — idempotent no-op, expected on RC retry.
+      console.log(
+        `[verify-google-purchase] Duplicate reference_id for ${user.id} — no-op`,
+      );
+    } else {
+      // Unexpected grantResult shape — log warning so ops can investigate.
+      console.warn(
+        `[verify-google-purchase] Unexpected grantResult shape for ${user.id}:`,
+        JSON.stringify(grantResult),
+      );
     }
-    // grantResult?.reason === 'duplicate_reference_id': same GPA token seen before — no-op.
 
     return new Response(
       JSON.stringify({
