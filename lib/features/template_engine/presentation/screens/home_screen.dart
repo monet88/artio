@@ -179,8 +179,9 @@ class _LowCreditBanner extends ConsumerWidget {
               ),
             ),
           ),
-          GestureDetector(
+          InkWell(
             onTap: () => const PaywallRoute().push<void>(context),
+            borderRadius: BorderRadius.circular(4),
             child: const Text(
               'Upgrade',
               style: TextStyle(
