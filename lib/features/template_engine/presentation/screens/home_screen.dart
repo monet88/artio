@@ -142,8 +142,11 @@ class _LowCreditBanner extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final balance =
         ref.watch(creditBalanceNotifierProvider).valueOrNull?.balance;
-    final isSubscriber =
-        ref.watch(subscriptionNotifierProvider).valueOrNull?.isActive ?? false;
+    final subscriptionAsync = ref.watch(subscriptionNotifierProvider);
+
+    // Hide banner while subscription is loading or errored to avoid false alarm.
+    if (!subscriptionAsync.hasValue) return const SizedBox.shrink();
+    final isSubscriber = subscriptionAsync.value?.isActive ?? false;
 
     if (isSubscriber || balance == null || balance >= _threshold) {
       return const SizedBox.shrink();

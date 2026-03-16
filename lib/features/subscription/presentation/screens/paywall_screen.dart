@@ -427,9 +427,18 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
   String? _trialText(SubscriptionPackage pkg) {
     final intro = pkg.introductoryPriceString;
     if (intro == null || intro.isEmpty) return null;
-    // introductoryPriceString is e.g. "Free for 7 days"
+    // introductoryPriceString is e.g. "Free for 7 days" or "$1.99 for 3 months"
     // priceString is e.g. "$9.99/month"
     return '$intro, then ${pkg.priceString}. Cancel anytime.';
+  }
+
+  /// Returns true only when the selected package has a genuinely FREE intro
+  /// offer (e.g. "Free for 7 days"). Paid intro offers like "$1.99 for 3
+  /// months" do not qualify — the CTA should say "Subscribe Now" instead.
+  bool _hasFreeTrial(SubscriptionPackage pkg) {
+    final intro = pkg.introductoryPriceString;
+    if (intro == null || intro.isEmpty) return false;
+    return intro.toLowerCase().contains('free');
   }
 
   Widget _buildComplianceText(BuildContext context) {
@@ -554,7 +563,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                             )
                           : Text(
                               (_selectedPackage != null &&
-                                      _trialText(_selectedPackage!) != null)
+                                      _hasFreeTrial(_selectedPackage!))
                                   ? 'Start Free Trial'
                                   : 'Subscribe Now',
                               style: const TextStyle(

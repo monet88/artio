@@ -261,16 +261,19 @@ void main() {
     test('returns correct savings % for pro yearly vs monthly', () {
       final all = [proMonthly, proYearly];
       final result = savingsPercent(proYearly, all);
-      // (9.99*12 - 79.99) / (9.99*12) * 100 ≈ 33%
-      expect(result, isNotNull);
-      expect(result, greaterThan(0));
+      // (9.99*12 - 79.99) / (9.99*12) * 100
+      // = (119.88 - 79.99) / 119.88 * 100
+      // = 39.89 / 119.88 * 100 ≈ 33.27 → rounds to 33
+      expect(result, equals(33));
     });
 
     test('returns correct savings % for ultra yearly vs monthly', () {
       final all = [ultraMonthly, ultraYearly];
       final result = savingsPercent(ultraYearly, all);
-      expect(result, isNotNull);
-      expect(result, greaterThan(0));
+      // (19.99*12 - 159.99) / (19.99*12) * 100
+      // = (239.88 - 159.99) / 239.88 * 100
+      // = 79.89 / 239.88 * 100 ≈ 33.30 → rounds to 33
+      expect(result, equals(33));
     });
 
     test('returns null for monthly package (not yearly)', () {
