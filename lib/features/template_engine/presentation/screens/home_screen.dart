@@ -1,5 +1,6 @@
 import 'package:artio/core/design_system/app_spacing.dart';
 import 'package:artio/core/design_system/app_typography.dart';
+import 'package:artio/core/state/subscription_state_provider.dart';
 import 'package:artio/features/credits/presentation/providers/credit_balance_provider.dart';
 import 'package:artio/features/template_engine/presentation/providers/template_provider.dart';
 import 'package:artio/features/template_engine/presentation/widgets/home_screen_widgets.dart';
@@ -82,6 +83,9 @@ class HomeScreen extends ConsumerWidget {
                 ),
               ),
 
+              // ── Low Credit Warning Banner ───────────────────────────
+              const SliverToBoxAdapter(child: _LowCreditBanner()),
+
               // ── Featured section header ─────────────────────────────
               SliverToBoxAdapter(
                 child: Padding(
@@ -125,6 +129,72 @@ class HomeScreen extends ConsumerWidget {
     if (hour < 12) return 'Good morning';
     if (hour < 17) return 'Good afternoon';
     return 'Good evening';
+  }
+}
+
+class _LowCreditBanner extends ConsumerWidget {
+  const _LowCreditBanner();
+
+  static const _threshold = 20;
+  static const _warningColor = Color(0xFFFF6B35);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final balance =
+        ref.watch(creditBalanceNotifierProvider).valueOrNull?.balance;
+    final isSubscriber =
+        ref.watch(subscriptionNotifierProvider).valueOrNull?.isActive ?? false;
+
+    if (isSubscriber || balance == null || balance >= _threshold) {
+      return const SizedBox.shrink();
+    }
+
+    return Container(
+      margin: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.xs,
+      ),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.sm,
+      ),
+      decoration: BoxDecoration(
+        color: _warningColor.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: _warningColor.withValues(alpha: 0.4),
+        ),
+      ),
+      child: Row(
+        children: [
+          const Text('⚡', style: TextStyle(fontSize: 16)),
+          const SizedBox(width: AppSpacing.xs),
+          Expanded(
+            child: Text(
+              'Only $balance credits left. Watch an ad or upgrade to keep creating.',
+              style: const TextStyle(
+                color: _warningColor,
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          GestureDetector(
+            onTap: () => const PaywallRoute().push<void>(context),
+            child: const Text(
+              'Upgrade',
+              style: TextStyle(
+                color: _warningColor,
+                fontSize: 13,
+                fontWeight: FontWeight.w700,
+                decoration: TextDecoration.underline,
+                decorationColor: _warningColor,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
