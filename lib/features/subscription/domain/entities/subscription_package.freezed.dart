@@ -23,6 +23,10 @@ mixin _$SubscriptionPackage {
   /// Localized price string (e.g., '$9.99/month').
   String get priceString => throw _privateConstructorUsedError;
 
+  /// Raw numeric price in the user's currency (e.g., 9.99).
+  /// Used for computing savings percentages across billing periods.
+  double get price => throw _privateConstructorUsedError;
+
   /// The native SDK package object (cast back in the data layer).
   Object get nativePackage => throw _privateConstructorUsedError;
 
@@ -47,6 +51,7 @@ abstract class $SubscriptionPackageCopyWith<$Res> {
   $Res call({
     String identifier,
     String priceString,
+    double price,
     Object nativePackage,
     String? introductoryPriceString,
   });
@@ -69,6 +74,7 @@ class _$SubscriptionPackageCopyWithImpl<$Res, $Val extends SubscriptionPackage>
   $Res call({
     Object? identifier = null,
     Object? priceString = null,
+    Object? price = null,
     Object? nativePackage = null,
     Object? introductoryPriceString = freezed,
   }) {
@@ -82,6 +88,10 @@ class _$SubscriptionPackageCopyWithImpl<$Res, $Val extends SubscriptionPackage>
                 ? _value.priceString
                 : priceString // ignore: cast_nullable_to_non_nullable
                       as String,
+            price: null == price
+                ? _value.price
+                : price // ignore: cast_nullable_to_non_nullable
+                      as double,
             nativePackage: null == nativePackage
                 ? _value.nativePackage
                 : nativePackage,
@@ -107,6 +117,7 @@ abstract class _$$SubscriptionPackageImplCopyWith<$Res>
   $Res call({
     String identifier,
     String priceString,
+    double price,
     Object nativePackage,
     String? introductoryPriceString,
   });
@@ -128,6 +139,7 @@ class __$$SubscriptionPackageImplCopyWithImpl<$Res>
   $Res call({
     Object? identifier = null,
     Object? priceString = null,
+    Object? price = null,
     Object? nativePackage = null,
     Object? introductoryPriceString = freezed,
   }) {
@@ -141,6 +153,10 @@ class __$$SubscriptionPackageImplCopyWithImpl<$Res>
             ? _value.priceString
             : priceString // ignore: cast_nullable_to_non_nullable
                   as String,
+        price: null == price
+            ? _value.price
+            : price // ignore: cast_nullable_to_non_nullable
+                  as double,
         nativePackage: null == nativePackage
             ? _value.nativePackage
             : nativePackage,
@@ -159,6 +175,7 @@ class _$SubscriptionPackageImpl implements _SubscriptionPackage {
   const _$SubscriptionPackageImpl({
     required this.identifier,
     required this.priceString,
+    required this.price,
     required this.nativePackage,
     this.introductoryPriceString,
   });
@@ -171,6 +188,11 @@ class _$SubscriptionPackageImpl implements _SubscriptionPackage {
   @override
   final String priceString;
 
+  /// Raw numeric price in the user's currency (e.g., 9.99).
+  /// Used for computing savings percentages across billing periods.
+  @override
+  final double price;
+
   /// The native SDK package object (cast back in the data layer).
   @override
   final Object nativePackage;
@@ -182,7 +204,7 @@ class _$SubscriptionPackageImpl implements _SubscriptionPackage {
 
   @override
   String toString() {
-    return 'SubscriptionPackage(identifier: $identifier, priceString: $priceString, nativePackage: $nativePackage, introductoryPriceString: $introductoryPriceString)';
+    return 'SubscriptionPackage(identifier: $identifier, priceString: $priceString, price: $price, nativePackage: $nativePackage, introductoryPriceString: $introductoryPriceString)';
   }
 
   @override
@@ -194,6 +216,7 @@ class _$SubscriptionPackageImpl implements _SubscriptionPackage {
                 other.identifier == identifier) &&
             (identical(other.priceString, priceString) ||
                 other.priceString == priceString) &&
+            (identical(other.price, price) || other.price == price) &&
             const DeepCollectionEquality().equals(
               other.nativePackage,
               nativePackage,
@@ -210,6 +233,7 @@ class _$SubscriptionPackageImpl implements _SubscriptionPackage {
     runtimeType,
     identifier,
     priceString,
+    price,
     const DeepCollectionEquality().hash(nativePackage),
     introductoryPriceString,
   );
@@ -230,6 +254,7 @@ abstract class _SubscriptionPackage implements SubscriptionPackage {
   const factory _SubscriptionPackage({
     required final String identifier,
     required final String priceString,
+    required final double price,
     required final Object nativePackage,
     final String? introductoryPriceString,
   }) = _$SubscriptionPackageImpl;
@@ -241,6 +266,11 @@ abstract class _SubscriptionPackage implements SubscriptionPackage {
   /// Localized price string (e.g., '$9.99/month').
   @override
   String get priceString;
+
+  /// Raw numeric price in the user's currency (e.g., 9.99).
+  /// Used for computing savings percentages across billing periods.
+  @override
+  double get price;
 
   /// The native SDK package object (cast back in the data layer).
   @override

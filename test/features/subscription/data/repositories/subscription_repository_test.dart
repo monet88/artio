@@ -20,6 +20,7 @@ void main() {
         const SubscriptionPackage(
           identifier: 'test',
           priceString: r'$0',
+          price: 0,
           nativePackage: 'native',
         ),
       );
@@ -82,11 +83,13 @@ void main() {
           const SubscriptionPackage(
             identifier: 'pro_monthly',
             priceString: r'$9.99/month',
+            price: 0,
             nativePackage: 'native_pkg_1',
           ),
           const SubscriptionPackage(
             identifier: 'ultra_monthly',
             priceString: r'$19.99/month',
+            price: 0,
             nativePackage: 'native_pkg_2',
           ),
         ],
@@ -118,6 +121,7 @@ void main() {
         const SubscriptionPackage(
           identifier: 'pro_monthly',
           priceString: r'$9.99',
+          price: 0,
           nativePackage: 'native',
         ),
       );
@@ -139,6 +143,7 @@ void main() {
           const SubscriptionPackage(
             identifier: 'pro',
             priceString: r'$9.99',
+            price: 0,
             nativePackage: 'native',
           ),
         ),
@@ -156,31 +161,33 @@ void main() {
     // nhưng RC chưa sync → purchase() tự động gọi getStatus() thay vì báo lỗi.
     // Contract: purchase() phải trả về SubscriptionStatus hợp lệ (không throw).
     test(
-        'purchase with ITEM_ALREADY_OWNED returns active status via getStatus',
-        () async {
-      const activeStatus = SubscriptionStatus(
-        tier: 'pro',
-        isActive: true,
-        willRenew: true,
-      );
+      'purchase with ITEM_ALREADY_OWNED returns active status via getStatus',
+      () async {
+        const activeStatus = SubscriptionStatus(
+          tier: 'pro',
+          isActive: true,
+          willRenew: true,
+        );
 
-      // Simulate: implementation detects error code '28' → delegates to getStatus()
-      when(() => mockRepo.purchase(any())).thenAnswer(
-        (_) async => activeStatus,
-      );
+        // Simulate: implementation detects error code '28' → delegates to getStatus()
+        when(
+          () => mockRepo.purchase(any()),
+        ).thenAnswer((_) async => activeStatus);
 
-      final result = await mockRepo.purchase(
-        const SubscriptionPackage(
-          identifier: 'pro_monthly',
-          priceString: r'$9.99',
-          nativePackage: 'native',
-        ),
-      );
+        final result = await mockRepo.purchase(
+          const SubscriptionPackage(
+            identifier: 'pro_monthly',
+            priceString: r'$9.99',
+            price: 0,
+            nativePackage: 'native',
+          ),
+        );
 
-      expect(result.isActive, isTrue);
-      expect(result.isPro, isTrue);
-      expect(result.tier, 'pro');
-    });
+        expect(result.isActive, isTrue);
+        expect(result.isPro, isTrue);
+        expect(result.tier, 'pro');
+      },
+    );
 
     test('purchase throws payment error on unrecognized SDK error', () async {
       when(() => mockRepo.purchase(any())).thenThrow(
@@ -195,6 +202,7 @@ void main() {
           const SubscriptionPackage(
             identifier: 'pro',
             priceString: r'$9.99',
+            price: 0,
             nativePackage: 'native',
           ),
         ),

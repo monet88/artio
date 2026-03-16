@@ -34,9 +34,12 @@ void main() {
       expect(buildPurchaseRef(orderId), equals(orderId));
     });
 
-    test('returns null when transactionIdentifier is empty (free trial — skip verify)', () {
-      expect(buildPurchaseRef(''), isNull);
-    });
+    test(
+      'returns null when transactionIdentifier is empty (free trial — skip verify)',
+      () {
+        expect(buildPurchaseRef(''), isNull);
+      },
+    );
 
     test('real orderId is consistent across calls', () {
       const orderId = 'GPA.3347-3642-0945-30030';
@@ -66,8 +69,14 @@ void main() {
     test('rejects rc- fallback tokens (removed: security risk)', () {
       // These were previously accepted but removed to prevent credit forgery.
       // Users could generate unique timestamps to repeatedly claim credits.
-      expect(isValidPurchaseToken('rc-artio_ultra_monthly-1773322872759'), isFalse);
-      expect(isValidPurchaseToken('rc-artio_pro_monthly-1773300000000'), isFalse);
+      expect(
+        isValidPurchaseToken('rc-artio_ultra_monthly-1773322872759'),
+        isFalse,
+      );
+      expect(
+        isValidPurchaseToken('rc-artio_pro_monthly-1773300000000'),
+        isFalse,
+      );
     });
 
     test('real orderId from buildPurchaseRef passes validation', () {
