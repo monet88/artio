@@ -1,8 +1,10 @@
 import 'package:artio/core/design_system/app_spacing.dart';
 import 'package:artio/core/design_system/app_typography.dart';
+import 'package:artio/features/credits/presentation/providers/credit_balance_provider.dart';
 import 'package:artio/features/template_engine/presentation/providers/template_provider.dart';
 import 'package:artio/features/template_engine/presentation/widgets/home_screen_widgets.dart';
 import 'package:artio/features/template_engine/presentation/widgets/template_grid.dart';
+import 'package:artio/routing/routes/app_routes.dart';
 import 'package:artio/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -61,6 +63,9 @@ class HomeScreen extends ConsumerWidget {
                               ],
                             ),
                           ),
+                          // Credit balance chip
+                          const _CreditChip(),
+                          const SizedBox(width: AppSpacing.sm),
                           // Template count badge
                           const TemplateCountBadge(),
                         ],
@@ -120,5 +125,43 @@ class HomeScreen extends ConsumerWidget {
     if (hour < 12) return 'Good morning';
     if (hour < 17) return 'Good afternoon';
     return 'Good evening';
+  }
+}
+
+class _CreditChip extends ConsumerWidget {
+  const _CreditChip();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final balanceAsync = ref.watch(creditBalanceNotifierProvider);
+    return balanceAsync.whenOrNull(
+          data: (creditBalance) => GestureDetector(
+            onTap: () => const CreditHistoryRoute().push<void>(context),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              decoration: BoxDecoration(
+                color: AppColors.white10,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: AppColors.white20),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text('💎', style: TextStyle(fontSize: 13)),
+                  const SizedBox(width: 4),
+                  Text(
+                    '${creditBalance.balance}',
+                    style: const TextStyle(
+                      color: AppColors.textPrimary,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ) ??
+        const SizedBox.shrink();
   }
 }
