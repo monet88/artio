@@ -21,7 +21,6 @@ class PaywallScreen extends ConsumerStatefulWidget {
 class _PaywallScreenState extends ConsumerState<PaywallScreen> {
   SubscriptionPackage? _selectedPackage;
   bool _isPurchasing = false;
-  List<SubscriptionPackage> _allPackages = [];
 
   @override
   Widget build(BuildContext context) {
@@ -43,10 +42,6 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
           onRetry: () => ref.invalidate(offeringsProvider),
         ),
         data: (packages) {
-          if (_allPackages.isEmpty && packages.isNotEmpty) {
-            // Capture packages for savings calculation without triggering rebuild.
-            _allPackages = packages;
-          }
           return _buildContent(context, packages, subscription);
         },
       ),
@@ -425,24 +420,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
   int? _savingsPercent(
     SubscriptionPackage pkg,
     List<SubscriptionPackage> all,
-  ) {
-    if (!pkg.identifier.contains('yearly')) return null;
-    final tierPrefix = pkg.identifier.startsWith('artio_pro_')
-        ? 'artio_pro_'
-        : 'artio_ultra_';
-    final monthly = all
-        .where(
-          (p) =>
-              p.identifier.startsWith(tierPrefix) &&
-              p.identifier.contains('monthly'),
-        )
-        .firstOrNull;
-    if (monthly == null) return null;
-    final monthlyAnnual = monthly.price * 12;
-    if (monthlyAnnual <= 0) return null;
-    final savings = ((monthlyAnnual - pkg.price) / monthlyAnnual * 100).round();
-    return savings > 0 ? savings : null;
-  }
+  ) => savingsPercent(pkg, all);
 
   /// Returns trial terms text if this package has an introductory offer,
   /// null otherwise. Used for Apple Guideline 3.1.1 compliance.
@@ -496,7 +474,8 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
             ),
           ),
           const TextSpan(
-            text: '. Subscription auto-renews unless cancelled at least '
+            text:
+                '. Subscription auto-renews unless cancelled at least '
                 '24 hours before the end of the current period. '
                 'Manage or cancel anytime in your account settings.',
           ),
@@ -627,7 +606,8 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
       final purchaseState = ref.read(subscriptionNotifierProvider);
       if (purchaseState.hasError) {
         final err = purchaseState.error!;
-        final isCancelled = err is PaymentException && err.code == 'user_cancelled';
+        final isCancelled =
+            err is PaymentException && err.code == 'user_cancelled';
         if (isCancelled) return; // user dismissed — silent, no snackbar
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -709,4 +689,35 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
       if (mounted) setState(() => _isPurchasing = false);
     }
   }
+}
+
+/// Top-level helper so it can be unit-tested without a widget harness.
+///
+/// Returns the savings percentage for a yearly package compared to paying
+/// monthly for 12 months of the same tier. Returns null when:
+/// - [pkg] is not a yearly package,
+/// - [pkg] is not a known artio_pro_ or artio_ultra_ tier,
+/// - no monthly counterpart exists in [all], or
+/// - computed savings <= 0.
+int? savingsPercent(SubscriptionPackage pkg, List<SubscriptionPackage> all) {
+  if (!pkg.identifier.contains('yearly')) return null;
+  if (!pkg.identifier.startsWith('artio_pro_') &&
+      !pkg.identifier.startsWith('artio_ultra_')) {
+    return null;
+  }
+  final tierPrefix = pkg.identifier.startsWith('artio_pro_')
+      ? 'artio_pro_'
+      : 'artio_ultra_';
+  final monthly = all
+      .where(
+        (p) =>
+            p.identifier.startsWith(tierPrefix) &&
+            p.identifier.contains('monthly'),
+      )
+      .firstOrNull;
+  if (monthly == null) return null;
+  final monthlyAnnual = monthly.price * 12;
+  if (monthlyAnnual <= 0) return null;
+  final savings = ((monthlyAnnual - pkg.price) / monthlyAnnual * 100).round();
+  return savings > 0 ? savings : null;
 }

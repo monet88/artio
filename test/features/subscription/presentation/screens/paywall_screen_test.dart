@@ -12,6 +12,17 @@ import 'package:mocktail/mocktail.dart';
 class MockSubscriptionRepository extends Mock
     implements SubscriptionRepository {}
 
+SubscriptionPackage _pkg({
+  required String identifier,
+  required double price,
+  String? priceString,
+}) => SubscriptionPackage(
+  identifier: identifier,
+  priceString: priceString ?? '\$$price',
+  price: price,
+  nativePackage: Object(),
+);
+
 void main() {
   group('PaywallScreen', () {
     late MockSubscriptionRepository mockRepo;
@@ -176,6 +187,125 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Restore failed. Please try again.'), findsOneWidget);
+    });
+  });
+
+  group('savingsPercent', () {
+    final proMonthly = _pkg(identifier: 'artio_pro_monthly', price: 9.99);
+    final proYearly = _pkg(identifier: 'artio_pro_yearly', price: 79.99);
+    final ultraMonthly = _pkg(identifier: 'artio_ultra_monthly', price: 19.99);
+    final ultraYearly = _pkg(identifier: 'artio_ultra_yearly', price: 159.99);
+    final unknownYearly = _pkg(identifier: 'artio_legacy_yearly', price: 49.99);
+
+    test('returns correct savings % for pro yearly vs monthly', () {
+      final all = [proMonthly, proYearly];
+      final result = savingsPercent(proYearly, all);
+      // (9.99*12 - 79.99) / (9.99*12) * 100 ≈ 33%
+      expect(result, isNotNull);
+      expect(result, greaterThan(0));
+    });
+
+    test('returns correct savings % for ultra yearly vs monthly', () {
+      final all = [ultraMonthly, ultraYearly];
+      final result = savingsPercent(ultraYearly, all);
+      expect(result, isNotNull);
+      expect(result, greaterThan(0));
+    });
+
+    test('returns null for monthly package (not yearly)', () {
+      final all = [proMonthly, proYearly];
+      expect(savingsPercent(proMonthly, all), isNull);
+    });
+
+    test('returns null when no monthly counterpart exists', () {
+      // Only yearly in list — no monthly to compare against
+      expect(savingsPercent(proYearly, [proYearly]), isNull);
+    });
+
+    test(
+      'returns null for unknown tier even if identifier contains yearly',
+      () {
+        final all = [unknownYearly];
+        expect(savingsPercent(unknownYearly, all), isNull);
+      },
+    );
+
+    test('returns null when yearly price >= monthly*12 (no real savings)', () {
+      // yearly priced at more than 12 months
+      final expensiveYearly = _pkg(identifier: 'artio_pro_yearly', price: 200);
+      final all = [proMonthly, expensiveYearly];
+      expect(savingsPercent(expensiveYearly, all), isNull);
+    });
+
+    testWidgets(
+      '"Save X%" badge is shown for yearly plan with monthly counterpart',
+      (tester) async {
+        final mockRepo = MockSubscriptionRepository();
+        when(
+          mockRepo.getStatus,
+        ).thenAnswer((_) async => const SubscriptionStatus());
+        when(
+          mockRepo.getOfferings,
+        ).thenAnswer((_) async => [proMonthly, proYearly]);
+
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: [
+              subscriptionRepositoryProvider.overrideWithValue(mockRepo),
+            ],
+            child: const MaterialApp(home: PaywallScreen()),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        expect(find.textContaining('Save '), findsAtLeastNWidgets(1));
+      },
+    );
+
+    testWidgets('no "Save X%" badge when only monthly packages are available', (
+      tester,
+    ) async {
+      final mockRepo = MockSubscriptionRepository();
+      when(
+        mockRepo.getStatus,
+      ).thenAnswer((_) async => const SubscriptionStatus());
+      when(
+        mockRepo.getOfferings,
+      ).thenAnswer((_) async => [proMonthly, ultraMonthly]);
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            subscriptionRepositoryProvider.overrideWithValue(mockRepo),
+          ],
+          child: const MaterialApp(home: PaywallScreen()),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('Save '), findsNothing);
+    });
+
+    testWidgets('no crash when offerings list is empty', (tester) async {
+      final mockRepo = MockSubscriptionRepository();
+      when(
+        mockRepo.getStatus,
+      ).thenAnswer((_) async => const SubscriptionStatus());
+      when(mockRepo.getOfferings).thenAnswer((_) async => []);
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            subscriptionRepositoryProvider.overrideWithValue(mockRepo),
+          ],
+          child: const MaterialApp(home: PaywallScreen()),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // Should render without throwing
+      expect(find.byType(PaywallScreen), findsOneWidget);
+      expect(find.textContaining('Save '), findsNothing);
     });
   });
 }
