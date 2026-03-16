@@ -282,7 +282,7 @@ Deno.serve(async (req) => {
 
         if (grantResult?.granted === false) {
           console.log(
-            `[revenuecat-webhook] RENEWAL: credits already granted for ${userId} — skipping duplicate (reason: ${grantResult?.reason})`,
+            `[revenuecat-webhook] RENEWAL: duplicate event ${eventId} for ${userId} — skipping (reason: ${grantResult?.reason})`,
           );
           break;
         }

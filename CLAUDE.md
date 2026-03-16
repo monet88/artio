@@ -118,7 +118,7 @@ Edge functions in `supabase/functions/` use Deno/TypeScript. Shared utilities in
 
 **`--no-verify-jwt` required** for all Flutter-called functions: Supabase gateway uses HS256 but GoTrue v2 issues ES256 tokens — mismatch → 401 for all requests. Functions validate JWT internally via `auth.getUser()`.
 
-**Double-grant prevention**: Both `verify-google-purchase` and `revenuecat-webhook` INITIAL_PURCHASE call `grant_subscription_credits` with `p_check_recent_grant=true`. The 25-day guard runs inside the RPC under an advisory lock (atomic — no TOCTOU race). Whichever fires first wins; the second gets `{ granted: false, reason: 'recent_grant_exists' }`. The internal query uses `type='subscription'` — that's what the RPC inserts. RENEWAL events skip this guard (`p_check_recent_grant=false`) and rely on `reference_id` dedup instead.
+**Double-grant prevention**: `verify-google-purchase` passes `p_check_recent_grant=true` to `grant_subscription_credits`. `revenuecat-webhook` INITIAL_PURCHASE also passes `p_check_recent_grant=true`. The 25-day guard runs INSIDE the RPC under `pg_advisory_xact_lock` — atomic, no TOCTOU race. Whichever fires first wins; the second gets `{ granted: false, reason: "recent_grant_exists" }` and skips. RENEWAL passes `p_check_recent_grant=false` — deduplication is via `reference_id = eventId` (ON CONFLICT). The guard MUST run inside the RPC; never re-add it as an external SELECT check in edge functions.
 
 **Downgrade**: Pass `p_tier: 'free'` (NOT `null`) to `update_subscription_status` — `subscription_tier` column default is `'free'`, not null.
 
