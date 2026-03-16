@@ -74,7 +74,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       final String message;
       if (subState.hasError) {
         message = 'Restore failed. Please try again.';
-      } else if (subState.valueOrNull?.isActive == true) {
+      } else if (subState.valueOrNull?.isActive ?? false) {
         message = '✅ Purchases restored!';
       } else {
         message = 'No active subscription found.';
