@@ -383,6 +383,16 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
     );
   }
 
+  /// Returns trial terms text if this package has an introductory offer,
+  /// null otherwise. Used for Apple Guideline 3.1.1 compliance.
+  String? _trialText(SubscriptionPackage pkg) {
+    final intro = pkg.introductoryPriceString;
+    if (intro == null || intro.isEmpty) return null;
+    // introductoryPriceString is e.g. "Free for 7 days"
+    // priceString is e.g. "$9.99/month"
+    return '$intro, then ${pkg.priceString}. Cancel anytime.';
+  }
+
   Widget _buildComplianceText(BuildContext context) {
     return Text.rich(
       TextSpan(
@@ -502,9 +512,12 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                                 color: Colors.white,
                               ),
                             )
-                          : const Text(
-                              'Subscribe Now',
-                              style: TextStyle(
+                          : Text(
+                              (_selectedPackage != null &&
+                                      _trialText(_selectedPackage!) != null)
+                                  ? 'Start Free Trial'
+                                  : 'Subscribe Now',
+                              style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w700,
                                 color: Colors.white,
@@ -515,6 +528,26 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
           ),
           const SizedBox(height: AppSpacing.xs),
           _buildComplianceText(context),
+          if (_selectedPackage != null) ...[
+            Builder(
+              builder: (context) {
+                final trial = _trialText(_selectedPackage!);
+                if (trial == null) return const SizedBox.shrink();
+                return Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: Text(
+                    trial,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: AppColors.primaryCta,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
         ],
       ),
     );
