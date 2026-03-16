@@ -27,6 +27,11 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
     final offerings = ref.watch(offeringsProvider);
     final subscription = ref.watch(subscriptionNotifierProvider);
 
+    ref.listen<AsyncValue<List<SubscriptionPackage>>>(
+      offeringsProvider,
+      (_, next) => next.whenData(_initSelectedPackage),
+    );
+
     return Scaffold(
       backgroundColor: AppColors.darkBackground,
       body: offerings.when(
@@ -56,7 +61,6 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
     AsyncValue<SubscriptionStatus> subscription,
   ) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    _initSelectedPackage(packages);
 
     return Stack(
       children: [
