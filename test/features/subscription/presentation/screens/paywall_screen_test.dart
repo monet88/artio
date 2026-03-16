@@ -190,6 +190,67 @@ void main() {
     });
   });
 
+  group('auto-select recommended plan', () {
+    late MockSubscriptionRepository mockRepo;
+
+    setUp(() {
+      mockRepo = MockSubscriptionRepository();
+    });
+
+    testWidgets(
+      'auto-selects non-pro (ultra) plan when both pro and ultra available',
+      (tester) async {
+        final proMonthly = _pkg(identifier: 'artio_pro_monthly', price: 9.99);
+        final ultraMonthly =
+            _pkg(identifier: 'artio_ultra_monthly', price: 19.99);
+
+        when(mockRepo.getStatus)
+            .thenAnswer((_) async => const SubscriptionStatus());
+        when(mockRepo.getOfferings)
+            .thenAnswer((_) async => [proMonthly, ultraMonthly]);
+
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: [
+              subscriptionRepositoryProvider.overrideWithValue(mockRepo),
+            ],
+            child: const MaterialApp(home: PaywallScreen()),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        // Ultra (non-pro) is recommended → CTA should be active (Subscribe Now)
+        expect(find.text('Subscribe Now'), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'falls back to first package (pro) when all packages are pro',
+      (tester) async {
+        final proMonthly = _pkg(identifier: 'artio_pro_monthly', price: 9.99);
+        final proYearly = _pkg(identifier: 'artio_pro_yearly', price: 79.99);
+
+        when(mockRepo.getStatus)
+            .thenAnswer((_) async => const SubscriptionStatus());
+        when(mockRepo.getOfferings)
+            .thenAnswer((_) async => [proMonthly, proYearly]);
+
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: [
+              subscriptionRepositoryProvider.overrideWithValue(mockRepo),
+            ],
+            child: const MaterialApp(home: PaywallScreen()),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        // All pro → falls back to packages.first → CTA should be active
+        expect(find.text('Subscribe Now'), findsOneWidget);
+      },
+    );
+  });
+
   group('savingsPercent', () {
     final proMonthly = _pkg(identifier: 'artio_pro_monthly', price: 9.99);
     final proYearly = _pkg(identifier: 'artio_pro_yearly', price: 79.99);

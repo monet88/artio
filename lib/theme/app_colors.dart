@@ -92,6 +92,16 @@ abstract class AppColors {
   static const premium = Color(0xFFFFA500);
   static const premiumBadgeBackground = Color(0x26FFA500);
 
+  /// Savings badge green — used for "Save X%" labels on yearly plans.
+  /// Intentionally distinct from [success] (0xFF66BB6A) to match Google's
+  /// green-500 hue (#22C55E) which reads better on dark plan cards.
+  static const savingsGreen = Color(0xFF22C55E);
+
+  /// Credit warning orange — used for low-credit banner.
+  /// Intentionally distinct from [warning] (0xFFFFB74D) for higher contrast
+  /// on dark backgrounds.
+  static const creditWarning = Color(0xFFFF6B35);
+
   /// Premium plan tile icon background (settings screen)
   static const premiumPlanIcon = Color(0xFF9B59B6);
 

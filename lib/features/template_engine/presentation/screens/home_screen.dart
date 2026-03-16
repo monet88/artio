@@ -136,7 +136,7 @@ class _LowCreditBanner extends ConsumerWidget {
   const _LowCreditBanner();
 
   static const _threshold = 20;
-  static const _warningColor = Color(0xFFFF6B35);
+  static const _warningColor = AppColors.creditWarning;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

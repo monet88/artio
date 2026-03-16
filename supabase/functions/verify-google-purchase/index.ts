@@ -197,10 +197,15 @@ Deno.serve(async (req) => {
         `[verify-google-purchase] Duplicate reference_id for ${user.id} — no-op`,
       );
     } else {
-      // Unexpected grantResult shape — log warning so ops can investigate.
-      console.warn(
+      // Unexpected grantResult shape — surface as 500 so RC retries
+      // and ops can investigate via function logs.
+      console.error(
         `[verify-google-purchase] Unexpected grantResult shape for ${user.id}:`,
         JSON.stringify(grantResult),
+      );
+      return new Response(
+        JSON.stringify({ error: "Internal error: unexpected grant result" }),
+        { status: 500, headers: { "Content-Type": "application/json" } },
       );
     }
 

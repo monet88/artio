@@ -347,16 +347,16 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                         vertical: 3,
                       ),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF22C55E).withValues(alpha: 0.15),
+                        color: AppColors.savingsGreen.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(
-                          color: const Color(0xFF22C55E).withValues(alpha: 0.4),
+                          color: AppColors.savingsGreen.withValues(alpha: 0.4),
                         ),
                       ),
                       child: Text(
                         'Save $savings%',
                         style: const TextStyle(
-                          color: Color(0xFF22C55E),
+                          color: AppColors.savingsGreen,
                           fontSize: 10,
                           fontWeight: FontWeight.w700,
                         ),
