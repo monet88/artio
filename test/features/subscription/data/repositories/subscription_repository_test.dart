@@ -20,6 +20,7 @@ void main() {
         const SubscriptionPackage(
           identifier: 'test',
           priceString: r'$0',
+          price: 0,
           nativePackage: 'native',
         ),
       );
@@ -82,11 +83,13 @@ void main() {
           const SubscriptionPackage(
             identifier: 'pro_monthly',
             priceString: r'$9.99/month',
+          price: 0,
             nativePackage: 'native_pkg_1',
           ),
           const SubscriptionPackage(
             identifier: 'ultra_monthly',
             priceString: r'$19.99/month',
+          price: 0,
             nativePackage: 'native_pkg_2',
           ),
         ],
@@ -118,6 +121,7 @@ void main() {
         const SubscriptionPackage(
           identifier: 'pro_monthly',
           priceString: r'$9.99',
+          price: 0,
           nativePackage: 'native',
         ),
       );
@@ -139,6 +143,7 @@ void main() {
           const SubscriptionPackage(
             identifier: 'pro',
             priceString: r'$9.99',
+          price: 0,
             nativePackage: 'native',
           ),
         ),
@@ -173,6 +178,7 @@ void main() {
         const SubscriptionPackage(
           identifier: 'pro_monthly',
           priceString: r'$9.99',
+          price: 0,
           nativePackage: 'native',
         ),
       );
@@ -195,6 +201,7 @@ void main() {
           const SubscriptionPackage(
             identifier: 'pro',
             priceString: r'$9.99',
+          price: 0,
             nativePackage: 'native',
           ),
         ),

@@ -21,6 +21,7 @@ class PaywallScreen extends ConsumerStatefulWidget {
 class _PaywallScreenState extends ConsumerState<PaywallScreen> {
   SubscriptionPackage? _selectedPackage;
   bool _isPurchasing = false;
+  List<SubscriptionPackage> _allPackages = [];
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +42,13 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
           message: 'Unable to load subscription options',
           onRetry: () => ref.invalidate(offeringsProvider),
         ),
-        data: (packages) => _buildContent(context, packages, subscription),
+        data: (packages) {
+          if (_allPackages.isEmpty && packages.isNotEmpty) {
+            // Capture packages for savings calculation without triggering rebuild.
+            _allPackages = packages;
+          }
+          return _buildContent(context, packages, subscription);
+        },
       ),
     );
   }
@@ -102,7 +109,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
 
                       // ── Plan cards ──────────────────────────────────
                       ...packages.map(
-                        (pkg) => _buildPlanCard(pkg, subscription),
+                        (pkg) => _buildPlanCard(pkg, subscription, packages),
                       ),
 
                       // ── Free tier reminder ──────────────────────────
@@ -247,6 +254,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
   Widget _buildPlanCard(
     SubscriptionPackage pkg,
     AsyncValue<SubscriptionStatus> subscription,
+    List<SubscriptionPackage> packages,
   ) {
     final isPro = pkg.identifier.startsWith('artio_pro_');
     final isSelected = _selectedPackage == pkg;
@@ -333,6 +341,34 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                     ),
                   ),
                 ],
+                Builder(
+                  builder: (context) {
+                    final savings = _savingsPercent(pkg, packages);
+                    if (savings == null) return const SizedBox.shrink();
+                    return Container(
+                      margin: const EdgeInsets.only(left: 6),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 3,
+                      ),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF22C55E).withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: const Color(0xFF22C55E).withValues(alpha: 0.4),
+                        ),
+                      ),
+                      child: Text(
+                        'Save $savings%',
+                        style: const TextStyle(
+                          color: Color(0xFF22C55E),
+                          fontSize: 10,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    );
+                  },
+                ),
                 const Spacer(),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -381,6 +417,31 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
       textAlign: TextAlign.center,
       style: TextStyle(color: AppColors.white40, fontSize: 12, height: 1.5),
     );
+  }
+
+  /// Returns the savings percentage for a yearly package compared to
+  /// paying monthly for 12 months of the same tier. Returns null if the
+  /// package is not yearly, no monthly counterpart exists, or savings <= 0.
+  int? _savingsPercent(
+    SubscriptionPackage pkg,
+    List<SubscriptionPackage> all,
+  ) {
+    if (!pkg.identifier.contains('yearly')) return null;
+    final tierPrefix = pkg.identifier.startsWith('artio_pro_')
+        ? 'artio_pro_'
+        : 'artio_ultra_';
+    final monthly = all
+        .where(
+          (p) =>
+              p.identifier.startsWith(tierPrefix) &&
+              p.identifier.contains('monthly'),
+        )
+        .firstOrNull;
+    if (monthly == null) return null;
+    final monthlyAnnual = monthly.price * 12;
+    if (monthlyAnnual <= 0) return null;
+    final savings = ((monthlyAnnual - pkg.price) / monthlyAnnual * 100).round();
+    return savings > 0 ? savings : null;
   }
 
   /// Returns trial terms text if this package has an introductory offer,
