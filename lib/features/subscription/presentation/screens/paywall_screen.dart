@@ -41,12 +41,22 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
     );
   }
 
+  void _initSelectedPackage(List<SubscriptionPackage> packages) {
+    if (_selectedPackage != null || packages.isEmpty) return;
+    final recommended = packages.firstWhere(
+      (p) => !p.identifier.startsWith('artio_pro_'),
+      orElse: () => packages.first,
+    );
+    setState(() => _selectedPackage = recommended);
+  }
+
   Widget _buildContent(
     BuildContext context,
     List<SubscriptionPackage> packages,
     AsyncValue<SubscriptionStatus> subscription,
   ) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    _initSelectedPackage(packages);
 
     return Stack(
       children: [
