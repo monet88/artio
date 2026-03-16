@@ -135,29 +135,36 @@ class _CreditChip extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final balanceAsync = ref.watch(creditBalanceNotifierProvider);
     return balanceAsync.whenOrNull(
-          data: (creditBalance) => GestureDetector(
-            onTap: () => const CreditHistoryRoute().push<void>(context),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              decoration: BoxDecoration(
-                color: AppColors.white10,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: AppColors.white20),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text('💎', style: TextStyle(fontSize: 13)),
-                  const SizedBox(width: 4),
-                  Text(
-                    '${creditBalance.balance}',
-                    style: const TextStyle(
-                      color: AppColors.textPrimary,
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
+          data: (creditBalance) => Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () => const CreditHistoryRoute().push<void>(context),
+              borderRadius: BorderRadius.circular(20),
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.sm,
+                  vertical: AppSpacing.xs,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.white10,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: AppColors.white20),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text('💎', style: TextStyle(fontSize: 13)),
+                    const SizedBox(width: AppSpacing.xs),
+                    Text(
+                      '${creditBalance.balance}',
+                      style: const TextStyle(
+                        color: AppColors.textPrimary,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

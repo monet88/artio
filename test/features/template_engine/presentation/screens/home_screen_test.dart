@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:artio/features/auth/presentation/state/auth_state.dart';
 import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
 import 'package:artio/features/credits/domain/entities/credit_balance.dart';
@@ -140,8 +142,16 @@ void main() {
           () => mockTemplateRepository.fetchTemplates(),
         ).thenAnswer((_) async => []);
 
-        await tester.pumpWidget(createTestWidget());
-        // Do NOT pump — keep in loading state
+        await tester.pumpWidget(
+          createTestWidget(
+            overrides: [
+              creditBalanceNotifierProvider.overrideWith(
+                _NeverLoadingCreditBalanceNotifier.new,
+              ),
+            ],
+          ),
+        );
+        // Single pump — stays in loading state because Completer never completes
         await tester.pump(Duration.zero);
 
         expect(find.text('💎'), findsNothing);
@@ -158,4 +168,13 @@ class _FakeCreditBalanceNotifier extends CreditBalanceNotifier {
   @override
   Stream<CreditBalance> build() =>
       Stream.value(_makeCreditBalance(balance));
+}
+
+class _NeverLoadingCreditBalanceNotifier extends CreditBalanceNotifier {
+  @override
+  Stream<CreditBalance> build() {
+    // Completer that never completes → provider stays in AsyncLoading forever
+    final completer = Completer<CreditBalance>();
+    return completer.future.asStream();
+  }
 }
