@@ -259,6 +259,32 @@ void main() {
         expect(find.text('⚡'), findsNothing);
         expect(find.text('Upgrade'), findsNothing);
       });
+
+      testWidgets('hides banner while subscription is loading', (tester) async {
+        when(
+          () => mockTemplateRepository.fetchTemplates(),
+        ).thenAnswer((_) async => []);
+
+        await tester.pumpWidget(
+          createTestWidget(
+            overrides: [
+              // Low balance (5) so banner would appear if the loading guard
+              // were removed — guarantees the guard is actually exercised.
+              creditBalanceNotifierProvider.overrideWith(
+                () => _FakeCreditBalanceNotifier(balance: 5),
+              ),
+              subscriptionNotifierProvider.overrideWith(
+                _NeverLoadingSubscriptionNotifier.new,
+              ),
+            ],
+          ),
+        );
+        // Single pump — stays in AsyncLoading because Completer never completes
+        await tester.pump(Duration.zero);
+
+        expect(find.text('⚡'), findsNothing);
+        expect(find.text('Upgrade'), findsNothing);
+      });
     });
   });
 }
@@ -279,6 +305,14 @@ class _NeverLoadingCreditBalanceNotifier extends CreditBalanceNotifier {
     // Completer that never completes → provider stays in AsyncLoading forever
     final completer = Completer<CreditBalance>();
     return completer.future.asStream();
+  }
+}
+
+class _NeverLoadingSubscriptionNotifier extends SubscriptionNotifier {
+  @override
+  Future<SubscriptionStatus> build() {
+    // Completer that never completes → provider stays in AsyncLoading forever
+    return Completer<SubscriptionStatus>().future;
   }
 }
 
