@@ -22,6 +22,7 @@
 //          is confirmed stable, credit grants here should be removed entirely.
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
+import { corsHeaders } from "../_shared/cors.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -205,7 +206,10 @@ Deno.serve(async (req) => {
       );
       return new Response(
         JSON.stringify({ error: "Internal error: unexpected grant result" }),
-        { status: 500, headers: { "Content-Type": "application/json" } },
+        {
+          status: 500,
+          headers: { ...corsHeaders(), "Content-Type": "application/json" },
+        },
       );
     }
 
@@ -218,7 +222,7 @@ Deno.serve(async (req) => {
       }),
       {
         status: 200,
-        headers: { "Content-Type": "application/json" },
+        headers: { ...corsHeaders(), "Content-Type": "application/json" },
       },
     );
   } catch (err) {
