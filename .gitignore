@@ -204,3 +204,4 @@ backups/
 # PR Review tooling artifacts
 _prr/
 CLAUDE.OLD.md
+.worktrees/
