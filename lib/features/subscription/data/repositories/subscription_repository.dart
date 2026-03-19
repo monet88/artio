@@ -43,6 +43,7 @@ class SubscriptionRepository implements ISubscriptionRepository {
             (p) => SubscriptionPackage(
               identifier: p.storeProduct.identifier,
               priceString: p.storeProduct.priceString,
+              price: p.storeProduct.price,
               nativePackage: p,
               introductoryPriceString: _formatIntroductoryOffer(
                 p.storeProduct.introductoryPrice,

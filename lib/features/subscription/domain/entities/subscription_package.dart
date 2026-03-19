@@ -12,6 +12,10 @@ class SubscriptionPackage with _$SubscriptionPackage {
     /// Localized price string (e.g., '$9.99/month').
     required String priceString,
 
+    /// Raw numeric price in the user's currency (e.g., 9.99).
+    /// Used for computing savings percentages across billing periods.
+    required double price,
+
     /// The native SDK package object (cast back in the data layer).
     required Object nativePackage,
 

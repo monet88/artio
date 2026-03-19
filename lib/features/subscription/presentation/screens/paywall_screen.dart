@@ -27,6 +27,11 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
     final offerings = ref.watch(offeringsProvider);
     final subscription = ref.watch(subscriptionNotifierProvider);
 
+    ref.listen<AsyncValue<List<SubscriptionPackage>>>(
+      offeringsProvider,
+      (_, next) => next.whenData(_initSelectedPackage),
+    );
+
     return Scaffold(
       backgroundColor: AppColors.darkBackground,
       body: offerings.when(
@@ -36,9 +41,20 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
           message: 'Unable to load subscription options',
           onRetry: () => ref.invalidate(offeringsProvider),
         ),
-        data: (packages) => _buildContent(context, packages, subscription),
+        data: (packages) {
+          return _buildContent(context, packages, subscription);
+        },
       ),
     );
+  }
+
+  void _initSelectedPackage(List<SubscriptionPackage> packages) {
+    if (_selectedPackage != null || packages.isEmpty) return;
+    final recommended = packages.firstWhere(
+      (p) => !p.identifier.startsWith('artio_pro_'),
+      orElse: () => packages.first,
+    );
+    setState(() => _selectedPackage = recommended);
   }
 
   Widget _buildContent(
@@ -88,7 +104,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
 
                       // ── Plan cards ──────────────────────────────────
                       ...packages.map(
-                        (pkg) => _buildPlanCard(pkg, subscription),
+                        (pkg) => _buildPlanCard(pkg, subscription, packages),
                       ),
 
                       // ── Free tier reminder ──────────────────────────
@@ -233,6 +249,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
   Widget _buildPlanCard(
     SubscriptionPackage pkg,
     AsyncValue<SubscriptionStatus> subscription,
+    List<SubscriptionPackage> packages,
   ) {
     final isPro = pkg.identifier.startsWith('artio_pro_');
     final isSelected = _selectedPackage == pkg;
@@ -319,6 +336,34 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                     ),
                   ),
                 ],
+                Builder(
+                  builder: (context) {
+                    final savings = _savingsPercent(pkg, packages);
+                    if (savings == null) return const SizedBox.shrink();
+                    return Container(
+                      margin: const EdgeInsets.only(left: 6),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 3,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.savingsGreen.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: AppColors.savingsGreen.withValues(alpha: 0.4),
+                        ),
+                      ),
+                      child: Text(
+                        'Save $savings%',
+                        style: const TextStyle(
+                          color: AppColors.savingsGreen,
+                          fontSize: 10,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    );
+                  },
+                ),
                 const Spacer(),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -369,6 +414,33 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
     );
   }
 
+  /// Returns the savings percentage for a yearly package compared to
+  /// paying monthly for 12 months of the same tier. Returns null if the
+  /// package is not yearly, no monthly counterpart exists, or savings <= 0.
+  int? _savingsPercent(
+    SubscriptionPackage pkg,
+    List<SubscriptionPackage> all,
+  ) => savingsPercent(pkg, all);
+
+  /// Returns trial terms text if this package has an introductory offer,
+  /// null otherwise. Used for Apple Guideline 3.1.1 compliance.
+  String? _trialText(SubscriptionPackage pkg) {
+    final intro = pkg.introductoryPriceString;
+    if (intro == null || intro.isEmpty) return null;
+    // introductoryPriceString is e.g. "Free for 7 days" or "$1.99 for 3 months"
+    // priceString is e.g. "$9.99/month"
+    return '$intro, then ${pkg.priceString}. Cancel anytime.';
+  }
+
+  /// Returns true only when the selected package has a genuinely FREE intro
+  /// offer (e.g. "Free for 7 days"). Paid intro offers like "$1.99 for 3
+  /// months" do not qualify — the CTA should say "Subscribe Now" instead.
+  bool _hasFreeTrial(SubscriptionPackage pkg) {
+    final intro = pkg.introductoryPriceString;
+    if (intro == null || intro.isEmpty) return false;
+    return intro.toLowerCase().contains('free');
+  }
+
   Widget _buildComplianceText(BuildContext context) {
     return Text.rich(
       TextSpan(
@@ -382,7 +454,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
           WidgetSpan(
             alignment: PlaceholderAlignment.middle,
             child: GestureDetector(
-              onTap: () => launchInAppUrl(context, 'https://artio.app/terms'),
+              onTap: () => launchInAppUrl(context, 'https://monet88.github.io/artio-legal/terms.html'),
               child: const Text(
                 'Terms of Service',
                 style: TextStyle(
@@ -398,7 +470,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
           WidgetSpan(
             alignment: PlaceholderAlignment.middle,
             child: GestureDetector(
-              onTap: () => launchInAppUrl(context, 'https://artio.app/privacy'),
+              onTap: () => launchInAppUrl(context, 'https://monet88.github.io/artio-legal/privacy.html'),
               child: const Text(
                 'Privacy Policy',
                 style: TextStyle(
@@ -411,7 +483,8 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
             ),
           ),
           const TextSpan(
-            text: '. Subscription auto-renews unless cancelled at least '
+            text:
+                '. Subscription auto-renews unless cancelled at least '
                 '24 hours before the end of the current period. '
                 'Manage or cancel anytime in your account settings.',
           ),
@@ -488,9 +561,12 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                                 color: Colors.white,
                               ),
                             )
-                          : const Text(
-                              'Subscribe Now',
-                              style: TextStyle(
+                          : Text(
+                              (_selectedPackage != null &&
+                                      _hasFreeTrial(_selectedPackage!))
+                                  ? 'Start Free Trial'
+                                  : 'Subscribe Now',
+                              style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w700,
                                 color: Colors.white,
@@ -501,6 +577,26 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
           ),
           const SizedBox(height: AppSpacing.xs),
           _buildComplianceText(context),
+          if (_selectedPackage != null) ...[
+            Builder(
+              builder: (context) {
+                final trial = _trialText(_selectedPackage!);
+                if (trial == null) return const SizedBox.shrink();
+                return Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: Text(
+                    trial,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: AppColors.primaryCta,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
         ],
       ),
     );
@@ -519,7 +615,8 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
       final purchaseState = ref.read(subscriptionNotifierProvider);
       if (purchaseState.hasError) {
         final err = purchaseState.error!;
-        final isCancelled = err is PaymentException && err.code == 'user_cancelled';
+        final isCancelled =
+            err is PaymentException && err.code == 'user_cancelled';
         if (isCancelled) return; // user dismissed — silent, no snackbar
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -601,4 +698,35 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
       if (mounted) setState(() => _isPurchasing = false);
     }
   }
+}
+
+/// Top-level helper so it can be unit-tested without a widget harness.
+///
+/// Returns the savings percentage for a yearly package compared to paying
+/// monthly for 12 months of the same tier. Returns null when:
+/// - [pkg] is not a yearly package,
+/// - [pkg] is not a known artio_pro_ or artio_ultra_ tier,
+/// - no monthly counterpart exists in [all], or
+/// - computed savings <= 0.
+int? savingsPercent(SubscriptionPackage pkg, List<SubscriptionPackage> all) {
+  if (!pkg.identifier.contains('yearly')) return null;
+  if (!pkg.identifier.startsWith('artio_pro_') &&
+      !pkg.identifier.startsWith('artio_ultra_')) {
+    return null;
+  }
+  final tierPrefix = pkg.identifier.startsWith('artio_pro_')
+      ? 'artio_pro_'
+      : 'artio_ultra_';
+  final monthly = all
+      .where(
+        (p) =>
+            p.identifier.startsWith(tierPrefix) &&
+            p.identifier.contains('monthly'),
+      )
+      .firstOrNull;
+  if (monthly == null) return null;
+  final monthlyAnnual = monthly.price * 12;
+  if (monthlyAnnual <= 0) return null;
+  final savings = ((monthlyAnnual - pkg.price) / monthlyAnnual * 100).round();
+  return savings > 0 ? savings : null;
 }

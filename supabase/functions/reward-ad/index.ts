@@ -79,47 +79,62 @@ async function authenticateUser(
 // AdMob SSV helpers
 // ---------------------------------------------------------------------------
 
+/** Thrown when the keyId from Google's SSV callback is not in the verifier keys list.
+ * This is a permanent error (not transient) — Google should not retry. */
+class KeyNotFoundError extends Error {
+  constructor(keyId: string) {
+    super(`AdMob verifier key not found for keyId=${keyId}`);
+    this.name = "KeyNotFoundError";
+  }
+}
+
 /**
  * Convert a DER-encoded ECDSA signature to IEEE P1363 format (r || s, 64 bytes).
  * Web Crypto API requires P1363; Google AdMob sends DER.
  *
- * DER structure:
- *   0x30 <total-len> 0x02 <r-len> <r-bytes> 0x02 <s-len> <s-bytes>
+ * DER structure (short-form lengths only, sufficient for P-256):
+ *   0x30 <total-len-1-byte> 0x02 <r-len> <r-bytes> 0x02 <s-len> <s-bytes>
+ * Note: multi-byte DER lengths (≥128 bytes) are not supported and not needed
+ * for P-256 ECDSA signatures which are always ≤72 bytes of DER.
  */
 function derToP1363(der: Uint8Array): Uint8Array {
-  // Minimum valid DER: 0x30 len 0x02 rlen r 0x02 slen s
+  if (der.length < 8) throw new Error("DER too short");
   if (der[0] !== 0x30) {
     throw new Error("Invalid DER signature: missing SEQUENCE tag");
   }
-  let offset = 2; // skip 0x30 and total length byte
+  let offset = 2; // skip 0x30 and total length byte (short-form, 1 byte)
 
   // Parse r
-  if (der[offset] !== 0x02) {
+  if (offset >= der.length || der[offset] !== 0x02) {
     throw new Error("Invalid DER signature: missing INTEGER tag for r");
   }
   offset++;
   const rLen = der[offset++];
-  // DER integers are big-endian and may have a leading 0x00 to indicate positive
+  if (offset + rLen > der.length) throw new Error("DER r value out of bounds");
+  // DER integers may have a leading 0x00 padding byte to indicate positive
   let rStart = offset;
   let rBytes = rLen;
   if (der[rStart] === 0x00) {
     rStart++;
     rBytes--;
   }
+  if (rBytes > 32) throw new Error("DER r value too large for P-256");
   offset += rLen;
 
   // Parse s
-  if (der[offset] !== 0x02) {
+  if (offset >= der.length || der[offset] !== 0x02) {
     throw new Error("Invalid DER signature: missing INTEGER tag for s");
   }
   offset++;
   const sLen = der[offset++];
+  if (offset + sLen > der.length) throw new Error("DER s value out of bounds");
   let sStart = offset;
   let sBytes = sLen;
   if (der[sStart] === 0x00) {
     sStart++;
     sBytes--;
   }
+  if (sBytes > 32) throw new Error("DER s value too large for P-256");
 
   // Build 64-byte P1363: r (32 bytes, zero-padded left) || s (32 bytes, zero-padded left)
   const p1363 = new Uint8Array(64);
@@ -159,9 +174,18 @@ async function verifyGoogleSsvSignature(
   signatureB64url: string,
   keyId: string,
 ): Promise<boolean> {
-  // Fetch Google's public verifier keys (no caching — keys rotate infrequently
-  // and caching in a stateless edge function adds complexity without benefit)
-  const keysResp = await fetch(ADMOB_VERIFIER_KEYS_URL);
+  // Fetch Google's public verifier keys with a 5-second timeout.
+  // Keys rotate infrequently; no caching needed in a stateless edge function.
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 5000);
+  let keysResp: Response;
+  try {
+    keysResp = await fetch(ADMOB_VERIFIER_KEYS_URL, {
+      signal: controller.signal,
+    });
+  } finally {
+    clearTimeout(timer);
+  }
   if (!keysResp.ok) {
     throw new Error(`Failed to fetch AdMob verifier keys: ${keysResp.status}`);
   }
@@ -171,7 +195,9 @@ async function verifyGoogleSsvSignature(
 
   const keyEntry = keysJson.keys.find((k) => String(k.keyId) === keyId);
   if (!keyEntry) {
-    throw new Error(`AdMob verifier key not found for keyId=${keyId}`);
+    // Permanent error — key rotation means this keyId is no longer valid.
+    // Caller should return 403, not 500, so Google doesn't retry indefinitely.
+    throw new KeyNotFoundError(keyId);
   }
 
   // Import the SPKI key from PEM
@@ -211,10 +237,29 @@ async function handleSsvCallback(
   const customData = params.get("custom_data"); // our nonce
   const userId = params.get("user_id"); // Supabase UUID passed via AdMob SDK
 
+  // Validate UUID format before any logging to prevent log injection from
+  // attacker-controlled query params.
+  const UUID_RE =
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
   if (!signature || !keyId) {
     console.warn("[reward-ad] SSV callback missing signature or key_id");
     return new Response(
       JSON.stringify({ error: "Missing signature or key_id" }),
+      { status: 400, headers: { "Content-Type": "application/json" } },
+    );
+  }
+  if (!customData) {
+    console.warn("[reward-ad] SSV callback missing custom_data (nonce)");
+    return new Response(JSON.stringify({ error: "Missing custom_data" }), {
+      status: 400,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+  if (!userId || !UUID_RE.test(userId)) {
+    console.warn("[reward-ad] SSV callback missing or invalid user_id");
+    return new Response(
+      JSON.stringify({ error: "Missing or invalid user_id" }),
       {
         status: 400,
         headers: { "Content-Type": "application/json" },
@@ -222,41 +267,29 @@ async function handleSsvCallback(
     );
   }
 
-  if (!customData) {
-    console.warn("[reward-ad] SSV callback missing custom_data (nonce)");
-    return new Response(
-      JSON.stringify({ error: "Missing custom_data (nonce)" }),
-      { status: 400, headers: { "Content-Type": "application/json" } },
-    );
-  }
-
-  if (!userId) {
-    console.warn("[reward-ad] SSV callback missing user_id");
-    return new Response(JSON.stringify({ error: "Missing user_id" }), {
-      status: 400,
-      headers: { "Content-Type": "application/json" },
-    });
-  }
-
-  // Build the message Google signed: the full raw query string MINUS the
-  // `signature` parameter, preserving the original parameter order.
-  // Google appends `signature` last, so stripping it from the raw string is safe.
+  // Build the message Google signed: raw query string MINUS `&signature=<value>`.
+  // Google always appends `signature` last, so we split on the last occurrence.
+  // Using lastIndexOf on the raw query avoids any re-encoding round-trip issues
+  // (params.get() decodes, encodeURIComponent re-encodes — not always identical).
   const rawQuery = url.search.slice(1); // drop leading "?"
-  const sigParam = `signature=${encodeURIComponent(signature)}`;
-  // Remove "&signature=..." or "signature=...&" from the end / middle
-  let messageStr = rawQuery
-    .replace(`&${sigParam}`, "")
-    .replace(`${sigParam}&`, "");
-  if (messageStr === rawQuery) {
-    // signature was the only param (shouldn't happen, but guard anyway)
-    messageStr = "";
-  }
+  const sigSepIdx = rawQuery.lastIndexOf("&signature=");
+  const messageStr = sigSepIdx !== -1 ? rawQuery.slice(0, sigSepIdx) : rawQuery;
   const message = new TextEncoder().encode(messageStr);
 
   let valid = false;
   try {
     valid = await verifyGoogleSsvSignature(message, signature, keyId);
   } catch (err) {
+    if (err instanceof KeyNotFoundError) {
+      // Permanent error: keyId is unknown (rotated key or forged request).
+      // Return 403 so Google does NOT retry — retrying won't help.
+      console.error(`[reward-ad] SSV unknown keyId=${keyId}`);
+      return new Response(JSON.stringify({ error: "Unknown key" }), {
+        status: 403,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+    // Transient error (key fetch timeout, DER parse failure, etc.) — 500 triggers retry.
     console.error("[reward-ad] SSV signature verification error:", err);
     return new Response(
       JSON.stringify({ error: "Signature verification failed" }),

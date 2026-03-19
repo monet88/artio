@@ -22,6 +22,7 @@
 //          is confirmed stable, credit grants here should be removed entirely.
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
+import { corsHeaders } from "../_shared/cors.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -52,7 +53,7 @@ Deno.serve(async (req) => {
   if (req.method !== "POST") {
     return new Response(JSON.stringify({ error: "Method not allowed" }), {
       status: 405,
-      headers: { "Content-Type": "application/json" },
+      headers: { ...corsHeaders(), "Content-Type": "application/json" },
     });
   }
 
@@ -61,7 +62,7 @@ Deno.serve(async (req) => {
   if (!authHeader) {
     return new Response(JSON.stringify({ error: "Missing authorization" }), {
       status: 401,
-      headers: { "Content-Type": "application/json" },
+      headers: { ...corsHeaders(), "Content-Type": "application/json" },
     });
   }
 
@@ -80,7 +81,7 @@ Deno.serve(async (req) => {
   if (authError || !user) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), {
       status: 401,
-      headers: { "Content-Type": "application/json" },
+      headers: { ...corsHeaders(), "Content-Type": "application/json" },
     });
   }
 
@@ -104,7 +105,7 @@ Deno.serve(async (req) => {
       }),
       {
         status: 400,
-        headers: { "Content-Type": "application/json" },
+        headers: { ...corsHeaders(), "Content-Type": "application/json" },
       },
     );
   }
@@ -118,7 +119,7 @@ Deno.serve(async (req) => {
       JSON.stringify({ error: "Invalid purchaseToken format" }),
       {
         status: 400,
-        headers: { "Content-Type": "application/json" },
+        headers: { ...corsHeaders(), "Content-Type": "application/json" },
       },
     );
   }
@@ -132,7 +133,7 @@ Deno.serve(async (req) => {
       JSON.stringify({ error: `Unknown productId: ${productId}` }),
       {
         status: 400,
-        headers: { "Content-Type": "application/json" },
+        headers: { ...corsHeaders(), "Content-Type": "application/json" },
       },
     );
   }
@@ -169,7 +170,10 @@ Deno.serve(async (req) => {
       );
       return new Response(
         JSON.stringify({ error: "Failed to grant subscription credits" }),
-        { status: 500, headers: { "Content-Type": "application/json" } },
+        {
+          status: 500,
+          headers: { ...corsHeaders(), "Content-Type": "application/json" },
+        },
       );
     }
 
@@ -197,10 +201,18 @@ Deno.serve(async (req) => {
         `[verify-google-purchase] Duplicate reference_id for ${user.id} — no-op`,
       );
     } else {
-      // Unexpected grantResult shape — log warning so ops can investigate.
-      console.warn(
+      // Unexpected grantResult shape — surface as 500 so RC retries
+      // and ops can investigate via function logs.
+      console.error(
         `[verify-google-purchase] Unexpected grantResult shape for ${user.id}:`,
         JSON.stringify(grantResult),
+      );
+      return new Response(
+        JSON.stringify({ error: "Internal error: unexpected grant result" }),
+        {
+          status: 500,
+          headers: { ...corsHeaders(), "Content-Type": "application/json" },
+        },
       );
     }
 
@@ -213,14 +225,14 @@ Deno.serve(async (req) => {
       }),
       {
         status: 200,
-        headers: { "Content-Type": "application/json" },
+        headers: { ...corsHeaders(), "Content-Type": "application/json" },
       },
     );
   } catch (err) {
     console.error("[verify-google-purchase] Unexpected error:", err);
     return new Response(JSON.stringify({ error: "Internal server error" }), {
       status: 500,
-      headers: { "Content-Type": "application/json" },
+      headers: { ...corsHeaders(), "Content-Type": "application/json" },
     });
   }
 });
