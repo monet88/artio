@@ -391,6 +391,47 @@ This ensures `p_reference_id` is NEVER null while staying idempotent across RC r
 
 ---
 
+### 19. 🆕 Unexpected `grantResult` Shape Must Return 500 — Never Fall Through to 200
+
+> **Root cause confirmed in production (2026-03-17)**
+
+**Problem:** `grant_subscription_credits` RPC occasionally returns an unrecognized shape
+(neither `{granted: true}` nor `{granted: false, reason: "..."}`) due to schema changes
+or edge cases. If the code falls through to return 200, RevenueCat sees success and stops
+retrying. The user gets no credits and no automatic recovery.
+
+**Wrong — silent credit loss:**
+```typescript
+} else {
+  console.warn("[verify-google-purchase] Unexpected grantResult:", grantResult);
+  // falls through to 200 response — RC thinks it succeeded, stops retrying
+}
+return new Response(JSON.stringify({ verified: true }), { status: 200 });
+```
+
+**Fix — return 500 so RC retries and ops are alerted:**
+```typescript
+} else {
+  console.error(
+    "[verify-google-purchase] Unexpected grantResult shape:",
+    JSON.stringify(grantResult),
+  );
+  return new Response(
+    JSON.stringify({ error: "Internal error: unexpected grant result" }),
+    { status: 500, headers: { ...corsHeaders(), "Content-Type": "application/json" } },
+  );
+}
+```
+
+**Why 500 (not 400 or 422):** RevenueCat retries on **5xx** responses (server error = transient).
+4xx = permanent failure, no retry. Returning 500 here keeps the retry loop alive until ops can investigate.
+
+**Debug:** Check Supabase Edge Function logs for `Unexpected grantResult shape:` entries.
+If seen in production, inspect the RPC's return value — likely a DB migration added a new field
+or changed the response structure.
+
+---
+
 ### 10. 🆕 RC Webhook Requires Pub/Sub — Not Just Webhook URL
 Setting webhook URL in RC Dashboard is NOT enough for Google Play events to reach your server.
 
