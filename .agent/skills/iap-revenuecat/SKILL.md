@@ -136,14 +136,17 @@ if (error || !user) return new Response(JSON.stringify({ error: "Unauthorized" }
 (Deno-based) but the TypeScript type definitions don't include it. Use a type cast:
 
 ```typescript
-const authValid = (
+const a = encoder.encode(authHeader ?? "");
+const b = encoder.encode(expected);
+// ⚠️ timingSafeEqual throws TypeError if buffers differ in byte length — always length-check first
+const authValid = authHeader !== null && a.length === b.length && (
   crypto.subtle as unknown as {
     timingSafeEqual(a: BufferSource, b: BufferSource): boolean;
   }
-).timingSafeEqual(encoder.encode(authHeader), encoder.encode(expected));
+).timingSafeEqual(a, b);
 ```
 
-This works correctly in production. The manual XOR approach also works but is unnecessary.
+This works correctly in production. The manual XOR approach also handles length mismatches gracefully, but `timingSafeEqual` with the length pre-check is the standard pattern.
 
 ---
 
@@ -680,10 +683,13 @@ Deno.serve(async (req) => {
 const authHeader = req.headers.get("Authorization");
 const expectedAuth = REVENUECAT_WEBHOOK_SECRET;  // raw token — no Bearer prefix (Gotcha #6)
 // timingSafeEqual IS available in Deno via type cast (Gotcha #11)
+// ⚠️ timingSafeEqual throws TypeError on different-length buffers — length-check first
 const encoder = new TextEncoder();
-const authValid = authHeader !== null && (
+const a = encoder.encode(authHeader ?? "");
+const b = encoder.encode(expectedAuth);
+const authValid = authHeader !== null && a.length === b.length && (
   crypto.subtle as unknown as { timingSafeEqual(a: BufferSource, b: BufferSource): boolean }
-).timingSafeEqual(encoder.encode(authHeader), encoder.encode(expectedAuth));
+).timingSafeEqual(a, b);
 
 // Handle event
 const event = await req.json();
