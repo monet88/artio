@@ -127,7 +127,7 @@ if (error || !user) return new Response(JSON.stringify({ error: "Unauthorized" }
 - This is NOT the `purchaseToken` required by Google Play Developer API
 - Consequence: Cannot call `/androidpublisher/v3/.../purchases/subscriptions/{id}/tokens/{token}` from Supabase — you don't have the real token
 - **Design decision:** Trust RC client-side validation. Use orderId as idempotency key only.
-- orderId can be **empty** for subscriptions with free trials → always implement fallback
+- orderId can be **empty** for subscriptions with free trials → skip `verify-google-purchase` if orderId is empty (RC webhook handles credit grant)
 
 ### 11. 🔄 UPDATED: `crypto.subtle.timingSafeEqual` IS Available in Deno (Type Cast Required)
 
@@ -761,15 +761,15 @@ Future<SubscriptionStatus> purchase(SubscriptionPackage package) async {
   final result = await Purchases.purchase(PurchaseParams.package(nativePkg));
 
   // Extract orderId — may be empty for free-trial subscriptions
-  final rawToken = result.storeTransaction.transactionIdentifier;
+  final orderId = result.storeTransaction.transactionIdentifier;
   final productId = package.identifier;
-  // Always build a valid token (empty orderId → timestamp fallback)
-  final purchaseRef = rawToken.isNotEmpty
-      ? rawToken
-      : 'rc-$productId-${DateTime.now().millisecondsSinceEpoch}';
+  // If orderId is empty (e.g. free trial), skip verify-google-purchase.
+  // The revenuecat-webhook fires within seconds and grants credits authoritatively.
+  if (orderId.isEmpty) return _mapCustomerInfo(result.customerInfo);
+  final purchaseToken = orderId;
 
   // Call verify-google-purchase — non-blocking, don't await in critical path
-  await _verifyWithServer(purchaseRef, productId);
+  await _verifyWithServer(purchaseToken, productId);
 
   return _mapCustomerInfo(result.customerInfo);
 }
@@ -923,7 +923,7 @@ If no events → webhook pipeline not working → debug Pub/Sub first
 - [ ] `appUserID` set to Supabase user ID
 - [ ] `REVENUECAT_GOOGLE_KEY` = real `goog_xxx` key
 - [ ] Purchase flow calls `verify-google-purchase` after success
-- [ ] Empty orderId handled → timestamp fallback token
+- [ ] Empty orderId handled → skip verify-google-purchase (RC webhook covers credit grant)
 - [ ] RC error code 1 (cancelled) handled silently
 - [ ] RC error code 28 (already owned) handled via `getCustomerInfo()`
 - [ ] `_createUserProfile()` called BEFORE `_revenuecatLogIn()` during signUp ← race condition!
@@ -959,14 +959,14 @@ If no events → webhook pipeline not working → debug Pub/Sub first
 | AAB rejected "signed in debug mode" | Wrong keystore used | Configure release signing in `build.gradle.kts` |
 | Purchase fails in testing | Test account not in License testing | Add Gmail to Settings → License testing in Play Console |
 | Webhook not receiving RC events | "Production only" in RC → misses sandbox | Change to "Production and Sandbox" in RC webhook settings |
-| Empty `transactionIdentifier` | Free trial subscription, orderId not assigned yet | Use timestamp fallback: `rc-$productId-${DateTime.now().millisecondsSinceEpoch}` |
+| Empty `transactionIdentifier` | Free trial subscription, orderId not assigned yet | Skip `verify-google-purchase` — do NOT generate rc- tokens (security: forgeable). RC webhook fires within seconds and grants credits. |
 
 ---
 
 ## 🔒 Security Checklist
 
 - [ ] `purchaseToken` validated against GPA format regex before DB writes
-- [ ] Fallback `rc-` token format also validated (prevents arbitrary string injection)
+- [ ] Only GPA.XXXX-XXXX-XXXX-XXXXX tokens accepted — no rc- fallbacks (prevents forged token attacks)
 - [ ] Edge functions use `--no-verify-jwt` + manual `auth.getUser()` (not skipping auth entirely)
 - [ ] Webhook verified with timing-safe comparison (prevents timing attacks)
 - [ ] Service account JSON key NOT committed to git (add `*.json` + `service-account*.json` to `.gitignore`)
