@@ -703,7 +703,7 @@ switch (event.type) {
 }
 ```
 
-**⚠️ Double-grant risk:** `verify-google-purchase` uses `gp-{orderId}` as reference_id. RC webhook uses `event.id` (UUID). These are different → `ON CONFLICT(reference_id)` will NOT dedup between them. A user who purchases gets credits from BOTH if both fire. Until RC webhook is verified stable, keep verify-google-purchase as sole credit granter.
+**Double-grant prevention:** Both `verify-google-purchase` and `revenuecat-webhook` can grant credits safely — double-grant is prevented by `p_check_recent_grant: true` which runs the 25-day guard under `pg_advisory_xact_lock` inside the `grant_subscription_credits` RPC. Whichever fires first wins; the second gets `{ granted: false, reason: "recent_grant_exists" }` and skips. The different reference_ids (`gp-{orderId}` vs RC event UUID) are irrelevant for dedup — the advisory lock makes it atomic regardless.
 
 #### 5.3 sync-subscription (status sync, no credits)
 ```typescript
