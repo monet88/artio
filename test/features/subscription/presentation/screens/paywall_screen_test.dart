@@ -266,6 +266,146 @@ void main() {
     );
   });
 
+  group('_handlePurchase', () {
+    late MockSubscriptionRepository mockRepo;
+
+    final ultraMonthly = SubscriptionPackage(
+      identifier: 'artio_ultra_monthly',
+      priceString: r'$19.99',
+      price: 19.99,
+      nativePackage: Object(),
+    );
+
+    setUpAll(() {
+      registerFallbackValue(
+        SubscriptionPackage(
+          identifier: 'fallback',
+          priceString: r'$0.00',
+          price: 0,
+          nativePackage: Object(),
+        ),
+      );
+    });
+
+    setUp(() {
+      mockRepo = MockSubscriptionRepository();
+      when(() => mockRepo.getStatus())
+          .thenAnswer((_) async => const SubscriptionStatus());
+      when(() => mockRepo.getOfferings())
+          .thenAnswer((_) async => [ultraMonthly]);
+    });
+
+    Widget buildPurchaseWidget() => ProviderScope(
+          overrides: [
+            authViewModelProvider.overrideWith(MockAuthViewModel.new),
+            subscriptionRepositoryProvider.overrideWith((_) => mockRepo),
+          ],
+          child: const MaterialApp(home: PaywallScreen()),
+        );
+
+    testWidgets(
+      'cancelled purchase shows no snackbar',
+      (tester) async {
+        when(() => mockRepo.purchase(any())).thenThrow(
+          const AppException.payment(
+            message: 'Cancelled by user',
+            code: 'user_cancelled',
+          ),
+        );
+
+        await tester.pumpWidget(buildPurchaseWidget());
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.text('Subscribe Now'));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(SnackBar), findsNothing);
+      },
+    );
+
+    testWidgets(
+      'non-cancel purchase error shows error snackbar',
+      (tester) async {
+        when(() => mockRepo.purchase(any())).thenThrow(
+          const AppException.network(message: 'No internet connection'),
+        );
+
+        await tester.pumpWidget(buildPurchaseWidget());
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.text('Subscribe Now'));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(SnackBar), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'purchase succeeds but subscription inactive shows warning snackbar',
+      (tester) async {
+        when(() => mockRepo.purchase(any()))
+            .thenAnswer((_) async => const SubscriptionStatus());
+
+        await tester.pumpWidget(buildPurchaseWidget());
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.text('Subscribe Now'));
+        await tester.pumpAndSettle();
+
+        expect(
+          find.text('Purchase processed. If credits are missing, tap Restore.'),
+          findsOneWidget,
+        );
+      },
+    );
+
+    testWidgets(
+      'purchase succeeds and active shows success snackbar',
+      (tester) async {
+        when(() => mockRepo.purchase(any())).thenAnswer(
+          (_) async => const SubscriptionStatus(isActive: true, tier: 'ultra'),
+        );
+
+        // PaywallScreen calls Navigator.pop() on success — push it onto a
+        // navigator stack so pop() returns to the parent instead of
+        // destroying the route (which would dismiss the SnackBar).
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: [
+              authViewModelProvider.overrideWith(MockAuthViewModel.new),
+              subscriptionRepositoryProvider.overrideWith((_) => mockRepo),
+            ],
+            child: MaterialApp(
+              home: Builder(
+                builder: (context) => Scaffold(
+                  body: ElevatedButton(
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const PaywallScreen(),
+                      ),
+                    ),
+                    child: const Text('Open'),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Open'));
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.text('Subscribe Now'));
+        await tester.pumpAndSettle();
+
+        expect(
+          find.text('🎉 Subscription activated! Welcome to Premium.'),
+          findsOneWidget,
+        );
+      },
+    );
+  });
+
   group('savingsPercent', () {
     final proMonthly = _pkg(identifier: 'artio_pro_monthly', price: 9.99);
     final proYearly = _pkg(identifier: 'artio_pro_yearly', price: 79.99);
