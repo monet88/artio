@@ -399,6 +399,7 @@ This ensures `p_reference_id` is NEVER null while staying idempotent across RC r
 (neither `{granted: true}` nor `{granted: false, reason: "..."}`) due to schema changes
 or edge cases. If the code falls through to return 200, RevenueCat sees success and stops
 retrying. The user gets no credits and no automatic recovery.
+**This rule applies to every caller of `grant_subscription_credits`** — including `revenuecat-webhook`.
 
 **Wrong — silent credit loss:**
 ```typescript
