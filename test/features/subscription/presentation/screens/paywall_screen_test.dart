@@ -4,10 +4,9 @@ import 'package:artio/core/exceptions/app_exception.dart';
 import 'package:artio/features/auth/presentation/state/auth_state.dart';
 import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
 import 'package:artio/features/subscription/data/repositories/subscription_repository.dart';
-import 'package:artio/features/subscription/domain/providers/subscription_repository_provider.dart';
-import 'package:artio/features/subscription/domain/repositories/i_subscription_repository.dart';
 import 'package:artio/features/subscription/domain/entities/subscription_package.dart';
 import 'package:artio/features/subscription/domain/entities/subscription_status.dart';
+import 'package:artio/features/subscription/domain/repositories/i_subscription_repository.dart';
 import 'package:artio/features/subscription/presentation/screens/paywall_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -38,7 +37,7 @@ SubscriptionPackage _pkg({
 void main() {
   setUpAll(() {
     registerFallbackValue(
-      SubscriptionPackage(
+      const SubscriptionPackage(
         identifier: 'fallback',
         priceString: r'$0.00',
         price: 0,
@@ -280,7 +279,7 @@ void main() {
   group('_handlePurchase', () {
     late MockSubscriptionRepository mockRepo;
 
-    final ultraMonthly = SubscriptionPackage(
+    const ultraMonthly = SubscriptionPackage(
       identifier: 'artio_ultra_monthly',
       priceString: r'$19.99',
       price: 19.99,
