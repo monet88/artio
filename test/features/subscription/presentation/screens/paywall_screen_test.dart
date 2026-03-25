@@ -1,6 +1,11 @@
 import 'dart:async';
 
+import 'package:artio/core/exceptions/app_exception.dart';
+import 'package:artio/features/auth/presentation/state/auth_state.dart';
+import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
 import 'package:artio/features/subscription/data/repositories/subscription_repository.dart';
+import 'package:artio/features/subscription/domain/providers/subscription_repository_provider.dart';
+import 'package:artio/features/subscription/domain/repositories/i_subscription_repository.dart';
 import 'package:artio/features/subscription/domain/entities/subscription_package.dart';
 import 'package:artio/features/subscription/domain/entities/subscription_status.dart';
 import 'package:artio/features/subscription/presentation/screens/paywall_screen.dart';
@@ -9,8 +14,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
+import '../../../../core/fixtures/fixtures.dart';
+
 class MockSubscriptionRepository extends Mock
-    implements SubscriptionRepository {}
+    implements ISubscriptionRepository, SubscriptionRepository {}
+
+class MockAuthViewModel extends AuthViewModel {
+  @override
+  AuthState build() => AuthState.authenticated(UserFixtures.authenticated());
+}
 
 SubscriptionPackage _pkg({
   required String identifier,
@@ -46,7 +58,10 @@ void main() {
       });
 
       return ProviderScope(
-        overrides: [subscriptionRepositoryProvider.overrideWithValue(mockRepo)],
+        overrides: [
+          authViewModelProvider.overrideWith(MockAuthViewModel.new),
+          subscriptionRepositoryProvider.overrideWith((_) => mockRepo),
+        ],
         child: MaterialApp(
           home: Builder(
             builder: (context) => Scaffold(
@@ -212,7 +227,7 @@ void main() {
         await tester.pumpWidget(
           ProviderScope(
             overrides: [
-              subscriptionRepositoryProvider.overrideWithValue(mockRepo),
+              subscriptionRepositoryProvider.overrideWith((_) => mockRepo),
             ],
             child: const MaterialApp(home: PaywallScreen()),
           ),
@@ -238,7 +253,7 @@ void main() {
         await tester.pumpWidget(
           ProviderScope(
             overrides: [
-              subscriptionRepositoryProvider.overrideWithValue(mockRepo),
+              subscriptionRepositoryProvider.overrideWith((_) => mockRepo),
             ],
             child: const MaterialApp(home: PaywallScreen()),
           ),
@@ -315,7 +330,7 @@ void main() {
         await tester.pumpWidget(
           ProviderScope(
             overrides: [
-              subscriptionRepositoryProvider.overrideWithValue(mockRepo),
+              subscriptionRepositoryProvider.overrideWith((_) => mockRepo),
             ],
             child: const MaterialApp(home: PaywallScreen()),
           ),
@@ -340,7 +355,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            subscriptionRepositoryProvider.overrideWithValue(mockRepo),
+            subscriptionRepositoryProvider.overrideWith((_) => mockRepo),
           ],
           child: const MaterialApp(home: PaywallScreen()),
         ),
@@ -360,7 +375,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            subscriptionRepositoryProvider.overrideWithValue(mockRepo),
+            subscriptionRepositoryProvider.overrideWith((_) => mockRepo),
           ],
           child: const MaterialApp(home: PaywallScreen()),
         ),
