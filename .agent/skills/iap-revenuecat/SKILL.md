@@ -632,16 +632,15 @@ Deno.serve(async (req) => {
 // supabase/functions/revenuecat-webhook/index.ts
 // Deploy: supabase functions deploy revenuecat-webhook --no-verify-jwt
 
-// Verify RC webhook signature (manual constant-time XOR — timingSafeEqual not in Supabase runtime)
+// Verify RC webhook signature using constant-time comparison (Gotcha #6 + #11)
+// RC sends Authorization header = raw token, NO "Bearer " prefix
 const authHeader = req.headers.get("Authorization");
-const expectedAuth = `Bearer ${REVENUECAT_WEBHOOK_SECRET}`;
+const expectedAuth = REVENUECAT_WEBHOOK_SECRET;  // raw token — no Bearer prefix (Gotcha #6)
+// timingSafeEqual IS available in Deno via type cast (Gotcha #11)
 const encoder = new TextEncoder();
-const a = encoder.encode(authHeader ?? "");
-const b = encoder.encode(expectedAuth);
-let diff = a.length ^ b.length;
-const len = Math.min(a.length, b.length);
-for (let i = 0; i < len; i++) diff |= a[i] ^ b[i];
-const authValid = authHeader !== null && diff === 0;
+const authValid = authHeader !== null && (
+  crypto.subtle as unknown as { timingSafeEqual(a: BufferSource, b: BufferSource): boolean }
+).timingSafeEqual(encoder.encode(authHeader), encoder.encode(expectedAuth));
 
 // Handle event
 const event = await req.json();
