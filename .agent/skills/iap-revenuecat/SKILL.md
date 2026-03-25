@@ -923,7 +923,7 @@ If no events → webhook pipeline not working → debug Pub/Sub first
 - [ ] `REVENUECAT_PROJECT_ID` set in secrets (required by sync-subscription) ← easy to miss!
 - [ ] `verify-google-purchase` has GPA format validation
 - [ ] `sync-subscription` does NOT grant credits (only status sync)
-- [ ] `revenuecat-webhook` uses XOR constant-time auth (NOT `crypto.subtle.timingSafeEqual`)
+- [ ] `revenuecat-webhook` uses `timingSafeEqual` via type cast for constant-time auth (Gotcha #11) — raw token, no Bearer prefix (Gotcha #6)
 - [ ] `revenuecat-webhook` uses event.id as reference_id (not gp- prefix)
 - [ ] EXPIRATION handler passes `p_tier: "free"` (NOT null) to update_subscription_status
 - [ ] No top-level `throw` outside `Deno.serve()` handler (causes BOOT_ERROR)
@@ -969,7 +969,7 @@ If no events → webhook pipeline not working → debug Pub/Sub first
 | `getOfferings().current` returns null | No offering marked as "Current" | RC Dashboard → Offerings → select default → mark as Current |
 | `ITEM_ALREADY_OWNED` (error 28) | User already subscribed | Call `Purchases.getCustomerInfo()` directly (not `restorePurchases()`) |
 | Double-grant when RC webhook activates | `gp-` and RC event.id are different reference_ids | Remove `grant_subscription_credits` from `verify-google-purchase` when webhook confirmed stable |
-| All webhook events return 500 immediately | `crypto.subtle.timingSafeEqual` not in Supabase runtime → throws on auth check | Replace with manual XOR loop (Gotcha #11) |
+| All webhook events return 401 | Authorization header mismatch — RC sends raw token, NO `Bearer ` prefix | Set `expectedAuth = REVENUECAT_WEBHOOK_SECRET` (raw token, no prefix) — Gotcha #6 |
 | All webhook events return 401, show "Failure" (not "Retrying") | `REVENUECAT_WEBHOOK_SECRET` in Supabase ≠ Authorization token in RC Dashboard | Diagnose + fix via Gotcha #17. RC only retries 5xx, not 4xx → "Failure" = permanent |
 | RC webhook "User not linked" 500 on new signups | `revenuecat_app_user_id` = NULL because RC login ran before profile INSERT | Fix order: INSERT profile → then `_revenuecatLogIn()`. Include field in INSERT (Gotcha #12) |
 | UI credits not updating after purchase | Only `authViewModelProvider` invalidated, `creditBalanceNotifierProvider` not refreshed | Invalidate both providers in `purchase()`, `restore()`, and `_syncToSupabase()` |
