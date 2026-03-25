@@ -7,7 +7,8 @@ description: >
   Updated 2026-03-16 with production-verified fixes: JWT ES256/HS256 mismatch, GPA token validation,
   verify-google-purchase fallback pattern, RC webhook Pub/Sub setup, webhook secret mismatch (Gotcha #17).
   RC auth raw token (no Bearer prefix), event.id null sandbox fallback (Gotcha #18).
-  Date.now() idempotency fix (Gotcha #18 example corrected).
+  Updated 2026-03-25: CORS preflight guard, rc- token security removal, p_check_recent_grant,
+  update_subscription_status removal from verify-google-purchase, webhook auth fix, Gotcha #19.
 skills:
   - mobile-developer
   - backend-specialist
@@ -15,7 +16,7 @@ skills:
 
 # IAP + RevenueCat Setup Skill
 
-> **Last Updated:** 2026-03-16 (Production-verified v16 internal testing — RC webhook working, 4 events Sent, 820 credits. Gotcha #18 added: event.id null sandbox. Auth format corrected: raw token no Bearer prefix.)
+> **Last Updated:** 2026-03-25 (PR #83+#84 sync — CORS preflight, rc- token removed, p_check_recent_grant, webhook auth raw token fix, Gotcha #19 unexpected grantResult → 500.)
 > **Stack:** Flutter + RevenueCat + Google Play + Supabase Edge Functions
 
 ---
