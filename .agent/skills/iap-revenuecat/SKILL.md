@@ -557,6 +557,7 @@ Called by app right after `Purchases.purchase()` succeeds. Grants credits immedi
 ```typescript
 // supabase/functions/verify-google-purchase/index.ts
 // Deploy: supabase functions deploy verify-google-purchase --no-verify-jwt
+import { corsHeaders, handleCorsIfPreflight } from "../_shared/cors.ts";
 
 /** Map product ID → tier + credits */
 function getTierInfo(productId: string): { tier: string; credits: number } | null {
@@ -566,45 +567,65 @@ function getTierInfo(productId: string): { tier: string; credits: number } | nul
 }
 
 /**
- * 🔒 SECURITY: Validate purchaseToken format to block fake/exploited grants.
- * Accepts ONLY real Google Play order IDs (GPA.XXXX-XXXX-XXXX-XXXXX).
- * ⚠️ Do NOT add timestamp-based fallbacks (rc-...) — any authenticated user
- * can forge them with arbitrary timestamps to repeatedly claim credits.
+ * 🔒 SECURITY: Accepts ONLY real Google Play order IDs (GPA.XXXX-XXXX-XXXX-XXXXX).
+ * Do NOT add timestamp-based fallbacks — forgeable by any authenticated user.
  */
 function isValidPurchaseToken(token: string): boolean {
-  // Real Google Play order ID: GPA.XXXX-XXXX-XXXX-XXXXX
   return /^GPA\.\d{4}-\d{4}-\d{4}-\d+$/.test(token);
 }
 
 Deno.serve(async (req) => {
-  // ... auth check (see gotcha #8) ...
+  // Handle CORS preflight before anything else
+  const preflight = handleCorsIfPreflight(req);
+  if (preflight) return preflight;
+
+  // ... auth check (see Gotcha #8) ...
 
   // Validate token format BEFORE any DB writes
   if (!isValidPurchaseToken(purchaseToken)) {
     console.warn(`[verify-google-purchase] Invalid token: "${purchaseToken}" user=${user.id}`);
-    return new Response(JSON.stringify({ error: "Invalid purchaseToken format" }), { status: 400 });
+    return new Response(JSON.stringify({ error: "Invalid purchaseToken format" }), {
+      status: 400,
+      headers: { ...corsHeaders(), "Content-Type": "application/json" },
+    });
   }
 
-  // Update subscription status (immediate UI)
-  await supabase.rpc("update_subscription_status", {
-    p_user_id: user.id,
-    p_is_premium: true,
-    p_tier: tierInfo.tier,
-    p_expires_at: null,  // expiry managed by RC webhook
-  });
+  // NOTE: update_subscription_status intentionally omitted.
+  // productId is client-supplied → setting tier here before RC webhook verification
+  // allows tier escalation (user claims ultra credits with a pro token).
+  // The RC webhook fires within seconds and sets the authoritative tier + expiry.
 
-  // Grant credits — idempotent via reference_id
+  // Grant credits — idempotent via reference_id.
+  // p_check_recent_grant=true runs the 25-day guard inside the RPC under
+  // pg_advisory_xact_lock — eliminates TOCTOU race with revenuecat-webhook.
   const referenceId = `gp-${purchaseToken}`;
-  await supabase.rpc("grant_subscription_credits", {
+  const { data: grantResult, error: creditErr } = await supabase.rpc("grant_subscription_credits", {
     p_user_id: user.id,
     p_amount: tierInfo.credits,
     p_description: `${tierInfo.tier} subscription — Google Play purchase`,
     p_reference_id: referenceId,
+    p_check_recent_grant: true,
+  });
+
+  if (creditErr) {
+    console.error("[verify-google-purchase] grant_subscription_credits error:", creditErr);
+    return new Response(JSON.stringify({ error: "Failed to grant subscription credits" }), {
+      status: 500,
+      headers: { ...corsHeaders(), "Content-Type": "application/json" },
+    });
+  }
+
+  // Handle grantResult shapes (see Gotcha #19 for unexpected shape handling)
+  // ...
+
+  return new Response(JSON.stringify({ verified: true, tier: tierInfo.tier }), {
+    status: 200,
+    headers: { ...corsHeaders(), "Content-Type": "application/json" },
   });
 });
 ```
 
-**⚠️ Migration path:** When RC webhook is confirmed stable (receiving events), remove `grant_subscription_credits` call from this function. Let webhook own all credit grants. Keep `update_subscription_status` only (for immediate UI).
+**Current state:** `update_subscription_status` has been removed. `grant_subscription_credits` now uses `p_check_recent_grant: true` for atomic double-grant prevention. When RC webhook is confirmed stable, `grant_subscription_credits` can also be removed — leaving this function as a no-op fast-path that just validates the token format.
 
 #### 5.2 revenuecat-webhook (authoritative)
 ```typescript
