@@ -36,6 +36,17 @@ SubscriptionPackage _pkg({
 );
 
 void main() {
+  setUpAll(() {
+    registerFallbackValue(
+      SubscriptionPackage(
+        identifier: 'fallback',
+        priceString: r'$0.00',
+        price: 0,
+        nativePackage: Object(),
+      ),
+    );
+  });
+
   group('PaywallScreen', () {
     late MockSubscriptionRepository mockRepo;
 
@@ -275,17 +286,6 @@ void main() {
       price: 19.99,
       nativePackage: Object(),
     );
-
-    setUpAll(() {
-      registerFallbackValue(
-        SubscriptionPackage(
-          identifier: 'fallback',
-          priceString: r'$0.00',
-          price: 0,
-          nativePackage: Object(),
-        ),
-      );
-    });
 
     setUp(() {
       mockRepo = MockSubscriptionRepository();
