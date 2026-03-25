@@ -567,15 +567,13 @@ function getTierInfo(productId: string): { tier: string; credits: number } | nul
 
 /**
  * 🔒 SECURITY: Validate purchaseToken format to block fake/exploited grants.
- * Accepts real Google Play order IDs AND app-generated fallback tokens only.
+ * Accepts ONLY real Google Play order IDs (GPA.XXXX-XXXX-XXXX-XXXXX).
+ * ⚠️ Do NOT add timestamp-based fallbacks (rc-...) — any authenticated user
+ * can forge them with arbitrary timestamps to repeatedly claim credits.
  */
 function isValidPurchaseToken(token: string): boolean {
   // Real Google Play order ID: GPA.XXXX-XXXX-XXXX-XXXXX
-  if (/^GPA\.\d{4}-\d{4}-\d{4}-\d+$/.test(token)) return true;
-  // App fallback when orderId is empty (free trial subscriptions):
-  // rc-{productId}-{unixMs}
-  if (/^rc-appname_(ultra|pro)_[a-z]+-\d{10,13}$/.test(token)) return true;
-  return false;
+  return /^GPA\.\d{4}-\d{4}-\d{4}-\d+$/.test(token);
 }
 
 Deno.serve(async (req) => {
