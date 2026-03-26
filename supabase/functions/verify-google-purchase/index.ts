@@ -22,7 +22,7 @@
 //          is confirmed stable, credit grants here should be removed entirely.
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
-import { corsHeaders } from "../_shared/cors.ts";
+import { corsHeaders, handleCorsIfPreflight } from "../_shared/cors.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -50,6 +50,9 @@ function isValidPurchaseToken(token: string): boolean {
 }
 
 Deno.serve(async (req) => {
+  const preflight = handleCorsIfPreflight(req);
+  if (preflight) return preflight;
+
   if (req.method !== "POST") {
     return new Response(JSON.stringify({ error: "Method not allowed" }), {
       status: 405,

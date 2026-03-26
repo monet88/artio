@@ -1,16 +1,27 @@
 import 'dart:async';
 
+import 'package:artio/core/exceptions/app_exception.dart';
+import 'package:artio/features/auth/presentation/state/auth_state.dart';
+import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
 import 'package:artio/features/subscription/data/repositories/subscription_repository.dart';
 import 'package:artio/features/subscription/domain/entities/subscription_package.dart';
 import 'package:artio/features/subscription/domain/entities/subscription_status.dart';
+import 'package:artio/features/subscription/domain/repositories/i_subscription_repository.dart';
 import 'package:artio/features/subscription/presentation/screens/paywall_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
+import '../../../../core/fixtures/fixtures.dart';
+
 class MockSubscriptionRepository extends Mock
-    implements SubscriptionRepository {}
+    implements ISubscriptionRepository, SubscriptionRepository {}
+
+class MockAuthViewModel extends AuthViewModel {
+  @override
+  AuthState build() => AuthState.authenticated(UserFixtures.authenticated());
+}
 
 SubscriptionPackage _pkg({
   required String identifier,
@@ -23,7 +34,20 @@ SubscriptionPackage _pkg({
   nativePackage: Object(),
 );
 
+
+
 void main() {
+  setUpAll(() {
+    registerFallbackValue(
+      const SubscriptionPackage(
+        identifier: 'fallback',
+        priceString: r'$0.00',
+        price: 0,
+        nativePackage: Object(),
+      ),
+    );
+  });
+
   group('PaywallScreen', () {
     late MockSubscriptionRepository mockRepo;
 
@@ -46,7 +70,10 @@ void main() {
       });
 
       return ProviderScope(
-        overrides: [subscriptionRepositoryProvider.overrideWithValue(mockRepo)],
+        overrides: [
+          authViewModelProvider.overrideWith(MockAuthViewModel.new),
+          subscriptionRepositoryProvider.overrideWith((_) => mockRepo),
+        ],
         child: MaterialApp(
           home: Builder(
             builder: (context) => Scaffold(
@@ -212,7 +239,7 @@ void main() {
         await tester.pumpWidget(
           ProviderScope(
             overrides: [
-              subscriptionRepositoryProvider.overrideWithValue(mockRepo),
+              subscriptionRepositoryProvider.overrideWith((_) => mockRepo),
             ],
             child: const MaterialApp(home: PaywallScreen()),
           ),
@@ -238,7 +265,7 @@ void main() {
         await tester.pumpWidget(
           ProviderScope(
             overrides: [
-              subscriptionRepositoryProvider.overrideWithValue(mockRepo),
+              subscriptionRepositoryProvider.overrideWith((_) => mockRepo),
             ],
             child: const MaterialApp(home: PaywallScreen()),
           ),
@@ -250,6 +277,136 @@ void main() {
       },
     );
   });
+
+  group('_handlePurchase', () {
+    late MockSubscriptionRepository mockRepo;
+
+    const ultraMonthly = SubscriptionPackage(
+      identifier: 'artio_ultra_monthly',
+      priceString: r'$19.99',
+      price: 19.99,
+      nativePackage: Object(),
+    );
+
+    setUp(() {
+      mockRepo = MockSubscriptionRepository();
+      when(() => mockRepo.getStatus())
+          .thenAnswer((_) async => const SubscriptionStatus());
+      when(() => mockRepo.getOfferings())
+          .thenAnswer((_) async => [ultraMonthly]);
+    });
+
+    Widget buildPurchaseWidget() => ProviderScope(
+          overrides: [
+            authViewModelProvider.overrideWith(MockAuthViewModel.new),
+            subscriptionRepositoryProvider.overrideWith((_) => mockRepo),
+          ],
+          child: const MaterialApp(home: PaywallScreen()),
+        );
+
+    testWidgets(
+      'cancelled purchase shows no snackbar',
+      (tester) async {
+        when(() => mockRepo.purchase(any())).thenThrow(
+          const AppException.payment(
+            message: 'Cancelled by user',
+            code: 'user_cancelled',
+          ),
+        );
+
+        await tester.pumpWidget(buildPurchaseWidget());
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.text('Subscribe Now'));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(SnackBar), findsNothing);
+      },
+    );
+
+    testWidgets(
+      'non-cancel purchase error shows error snackbar',
+      (tester) async {
+        when(() => mockRepo.purchase(any())).thenThrow(
+          const AppException.network(message: 'No internet connection'),
+        );
+
+        await tester.pumpWidget(buildPurchaseWidget());
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.text('Subscribe Now'));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(SnackBar), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'purchase succeeds but subscription inactive shows warning snackbar',
+      (tester) async {
+        when(() => mockRepo.purchase(any()))
+            .thenAnswer((_) async => const SubscriptionStatus());
+
+        await tester.pumpWidget(buildPurchaseWidget());
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.text('Subscribe Now'));
+        await tester.pumpAndSettle();
+
+        expect(
+          find.text('Purchase processed. If credits are missing, tap Restore.'),
+          findsOneWidget,
+        );
+      },
+    );
+
+    testWidgets(
+      'purchase succeeds and active shows success snackbar',
+      (tester) async {
+        when(() => mockRepo.purchase(any())).thenAnswer(
+          (_) async => const SubscriptionStatus(isActive: true, tier: 'ultra'),
+        );
+
+        // PaywallScreen calls Navigator.pop() on success — push it onto a
+        // navigator stack so pop() returns to the parent instead of
+        // destroying the route (which would dismiss the SnackBar).
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: [
+              authViewModelProvider.overrideWith(MockAuthViewModel.new),
+              subscriptionRepositoryProvider.overrideWith((_) => mockRepo),
+            ],
+            child: MaterialApp(
+              home: Builder(
+                builder: (context) => Scaffold(
+                  body: ElevatedButton(
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const PaywallScreen(),
+                      ),
+                    ),
+                    child: const Text('Open'),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Open'));
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.text('Subscribe Now'));
+        await tester.pumpAndSettle();
+
+        expect(
+          find.text('🎉 Subscription activated! Welcome to Premium.'),
+          findsOneWidget,
+        );
+      },
+    );
+  });
+
 
   group('savingsPercent', () {
     final proMonthly = _pkg(identifier: 'artio_pro_monthly', price: 9.99);
@@ -315,7 +472,7 @@ void main() {
         await tester.pumpWidget(
           ProviderScope(
             overrides: [
-              subscriptionRepositoryProvider.overrideWithValue(mockRepo),
+              subscriptionRepositoryProvider.overrideWith((_) => mockRepo),
             ],
             child: const MaterialApp(home: PaywallScreen()),
           ),
@@ -340,7 +497,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            subscriptionRepositoryProvider.overrideWithValue(mockRepo),
+            subscriptionRepositoryProvider.overrideWith((_) => mockRepo),
           ],
           child: const MaterialApp(home: PaywallScreen()),
         ),
@@ -360,7 +517,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            subscriptionRepositoryProvider.overrideWithValue(mockRepo),
+            subscriptionRepositoryProvider.overrideWith((_) => mockRepo),
           ],
           child: const MaterialApp(home: PaywallScreen()),
         ),

@@ -435,6 +435,13 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
   /// Returns true only when the selected package has a genuinely FREE intro
   /// offer (e.g. "Free for 7 days"). Paid intro offers like "$1.99 for 3
   /// months" do not qualify — the CTA should say "Subscribe Now" instead.
+  ///
+  /// `introductoryPriceString` is a device-locale display string.
+  /// On non-English devices "free" may render as "Gratis"/"Gratuit"/etc,
+  /// causing this check to return false for genuine free trials. Fix: add
+  /// `double? introductoryPrice` field to `SubscriptionPackage` and check
+  /// `introductoryPrice == 0.0` instead. Track as separate ticket.
+  // TODO(locale): replace `.contains('free')` with `introductoryPrice == 0.0`
   bool _hasFreeTrial(SubscriptionPackage pkg) {
     final intro = pkg.introductoryPriceString;
     if (intro == null || intro.isEmpty) return false;

@@ -177,6 +177,12 @@ PROJECT_RULES.md
 # Build artifacts
 release-manifest.json
 
+# Mobile build artifacts (never commit — large binaries, may expose signing info)
+*.apk
+*.aab
+*.ipa
+*.mp4
+
 # Exceptions to above rules (if needed)
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 .osgrep
@@ -204,3 +210,4 @@ backups/
 # PR Review tooling artifacts
 _prr/
 CLAUDE.OLD.md
+.worktrees/
