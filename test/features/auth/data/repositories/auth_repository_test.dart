@@ -228,5 +228,30 @@ void main() {
         await expectLater(mockAuthRepository.signInWithApple(), completes);
       });
     });
+
+    group('deleteAccount', () {
+      test('completes without error', () async {
+        when(
+          () => mockAuthRepository.deleteAccount(),
+        ).thenAnswer((_) async {});
+
+        await expectLater(mockAuthRepository.deleteAccount(), completes);
+
+        verify(() => mockAuthRepository.deleteAccount()).called(1);
+      });
+
+      test('throws AppException on failure', () async {
+        when(
+          () => mockAuthRepository.deleteAccount(),
+        ).thenThrow(
+          const AppException.auth(message: 'Failed to delete account'),
+        );
+
+        expect(
+          () => mockAuthRepository.deleteAccount(),
+          throwsA(isA<AppException>()),
+        );
+      });
+    });
   });
 }

@@ -21,6 +21,7 @@ abstract class IAuthRepository {
   Future<void> signInWithApple();
   Future<void> signOut();
   Future<void> resetPassword(String email);
+  Future<void> deleteAccount();
   Future<UserModel?> getCurrentUserWithProfile();
   Future<UserModel> refreshCurrentUser();
   Future<Map<String, dynamic>?> fetchOrCreateProfile(User user);
