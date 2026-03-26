@@ -1,7 +1,13 @@
 import 'dart:async';
 
+import 'package:artio/core/exceptions/app_exception.dart';
+import 'package:artio/core/state/subscription_state_provider.dart';
 import 'package:artio/features/auth/data/repositories/auth_repository.dart';
 import 'package:artio/features/auth/presentation/state/auth_state.dart';
+import 'package:artio/features/gallery/domain/entities/gallery_item.dart';
+import 'package:artio/features/gallery/presentation/providers/gallery_provider.dart';
+import 'package:artio/features/subscription/domain/entities/subscription_status.dart';
+import 'package:artio/features/subscription/presentation/providers/subscription_provider.dart';
 import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
 import 'package:fake_async/fake_async.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -439,7 +445,93 @@ void main() {
         });
       });
     });
+
+    group('deleteAccount', () {
+      late _MockAuthRepository mockAuthRepo;
+      late StreamController<supabase.AuthState> authStreamController;
+      late ProviderContainer container;
+
+      setUp(() {
+        mockAuthRepo = _MockAuthRepository();
+        authStreamController = StreamController<supabase.AuthState>.broadcast();
+        when(
+          () => mockAuthRepo.onAuthStateChange,
+        ).thenAnswer((_) => authStreamController.stream);
+        when(
+          () => mockAuthRepo.getCurrentUserWithProfile(),
+        ).thenAnswer((_) async => null);
+      });
+
+      tearDown(() {
+        container.dispose();
+        authStreamController.close();
+      });
+
+      // Mirrors createSettledNotifier() from signInWithEmail validation group.
+      // Polls until _checkAuthentication() settles out of initial/authenticating.
+      // galleryStreamProvider is overridden to avoid a CircularDependencyError:
+      // the real provider watches authViewModelProvider, so invalidating it from
+      // within authViewModelProvider (via invalidateUserScopedProviders) triggers
+      // Riverpod's debug circular-dep assertion.
+      Future<AuthViewModel> createSettledNotifier() async {
+        container = ProviderContainer(
+          overrides: [
+            authRepositoryProvider.overrideWithValue(mockAuthRepo),
+            // Override providers that watch authViewModelProvider to avoid
+            // CircularDependencyError when invalidateUserScopedProviders fires.
+            galleryStreamProvider
+                .overrideWith((ref) => Stream.value(<GalleryItem>[])),
+            subscriptionNotifierProvider
+                .overrideWith(() => _StubSubscriptionNotifier()),
+          ],
+        )..listen(authViewModelProvider, (_, __) {});
+        for (var i = 0; i < 20; i++) {
+          await Future<void>.delayed(Duration.zero);
+          final state = container.read(authViewModelProvider);
+          if (state is! AuthStateInitial && state is! AuthStateAuthenticating) {
+            break;
+          }
+        }
+        return container.read(authViewModelProvider.notifier);
+      }
+
+      test('sets state to unauthenticated on success', () async {
+        when(() => mockAuthRepo.deleteAccount()).thenAnswer((_) async {});
+
+        final notifier = await createSettledNotifier();
+        await notifier.deleteAccount();
+
+        expect(
+          container.read(authViewModelProvider),
+          isA<AuthStateUnauthenticated>(),
+        );
+      });
+
+      test('rethrows exception on failure without clearing state', () async {
+        when(() => mockAuthRepo.deleteAccount()).thenThrow(
+          const AppException.auth(message: 'Failed to delete account'),
+        );
+
+        final notifier = await createSettledNotifier();
+
+        expect(
+          () => notifier.deleteAccount(),
+          throwsA(isA<AppException>()),
+        );
+      });
+    });
   });
+}
+
+/// Stub [SubscriptionNotifier] that returns a fixed free status without watching
+/// [authViewModelProvider]. Used in [deleteAccount] tests to avoid a
+/// CircularDependencyError that fires when [authViewModelProvider] invalidates
+/// [subscriptionNotifierProvider] while [subscriptionNotifierProvider]'s real
+/// implementation watches [authViewModelProvider].
+class _StubSubscriptionNotifier extends SubscriptionNotifier {
+  @override
+  Future<SubscriptionStatus> build() async =>
+      const SubscriptionStatus(isActive: false);
 }
 
 /// Fake [supabase.Session] for triggering auth state changes in tests.
