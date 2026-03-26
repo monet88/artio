@@ -1,14 +1,13 @@
 import 'dart:async';
 
 import 'package:artio/core/exceptions/app_exception.dart';
-import 'package:artio/core/state/subscription_state_provider.dart';
 import 'package:artio/features/auth/data/repositories/auth_repository.dart';
 import 'package:artio/features/auth/presentation/state/auth_state.dart';
+import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
 import 'package:artio/features/gallery/domain/entities/gallery_item.dart';
 import 'package:artio/features/gallery/presentation/providers/gallery_provider.dart';
 import 'package:artio/features/subscription/domain/entities/subscription_status.dart';
 import 'package:artio/features/subscription/presentation/providers/subscription_provider.dart';
-import 'package:artio/features/auth/presentation/view_models/auth_view_model.dart';
 import 'package:fake_async/fake_async.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -482,7 +481,7 @@ void main() {
             galleryStreamProvider
                 .overrideWith((ref) => Stream.value(<GalleryItem>[])),
             subscriptionNotifierProvider
-                .overrideWith(() => _StubSubscriptionNotifier()),
+                .overrideWith(_StubSubscriptionNotifier.new),
           ],
         )..listen(authViewModelProvider, (_, __) {});
         for (var i = 0; i < 20; i++) {
@@ -515,7 +514,7 @@ void main() {
         final notifier = await createSettledNotifier();
 
         expect(
-          () => notifier.deleteAccount(),
+          notifier.deleteAccount,
           throwsA(isA<AppException>()),
         );
       });
@@ -524,14 +523,13 @@ void main() {
 }
 
 /// Stub [SubscriptionNotifier] that returns a fixed free status without watching
-/// [authViewModelProvider]. Used in [deleteAccount] tests to avoid a
-/// CircularDependencyError that fires when [authViewModelProvider] invalidates
-/// [subscriptionNotifierProvider] while [subscriptionNotifierProvider]'s real
-/// implementation watches [authViewModelProvider].
+/// authViewModelProvider. Used in deleteAccount tests to avoid a
+/// CircularDependencyError: the real implementation watches authViewModelProvider,
+/// so invalidating it from within authViewModelProvider triggers Riverpod's
+/// circular-dep assertion.
 class _StubSubscriptionNotifier extends SubscriptionNotifier {
   @override
-  Future<SubscriptionStatus> build() async =>
-      const SubscriptionStatus(isActive: false);
+  Future<SubscriptionStatus> build() async => const SubscriptionStatus();
 }
 
 /// Fake [supabase.Session] for triggering auth state changes in tests.
