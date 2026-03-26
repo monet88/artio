@@ -34,6 +34,8 @@ SubscriptionPackage _pkg({
   nativePackage: Object(),
 );
 
+
+
 void main() {
   setUpAll(() {
     registerFallbackValue(
@@ -404,6 +406,7 @@ void main() {
       },
     );
   });
+
 
   group('savingsPercent', () {
     final proMonthly = _pkg(identifier: 'artio_pro_monthly', price: 9.99);
