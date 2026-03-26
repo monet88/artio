@@ -121,6 +121,22 @@ class AuthRepository implements IAuthRepository {
   }
 
   @override
+  Future<void> deleteAccount() async {
+    try {
+      await _supabase.functions.invoke('delete-account');
+      await _revenuecatLogOut();
+    } on FunctionException catch (e) {
+      throw AppException.auth(
+        message: e.details?.toString() ?? 'Failed to delete account',
+      );
+    } on AppException {
+      rethrow;
+    } catch (e) {
+      throw AppException.auth(message: e.toString());
+    }
+  }
+
+  @override
   Future<void> resetPassword(String email) async {
     try {
       await _supabase.auth.resetPasswordForEmail(
