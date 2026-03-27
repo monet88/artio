@@ -118,10 +118,18 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       setState(() => _isLoading = true);
       try {
         await ref.read(authViewModelProvider.notifier).deleteAccount();
-      } on Exception catch (e) {
+      } on Object catch (e) {
+        // AppException extends Object (not Exception) — must use `on Object` to
+        // catch it and display a user-friendly message instead of a red screen.
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(AppExceptionMapper.toUserMessage(e))),
+            SnackBar(
+              content: Text(
+                e is Exception
+                    ? AppExceptionMapper.toUserMessage(e)
+                    : e.toString(),
+              ),
+            ),
           );
         }
       } finally {
