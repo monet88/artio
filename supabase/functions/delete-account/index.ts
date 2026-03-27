@@ -11,7 +11,9 @@ function getSupabaseClient() {
   });
 }
 
-// Inlined from _shared/cors.ts (MCP deploy does not resolve cross-directory imports)
+// Inlined from _shared/cors.ts — MCP deploy does not resolve cross-directory imports.
+// TODO: switch to `import { corsHeaders } from "../_shared/cors.ts"` if that limitation
+// is ever lifted, to keep in sync with any upstream CORS header changes.
 function corsHeaders(): Record<string, string> {
   const allowedOrigin =
     Deno.env.get("CORS_ALLOWED_ORIGIN") ?? "https://artio.app";
@@ -35,6 +37,13 @@ Deno.serve(async (req) => {
   if (preflight) return preflight;
 
   const headers = corsHeaders();
+
+  if (req.method !== "POST") {
+    return new Response(JSON.stringify({ error: "Method not allowed" }), {
+      status: 405,
+      headers: { ...headers, "Content-Type": "application/json" },
+    });
+  }
 
   try {
     // Validate JWT using service role client

@@ -137,8 +137,6 @@ class AuthRepository implements IAuthRepository {
       throw AppException.auth(
         message: e.details?.toString() ?? 'Failed to delete account',
       );
-    } on AppException {
-      rethrow;
     } catch (e) {
       throw AppException.auth(message: e.toString());
     }

@@ -119,17 +119,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       try {
         await ref.read(authViewModelProvider.notifier).deleteAccount();
       } on Object catch (e) {
-        // AppException extends Object (not Exception) — must use `on Object` to
-        // catch it and display a user-friendly message instead of a red screen.
+        // `on Object` (not `on Exception`) catches AppException and any
+        // non-Exception throwables from Riverpod or platform code.
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                e is Exception
-                    ? AppExceptionMapper.toUserMessage(e)
-                    : e.toString(),
-              ),
-            ),
+            SnackBar(content: Text(AppExceptionMapper.toUserMessage(e))),
           );
         }
       } finally {
