@@ -62,7 +62,16 @@ dev_dependencies:
   mocktail: ^1.0.4
   riverpod_generator: ^2.6.3
   url_launcher_platform_interface: any
+  flutter_launcher_icons: ^0.14.3
   very_good_analysis: ^7.0.0
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/ic_launcher.png"
+  min_sdk_android: 21
+  web:
+    generate: false
 
 flutter:
   uses-material-design: true
