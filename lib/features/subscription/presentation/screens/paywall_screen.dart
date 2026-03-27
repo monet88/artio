@@ -461,7 +461,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
           WidgetSpan(
             alignment: PlaceholderAlignment.middle,
             child: GestureDetector(
-              onTap: () => launchInAppUrl(context, 'https://monet88.github.io/artio-legal/terms.html'),
+              onTap: () => launchInAppUrl(context, 'https://ainear.github.io/artio-legal/terms.html'),
               child: const Text(
                 'Terms of Service',
                 style: TextStyle(
@@ -477,7 +477,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
           WidgetSpan(
             alignment: PlaceholderAlignment.middle,
             child: GestureDetector(
-              onTap: () => launchInAppUrl(context, 'https://monet88.github.io/artio-legal/privacy.html'),
+              onTap: () => launchInAppUrl(context, 'https://ainear.github.io/artio-legal/privacy.html'),
               child: const Text(
                 'Privacy Policy',
                 style: TextStyle(
