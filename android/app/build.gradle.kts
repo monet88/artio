@@ -1,8 +1,15 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
+}
+
+val localProps = Properties().apply {
+    val f = rootProject.file("local.properties")
+    if (f.exists()) load(f.inputStream())
 }
 
 android {
@@ -32,10 +39,10 @@ android {
 
     signingConfigs {
         create("release") {
-            storeFile = file("artio-upload.jks")
-            storePassword = "artio2026secure"
-            keyAlias = "artio"
-            keyPassword = "artio2026secure"
+            storeFile = file(localProps.getProperty("storeFile") ?: "artio-upload.jks")
+            storePassword = localProps.getProperty("storePassword")
+            keyAlias = localProps.getProperty("keyAlias")
+            keyPassword = localProps.getProperty("keyPassword")
         }
     }
 
