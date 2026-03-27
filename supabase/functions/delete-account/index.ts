@@ -60,33 +60,47 @@ Deno.serve(async (req) => {
     const userId = user.id;
     console.log(`[delete-account] Starting deletion for user=${userId}`);
 
-    // Step 1: Delete all Storage objects for this user (paginated — handles >1000 files).
-    // Always list at offset 0: after each successful removal the remaining files shift
-    // down, so incrementing offset would skip files that moved into already-seen slots.
+    // Step 1: Delete all Storage objects for this user.
+    // The bucket has two prefixes per user:
+    //   {userId}/          — generated output images (top-level files)
+    //   {userId}/inputs/   — user-uploaded input images (subdirectory)
+    // Both must be cleaned so the deletion confirmation ("all images will be
+    // permanently deleted") is accurate.
+    //
+    // Always list at offset 0: after each successful removal the remaining files
+    // shift down, so incrementing offset would skip files that moved into
+    // already-seen slots.
     const PAGE_SIZE = 1000;
     let totalRemoved = 0;
-    while (true) {
-      const { data: storageFiles, error: listError } = await supabase.storage
-        .from(STORAGE_BUCKET)
-        .list(userId, { limit: PAGE_SIZE, offset: 0 });
 
-      if (listError) {
-        console.error(`[delete-account] Storage list error for user=${userId}:`, listError.message);
-        break; // Non-fatal: proceed with account deletion even if storage cleanup fails
-      }
-      if (!storageFiles || storageFiles.length === 0) break;
+    async function cleanupPrefix(prefix: string): Promise<void> {
+      while (true) {
+        const { data: files, error: listError } = await supabase.storage
+          .from(STORAGE_BUCKET)
+          .list(prefix, { limit: PAGE_SIZE, offset: 0 });
 
-      const paths = storageFiles.map((f) => `${userId}/${f.name}`);
-      const { error: removeError } = await supabase.storage
-        .from(STORAGE_BUCKET)
-        .remove(paths);
-      if (removeError) {
-        console.error(`[delete-account] Storage remove error for user=${userId}:`, removeError.message);
-        break; // Cannot make progress — avoid infinite loop; proceed with account deletion
+        if (listError) {
+          console.error(`[delete-account] Storage list error prefix=${prefix}:`, listError.message);
+          break; // Non-fatal: proceed with account deletion
+        }
+        if (!files || files.length === 0) break;
+
+        const paths = files.map((f) => `${prefix}/${f.name}`);
+        const { error: removeError } = await supabase.storage
+          .from(STORAGE_BUCKET)
+          .remove(paths);
+        if (removeError) {
+          console.error(`[delete-account] Storage remove error prefix=${prefix}:`, removeError.message);
+          break; // Cannot make progress — avoid infinite loop; proceed with account deletion
+        }
+        totalRemoved += paths.length;
+        if (files.length < PAGE_SIZE) break; // last page
       }
-      totalRemoved += paths.length;
-      if (storageFiles.length < PAGE_SIZE) break; // last page
     }
+
+    await cleanupPrefix(userId);           // generated images
+    await cleanupPrefix(`${userId}/inputs`); // input images
+
     if (totalRemoved > 0) {
       console.log(`[delete-account] Removed ${totalRemoved} storage files for user=${userId}`);
     }
