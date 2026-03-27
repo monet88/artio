@@ -39,9 +39,9 @@ class EnvConfig {
   // Sentry (production only)
   static String get sentryDsn => dotenv.env['SENTRY_DSN'] ?? '';
 
-  // AI APIs
-  static String get geminiApiKey => dotenv.env['GEMINI_API_KEY'] ?? '';
-  static String get kieApiKey => dotenv.env['KIE_API_KEY'] ?? '';
+  // AI API keys are intentionally absent — GEMINI_API_KEY and KIE_API_KEY
+  // are server-side secrets read by Supabase Edge Functions, never the client.
+  // See: CLAUDE.md "Backend (Edge Functions)"
 
   // RevenueCat
   static String get revenuecatAppleKey =>

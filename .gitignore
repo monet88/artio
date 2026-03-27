@@ -57,7 +57,7 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-# Environment variables & secrets
+# Environment variables & secrets (NEVER commit any of these)
 .env
 .env.*
 !.env.example
@@ -67,21 +67,39 @@ app.*.map.json
 !.env.test.example
 *.key
 *.pem
+*.p8
+*.p12
 credentials.json
+credentials*.json
 service-account*.json
+service_account*.json
+*-service-account.json
 *-revenuecat-*.json
 firebase-debug.log
 firestore-debug.log
-
-# Supabase
+AuthKey_*.p8
+# Supabase personal access tokens & local secrets
 .supabase/
-
-# RevenueCat
-# (No specific patterns needed, keys go in .env)
+supabase/.env
+supabase/functions/.env
+supabase/secrets.toml
+# Google Cloud / Firebase
+google-services.json
+GoogleService-Info.plist
+google_credentials*.json
+# Apple / iOS
+*.mobileprovision
+ExportOptions.plist
+# GitHub / CI tokens
+.netrc
+.npmrc
+# Temp build env backup (used by Makefile release build)
+.env-backup/
 
 # Signing keystores (NEVER commit)
 *.jks
 *.keystore
+*.cer
 keystore.properties
 
 # Platform-specific
