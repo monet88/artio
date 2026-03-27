@@ -60,14 +60,15 @@ Deno.serve(async (req) => {
     const userId = user.id;
     console.log(`[delete-account] Starting deletion for user=${userId}`);
 
-    // Step 1: Delete all Storage objects for this user (paginated — handles >1000 files)
+    // Step 1: Delete all Storage objects for this user (paginated — handles >1000 files).
+    // Always list at offset 0: after each successful removal the remaining files shift
+    // down, so incrementing offset would skip files that moved into already-seen slots.
     const PAGE_SIZE = 1000;
-    let offset = 0;
     let totalRemoved = 0;
     while (true) {
       const { data: storageFiles, error: listError } = await supabase.storage
         .from(STORAGE_BUCKET)
-        .list(userId, { limit: PAGE_SIZE, offset });
+        .list(userId, { limit: PAGE_SIZE, offset: 0 });
 
       if (listError) {
         console.error(`[delete-account] Storage list error for user=${userId}:`, listError.message);
@@ -81,12 +82,10 @@ Deno.serve(async (req) => {
         .remove(paths);
       if (removeError) {
         console.error(`[delete-account] Storage remove error for user=${userId}:`, removeError.message);
-        // Non-fatal: proceed with deletion
-      } else {
-        totalRemoved += paths.length;
+        break; // Cannot make progress — avoid infinite loop; proceed with account deletion
       }
+      totalRemoved += paths.length;
       if (storageFiles.length < PAGE_SIZE) break; // last page
-      offset += PAGE_SIZE;
     }
     if (totalRemoved > 0) {
       console.log(`[delete-account] Removed ${totalRemoved} storage files for user=${userId}`);
