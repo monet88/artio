@@ -507,15 +507,32 @@ void main() {
       });
 
       test('rethrows exception on failure without clearing state', () async {
+        // Start from AuthStateAuthenticated so the assertion is meaningful:
+        // the test verifies that state is NOT cleared when deletion fails,
+        // which requires the state to actually be authenticated beforehand.
+        when(
+          () => mockAuthRepo.getCurrentUserWithProfile(),
+        ).thenAnswer((_) async => UserFixtures.authenticated());
         when(() => mockAuthRepo.deleteAccount()).thenThrow(
           const AppException.auth(message: 'Failed to delete account'),
         );
 
         final notifier = await createSettledNotifier();
-
         expect(
+          container.read(authViewModelProvider),
+          isA<AuthStateAuthenticated>(),
+          reason: 'precondition: must start from authenticated state',
+        );
+
+        await expectLater(
           notifier.deleteAccount,
           throwsA(isA<AppException>()),
+        );
+
+        expect(
+          container.read(authViewModelProvider),
+          isA<AuthStateAuthenticated>(),
+          reason: 'state must NOT be cleared when deletion fails',
         );
       });
     });

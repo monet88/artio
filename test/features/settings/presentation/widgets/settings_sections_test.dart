@@ -150,6 +150,37 @@ void main() {
       expect(find.text('Delete Account'), findsNothing);
     });
 
+    testWidgets('invokes onDeleteAccount callback when tile is tapped',
+        (tester) async {
+      var called = false;
+      await tester.pumpWidget(
+        ProviderScope(
+          child: MaterialApp(
+            home: Scaffold(
+              body: SingleChildScrollView(
+                child: SettingsSections(
+                  email: 'test@example.com',
+                  isDark: false,
+                  version: '1.0.0',
+                  isLoggedIn: true,
+                  isPremium: false,
+                  onResetPassword: () {},
+                  onSignOut: () {},
+                  onRestore: () {},
+                  onDeleteAccount: () {
+                    called = true;
+                  },
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Delete Account'));
+      expect(called, isTrue);
+    });
+
     testWidgets(
         'Restore Purchases tile is disabled on non-mobile (desktop test host)',
         (tester) async {
