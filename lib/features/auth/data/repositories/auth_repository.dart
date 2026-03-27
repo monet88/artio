@@ -121,6 +121,28 @@ class AuthRepository implements IAuthRepository {
   }
 
   @override
+  Future<void> deleteAccount() async {
+    try {
+      await _supabase.functions.invoke('delete-account');
+      // Clear local session so the app does not enter "ghost login" state on next
+      // launch. Edge function already deleted the auth user server-side; ignoring
+      // signOut errors here is intentional — the account is gone regardless.
+      try {
+        await _supabase.auth.signOut();
+      } on Object catch (e) {
+        Log.w('signOut after deleteAccount failed (non-blocking): $e');
+      }
+      await _revenuecatLogOut();
+    } on FunctionException catch (e) {
+      throw AppException.auth(
+        message: e.details?.toString() ?? 'Failed to delete account',
+      );
+    } catch (e) {
+      throw AppException.auth(message: e.toString());
+    }
+  }
+
+  @override
   Future<void> resetPassword(String email) async {
     try {
       await _supabase.auth.resetPasswordForEmail(

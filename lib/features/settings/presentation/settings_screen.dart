@@ -91,6 +91,47 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     }
   }
 
+  Future<void> _deleteAccount(BuildContext context) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Account?'),
+        content: const Text(
+          'This will permanently delete your account and all generated images. '
+          'This cannot be undone.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: TextButton.styleFrom(foregroundColor: AppColors.error),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed ?? false) {
+      setState(() => _isLoading = true);
+      try {
+        await ref.read(authViewModelProvider.notifier).deleteAccount();
+      } on Object catch (e) {
+        // `on Object` (not `on Exception`) catches AppException and any
+        // non-Exception throwables from Riverpod or platform code.
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(AppExceptionMapper.toUserMessage(e))),
+          );
+        }
+      } finally {
+        if (mounted) setState(() => _isLoading = false);
+      }
+    }
+  }
+
   Future<void> _signOut(BuildContext context) async {
     final confirmed = await showDialog<bool>(
       context: context,
@@ -178,6 +219,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   onResetPassword: () => _resetPassword(context, email),
                   onSignOut: () => _signOut(context),
                   onRestore: () => _restorePurchases(context),
+                  onDeleteAccount: () => _deleteAccount(context),
                 ),
                 const SizedBox(height: AppSpacing.xxl),
               ],

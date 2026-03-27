@@ -203,6 +203,20 @@ class AuthViewModel extends _$AuthViewModel implements Listenable {
     }
   }
 
+  Future<void> deleteAccount() async {
+    try {
+      final authRepo = ref.read(authRepositoryProvider);
+      await authRepo.deleteAccount();
+    } on Object catch (e, st) {
+      await SentryConfig.captureException(e, stackTrace: st);
+      rethrow; // Do not clear state — account was not deleted
+    }
+    // Only reached on success
+    invalidateUserScopedProviders(ref);
+    state = const AuthState.unauthenticated();
+    _notifyRouter();
+  }
+
   Future<void> resetPassword(String email) async {
     final trimmed = email.trim();
     if (trimmed.isEmpty ||

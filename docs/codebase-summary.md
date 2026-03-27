@@ -35,7 +35,7 @@ Artio is a Flutter-based cross-platform application implementing clean architect
 - **Test files**: 89 (82 unit/widget + 5 integration + 2 admin)
 - **Features**: 7 (auth:13, create:11, credits:11, gallery:22, settings:8, subscription:8, template_engine:27)
 - **Core subdirectories**: 8 (config:2, constants:3, design_system:6, exceptions:1, providers:2, services:6, state:4, utils:8)
-- **Edge Functions**: 3 (generate-image, revenuecat-webhook, reward-ad) + `_shared` module
+- **Edge Functions**: 4 (generate-image, revenuecat-webhook, reward-ad, delete-account) + `_shared` module
 
 ---
 
@@ -166,7 +166,7 @@ Artio is a Flutter-based cross-platform application implementing clean architect
 - **Architecture**: 3-layer clean architecture
 - **Capabilities**:
   - Theme switcher (light/dark/system)
-  - Account management actions (sign out)
+  - Account management actions (sign out, delete account)
   - Credit History screen
   - Legal section (Privacy Policy, ToS, Licenses)
   - Support section (Help, Report a Problem)

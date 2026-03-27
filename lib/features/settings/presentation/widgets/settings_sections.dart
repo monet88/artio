@@ -22,6 +22,7 @@ class SettingsSections extends ConsumerWidget {
     required this.onResetPassword,
     required this.onSignOut,
     required this.onRestore,
+    required this.onDeleteAccount,
     super.key,
   });
 
@@ -33,6 +34,7 @@ class SettingsSections extends ConsumerWidget {
   final VoidCallback onResetPassword;
   final VoidCallback onSignOut;
   final VoidCallback onRestore;
+  final VoidCallback onDeleteAccount;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -109,6 +111,15 @@ class SettingsSections extends ConsumerWidget {
                 trailing: SettingsChevronArrow(isDark: isDark),
                 isDark: isDark,
                 onTap: () => const CreditHistoryRoute().push<void>(context),
+              ),
+              SettingsDivider(isDark: isDark),
+              SettingsTile(
+                icon: Icons.delete_forever_outlined,
+                iconBgColor: AppColors.error,
+                title: 'Delete Account',
+                trailing: SettingsChevronArrow(isDark: isDark),
+                isDark: isDark,
+                onTap: onDeleteAccount,
               ),
             ],
           ),

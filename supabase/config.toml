@@ -395,3 +395,10 @@ entrypoint = "./functions/generate-image/index.ts"
 # Specifies static files to be bundled with the function. Supports glob patterns.
 # For example, if you want to serve static HTML pages in your function:
 # static_files = [ "./functions/generate-image/*.html" ]
+
+[functions.delete-account]
+enabled = true
+# JWT verified by function code via supabase.auth.getUser() — gateway verify
+# disabled due to GoTrue v2 ES256 token incompatibility with relay HS256 check
+verify_jwt = false
+entrypoint = "./functions/delete-account/index.ts"
