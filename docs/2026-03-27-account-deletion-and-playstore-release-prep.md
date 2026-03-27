@@ -107,9 +107,9 @@ android:label="Artio"
 ```kotlin
 signingConfigs {
     create("release") {
-        storePassword = "artio2026secure"  // ❌ hardcoded secret in git
+        storePassword = "<your-keystore-password>"  // ❌ hardcoded secret in git
         keyAlias = "artio"
-        keyPassword = "artio2026secure"
+        keyPassword = "<your-key-password>"
     }
 }
 ```
@@ -254,7 +254,7 @@ Start creating for free today — no art skills required.
   3. Result screen (full image)
   4. Settings screen
   5. Paywall / Premium screen
-- [ ] **AdMob IDs**: Thay test IDs bằng production IDs trong `AndroidManifest.xml` và `.env.production`
+- [ ] **AdMob IDs**: Thay test IDs bằng production IDs trong `AndroidManifest.xml` (Android), `ios/Runner/Info.plist` (iOS) và `.env.production`
 - [ ] **Data Safety form**: Khai báo trên Play Console (collect: email, usage data)
 - [ ] **Content rating**: Hoàn thành questionnaire trên Play Console
 - [ ] **Build AAB**: `flutter build appbundle --release`
