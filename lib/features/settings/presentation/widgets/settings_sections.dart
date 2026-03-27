@@ -254,7 +254,7 @@ class SettingsSections extends ConsumerWidget {
               isDark: isDark,
               onTap: () => launchEmailSafely(
                 context,
-                to: 'support@artio.app',
+                to: 'toiyeuhvhc123@gmail.com',
                 subject: 'Problem Report — Artio App',
                 body:
                     'Describe the problem you encountered:\n\n'
