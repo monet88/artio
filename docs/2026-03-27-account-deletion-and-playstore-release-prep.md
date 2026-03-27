@@ -131,12 +131,12 @@ signingConfigs {
 }
 ```
 
-`android/local.properties` (gitignored, giữ local):
+`android/local.properties` (gitignored, giữ local — KHÔNG commit file này):
 ```properties
 storeFile=artio-upload.jks
-storePassword=artio2026secure
+storePassword=<your-keystore-password>
 keyAlias=artio
-keyPassword=artio2026secure
+keyPassword=<your-key-password>
 ```
 
 ### App Name
