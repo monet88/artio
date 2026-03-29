@@ -50,9 +50,24 @@ class AdminShell extends ConsumerWidget {
                 label: Text('Dashboard'),
               ),
               NavigationRailDestination(
+                icon: Icon(Icons.people_outline),
+                selectedIcon: Icon(Icons.people_rounded),
+                label: Text('Users'),
+              ),
+              NavigationRailDestination(
+                icon: Icon(Icons.work_history_outlined),
+                selectedIcon: Icon(Icons.work_history_rounded),
+                label: Text('Jobs'),
+              ),
+              NavigationRailDestination(
                 icon: Icon(Icons.style_outlined),
                 selectedIcon: Icon(Icons.style_rounded),
                 label: Text('Templates'),
+              ),
+              NavigationRailDestination(
+                icon: Icon(Icons.bar_chart_outlined),
+                selectedIcon: Icon(Icons.bar_chart_rounded),
+                label: Text('Analytics'),
               ),
             ],
           ),
@@ -110,7 +125,10 @@ class AdminShell extends ConsumerWidget {
   }
 
   int _indexFromLocation(String location) {
-    if (location.startsWith('/templates')) return 1;
+    if (location.startsWith('/users')) return 1;
+    if (location.startsWith('/jobs')) return 2;
+    if (location.startsWith('/templates')) return 3;
+    if (location.startsWith('/analytics')) return 4;
     return 0; // dashboard
   }
 
@@ -119,7 +137,13 @@ class AdminShell extends ConsumerWidget {
       case 0:
         context.go('/dashboard');
       case 1:
+        context.go('/users');
+      case 2:
+        context.go('/jobs');
+      case 3:
         context.go('/templates');
+      case 4:
+        context.go('/analytics');
     }
   }
 }

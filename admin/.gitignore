@@ -43,3 +43,29 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# ── Security: Environment & Secrets (NEVER commit) ────────────────────────────
+# These are already covered by root .gitignore but listed here as defense-in-depth
+# so local builds/scripts operating only in admin/ don't accidentally stage them.
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.p8
+*.p12
+*.jks
+*.keystore
+keystore.properties
+google-services.json
+GoogleService-Info.plist
+service-account*.json
+service_account*.json
+credentials*.json
+
+# ── Build artifacts (large binaries) ─────────────────────────────────────────
+*.apk
+*.aab
+*.ipa
+*.mp4
+*.mov

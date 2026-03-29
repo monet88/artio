@@ -6,3 +6,11 @@
 .env.keys
 .env.local
 .env.*.local
+
+# Edge function secrets — explicit (also covered by root .gitignore)
+.env
+.env.*
+!.env.example
+secrets.toml
+**/service-account*.json
+**/service_account*.json

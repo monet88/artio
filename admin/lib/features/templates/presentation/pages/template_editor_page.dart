@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:artio_admin/core/constants/app_constants.dart';
 import 'package:artio_admin/core/theme/admin_colors.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
@@ -37,6 +38,7 @@ class _TemplateEditorPageState extends ConsumerState<TemplateEditorPage>
   // State
   bool _isPremium = false;
   bool _isActive = true;
+  bool _isUploading = false;
 
   static const _aspectRatios = ['1:1', '16:9', '9:16', '4:3', '3:4'];
 
@@ -117,7 +119,7 @@ class _TemplateEditorPageState extends ConsumerState<TemplateEditorPage>
       return;
     }
 
-    dynamic inputFieldsJson;
+    Object? inputFieldsJson;
     try {
       inputFieldsJson = jsonDecode(_inputFieldsController.text);
       if (inputFieldsJson is! List) {
@@ -184,6 +186,55 @@ class _TemplateEditorPageState extends ConsumerState<TemplateEditorPage>
       }
     } finally {
       if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  Future<void> _pickAndUpload() async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.image,
+      withData: true,
+    );
+    if (result == null || result.files.isEmpty) return;
+
+    final file = result.files.first;
+    final bytes = file.bytes;
+    if (bytes == null) return;
+
+    final ext = file.extension ?? 'jpg';
+    final path = 'templates/${widget.templateId}/thumbnail.$ext';
+
+    setState(() => _isUploading = true);
+    try {
+      await Supabase.instance.client.storage
+          .from('templates')
+          .uploadBinary(
+            path,
+            bytes,
+            fileOptions: FileOptions(
+              contentType: 'image/$ext',
+              upsert: true,
+            ),
+          );
+
+      final publicUrl = Supabase.instance.client.storage
+          .from('templates')
+          .getPublicUrl(path);
+
+      if (!mounted) return;
+      setState(() {
+        _thumbnailUrlController.text = publicUrl;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Thumbnail uploaded')),
+      );
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Upload failed: $e')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isUploading = false);
     }
   }
 
@@ -508,6 +559,36 @@ class _TemplateEditorPageState extends ConsumerState<TemplateEditorPage>
                 ),
               ),
               const Gap(16),
+              // Upload section
+              if (widget.templateId != null) ...[
+                OutlinedButton.icon(
+                  onPressed: _isUploading ? null : _pickAndUpload,
+                  icon: _isUploading
+                      ? const SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Icon(Icons.upload_outlined, size: 18),
+                  label: Text(_isUploading ? 'Uploading...' : 'Upload Image'),
+                ),
+                const Gap(8),
+                Text(
+                  'Or paste a URL below',
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: isDark ? AdminColors.textMuted : Colors.grey,
+                  ),
+                ),
+                const Gap(12),
+              ] else ...[
+                Text(
+                  'Save template first to upload thumbnail',
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: isDark ? AdminColors.textMuted : Colors.grey,
+                  ),
+                ),
+                const Gap(12),
+              ],
               TextFormField(
                 controller: _thumbnailUrlController,
                 decoration: const InputDecoration(
