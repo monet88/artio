@@ -55,6 +55,11 @@ class AdminShell extends ConsumerWidget {
                 label: Text('Users'),
               ),
               NavigationRailDestination(
+                icon: Icon(Icons.work_history_outlined),
+                selectedIcon: Icon(Icons.work_history_rounded),
+                label: Text('Jobs'),
+              ),
+              NavigationRailDestination(
                 icon: Icon(Icons.style_outlined),
                 selectedIcon: Icon(Icons.style_rounded),
                 label: Text('Templates'),
@@ -116,7 +121,8 @@ class AdminShell extends ConsumerWidget {
 
   int _indexFromLocation(String location) {
     if (location.startsWith('/users')) return 1;
-    if (location.startsWith('/templates')) return 2;
+    if (location.startsWith('/jobs')) return 2;
+    if (location.startsWith('/templates')) return 3;
     return 0; // dashboard
   }
 
@@ -127,6 +133,8 @@ class AdminShell extends ConsumerWidget {
       case 1:
         context.go('/users');
       case 2:
+        context.go('/jobs');
+      case 3:
         context.go('/templates');
     }
   }
