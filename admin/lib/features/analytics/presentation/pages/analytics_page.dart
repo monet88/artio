@@ -299,6 +299,7 @@ class _DailyJobsChart extends StatelessWidget {
 
     return LineChart(
       LineChartData(
+        gridData: const FlGridData(show: false),
         borderData: FlBorderData(show: false),
         titlesData: FlTitlesData(
           topTitles: const AxisTitles(),
