@@ -192,6 +192,13 @@ enum _UserFilter {
   final String label;
 }
 
+// ── Helpers ──────────────────────────────────────────────────────────────────
+
+String _avatarLetter(String? displayName, String email) {
+  final name = displayName?.isNotEmpty == true ? displayName! : email;
+  return name.isEmpty ? '?' : name[0].toUpperCase();
+}
+
 // ── List Tile ─────────────────────────────────────────────────────────────────
 
 class _UserListTile extends StatelessWidget {
@@ -214,7 +221,7 @@ class _UserListTile extends StatelessWidget {
       leading: CircleAvatar(
         backgroundColor: AdminColors.accent.withValues(alpha: 0.2),
         child: Text(
-          (user.displayName ?? user.email).substring(0, 1).toUpperCase(),
+          _avatarLetter(user.displayName, user.email),
           style: const TextStyle(
             color: AdminColors.accent,
             fontWeight: FontWeight.bold,

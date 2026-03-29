@@ -52,6 +52,13 @@ Future<List<Map<String, dynamic>>> userRecentJobs(
   return List<Map<String, dynamic>>.from(data);
 }
 
+// ── Helpers ──────────────────────────────────────────────────────────────────
+
+String _avatarLetter(String? displayName, String email) {
+  final name = displayName?.isNotEmpty == true ? displayName! : email;
+  return name.isEmpty ? '?' : name[0].toUpperCase();
+}
+
 // ── Page ─────────────────────────────────────────────────────────────────────
 
 class UserDetailPage extends ConsumerWidget {
@@ -116,9 +123,7 @@ class _UserDetailBody extends ConsumerWidget {
                       backgroundColor:
                           AdminColors.accent.withValues(alpha: 0.2),
                       child: Text(
-                        (user.displayName ?? user.email)
-                            .substring(0, 1)
-                            .toUpperCase(),
+                        _avatarLetter(user.displayName, user.email),
                         style: const TextStyle(
                           color: AdminColors.accent,
                           fontSize: 24,

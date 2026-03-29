@@ -220,15 +220,13 @@ class _TemplateEditorPageState extends ConsumerState<TemplateEditorPage>
           .from('templates')
           .getPublicUrl(path);
 
+      if (!mounted) return;
       setState(() {
         _thumbnailUrlController.text = publicUrl;
       });
-
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Thumbnail uploaded')),
-        );
-      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Thumbnail uploaded')),
+      );
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

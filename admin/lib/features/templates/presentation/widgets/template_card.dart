@@ -10,6 +10,7 @@ class TemplateCard extends StatelessWidget {
   final VoidCallback? onDelete;
   final bool? isSelected;
   final VoidCallback? onToggleSelect;
+  final VoidCallback? onLongPress;
 
   const TemplateCard({
     super.key,
@@ -18,6 +19,7 @@ class TemplateCard extends StatelessWidget {
     this.onDelete,
     this.isSelected,
     this.onToggleSelect,
+    this.onLongPress,
   });
 
   @override
@@ -68,6 +70,7 @@ class TemplateCard extends StatelessWidget {
     return Card(
       child: InkWell(
         onTap: inSelectionMode ? onToggleSelect : onEdit,
+        onLongPress: inSelectionMode ? null : onLongPress,
         borderRadius: BorderRadius.circular(12),
         child: Padding(
           padding: const EdgeInsets.all(12),

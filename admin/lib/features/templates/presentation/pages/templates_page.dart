@@ -131,6 +131,7 @@ class _TemplatesPageState extends ConsumerState<TemplatesPage> {
       await ref
           .read(templatesProvider.notifier)
           .bulkSetActive(ids, isActive: isActive);
+      if (!mounted) return;
       setState(() => _selectedIds.clear());
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -361,6 +362,9 @@ class _TemplatesPageState extends ConsumerState<TemplatesPage> {
                         isSelected: _isSelectionMode
                             ? _selectedIds.contains(template.id)
                             : null,
+                        onLongPress: _isSelectionMode
+                            ? null
+                            : () => setState(() => _selectedIds.add(template.id)),
                         onToggleSelect: () => setState(() {
                           if (_selectedIds.contains(template.id)) {
                             _selectedIds.remove(template.id);

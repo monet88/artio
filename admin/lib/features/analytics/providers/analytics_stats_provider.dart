@@ -44,7 +44,7 @@ Future<AnalyticsStats> analyticsStats(Ref ref) async {
   final jobsToday = recentJobsRaw.where((j) {
     final createdAt =
         DateTime.parse(j['created_at'] as String).toLocal();
-    return createdAt.isAfter(todayStart);
+    return !createdAt.isBefore(todayStart);
   }).length;
 
   // Daily breakdown — build 7-bucket map
