@@ -61,6 +61,19 @@ class Templates extends _$Templates {
   Future<void> deleteTemplate(String id) async {
     await Supabase.instance.client.from('templates').delete().eq('id', id);
   }
+
+  Future<void> bulkSetActive(
+    List<String> ids, {
+    required bool isActive,
+  }) async {
+    await Supabase.instance.client
+        .from('templates')
+        .update({
+          'is_active': isActive,
+          'updated_at': DateTime.now().toIso8601String(),
+        })
+        .inFilter('id', ids);
+  }
 }
 
 // --- Page ---
@@ -77,6 +90,9 @@ class _TemplatesPageState extends ConsumerState<TemplatesPage> {
   String? _selectedCategory;
   bool _showPremiumOnly = false;
   bool _showInactiveOnly = false;
+  final Set<String> _selectedIds = {};
+
+  bool get _isSelectionMode => _selectedIds.isNotEmpty;
 
   List<AdminTemplateModel> _applyFilters(List<AdminTemplateModel> templates) {
     var filtered = templates;
@@ -109,6 +125,31 @@ class _TemplatesPageState extends ConsumerState<TemplatesPage> {
     return filtered;
   }
 
+  Future<void> _bulkAction({required bool isActive}) async {
+    final ids = _selectedIds.toList();
+    try {
+      await ref
+          .read(templatesProvider.notifier)
+          .bulkSetActive(ids, isActive: isActive);
+      setState(() => _selectedIds.clear());
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              '${ids.length} templates ${isActive ? 'activated' : 'deactivated'}',
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed: $e')),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final templatesAsync = ref.watch(templatesProvider);
@@ -117,15 +158,35 @@ class _TemplatesPageState extends ConsumerState<TemplatesPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Templates'),
-        actions: [
-          FilledButton.icon(
-            onPressed: () => context.go('/templates/new'),
-            icon: const Icon(Icons.add, size: 18),
-            label: const Text('New Template'),
-          ),
-          const SizedBox(width: 16),
-        ],
+        title: _isSelectionMode
+            ? Text('${_selectedIds.length} selected')
+            : const Text('Templates'),
+        actions: _isSelectionMode
+            ? [
+                TextButton.icon(
+                  icon: const Icon(Icons.check_circle_outline, size: 18),
+                  label: Text('Activate ${_selectedIds.length}'),
+                  onPressed: () => _bulkAction(isActive: true),
+                ),
+                TextButton.icon(
+                  icon: const Icon(Icons.cancel_outlined, size: 18),
+                  label: Text('Deactivate ${_selectedIds.length}'),
+                  onPressed: () => _bulkAction(isActive: false),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () => setState(() => _selectedIds.clear()),
+                ),
+                const SizedBox(width: 8),
+              ]
+            : [
+                FilledButton.icon(
+                  onPressed: () => context.go('/templates/new'),
+                  icon: const Icon(Icons.add, size: 18),
+                  label: const Text('New Template'),
+                ),
+                const SizedBox(width: 16),
+              ],
       ),
       body: Column(
         children: [
@@ -297,6 +358,16 @@ class _TemplatesPageState extends ConsumerState<TemplatesPage> {
                       margin: const EdgeInsets.only(bottom: 8),
                       child: TemplateCard(
                         template: template,
+                        isSelected: _isSelectionMode
+                            ? _selectedIds.contains(template.id)
+                            : null,
+                        onToggleSelect: () => setState(() {
+                          if (_selectedIds.contains(template.id)) {
+                            _selectedIds.remove(template.id);
+                          } else {
+                            _selectedIds.add(template.id);
+                          }
+                        }),
                         onEdit: () => context.go('/templates/${template.id}'),
                         onDelete: () async {
                           final confirm = await showDialog<bool>(

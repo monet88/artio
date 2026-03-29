@@ -8,12 +8,16 @@ class TemplateCard extends StatelessWidget {
   final AdminTemplateModel template;
   final VoidCallback onEdit;
   final VoidCallback? onDelete;
+  final bool? isSelected;
+  final VoidCallback? onToggleSelect;
 
   const TemplateCard({
     super.key,
     required this.template,
     required this.onEdit,
     this.onDelete,
+    this.isSelected,
+    this.onToggleSelect,
   });
 
   @override
@@ -23,51 +27,74 @@ class TemplateCard extends StatelessWidget {
     final isPremium = template.isPremium;
     final isActive = template.isActive;
     final thumbnailUrl = template.thumbnailUrl;
+    final inSelectionMode = isSelected != null;
+
+    final thumbnail = ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: SizedBox(
+        width: 72,
+        height: 72,
+        child: thumbnailUrl != null
+            ? CachedNetworkImage(
+                imageUrl: thumbnailUrl,
+                fit: BoxFit.cover,
+                placeholder: (_, _) => Container(
+                  color: isDark
+                      ? AdminColors.surfaceElevated
+                      : Colors.grey.shade200,
+                ),
+                errorWidget: (_, _, _) => Container(
+                  color: isDark
+                      ? AdminColors.surfaceElevated
+                      : Colors.grey.shade200,
+                  child: const Icon(Icons.broken_image, size: 20),
+                ),
+              )
+            : Container(
+                color: isDark
+                    ? AdminColors.surfaceElevated
+                    : Colors.grey.shade200,
+                child: Icon(
+                  Icons.image_not_supported,
+                  size: 20,
+                  color: isDark
+                      ? AdminColors.textHint
+                      : Colors.grey.shade400,
+                ),
+              ),
+      ),
+    );
 
     return Card(
       child: InkWell(
-        onTap: onEdit,
+        onTap: inSelectionMode ? onToggleSelect : onEdit,
         borderRadius: BorderRadius.circular(12),
         child: Padding(
           padding: const EdgeInsets.all(12),
           child: Row(
             children: [
-              // ── Thumbnail ───────────────────────
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: SizedBox(
+              // ── Thumbnail (with optional checkbox overlay) ──
+              if (inSelectionMode)
+                SizedBox(
                   width: 72,
                   height: 72,
-                  child: thumbnailUrl != null
-                      ? CachedNetworkImage(
-                          imageUrl: thumbnailUrl,
-                          fit: BoxFit.cover,
-                          placeholder: (_, _) => Container(
-                            color: isDark
-                                ? AdminColors.surfaceElevated
-                                : Colors.grey.shade200,
-                          ),
-                          errorWidget: (_, _, _) => Container(
-                            color: isDark
-                                ? AdminColors.surfaceElevated
-                                : Colors.grey.shade200,
-                            child: const Icon(Icons.broken_image, size: 20),
-                          ),
-                        )
-                      : Container(
-                          color: isDark
-                              ? AdminColors.surfaceElevated
-                              : Colors.grey.shade200,
-                          child: Icon(
-                            Icons.image_not_supported,
-                            size: 20,
-                            color: isDark
-                                ? AdminColors.textHint
-                                : Colors.grey.shade400,
-                          ),
+                  child: Stack(
+                    children: [
+                      thumbnail,
+                      Positioned(
+                        top: 0,
+                        left: 0,
+                        child: Checkbox(
+                          value: isSelected ?? false,
+                          onChanged: (_) => onToggleSelect?.call(),
+                          visualDensity: VisualDensity.compact,
                         ),
-                ),
-              ),
+                      ),
+                    ],
+                  ),
+                )
+              else
+                thumbnail,
               const Gap(16),
 
               // ── Content ─────────────────────────
@@ -163,31 +190,32 @@ class TemplateCard extends StatelessWidget {
               ),
 
               // ── Actions ─────────────────────────
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.edit_outlined, size: 20),
-                    onPressed: onEdit,
-                    tooltip: 'Edit',
-                  ),
-                  if (onDelete != null)
+              if (!inSelectionMode)
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
                     IconButton(
-                      icon: const Icon(
-                        Icons.delete_outline,
-                        size: 20,
-                        color: AdminColors.error,
-                      ),
-                      onPressed: onDelete,
-                      tooltip: 'Delete',
+                      icon: const Icon(Icons.edit_outlined, size: 20),
+                      onPressed: onEdit,
+                      tooltip: 'Edit',
                     ),
-                  Icon(
-                    Icons.drag_handle,
-                    size: 20,
-                    color: isDark ? AdminColors.textHint : Colors.grey,
-                  ),
-                ],
-              ),
+                    if (onDelete != null)
+                      IconButton(
+                        icon: const Icon(
+                          Icons.delete_outline,
+                          size: 20,
+                          color: AdminColors.error,
+                        ),
+                        onPressed: onDelete,
+                        tooltip: 'Delete',
+                      ),
+                    Icon(
+                      Icons.drag_handle,
+                      size: 20,
+                      color: isDark ? AdminColors.textHint : Colors.grey,
+                    ),
+                  ],
+                ),
             ],
           ),
         ),
