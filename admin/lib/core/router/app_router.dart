@@ -1,10 +1,10 @@
 import 'package:artio_admin/core/shell/admin_shell.dart';
+import 'package:artio_admin/features/analytics/presentation/pages/analytics_page.dart';
 import 'package:artio_admin/features/auth/presentation/pages/login_page.dart';
 import 'package:artio_admin/features/auth/providers/admin_auth_provider.dart';
 import 'package:artio_admin/features/dashboard/presentation/pages/dashboard_page.dart';
 import 'package:artio_admin/features/jobs/presentation/pages/job_detail_page.dart';
 import 'package:artio_admin/features/jobs/presentation/pages/jobs_page.dart';
-import 'package:artio_admin/features/analytics/presentation/pages/analytics_page.dart';
 import 'package:artio_admin/features/templates/presentation/pages/template_editor_page.dart';
 import 'package:artio_admin/features/templates/presentation/pages/templates_page.dart';
 import 'package:artio_admin/features/users/presentation/pages/user_detail_page.dart';
