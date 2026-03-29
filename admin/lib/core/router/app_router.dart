@@ -4,6 +4,8 @@ import 'package:artio_admin/features/auth/providers/admin_auth_provider.dart';
 import 'package:artio_admin/features/dashboard/presentation/pages/dashboard_page.dart';
 import 'package:artio_admin/features/templates/presentation/pages/template_editor_page.dart';
 import 'package:artio_admin/features/templates/presentation/pages/templates_page.dart';
+import 'package:artio_admin/features/users/presentation/pages/user_detail_page.dart';
+import 'package:artio_admin/features/users/presentation/pages/users_page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -43,6 +45,19 @@ Raw<GoRouter> goRouter(Ref ref) {
           GoRoute(
             path: '/dashboard',
             builder: (context, state) => const DashboardPage(),
+          ),
+          GoRoute(
+            path: '/users',
+            builder: (context, state) => const UsersPage(),
+            routes: [
+              GoRoute(
+                path: ':id',
+                builder: (context, state) {
+                  final id = state.pathParameters['id']!;
+                  return UserDetailPage(userId: id);
+                },
+              ),
+            ],
           ),
           GoRoute(
             path: '/templates',
