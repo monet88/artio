@@ -119,7 +119,7 @@ class _TemplateEditorPageState extends ConsumerState<TemplateEditorPage>
       return;
     }
 
-    dynamic inputFieldsJson;
+    Object? inputFieldsJson;
     try {
       inputFieldsJson = jsonDecode(_inputFieldsController.text);
       if (inputFieldsJson is! List) {

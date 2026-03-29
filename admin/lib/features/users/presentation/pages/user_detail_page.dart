@@ -1,4 +1,5 @@
 import 'package:artio_admin/core/theme/admin_colors.dart';
+import 'package:artio_admin/core/utils/retry.dart';
 import 'package:artio_admin/features/users/domain/entities/admin_user_model.dart';
 import 'package:artio_admin/shared/widgets/error_state_widget.dart';
 import 'package:flutter/material.dart';
@@ -14,21 +15,25 @@ part 'user_detail_page.g.dart';
 
 @riverpod
 Future<AdminUserModel> userDetail(Ref ref, String userId) async {
-  final data = await Supabase.instance.client
-      .from('profiles')
-      .select()
-      .eq('id', userId)
-      .single();
+  final data = await retry(
+    () => Supabase.instance.client
+        .from('profiles')
+        .select()
+        .eq('id', userId)
+        .single(),
+  );
   return AdminUserModel.fromJson(data);
 }
 
 @riverpod
 Future<int> userGenerationCount(Ref ref, String userId) async {
-  final result = await Supabase.instance.client
-      .from('generation_jobs')
-      .select('id')
-      .eq('user_id', userId);
-  return (result as List).length;
+  final result = await retry(
+    () => Supabase.instance.client
+        .from('generation_jobs')
+        .select('id')
+        .eq('user_id', userId),
+  ) as List;
+  return result.length;
 }
 
 @riverpod
@@ -36,13 +41,15 @@ Future<List<Map<String, dynamic>>> userRecentJobs(
   Ref ref,
   String userId,
 ) async {
-  final data = await Supabase.instance.client
-      .from('generation_jobs')
-      .select('id, status, model_id, created_at, error_message')
-      .eq('user_id', userId)
-      .order('created_at', ascending: false)
-      .limit(10);
-  return List<Map<String, dynamic>>.from(data as List);
+  final data = await retry(
+    () => Supabase.instance.client
+        .from('generation_jobs')
+        .select('id, status, model_id, created_at, error_message')
+        .eq('user_id', userId)
+        .order('created_at', ascending: false)
+        .limit(10),
+  ) as List;
+  return List<Map<String, dynamic>>.from(data);
 }
 
 // ── Page ─────────────────────────────────────────────────────────────────────
@@ -230,7 +237,11 @@ class _UserDetailBody extends ConsumerWidget {
                     child: CircularProgressIndicator(),
                   ),
                 ),
-                error: (e, st) => const Text('Failed to load jobs'),
+                error: (e, st) => ErrorStateWidget.fromError(
+                  error: e,
+                  message: 'Failed to load recent jobs',
+                  onRetry: () => ref.invalidate(userRecentJobsProvider(userId)),
+                ),
                 data: (jobs) => jobs.isEmpty
                     ? Text(
                         'No generations yet',
