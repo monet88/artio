@@ -64,6 +64,11 @@ class AdminShell extends ConsumerWidget {
                 selectedIcon: Icon(Icons.style_rounded),
                 label: Text('Templates'),
               ),
+              NavigationRailDestination(
+                icon: Icon(Icons.bar_chart_outlined),
+                selectedIcon: Icon(Icons.bar_chart_rounded),
+                label: Text('Analytics'),
+              ),
             ],
           ),
 
@@ -123,6 +128,7 @@ class AdminShell extends ConsumerWidget {
     if (location.startsWith('/users')) return 1;
     if (location.startsWith('/jobs')) return 2;
     if (location.startsWith('/templates')) return 3;
+    if (location.startsWith('/analytics')) return 4;
     return 0; // dashboard
   }
 
@@ -136,6 +142,8 @@ class AdminShell extends ConsumerWidget {
         context.go('/jobs');
       case 3:
         context.go('/templates');
+      case 4:
+        context.go('/analytics');
     }
   }
 }

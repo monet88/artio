@@ -15,7 +15,7 @@ void main() {
       });
 
       test('equals totalUsers when no premium users', () {
-        final stats = _stats(totalUsers: 200, premiumUsers: 0);
+        final stats = _stats(totalUsers: 200);
         expect(stats.freeUsers, 200);
       });
     });
