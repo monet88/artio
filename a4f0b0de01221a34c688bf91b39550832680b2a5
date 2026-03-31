@@ -1,0 +1,25 @@
+admin/pubspec.yaml
+  7582831959bcc4df 4
+CHANGELOG.md
+  7582831959bcc4df 5-30
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.22",
+  "base_commit_sha": "a4f0b0de01221a34c688bf91b39550832680b2a5",
+  "prompts": {
+    "7582831959bcc4df": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "af065ebe-7b5b-4c0b-8b0d-558750ce52c4",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "jokerlin135 <jokerlin135@gmail.com>",
+      "messages": [],
+      "total_additions": 27,
+      "total_deletions": 1,
+      "accepted_lines": 27,
+      "overriden_lines": 0
+    }
+  }
+}
