@@ -1,5 +1,6 @@
 import 'package:artio_admin/core/shell/admin_shell.dart';
 import 'package:artio_admin/features/analytics/presentation/pages/analytics_page.dart';
+import 'package:artio_admin/features/revenue/presentation/pages/revenue_page.dart';
 import 'package:artio_admin/features/auth/presentation/pages/login_page.dart';
 import 'package:artio_admin/features/auth/providers/admin_auth_provider.dart';
 import 'package:artio_admin/features/dashboard/presentation/pages/dashboard_page.dart';
@@ -95,6 +96,10 @@ Raw<GoRouter> goRouter(Ref ref) {
           GoRoute(
             path: '/analytics',
             builder: (context, state) => const AnalyticsPage(),
+          ),
+          GoRoute(
+            path: '/revenue',
+            builder: (context, state) => const RevenuePage(),
           ),
         ],
       ),
