@@ -1,0 +1,35 @@
+admin/lib/features/revenue/presentation/widgets/recent_transactions_list.dart
+  7582831959bcc4df 1-135
+admin/lib/features/revenue/presentation/pages/revenue_page.dart
+  7582831959bcc4df 1-227
+admin/lib/features/revenue/providers/revenue_stats_provider.dart
+  7582831959bcc4df 1-110
+admin/lib/features/revenue/domain/entities/revenue_stats.dart
+  7582831959bcc4df 1-88
+admin/lib/core/router/app_router.dart
+  7582831959bcc4df 3,100-103
+admin/lib/features/revenue/presentation/widgets/daily_revenue_chart.dart
+  7582831959bcc4df 1-75
+admin/lib/core/shell/admin_shell.dart
+  7582831959bcc4df 72-76,137,153-154
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.22",
+  "base_commit_sha": "e79f47ca4ee0b057007b96bcedc29cfb846025fb",
+  "prompts": {
+    "7582831959bcc4df": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "af065ebe-7b5b-4c0b-8b0d-558750ce52c4",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "jokerlin135 <jokerlin135@gmail.com>",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 1158,
+      "overriden_lines": 0
+    }
+  }
+}
