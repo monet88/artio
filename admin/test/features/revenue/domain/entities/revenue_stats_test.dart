@@ -98,10 +98,10 @@ void main() {
     });
 
     test('totalPremiumUsers: sums all non-free tiers', () {
-      final stats = RevenueStats(
-        recentTransactions: const [],
-        dailyRevenue: const [],
-        tierBreakdown: const [
+      const stats = RevenueStats(
+        recentTransactions: [],
+        dailyRevenue: [],
+        tierBreakdown: [
           TierBreakdown(tier: 'free', count: 80, totalUsers: 100),
           TierBreakdown(tier: 'basic', count: 10, totalUsers: 100),
           TierBreakdown(tier: 'premium', count: 10, totalUsers: 100),
@@ -112,10 +112,10 @@ void main() {
     });
 
     test('totalPremiumUsers: zero when all users are free', () {
-      final stats = RevenueStats(
-        recentTransactions: const [],
-        dailyRevenue: const [],
-        tierBreakdown: const [
+      const stats = RevenueStats(
+        recentTransactions: [],
+        dailyRevenue: [],
+        tierBreakdown: [
           TierBreakdown(tier: 'free', count: 100, totalUsers: 100),
         ],
       );
@@ -131,7 +131,6 @@ void main() {
         amount: 500,
         type: 'purchase',
         createdAt: DateTime.utc(2026, 3, 31),
-        userEmail: null, // profile deleted
       );
 
       expect(tx.userEmail, isNull);

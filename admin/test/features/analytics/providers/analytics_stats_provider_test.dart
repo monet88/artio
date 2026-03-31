@@ -103,7 +103,7 @@ void main() {
 
       final modelMap = <String, int>{};
       for (final job in rawJobs) {
-        final model = (job['model_id'] as String?) ?? 'unknown';
+        final model = job['model_id'] ?? 'unknown';
         modelMap[model] = (modelMap[model] ?? 0) + 1;
       }
       final topModels = modelMap.entries

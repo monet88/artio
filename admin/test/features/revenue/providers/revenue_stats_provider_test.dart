@@ -111,30 +111,30 @@ void main() {
 
   group('empty transactions', () {
     test('subscriptionsToday = 0 with empty list', () {
-      final stats = RevenueStats(
-        recentTransactions: const [],
-        dailyRevenue: const [],
-        tierBreakdown: const [],
+      const stats = RevenueStats(
+        recentTransactions: [],
+        dailyRevenue: [],
+        tierBreakdown: [],
       );
 
       expect(stats.subscriptionsToday, equals(0));
     });
 
     test('subscriptionsThisWeek = 0 with empty list', () {
-      final stats = RevenueStats(
-        recentTransactions: const [],
-        dailyRevenue: const [],
-        tierBreakdown: const [],
+      const stats = RevenueStats(
+        recentTransactions: [],
+        dailyRevenue: [],
+        tierBreakdown: [],
       );
 
       expect(stats.subscriptionsThisWeek, equals(0));
     });
 
     test('totalPremiumUsers = 0 with empty tierBreakdown', () {
-      final stats = RevenueStats(
-        recentTransactions: const [],
-        dailyRevenue: const [],
-        tierBreakdown: const [],
+      const stats = RevenueStats(
+        recentTransactions: [],
+        dailyRevenue: [],
+        tierBreakdown: [],
       );
 
       expect(stats.totalPremiumUsers, equals(0));
