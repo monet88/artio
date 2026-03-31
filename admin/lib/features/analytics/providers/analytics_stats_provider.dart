@@ -30,7 +30,8 @@ Future<AnalyticsStats> analyticsStats(Ref ref) async {
   final totalJobs = jobIdsRaw.length;
 
   // 3. Jobs from last 7 days — for charts, today count, top models
-  final now = DateTime.now();
+  // Use UTC to match Supabase storage format (avoids timezone boundary errors)
+  final now = DateTime.now().toUtc();
   final sevenDaysAgo = now.subtract(const Duration(days: 7));
   final recentJobsRaw = await retry(
     () => client
@@ -39,28 +40,27 @@ Future<AnalyticsStats> analyticsStats(Ref ref) async {
         .gte('created_at', sevenDaysAgo.toIso8601String()),
   ) as List;
 
-  // Today count — local time comparison
-  final todayStart = DateTime(now.year, now.month, now.day);
+  // Today count — UTC boundary
+  final todayStart = DateTime.utc(now.year, now.month, now.day);
   final jobsToday = recentJobsRaw.where((j) {
-    final createdAt =
-        DateTime.parse(j['created_at'] as String).toLocal();
+    final createdAt = DateTime.parse(j['created_at'] as String).toUtc();
     return !createdAt.isBefore(todayStart);
   }).length;
 
-  // Daily breakdown — build 7-bucket map
+  // Daily breakdown — build 7-bucket map using UTC dates
   final dailyMap = <String, int>{};
   for (final job in recentJobsRaw) {
-    final dt = DateTime.parse(job['created_at'] as String).toLocal();
+    final dt = DateTime.parse(job['created_at'] as String).toUtc();
     final key =
         '${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')}';
     dailyMap[key] = (dailyMap[key] ?? 0) + 1;
   }
 
-  // Fill all 7 days (including zero-count days), oldest → newest
+  // Fill all 7 days (including zero-count days), oldest → newest, UTC dates
   final dailyJobs = <DailyCount>[];
   for (var i = 6; i >= 0; i--) {
     final date = now.subtract(Duration(days: i));
-    final normalized = DateTime(date.year, date.month, date.day);
+    final normalized = DateTime.utc(date.year, date.month, date.day);
     final key =
         '${normalized.year}-${normalized.month.toString().padLeft(2, '0')}-${normalized.day.toString().padLeft(2, '0')}';
     dailyJobs.add(DailyCount(date: normalized, count: dailyMap[key] ?? 0));

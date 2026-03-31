@@ -6,7 +6,7 @@ part of 'analytics_stats_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$analyticsStatsHash() => r'4588f4e8fe77e7a2c3dc7b7d80e105b78e8cd3f4';
+String _$analyticsStatsHash() => r'ff5f3f1f41e6c6a0125abf03e67864b6ce76c077';
 
 /// Fetches and aggregates analytics data from Supabase.
 ///

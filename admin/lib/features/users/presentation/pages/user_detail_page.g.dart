@@ -6,7 +6,7 @@ part of 'user_detail_page.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$userDetailHash() => r'be103ee2eac4aa54296e21f5e395f6785ec0a3f5';
+String _$userDetailHash() => r'9073b0923ec05b56a3e534d2ac64afb587ca5752';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -147,7 +147,7 @@ class _UserDetailProviderElement
 }
 
 String _$userGenerationCountHash() =>
-    r'4206f8b009702c43e30e59cb9c695ae9711b44fa';
+    r'da17237d88558d0e62aad8e7d343cadfc1c61c3d';
 
 /// See also [userGenerationCount].
 @ProviderFor(userGenerationCount)
@@ -267,7 +267,7 @@ class _UserGenerationCountProviderElement
   String get userId => (origin as UserGenerationCountProvider).userId;
 }
 
-String _$userRecentJobsHash() => r'aa16c3dc6482a7e42741130d4367bf8ac07fd691';
+String _$userRecentJobsHash() => r'2b4c945ac6b60caa3ebb2487d12ef2db6d97b22a';
 
 /// See also [userRecentJobs].
 @ProviderFor(userRecentJobs)
