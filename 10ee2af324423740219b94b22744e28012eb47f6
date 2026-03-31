@@ -1,0 +1,65 @@
+admin/lib/shared/widgets/tier_pie_chart.dart
+  7582831959bcc4df 1-51
+admin/lib/features/analytics/presentation/widgets/top_models_bar_chart.dart
+  7582831959bcc4df 1-67
+admin/lib/features/analytics/presentation/pages/analytics_page.dart
+  7582831959bcc4df 3-5,8,73,77,91,99-110,118,125,135,140,172-173
+admin/lib/features/users/presentation/widgets/user_profile_card.dart
+  7582831959bcc4df 1-177
+admin/lib/features/templates/presentation/widgets/templates_grid.dart
+  7582831959bcc4df 1-98
+admin/lib/features/dashboard/presentation/pages/dashboard_page.dart
+  7582831959bcc4df 2,41,49,86-87,90-91
+admin/lib/features/users/presentation/widgets/recent_jobs_list.dart
+  7582831959bcc4df 1-100
+admin/lib/features/users/presentation/pages/users_page.dart
+  7582831959bcc4df 3-4,42,57-60,75-79,84,127,130
+admin/lib/features/templates/presentation/widgets/basic_info_tab.dart
+  7582831959bcc4df 1-138
+admin/lib/features/users/presentation/widgets/user_search_bar.dart
+  7582831959bcc4df 1-67
+admin/lib/features/templates/presentation/pages/template_editor_page.dart
+  7582831959bcc4df 2,4-7,60-64,84-92,95-96,100-102,110,119,171,175,259-269,271-273,275-278,280-283,285,287
+admin/lib/features/analytics/presentation/widgets/kpi_cards_row.dart
+  7582831959bcc4df 1-122
+admin/lib/features/dashboard/presentation/widgets/stats_grid.dart
+  7582831959bcc4df 1-216
+admin/lib/features/users/presentation/widgets/admin_actions_card.dart
+  7582831959bcc4df 1-187
+admin/lib/features/analytics/providers/analytics_stats_provider.dart
+  7582831959bcc4df 33-34,43-44,46,50,53,59,63
+admin/lib/features/users/presentation/widgets/user_list_tile.dart
+  7582831959bcc4df 1-110
+admin/lib/features/templates/presentation/widgets/thumbnail_section.dart
+  7582831959bcc4df 1-212
+admin/lib/features/analytics/presentation/widgets/jobs_line_chart.dart
+  7582831959bcc4df 1-72
+admin/lib/features/templates/presentation/widgets/bulk_actions_bar.dart
+  7582831959bcc4df 1-100
+admin/lib/features/templates/presentation/widgets/prompt_section.dart
+  7582831959bcc4df 1-162
+admin/lib/features/users/presentation/pages/user_detail_page.dart
+  7582831959bcc4df 4-6,110,115,124,129,137,139,154,163
+admin/lib/features/templates/presentation/pages/templates_page.dart
+  7582831959bcc4df 2-3,8,12,32,41,62,73,104-105,107,122-125,127-128,138-160,167,203-217,222-236,238,240-250,252-264
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.22",
+  "base_commit_sha": "10ee2af324423740219b94b22744e28012eb47f6",
+  "prompts": {
+    "7582831959bcc4df": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "af065ebe-7b5b-4c0b-8b0d-558750ce52c4",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "jokerlin135 <jokerlin135@gmail.com>",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 3252,
+      "overriden_lines": 0
+    }
+  }
+}
