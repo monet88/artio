@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file.
 
+## [admin/1.1.0+2] - 2026-03-31
+
+### Added
+- **Revenue Tab**: New Revenue page in the admin dashboard — operators can now see recent
+  subscription/purchase transactions, a 7-day daily revenue chart, and tier breakdown pie chart.
+  Answers the key daily question: is the business working?
+- **Navigation**: Revenue tab (index 5) added to the admin NavigationRail alongside
+  Dashboard / Users / Jobs / Templates / Analytics.
+- **Supabase**: Admin read policy for `credit_transactions` table + partial index on
+  `(type, created_at)` WHERE type IN ('subscription', 'purchase') for fast 7-day window queries.
+
+### Changed
+- **File size compliance**: All 6 admin pages that exceeded the 300-line limit have been split
+  into dedicated widget files. Template editor: 679→290, User detail: 610→170,
+  Analytics: 466→182, Templates list: 418→271, Dashboard: 322→110, Users: 308→143.
+- **Shared widgets**: `TierPieChart` extracted to `shared/widgets/` — reused by both
+  Analytics and Revenue pages.
+- **UTC fix**: `analyticsStatsProvider` now uses `.toUtc()` for all datetime boundaries,
+  consistent with Supabase UTC storage (was using local time, causing off-by-one day errors
+  for non-UTC timezones).
+
+### Added (tests)
+- 61 unit tests across analytics provider logic, revenue entity computed properties,
+  and revenue provider aggregation logic. All tests cover UTC boundaries, null guards,
+  divide-by-zero cases, and empty-state paths.
+
 ## [1.0.0+18] - 2026-03-27
 
 ### Added
