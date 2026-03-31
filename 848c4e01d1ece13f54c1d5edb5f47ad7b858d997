@@ -1,0 +1,27 @@
+admin/test/features/revenue/providers/revenue_stats_provider_test.dart
+  7582831959bcc4df 1-232
+admin/test/features/analytics/providers/analytics_stats_provider_test.dart
+  7582831959bcc4df 1-137
+admin/test/features/revenue/domain/entities/revenue_stats_test.dart
+  7582831959bcc4df 1-141
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.22",
+  "base_commit_sha": "848c4e01d1ece13f54c1d5edb5f47ad7b858d997",
+  "prompts": {
+    "7582831959bcc4df": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "af065ebe-7b5b-4c0b-8b0d-558750ce52c4",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "jokerlin135 <jokerlin135@gmail.com>",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 510,
+      "overriden_lines": 0
+    }
+  }
+}
