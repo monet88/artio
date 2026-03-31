@@ -183,14 +183,16 @@ class GalleryRepository implements IGalleryRepository {
       final inputPaths = (job['input_image_paths'] as List?) ?? [];
 
       // Delete all storage files (outputs + inputs)
-      final allPaths = [...urls, ...inputPaths];
-      for (final entry in allPaths) {
-        final path = entry as String?;
-        if (path == null || path.isEmpty) continue;
+      final allPaths = [...urls, ...inputPaths]
+          .whereType<String>()
+          .where((path) => path.isNotEmpty)
+          .toList();
+
+      if (allPaths.isNotEmpty) {
         try {
-          await _supabase.storage.from('generated-images').remove([path]);
+          await _supabase.storage.from('generated-images').remove(allPaths);
         } on storage_client.StorageException catch (e) {
-          debugPrint('Storage delete failed for $path: $e');
+          debugPrint('Storage delete failed for paths $allPaths: $e');
           unawaited(
             SentryConfig.captureException(e, stackTrace: StackTrace.current),
           );
