@@ -29,10 +29,12 @@ class _FakeUrlLauncherPlatform extends UrlLauncherPlatform {
 
 Widget _scaffoldWith(Future<void> Function(BuildContext) action) {
   return MaterialApp(
-    home: Builder(
-      builder: (context) => ElevatedButton(
-        onPressed: () => action(context),
-        child: const Text('Launch'),
+    home: Scaffold(
+      body: Builder(
+        builder: (context) => ElevatedButton(
+          onPressed: () => action(context),
+          child: const Text('Launch'),
+        ),
       ),
     ),
   );
@@ -57,6 +59,17 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(fakePlatform.launchedUrls, contains('https://example.com'));
+    });
+
+    testWidgets('blocks unsafe schemes and shows SnackBar', (tester) async {
+      await tester.pumpWidget(
+        _scaffoldWith((ctx) => launchUrlSafely(ctx, 'javascript:alert(1)')),
+      );
+      await tester.tap(find.text('Launch'));
+      await tester.pumpAndSettle();
+
+      expect(fakePlatform.launchedUrls, isEmpty);
+      expect(find.text('Invalid URL'), findsOneWidget);
     });
   });
 
@@ -83,6 +96,17 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(fakePlatform.launchedUrls, contains('https://artio.app/terms'));
+    });
+
+    testWidgets('blocks unsafe schemes and shows SnackBar', (tester) async {
+      await tester.pumpWidget(
+        _scaffoldWith((ctx) => launchInAppUrl(ctx, 'file:///etc/passwd')),
+      );
+      await tester.tap(find.text('Launch'));
+      await tester.pumpAndSettle();
+
+      expect(fakePlatform.launchedUrls, isEmpty);
+      expect(find.text('Invalid URL'), findsOneWidget);
     });
   });
 
