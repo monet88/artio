@@ -1,0 +1,23 @@
+supabase/migrations/20260331071910_admin_revenue_rls.sql
+  7582831959bcc4df 1-17
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.22",
+  "base_commit_sha": "c044cdf59d01d18bdcf75a45ccb0b3b719ca005d",
+  "prompts": {
+    "7582831959bcc4df": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "af065ebe-7b5b-4c0b-8b0d-558750ce52c4",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "jokerlin135 <jokerlin135@gmail.com>",
+      "messages": [],
+      "total_additions": 3294,
+      "total_deletions": 1877,
+      "accepted_lines": 3273,
+      "overriden_lines": 0
+    }
+  }
+}
