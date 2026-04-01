@@ -58,6 +58,19 @@ void main() {
 
       expect(fakePlatform.launchedUrls, contains('https://example.com'));
     });
+
+    testWidgets('rejects unsafe schemes', (tester) async {
+      await tester.pumpWidget(
+        _scaffoldWith(
+          (ctx) => launchUrlSafely(ctx, 'javascript:alert("XSS")'),
+        ),
+      );
+      await tester.tap(find.text('Launch'));
+      await tester.pumpAndSettle();
+
+      expect(fakePlatform.launchedUrls, isNot(contains('javascript:alert("XSS")')));
+      expect(find.text('Invalid URL'), findsOneWidget);
+    });
   });
 
   // ── launchInAppUrl ───────────────────────────────────────────────────────────
@@ -83,6 +96,19 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(fakePlatform.launchedUrls, contains('https://artio.app/terms'));
+    });
+
+    testWidgets('rejects unsafe schemes', (tester) async {
+      await tester.pumpWidget(
+        _scaffoldWith(
+          (ctx) => launchInAppUrl(ctx, 'file:///etc/passwd'),
+        ),
+      );
+      await tester.tap(find.text('Launch'));
+      await tester.pumpAndSettle();
+
+      expect(fakePlatform.launchedUrls, isNot(contains('file:///etc/passwd')));
+      expect(find.text('Invalid URL'), findsOneWidget);
     });
   });
 
