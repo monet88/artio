@@ -1,5 +1,6 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
+import { corsHeaders, handleCorsIfPreflight } from "../_shared/cors.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -22,10 +23,15 @@ function getSupabaseClient() {
 }
 
 Deno.serve(async (req) => {
+  const preflight = handleCorsIfPreflight(req);
+  if (preflight) return preflight;
+
+  const headers = corsHeaders();
+
   if (req.method !== "POST") {
     return new Response(JSON.stringify({ error: "Method not allowed" }), {
       status: 405,
-      headers: { "Content-Type": "application/json" },
+      headers: { ...headers, "Content-Type": "application/json" },
     });
   }
 
@@ -34,7 +40,7 @@ Deno.serve(async (req) => {
   if (!authHeader) {
     return new Response(JSON.stringify({ error: "Missing authorization" }), {
       status: 401,
-      headers: { "Content-Type": "application/json" },
+      headers: { ...headers, "Content-Type": "application/json" },
     });
   }
 
@@ -54,7 +60,7 @@ Deno.serve(async (req) => {
   if (authError || !user) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), {
       status: 401,
-      headers: { "Content-Type": "application/json" },
+      headers: { ...headers, "Content-Type": "application/json" },
     });
   }
 
@@ -114,7 +120,7 @@ Deno.serve(async (req) => {
       );
       return new Response(JSON.stringify({ error: "RevenueCat API error" }), {
         status: 502,
-        headers: { "Content-Type": "application/json" },
+        headers: { ...headers, "Content-Type": "application/json" },
       });
     }
 
@@ -172,7 +178,7 @@ Deno.serve(async (req) => {
             message:
               "RC has no active entitlements but profile is recent. Skipping to avoid race condition.",
           }),
-          { status: 200, headers: { "Content-Type": "application/json" } },
+          { status: 200, headers: { ...headers, "Content-Type": "application/json" } },
         );
       }
 
@@ -193,7 +199,7 @@ Deno.serve(async (req) => {
         console.error("[sync-subscription] downgrade error:", downgradeErr);
         return new Response(
           JSON.stringify({ error: "Failed to downgrade subscription status" }),
-          { status: 500, headers: { "Content-Type": "application/json" } },
+          { status: 500, headers: { ...headers, "Content-Type": "application/json" } },
         );
       }
       return new Response(
@@ -203,7 +209,7 @@ Deno.serve(async (req) => {
           reason: "no_active_entitlements",
           message: "RC has no active entitlements. User downgraded.",
         }),
-        { status: 200, headers: { "Content-Type": "application/json" } },
+        { status: 200, headers: { ...headers, "Content-Type": "application/json" } },
       );
     }
 
@@ -225,7 +231,7 @@ Deno.serve(async (req) => {
       );
       return new Response(
         JSON.stringify({ error: "Failed to update subscription status" }),
-        { status: 500, headers: { "Content-Type": "application/json" } },
+        { status: 500, headers: { ...headers, "Content-Type": "application/json" } },
       );
     }
 
@@ -240,13 +246,13 @@ Deno.serve(async (req) => {
         is_premium: true,
         expires_at: resolvedExpiresAt,
       }),
-      { status: 200, headers: { "Content-Type": "application/json" } },
+      { status: 200, headers: { ...headers, "Content-Type": "application/json" } },
     );
   } catch (error) {
     console.error("[sync-subscription] Unexpected error:", error);
     return new Response(JSON.stringify({ error: "Internal server error" }), {
       status: 500,
-      headers: { "Content-Type": "application/json" },
+      headers: { ...headers, "Content-Type": "application/json" },
     });
   }
 });
