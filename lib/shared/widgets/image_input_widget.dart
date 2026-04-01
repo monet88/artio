@@ -124,15 +124,18 @@ class _ImagePreview extends StatelessWidget {
           child: Material(
             color: theme.colorScheme.surface.withAlpha(200),
             shape: const CircleBorder(),
-            child: InkWell(
-              customBorder: const CircleBorder(),
-              onTap: onRemove,
-              child: Padding(
-                padding: const EdgeInsets.all(6),
-                child: Icon(
-                  Icons.close,
-                  size: 18,
-                  color: theme.colorScheme.onSurface,
+            child: Tooltip(
+              message: 'Remove image',
+              child: InkWell(
+                customBorder: const CircleBorder(),
+                onTap: onRemove,
+                child: Padding(
+                  padding: const EdgeInsets.all(6),
+                  child: Icon(
+                    Icons.close,
+                    size: 18,
+                    color: theme.colorScheme.onSurface,
+                  ),
                 ),
               ),
             ),
