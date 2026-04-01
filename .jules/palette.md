@@ -1,0 +1,3 @@
+## 2026-03-31 - [Icon Button Tooltips]
+**Learning:** In Flutter, icon-only buttons like `IconButton` require the `tooltip` property to provide a semantic label for screen readers. Without it, the interactive element lacks an accessible name, making it difficult for visually impaired users to understand the button's purpose.
+**Action:** Always ensure `IconButton` and similar icon-only interactive widgets include a descriptive `tooltip` attribute.

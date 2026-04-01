@@ -138,6 +138,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
               Icons.close_rounded,
               color: AppColors.textSecondary,
             ),
+            tooltip: 'Close',
             onPressed: () => Navigator.of(context).pop(),
           ),
           const Spacer(),
