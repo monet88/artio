@@ -6,6 +6,9 @@ Future<void> launchUrlSafely(BuildContext context, String url) async {
   final Uri uri;
   try {
     uri = Uri.parse(url);
+    if (uri.scheme != 'http' && uri.scheme != 'https') {
+      throw const FormatException('Invalid scheme');
+    }
   } on FormatException {
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -34,6 +37,9 @@ Future<void> launchInAppUrl(BuildContext context, String url) async {
   final Uri uri;
   try {
     uri = Uri.parse(url);
+    if (uri.scheme != 'http' && uri.scheme != 'https') {
+      throw const FormatException('Invalid scheme');
+    }
   } on FormatException {
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
