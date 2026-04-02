@@ -46,9 +46,13 @@ class GalleryPage extends ConsumerWidget {
             child: MasonryImageGrid(
               items: items,
               showWatermark: showWatermark,
-              onItemTap: (item, index) {
+              onItemTap: (item, index, preResolvedUrls) {
                 GalleryImageRoute(
-                  $extra: GalleryImageExtra(items: items, initialIndex: index),
+                  $extra: GalleryImageExtra(
+                    items: items,
+                    initialIndex: index,
+                    preResolvedUrls: preResolvedUrls,
+                  ),
                 ).push<void>(context);
               },
             ),

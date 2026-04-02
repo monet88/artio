@@ -14,17 +14,29 @@ class ImageViewerImagePage extends ConsumerWidget {
   const ImageViewerImagePage({
     required this.item,
     this.showWatermark = false,
+    this.resolvedUrl,
     super.key,
   });
 
   final GalleryItem item;
   final bool showWatermark;
 
+  /// Pre-resolved signed URL. When provided, skips the
+  /// per-item [signedStorageUrlProvider] to avoid N+1 API requests.
+  final String? resolvedUrl;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final rawPath = item.imageUrl;
+    final localUrl = resolvedUrl;
+
+    // ⚡ Bolt Optimization: Use pre-resolved signed URL if available
+    // Impact: Avoids firing individual N+1 signed URL generation API calls
+    // as the user swipes through the gallery pager, cutting down network latency.
     final signedUrlAsync = rawPath != null
-        ? ref.watch(signedStorageUrlProvider(rawPath))
+        ? (localUrl != null
+            ? AsyncValue.data(localUrl)
+            : ref.watch(signedStorageUrlProvider(rawPath)))
         : null;
 
     return WatermarkOverlay(

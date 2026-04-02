@@ -17,7 +17,11 @@ class MasonryImageGrid extends ConsumerStatefulWidget {
     super.key,
   });
   final List<GalleryItem> items;
-  final void Function(GalleryItem item, int index) onItemTap;
+  final void Function(
+    GalleryItem item,
+    int index,
+    Map<String, String?> preResolvedUrls,
+  ) onItemTap;
   final bool showWatermark;
 
   @override
@@ -139,7 +143,7 @@ class _MasonryImageGridState extends ConsumerState<MasonryImageGrid>
           ),
           child: InteractiveGalleryItem(
             item: item,
-            onTap: () => widget.onItemTap(item, index),
+            onTap: () => widget.onItemTap(item, index, signedUrlMap),
             showWatermark: widget.showWatermark,
             resolvedUrl: item.imageUrl != null
                 ? signedUrlMap[item.imageUrl]
