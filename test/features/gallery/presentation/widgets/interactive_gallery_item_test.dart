@@ -113,7 +113,7 @@ void main() {
             child: InteractiveGalleryItem(
               item: item,
               onTap: () {},
-              resolvedUrl: resolvedUrl,
+              resolvedUrlAsync: AsyncData(resolvedUrl),
             ),
           ),
         ),
@@ -191,7 +191,7 @@ void main() {
             child: InteractiveGalleryItem(
               item: item,
               onTap: () {},
-              resolvedUrl: resolvedUrl,
+              resolvedUrlAsync: AsyncData(resolvedUrl),
             ),
           ),
         ),

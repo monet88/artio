@@ -90,8 +90,7 @@ class _MasonryImageGridState extends ConsumerState<MasonryImageGrid>
 
     // Batch-resolve all image URLs in a single Supabase API call.
     // _paths is a stable instance — only changes when item URLs actually change.
-    final signedUrlMap =
-        ref.watch(gallerySignedUrlsProvider(_paths)).valueOrNull ?? {};
+    final signedUrlsAsync = ref.watch(gallerySignedUrlsProvider(_paths));
     return MasonryGridView.count(
       padding: AppSpacing.cardPadding,
       crossAxisCount: crossAxisCount,
@@ -100,6 +99,10 @@ class _MasonryImageGridState extends ConsumerState<MasonryImageGrid>
       itemCount: widget.items.length,
       itemBuilder: (context, index) {
         final item = widget.items[index];
+
+        final AsyncValue<String?>? resolvedUrlAsync = item.imageUrl != null
+            ? signedUrlsAsync.whenData((map) => map[item.imageUrl])
+            : null;
 
         // Stagger animation
         const maxItems = AppAnimations.maxStaggerItems;
@@ -141,9 +144,7 @@ class _MasonryImageGridState extends ConsumerState<MasonryImageGrid>
             item: item,
             onTap: () => widget.onItemTap(item, index),
             showWatermark: widget.showWatermark,
-            resolvedUrl: item.imageUrl != null
-                ? signedUrlMap[item.imageUrl]
-                : null,
+            resolvedUrlAsync: resolvedUrlAsync,
           ),
         );
       },
