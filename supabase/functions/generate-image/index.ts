@@ -107,25 +107,25 @@ async function resolveImageUrls(
   supabase: ReturnType<typeof createClient>,
   imageInputs: string[]
 ): Promise<string[]> {
-  const resolved: string[] = [];
-  for (const input of imageInputs) {
-    if (input.startsWith("http://") || input.startsWith("https://")) {
-      resolved.push(input);
-    } else {
-      // Treat as Supabase storage path — generate signed URL
-      const { data, error } = await supabase.storage
-        .from(STORAGE_BUCKET)
-        .createSignedUrl(input, SIGNED_URL_EXPIRY_SECONDS);
-      if (error || !data?.signedUrl) {
-        console.error(`[storage] Failed to sign URL for "${input}":`, error?.message);
-        // Fallback: construct public URL (may fail if bucket is private)
-        resolved.push(`${SUPABASE_URL}/storage/v1/object/public/${STORAGE_BUCKET}/${input}`);
+  return Promise.all(
+    imageInputs.map(async (input) => {
+      if (input.startsWith("http://") || input.startsWith("https://")) {
+        return input;
       } else {
-        resolved.push(data.signedUrl);
+        // Treat as Supabase storage path — generate signed URL
+        const { data, error } = await supabase.storage
+          .from(STORAGE_BUCKET)
+          .createSignedUrl(input, SIGNED_URL_EXPIRY_SECONDS);
+        if (error || !data?.signedUrl) {
+          console.error(`[storage] Failed to sign URL for "${input}":`, error?.message);
+          // Fallback: construct public URL (may fail if bucket is private)
+          return `${SUPABASE_URL}/storage/v1/object/public/${STORAGE_BUCKET}/${input}`;
+        } else {
+          return data.signedUrl;
+        }
       }
-    }
-  }
-  return resolved;
+    })
+  );
 }
 
 /**
@@ -490,20 +490,33 @@ async function mirrorUrlsToStorage(
   imageUrls: string[],
   outputFormat: string = "jpg"
 ): Promise<string[]> {
-  const storagePaths: string[] = [];
+  const uploadPromises = imageUrls.map(async (url, i) => {
+    const imageData = await downloadImage(url);
+    return uploadToStorage(supabase, userId, jobId, imageData, i, outputFormat);
+  });
 
-  for (let i = 0; i < imageUrls.length; i++) {
-    try {
-      const imageData = await downloadImage(imageUrls[i]);
-      const storagePath = await uploadToStorage(supabase, userId, jobId, imageData, i, outputFormat);
-      storagePaths.push(storagePath);
-    } catch (error) {
-      if (storagePaths.length > 0) {
-        console.warn(`[${jobId}] Upload failed at index ${i}, cleaning up ${storagePaths.length} orphaned files`);
-        await cleanupStorageFiles(supabase, storagePaths);
-      }
-      throw error;
+  const results = await Promise.allSettled(uploadPromises);
+
+  const storagePaths: string[] = [];
+  let hasError = false;
+  let firstError: any = null;
+
+  for (let i = 0; i < results.length; i++) {
+    const result = results[i];
+    if (result.status === "fulfilled") {
+      storagePaths.push(result.value);
+    } else {
+      hasError = true;
+      if (!firstError) firstError = result.reason;
     }
+  }
+
+  if (hasError) {
+    if (storagePaths.length > 0) {
+      console.warn(`[${jobId}] Upload failed for some images, cleaning up ${storagePaths.length} orphaned files`);
+      await cleanupStorageFiles(supabase, storagePaths);
+    }
+    throw firstError;
   }
 
   return storagePaths;
@@ -516,25 +529,38 @@ async function mirrorBase64ToStorage(
   base64Images: string[],
   outputFormat: string = "jpg"
 ): Promise<string[]> {
-  const storagePaths: string[] = [];
-
-  for (let i = 0; i < base64Images.length; i++) {
-    try {
-      const binaryString = atob(base64Images[i]);
-      const bytes = new Uint8Array(binaryString.length);
-      for (let j = 0; j < binaryString.length; j++) {
-        bytes[j] = binaryString.charCodeAt(j);
-      }
-
-      const storagePath = await uploadToStorage(supabase, userId, jobId, bytes, i, outputFormat);
-      storagePaths.push(storagePath);
-    } catch (error) {
-      if (storagePaths.length > 0) {
-        console.warn(`[${jobId}] Base64 upload failed at index ${i}, cleaning up ${storagePaths.length} orphaned files`);
-        await cleanupStorageFiles(supabase, storagePaths);
-      }
-      throw error;
+  const uploadPromises = base64Images.map(async (base64Image, i) => {
+    const binaryString = atob(base64Image);
+    const bytes = new Uint8Array(binaryString.length);
+    for (let j = 0; j < binaryString.length; j++) {
+      bytes[j] = binaryString.charCodeAt(j);
     }
+
+    return uploadToStorage(supabase, userId, jobId, bytes, i, outputFormat);
+  });
+
+  const results = await Promise.allSettled(uploadPromises);
+
+  const storagePaths: string[] = [];
+  let hasError = false;
+  let firstError: any = null;
+
+  for (let i = 0; i < results.length; i++) {
+    const result = results[i];
+    if (result.status === "fulfilled") {
+      storagePaths.push(result.value);
+    } else {
+      hasError = true;
+      if (!firstError) firstError = result.reason;
+    }
+  }
+
+  if (hasError) {
+    if (storagePaths.length > 0) {
+      console.warn(`[${jobId}] Base64 upload failed for some images, cleaning up ${storagePaths.length} orphaned files`);
+      await cleanupStorageFiles(supabase, storagePaths);
+    }
+    throw firstError;
   }
 
   return storagePaths;
