@@ -1,0 +1,3 @@
+## 2025-03-04 - Optimize CachedNetworkImage Memory Decoding in Grids
+**Learning:** In Flutter applications, using `CachedNetworkImage` to display high-resolution images in grids or lists without specifying `memCacheWidth` or `memCacheHeight` forces the framework to decode the images at full resolution. This leads to massive memory bloating and potential Out-Of-Memory (OOM) crashes, especially on lower-end devices or when rapidly scrolling.
+**Action:** Always configure `memCacheWidth` (e.g., to 400 for typical thumbnails) or `memCacheHeight` when using `CachedNetworkImage` for list/grid items to optimize memory footprint during image decoding.

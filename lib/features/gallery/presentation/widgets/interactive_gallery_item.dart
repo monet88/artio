@@ -200,6 +200,7 @@ class _InteractiveGalleryItemState extends ConsumerState<InteractiveGalleryItem>
                 child: CachedNetworkImage(
                   key: ValueKey(_retryCount),
                   imageUrl: signedUrl,
+                  memCacheWidth: 400, // Optimize memory usage for grid thumbnails
                   // Use the stable storage path as cache key so the cached
                   // image survives signed URL expiry (signed URL rotates,
                   // but the content is the same file).
