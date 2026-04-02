@@ -34,8 +34,6 @@ SubscriptionPackage _pkg({
   nativePackage: Object(),
 );
 
-
-
 void main() {
   setUpAll(() {
     registerFallbackValue(
@@ -228,13 +226,17 @@ void main() {
       'auto-selects non-pro (ultra) plan when both pro and ultra available',
       (tester) async {
         final proMonthly = _pkg(identifier: 'artio_pro_monthly', price: 9.99);
-        final ultraMonthly =
-            _pkg(identifier: 'artio_ultra_monthly', price: 19.99);
+        final ultraMonthly = _pkg(
+          identifier: 'artio_ultra_monthly',
+          price: 19.99,
+        );
 
-        when(mockRepo.getStatus)
-            .thenAnswer((_) async => const SubscriptionStatus());
-        when(mockRepo.getOfferings)
-            .thenAnswer((_) async => [proMonthly, ultraMonthly]);
+        when(
+          mockRepo.getStatus,
+        ).thenAnswer((_) async => const SubscriptionStatus());
+        when(
+          mockRepo.getOfferings,
+        ).thenAnswer((_) async => [proMonthly, ultraMonthly]);
 
         await tester.pumpWidget(
           ProviderScope(
@@ -251,31 +253,32 @@ void main() {
       },
     );
 
-    testWidgets(
-      'falls back to first package (pro) when all packages are pro',
-      (tester) async {
-        final proMonthly = _pkg(identifier: 'artio_pro_monthly', price: 9.99);
-        final proYearly = _pkg(identifier: 'artio_pro_yearly', price: 79.99);
+    testWidgets('falls back to first package (pro) when all packages are pro', (
+      tester,
+    ) async {
+      final proMonthly = _pkg(identifier: 'artio_pro_monthly', price: 9.99);
+      final proYearly = _pkg(identifier: 'artio_pro_yearly', price: 79.99);
 
-        when(mockRepo.getStatus)
-            .thenAnswer((_) async => const SubscriptionStatus());
-        when(mockRepo.getOfferings)
-            .thenAnswer((_) async => [proMonthly, proYearly]);
+      when(
+        mockRepo.getStatus,
+      ).thenAnswer((_) async => const SubscriptionStatus());
+      when(
+        mockRepo.getOfferings,
+      ).thenAnswer((_) async => [proMonthly, proYearly]);
 
-        await tester.pumpWidget(
-          ProviderScope(
-            overrides: [
-              subscriptionRepositoryProvider.overrideWith((_) => mockRepo),
-            ],
-            child: const MaterialApp(home: PaywallScreen()),
-          ),
-        );
-        await tester.pumpAndSettle();
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            subscriptionRepositoryProvider.overrideWith((_) => mockRepo),
+          ],
+          child: const MaterialApp(home: PaywallScreen()),
+        ),
+      );
+      await tester.pumpAndSettle();
 
-        // All pro → falls back to packages.first → CTA should be active
-        expect(find.text('Subscribe Now'), findsOneWidget);
-      },
-    );
+      // All pro → falls back to packages.first → CTA should be active
+      expect(find.text('Subscribe Now'), findsOneWidget);
+    });
   });
 
   group('_handlePurchase', () {
@@ -290,62 +293,61 @@ void main() {
 
     setUp(() {
       mockRepo = MockSubscriptionRepository();
-      when(() => mockRepo.getStatus())
-          .thenAnswer((_) async => const SubscriptionStatus());
-      when(() => mockRepo.getOfferings())
-          .thenAnswer((_) async => [ultraMonthly]);
+      when(
+        () => mockRepo.getStatus(),
+      ).thenAnswer((_) async => const SubscriptionStatus());
+      when(
+        () => mockRepo.getOfferings(),
+      ).thenAnswer((_) async => [ultraMonthly]);
     });
 
     Widget buildPurchaseWidget() => ProviderScope(
-          overrides: [
-            authViewModelProvider.overrideWith(MockAuthViewModel.new),
-            subscriptionRepositoryProvider.overrideWith((_) => mockRepo),
-          ],
-          child: const MaterialApp(home: PaywallScreen()),
-        );
-
-    testWidgets(
-      'cancelled purchase shows no snackbar',
-      (tester) async {
-        when(() => mockRepo.purchase(any())).thenThrow(
-          const AppException.payment(
-            message: 'Cancelled by user',
-            code: 'user_cancelled',
-          ),
-        );
-
-        await tester.pumpWidget(buildPurchaseWidget());
-        await tester.pumpAndSettle();
-
-        await tester.tap(find.text('Subscribe Now'));
-        await tester.pumpAndSettle();
-
-        expect(find.byType(SnackBar), findsNothing);
-      },
+      overrides: [
+        authViewModelProvider.overrideWith(MockAuthViewModel.new),
+        subscriptionRepositoryProvider.overrideWith((_) => mockRepo),
+      ],
+      child: const MaterialApp(home: PaywallScreen()),
     );
 
-    testWidgets(
-      'non-cancel purchase error shows error snackbar',
-      (tester) async {
-        when(() => mockRepo.purchase(any())).thenThrow(
-          const AppException.network(message: 'No internet connection'),
-        );
+    testWidgets('cancelled purchase shows no snackbar', (tester) async {
+      when(() => mockRepo.purchase(any())).thenThrow(
+        const AppException.payment(
+          message: 'Cancelled by user',
+          code: 'user_cancelled',
+        ),
+      );
 
-        await tester.pumpWidget(buildPurchaseWidget());
-        await tester.pumpAndSettle();
+      await tester.pumpWidget(buildPurchaseWidget());
+      await tester.pumpAndSettle();
 
-        await tester.tap(find.text('Subscribe Now'));
-        await tester.pumpAndSettle();
+      await tester.tap(find.text('Subscribe Now'));
+      await tester.pumpAndSettle();
 
-        expect(find.byType(SnackBar), findsOneWidget);
-      },
-    );
+      expect(find.byType(SnackBar), findsNothing);
+    });
+
+    testWidgets('non-cancel purchase error shows error snackbar', (
+      tester,
+    ) async {
+      when(() => mockRepo.purchase(any())).thenThrow(
+        const AppException.network(message: 'No internet connection'),
+      );
+
+      await tester.pumpWidget(buildPurchaseWidget());
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Subscribe Now'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(SnackBar), findsOneWidget);
+    });
 
     testWidgets(
       'purchase succeeds but subscription inactive shows warning snackbar',
       (tester) async {
-        when(() => mockRepo.purchase(any()))
-            .thenAnswer((_) async => const SubscriptionStatus());
+        when(
+          () => mockRepo.purchase(any()),
+        ).thenAnswer((_) async => const SubscriptionStatus());
 
         await tester.pumpWidget(buildPurchaseWidget());
         await tester.pumpAndSettle();
@@ -360,53 +362,51 @@ void main() {
       },
     );
 
-    testWidgets(
-      'purchase succeeds and active shows success snackbar',
-      (tester) async {
-        when(() => mockRepo.purchase(any())).thenAnswer(
-          (_) async => const SubscriptionStatus(isActive: true, tier: 'ultra'),
-        );
+    testWidgets('purchase succeeds and active shows success snackbar', (
+      tester,
+    ) async {
+      when(() => mockRepo.purchase(any())).thenAnswer(
+        (_) async => const SubscriptionStatus(isActive: true, tier: 'ultra'),
+      );
 
-        // PaywallScreen calls Navigator.pop() on success — push it onto a
-        // navigator stack so pop() returns to the parent instead of
-        // destroying the route (which would dismiss the SnackBar).
-        await tester.pumpWidget(
-          ProviderScope(
-            overrides: [
-              authViewModelProvider.overrideWith(MockAuthViewModel.new),
-              subscriptionRepositoryProvider.overrideWith((_) => mockRepo),
-            ],
-            child: MaterialApp(
-              home: Builder(
-                builder: (context) => Scaffold(
-                  body: ElevatedButton(
-                    onPressed: () => Navigator.of(context).push(
-                      MaterialPageRoute<void>(
-                        builder: (_) => const PaywallScreen(),
-                      ),
+      // PaywallScreen calls Navigator.pop() on success — push it onto a
+      // navigator stack so pop() returns to the parent instead of
+      // destroying the route (which would dismiss the SnackBar).
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            authViewModelProvider.overrideWith(MockAuthViewModel.new),
+            subscriptionRepositoryProvider.overrideWith((_) => mockRepo),
+          ],
+          child: MaterialApp(
+            home: Builder(
+              builder: (context) => Scaffold(
+                body: ElevatedButton(
+                  onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => const PaywallScreen(),
                     ),
-                    child: const Text('Open'),
                   ),
+                  child: const Text('Open'),
                 ),
               ),
             ),
           ),
-        );
-        await tester.pumpAndSettle();
-        await tester.tap(find.text('Open'));
-        await tester.pumpAndSettle();
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Open'));
+      await tester.pumpAndSettle();
 
-        await tester.tap(find.text('Subscribe Now'));
-        await tester.pumpAndSettle();
+      await tester.tap(find.text('Subscribe Now'));
+      await tester.pumpAndSettle();
 
-        expect(
-          find.text('🎉 Subscription activated! Welcome to Premium.'),
-          findsOneWidget,
-        );
-      },
-    );
+      expect(
+        find.text('🎉 Subscription activated! Welcome to Premium.'),
+        findsOneWidget,
+      );
+    });
   });
-
 
   group('savingsPercent', () {
     final proMonthly = _pkg(identifier: 'artio_pro_monthly', price: 9.99);

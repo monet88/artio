@@ -198,7 +198,10 @@ class SettingsSections extends ConsumerWidget {
               title: 'Privacy Policy',
               trailing: SettingsChevronArrow(isDark: isDark),
               isDark: isDark,
-              onTap: () => launchInAppUrl(context, 'https://ainear.github.io/artio-legal/privacy.html'),
+              onTap: () => launchInAppUrl(
+                context,
+                'https://ainear.github.io/artio-legal/privacy.html',
+              ),
             ),
             SettingsDivider(isDark: isDark),
             SettingsTile(
@@ -207,7 +210,10 @@ class SettingsSections extends ConsumerWidget {
               title: 'Terms of Service',
               trailing: SettingsChevronArrow(isDark: isDark),
               isDark: isDark,
-              onTap: () => launchInAppUrl(context, 'https://ainear.github.io/artio-legal/terms.html'),
+              onTap: () => launchInAppUrl(
+                context,
+                'https://ainear.github.io/artio-legal/terms.html',
+              ),
             ),
             SettingsDivider(isDark: isDark),
             SettingsTile(

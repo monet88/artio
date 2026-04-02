@@ -29,31 +29,28 @@ Widget _buildTestWidget({
 }) {
   return ProviderScope(
     overrides: overrides,
-    child: MaterialApp(
-      home: Scaffold(body: child),
-    ),
+    child: MaterialApp(home: Scaffold(body: child)),
   );
 }
 
 void main() {
   group('InteractiveGalleryItem — provider error retry', () {
-    testWidgets('shows RetryTextButton when provider returns error',
-        (tester) async {
+    testWidgets('shows RetryTextButton when provider returns error', (
+      tester,
+    ) async {
       final item = _completedItem();
 
       await tester.pumpWidget(
         _buildTestWidget(
           overrides: [
-            signedStorageUrlProvider(item.imageUrl!)
-                .overrideWith((_) => throw Exception('network error')),
+            signedStorageUrlProvider(
+              item.imageUrl!,
+            ).overrideWith((_) => throw Exception('network error')),
           ],
           child: SizedBox(
             width: 200,
             height: 200,
-            child: InteractiveGalleryItem(
-              item: item,
-              onTap: () {},
-            ),
+            child: InteractiveGalleryItem(item: item, onTap: () {}),
           ),
         ),
       );
@@ -79,10 +76,7 @@ void main() {
           child: SizedBox(
             width: 200,
             height: 200,
-            child: InteractiveGalleryItem(
-              item: item,
-              onTap: () {},
-            ),
+            child: InteractiveGalleryItem(item: item, onTap: () {}),
           ),
         ),
       );
@@ -100,8 +94,7 @@ void main() {
   });
 
   group('InteractiveGalleryItem — CachedNetworkImage retry', () {
-    testWidgets('initial CachedNetworkImage has ValueKey(0)',
-        (tester) async {
+    testWidgets('initial CachedNetworkImage has ValueKey(0)', (tester) async {
       final item = _completedItem();
       const resolvedUrl = 'https://example.com/signed/test.jpg';
 
@@ -124,55 +117,52 @@ void main() {
       final cachedImageFinder = find.byType(CachedNetworkImage);
       expect(cachedImageFinder, findsOneWidget);
 
-      final cachedImage =
-          tester.widget<CachedNetworkImage>(cachedImageFinder);
+      final cachedImage = tester.widget<CachedNetworkImage>(cachedImageFinder);
       expect(cachedImage.key, equals(const ValueKey(0)));
     });
 
     testWidgets(
-        'without resolvedUrl, provider error retry does not affect retryCount',
-        (tester) async {
-      var callCount = 0;
-      final item = _completedItem();
+      'without resolvedUrl, provider error retry does not affect retryCount',
+      (tester) async {
+        var callCount = 0;
+        final item = _completedItem();
 
-      await tester.pumpWidget(
-        _buildTestWidget(
-          overrides: [
-            signedStorageUrlProvider(item.imageUrl!).overrideWith((_) {
-              callCount++;
-              throw Exception('network error');
-            }),
-          ],
-          child: SizedBox(
-            width: 200,
-            height: 200,
-            child: InteractiveGalleryItem(
-              item: item,
-              onTap: () {},
+        await tester.pumpWidget(
+          _buildTestWidget(
+            overrides: [
+              signedStorageUrlProvider(item.imageUrl!).overrideWith((_) {
+                callCount++;
+                throw Exception('network error');
+              }),
+            ],
+            child: SizedBox(
+              width: 200,
+              height: 200,
+              child: InteractiveGalleryItem(item: item, onTap: () {}),
             ),
           ),
-        ),
-      );
-      await tester.pumpAndSettle();
+        );
+        await tester.pumpAndSettle();
 
-      final initialCallCount = callCount;
+        final initialCallCount = callCount;
 
-      // Tap retry — should invalidate the provider
-      await tester.tap(find.byType(RetryTextButton));
-      await tester.pumpAndSettle();
+        // Tap retry — should invalidate the provider
+        await tester.tap(find.byType(RetryTextButton));
+        await tester.pumpAndSettle();
 
-      // Provider was called again (re-evaluated after invalidation)
-      expect(callCount, greaterThan(initialCallCount));
+        // Provider was called again (re-evaluated after invalidation)
+        expect(callCount, greaterThan(initialCallCount));
 
-      // No CachedNetworkImage exists (still in error state, no ValueKey
-      // to check) — the retry path for provider error goes through
-      // ref.invalidate, not _retryCount++
-      expect(find.byType(CachedNetworkImage), findsNothing);
-    });
+        // No CachedNetworkImage exists (still in error state, no ValueKey
+        // to check) — the retry path for provider error goes through
+        // ref.invalidate, not _retryCount++
+        expect(find.byType(CachedNetworkImage), findsNothing);
+      },
+    );
 
-    testWidgets(
-        'with resolvedUrl, signed URL provider is not used',
-        (tester) async {
+    testWidgets('with resolvedUrl, signed URL provider is not used', (
+      tester,
+    ) async {
       var providerCalled = false;
       final item = _completedItem();
       const resolvedUrl = 'https://example.com/signed/test.jpg';

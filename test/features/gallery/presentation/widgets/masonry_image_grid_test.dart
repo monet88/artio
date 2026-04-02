@@ -14,8 +14,9 @@ class _StubStorageUrlService implements StorageUrlService {
   Future<String?> signedUrl(String path) async => path;
 
   @override
-  Future<Map<String, String?>> signedUrls(List<String> paths) async =>
-      {for (final path in paths) path: path};
+  Future<Map<String, String?>> signedUrls(List<String> paths) async => {
+    for (final path in paths) path: path,
+  };
 }
 
 void main() {
@@ -31,7 +32,9 @@ void main() {
     Widget buildWidget(List<GalleryItem> items, {bool showWatermark = false}) {
       return ProviderScope(
         overrides: [
-          storageUrlServiceProvider.overrideWith((_) => _StubStorageUrlService()),
+          storageUrlServiceProvider.overrideWith(
+            (_) => _StubStorageUrlService(),
+          ),
         ],
         child: MaterialApp(
           home: Scaffold(

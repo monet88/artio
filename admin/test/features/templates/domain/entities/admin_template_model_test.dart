@@ -39,16 +39,22 @@ void main() {
       test('emits sort_order key', () {
         final model = _model(order: 5);
         final json = model.toJson();
-        expect(json.containsKey('sort_order'), isTrue,
-            reason: 'toJson must emit sort_order key');
+        expect(
+          json.containsKey('sort_order'),
+          isTrue,
+          reason: 'toJson must emit sort_order key',
+        );
         expect(json['sort_order'], 5);
       });
 
       test('does NOT emit order key', () {
         final model = _model();
         final json = model.toJson();
-        expect(json.containsKey('order'), isFalse,
-            reason: 'toJson must NOT emit order key');
+        expect(
+          json.containsKey('order'),
+          isFalse,
+          reason: 'toJson must NOT emit order key',
+        );
       });
     });
 
@@ -83,35 +89,35 @@ void main() {
 // -- Helpers --
 
 Map<String, dynamic> _minimalJson({int sortOrder = 0}) => {
-      'id': 'test-id',
-      'name': 'Test',
-      'description': 'Desc',
-      'category': 'Test',
-      'prompt_template': 'Generate {prompt}',
-      'sort_order': sortOrder,
-    };
+  'id': 'test-id',
+  'name': 'Test',
+  'description': 'Desc',
+  'category': 'Test',
+  'prompt_template': 'Generate {prompt}',
+  'sort_order': sortOrder,
+};
 
 Map<String, dynamic> _fullJson() => {
-      'id': 'test-id',
-      'name': 'Test Template',
-      'description': 'A test template',
-      'category': 'Portrait & Face Effects',
-      'prompt_template': 'Generate {prompt}',
-      'sort_order': 3,
-      'is_premium': true,
-      'is_active': false,
-      'thumbnail_url': 'https://example.com/thumb.png',
-      'default_aspect_ratio': '16:9',
-      'input_fields': [
-        {'type': 'text', 'name': 'prompt'},
-      ],
-    };
+  'id': 'test-id',
+  'name': 'Test Template',
+  'description': 'A test template',
+  'category': 'Portrait & Face Effects',
+  'prompt_template': 'Generate {prompt}',
+  'sort_order': 3,
+  'is_premium': true,
+  'is_active': false,
+  'thumbnail_url': 'https://example.com/thumb.png',
+  'default_aspect_ratio': '16:9',
+  'input_fields': [
+    {'type': 'text', 'name': 'prompt'},
+  ],
+};
 
 AdminTemplateModel _model({int order = 0}) => AdminTemplateModel(
-      id: 'test-id',
-      name: 'Test',
-      description: 'Desc',
-      category: 'Test',
-      promptTemplate: 'Generate {prompt}',
-      order: order,
-    );
+  id: 'test-id',
+  name: 'Test',
+  description: 'Desc',
+  category: 'Test',
+  promptTemplate: 'Generate {prompt}',
+  order: order,
+);

@@ -100,9 +100,7 @@ void main() {
       expect(capturedValue, 'Option B');
     });
 
-    testWidgets('renders image input widget for image type', (
-      tester,
-    ) async {
+    testWidgets('renders image input widget for image type', (tester) async {
       const field = InputFieldModel(
         name: 'reference',
         label: 'Reference Image',

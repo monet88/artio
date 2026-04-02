@@ -33,13 +33,19 @@ void main() {
           .order('sort_order', ascending: true);
 
       // Verify minimum count (admin may add more)
-      expect(response.length, greaterThanOrEqualTo(25),
-          reason: 'Should have at least 25 seed templates');
+      expect(
+        response.length,
+        greaterThanOrEqualTo(25),
+        reason: 'Should have at least 25 seed templates',
+      );
 
       // Verify core categories exist
       final categories = response.map((t) => t['category'] as String).toSet();
-      expect(categories.length, greaterThanOrEqualTo(5),
-          reason: 'Should have at least 5 categories');
+      expect(
+        categories.length,
+        greaterThanOrEqualTo(5),
+        reason: 'Should have at least 5 categories',
+      );
 
       expect(categories, contains('Portrait & Face Effects'));
       expect(categories, contains('Removal & Editing'));
@@ -50,12 +56,18 @@ void main() {
       // Verify sort_order is ascending and positive
       for (var i = 0; i < response.length; i++) {
         final sortOrder = response[i]['sort_order'] as int;
-        expect(sortOrder, greaterThan(0),
-            reason: 'Template at index $i should have positive sort_order');
+        expect(
+          sortOrder,
+          greaterThan(0),
+          reason: 'Template at index $i should have positive sort_order',
+        );
         if (i > 0) {
           final prevOrder = response[i - 1]['sort_order'] as int;
-          expect(sortOrder, greaterThanOrEqualTo(prevOrder),
-              reason: 'sort_order should be ascending');
+          expect(
+            sortOrder,
+            greaterThanOrEqualTo(prevOrder),
+            reason: 'sort_order should be ascending',
+          );
         }
       }
 
@@ -89,8 +101,11 @@ void main() {
         'AI Emoji Maker',
       ];
       for (final seed in seedNames) {
-        expect(names, contains(seed),
-            reason: 'Seed template "$seed" should exist');
+        expect(
+          names,
+          contains(seed),
+          reason: 'Seed template "$seed" should exist',
+        );
       }
 
       debugPrint('✅ ${response.length} templates verified (≥25 seed)');
@@ -112,14 +127,13 @@ void main() {
       }
 
       // Verify core categories have at least their seed counts
-      expect(categoryCounts['Portrait & Face Effects'],
-          greaterThanOrEqualTo(7));
       expect(
-          categoryCounts['Removal & Editing'], greaterThanOrEqualTo(4));
-      expect(
-          categoryCounts['Art Style Transfer'], greaterThanOrEqualTo(6));
-      expect(
-          categoryCounts['Photo Enhancement'], greaterThanOrEqualTo(4));
+        categoryCounts['Portrait & Face Effects'],
+        greaterThanOrEqualTo(7),
+      );
+      expect(categoryCounts['Removal & Editing'], greaterThanOrEqualTo(4));
+      expect(categoryCounts['Art Style Transfer'], greaterThanOrEqualTo(6));
+      expect(categoryCounts['Photo Enhancement'], greaterThanOrEqualTo(4));
       expect(categoryCounts['Creative & Fun'], greaterThanOrEqualTo(4));
 
       debugPrint('✅ Category distribution verified (≥ seed counts):');

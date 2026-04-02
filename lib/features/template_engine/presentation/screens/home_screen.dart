@@ -140,8 +140,10 @@ class _LowCreditBanner extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final balance =
-        ref.watch(creditBalanceNotifierProvider).valueOrNull?.balance;
+    final balance = ref
+        .watch(creditBalanceNotifierProvider)
+        .valueOrNull
+        ?.balance;
     final subscriptionAsync = ref.watch(subscriptionNotifierProvider);
 
     // Hide banner while subscription is loading or errored to avoid false alarm.
@@ -164,9 +166,7 @@ class _LowCreditBanner extends ConsumerWidget {
       decoration: BoxDecoration(
         color: _warningColor.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: _warningColor.withValues(alpha: 0.4),
-        ),
+        border: Border.all(color: _warningColor.withValues(alpha: 0.4)),
       ),
       child: Row(
         children: [

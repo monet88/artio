@@ -68,10 +68,7 @@ class ImageInputWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: theme.textTheme.bodyMedium,
-        ),
+        Text(label, style: theme.textTheme.bodyMedium),
         const SizedBox(height: 8),
         if (hasFile)
           _ImagePreview(
@@ -147,10 +144,7 @@ class _ImagePreview extends StatelessWidget {
 }
 
 class _ImagePlaceholder extends StatelessWidget {
-  const _ImagePlaceholder({
-    required this.isRequired,
-    required this.onTap,
-  });
+  const _ImagePlaceholder({required this.isRequired, required this.onTap});
 
   final bool isRequired;
   final VoidCallback onTap;
@@ -165,9 +159,7 @@ class _ImagePlaceholder extends StatelessWidget {
         height: 160,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: theme.colorScheme.outline.withAlpha(100),
-          ),
+          border: Border.all(color: theme.colorScheme.outline.withAlpha(100)),
           color: theme.colorScheme.surfaceContainerLow,
         ),
         child: Center(

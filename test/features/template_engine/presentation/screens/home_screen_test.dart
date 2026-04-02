@@ -25,10 +25,10 @@ class MockAuthViewModel extends AuthViewModel {
 }
 
 CreditBalance _makeCreditBalance(int balance) => CreditBalance(
-      userId: 'test-user',
-      balance: balance,
-      updatedAt: DateTime(2025),
-    );
+  userId: 'test-user',
+  balance: balance,
+  updatedAt: DateTime(2025),
+);
 
 void main() {
   group('HomeScreen', () {
@@ -118,8 +118,9 @@ void main() {
     });
 
     group('credit chip', () {
-      testWidgets('displays balance when creditBalanceNotifier has data',
-          (tester) async {
+      testWidgets('displays balance when creditBalanceNotifier has data', (
+        tester,
+      ) async {
         when(
           () => mockTemplateRepository.fetchTemplates(),
         ).thenAnswer((_) async => []);
@@ -161,57 +162,58 @@ void main() {
     });
 
     group('_LowCreditBanner', () {
-      testWidgets('shows banner when balance < 20 and user is not a subscriber',
-          (tester) async {
-        when(
-          () => mockTemplateRepository.fetchTemplates(),
-        ).thenAnswer((_) async => []);
+      testWidgets(
+        'shows banner when balance < 20 and user is not a subscriber',
+        (tester) async {
+          when(
+            () => mockTemplateRepository.fetchTemplates(),
+          ).thenAnswer((_) async => []);
 
-        await tester.pumpWidget(
-          createTestWidget(
-            overrides: [
-              creditBalanceNotifierProvider.overrideWith(
-                () => _FakeCreditBalanceNotifier(balance: 5),
-              ),
-              subscriptionNotifierProvider.overrideWith(
-                () => _FakeSubscriptionNotifier(isActive: false),
-              ),
-            ],
-          ),
-        );
-        await tester.pump();
+          await tester.pumpWidget(
+            createTestWidget(
+              overrides: [
+                creditBalanceNotifierProvider.overrideWith(
+                  () => _FakeCreditBalanceNotifier(balance: 5),
+                ),
+                subscriptionNotifierProvider.overrideWith(
+                  () => _FakeSubscriptionNotifier(isActive: false),
+                ),
+              ],
+            ),
+          );
+          await tester.pump();
 
-        expect(find.text('⚡'), findsOneWidget);
-        expect(find.text('Upgrade'), findsOneWidget);
-        expect(
-          find.textContaining('Only 5 credits left'),
-          findsOneWidget,
-        );
-      });
+          expect(find.text('⚡'), findsOneWidget);
+          expect(find.text('Upgrade'), findsOneWidget);
+          expect(find.textContaining('Only 5 credits left'), findsOneWidget);
+        },
+      );
 
-      testWidgets('hides banner when user is a subscriber even if balance < 20',
-          (tester) async {
-        when(
-          () => mockTemplateRepository.fetchTemplates(),
-        ).thenAnswer((_) async => []);
+      testWidgets(
+        'hides banner when user is a subscriber even if balance < 20',
+        (tester) async {
+          when(
+            () => mockTemplateRepository.fetchTemplates(),
+          ).thenAnswer((_) async => []);
 
-        await tester.pumpWidget(
-          createTestWidget(
-            overrides: [
-              creditBalanceNotifierProvider.overrideWith(
-                () => _FakeCreditBalanceNotifier(balance: 5),
-              ),
-              subscriptionNotifierProvider.overrideWith(
-                () => _FakeSubscriptionNotifier(isActive: true),
-              ),
-            ],
-          ),
-        );
-        await tester.pump();
+          await tester.pumpWidget(
+            createTestWidget(
+              overrides: [
+                creditBalanceNotifierProvider.overrideWith(
+                  () => _FakeCreditBalanceNotifier(balance: 5),
+                ),
+                subscriptionNotifierProvider.overrideWith(
+                  () => _FakeSubscriptionNotifier(isActive: true),
+                ),
+              ],
+            ),
+          );
+          await tester.pump();
 
-        expect(find.text('⚡'), findsNothing);
-        expect(find.text('Upgrade'), findsNothing);
-      });
+          expect(find.text('⚡'), findsNothing);
+          expect(find.text('Upgrade'), findsNothing);
+        },
+      );
 
       testWidgets('hides banner when balance >= 20', (tester) async {
         when(
@@ -236,7 +238,9 @@ void main() {
         expect(find.text('Upgrade'), findsNothing);
       });
 
-      testWidgets('hides banner when balance is null (loading)', (tester) async {
+      testWidgets('hides banner when balance is null (loading)', (
+        tester,
+      ) async {
         when(
           () => mockTemplateRepository.fetchTemplates(),
         ).thenAnswer((_) async => []);
@@ -295,8 +299,7 @@ class _FakeCreditBalanceNotifier extends CreditBalanceNotifier {
   final int balance;
 
   @override
-  Stream<CreditBalance> build() =>
-      Stream.value(_makeCreditBalance(balance));
+  Stream<CreditBalance> build() => Stream.value(_makeCreditBalance(balance));
 }
 
 class _NeverLoadingCreditBalanceNotifier extends CreditBalanceNotifier {

@@ -6,6 +6,7 @@ import 'package:artio/features/gallery/presentation/constants/gallery_strings.da
 import 'package:artio/shared/widgets/animated_retry_button.dart';
 import 'package:artio/shared/widgets/watermark_overlay.dart';
 import 'package:artio/theme/app_colors.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -73,55 +74,57 @@ class ImageViewerImagePage extends ConsumerWidget {
                       ),
                     ),
                     error: (_, __) => _ViewerErrorPlaceholder(
-                      onRetry: () => ref.invalidate(
-                        signedStorageUrlProvider(rawPath!),
-                      ),
+                      onRetry: () =>
+                          ref.invalidate(signedStorageUrlProvider(rawPath!)),
                     ),
                     data: (signedUrl) => signedUrl == null
                         ? const SizedBox.shrink()
-                        : Image.network(
-                            signedUrl,
+                        : CachedNetworkImage(
+                            imageUrl: signedUrl,
+                            // ⚡ Bolt Optimization: Use raw storage path as cache key
+                            // This ensures the image stays cached even when the signed URL expires
+                            // and rotates, preventing redundant downloads when opening the viewer
+                            cacheKey: rawPath,
                             fit: BoxFit.contain,
-                            loadingBuilder: (context, child, loadingProgress) {
-                              if (loadingProgress == null) return child;
-                              final progress =
-                                  loadingProgress.expectedTotalBytes != null
-                                  ? loadingProgress.cumulativeBytesLoaded /
-                                        loadingProgress.expectedTotalBytes!
-                                  : null;
-                              return Center(
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    SizedBox(
-                                      width: 48,
-                                      height: 48,
-                                      child: CircularProgressIndicator(
-                                        value: progress,
-                                        strokeWidth: 2.5,
-                                        color: AppColors.primaryCta,
-                                        backgroundColor: AppColors.white10,
-                                      ),
-                                    ),
-                                    if (progress != null) ...[
-                                      const SizedBox(height: 12),
-                                      Text(
-                                        '${(progress * 100).toInt()}%',
-                                        style: const TextStyle(
-                                          color: AppColors.textMuted,
-                                          fontSize: 13,
+                            progressIndicatorBuilder:
+                                (context, url, downloadProgress) {
+                                  final progress = downloadProgress.progress;
+                                  return Center(
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        SizedBox(
+                                          width: 48,
+                                          height: 48,
+                                          child: CircularProgressIndicator(
+                                            value: progress,
+                                            strokeWidth: 2.5,
+                                            color: AppColors.primaryCta,
+                                            backgroundColor: AppColors.white10,
+                                          ),
                                         ),
-                                      ),
-                                    ],
-                                  ],
-                                ),
-                              );
-                            },
-                            errorBuilder: (context, error, stackTrace) =>
+                                        if (progress != null) ...[
+                                          const SizedBox(height: 12),
+                                          Text(
+                                            '${(progress * 100).toInt()}%',
+                                            style: const TextStyle(
+                                              color: AppColors.textMuted,
+                                              fontSize: 13,
+                                            ),
+                                          ),
+                                        ],
+                                      ],
+                                    ),
+                                  );
+                                },
+                            errorWidget: (context, url, error) =>
                                 _ViewerErrorPlaceholder(
-                                  onRetry: () => ref.invalidate(
-                                    signedStorageUrlProvider(rawPath!),
-                                  ),
+                                  onRetry: () {
+                                    CachedNetworkImage.evictFromCache(rawPath!);
+                                    ref.invalidate(
+                                      signedStorageUrlProvider(rawPath),
+                                    );
+                                  },
                                 ),
                           ),
                   ),
@@ -148,24 +151,15 @@ class _ViewerErrorPlaceholder extends StatelessWidget {
           blendMode: BlendMode.srcIn,
           shaderCallback: (bounds) =>
               AppGradients.primaryGradient.createShader(bounds),
-          child: const Icon(
-            Icons.broken_image_rounded,
-            size: 56,
-          ),
+          child: const Icon(Icons.broken_image_rounded, size: 56),
         ),
         const SizedBox(height: AppSpacing.md),
         const Text(
           GalleryStrings.failedToLoadImage,
-          style: TextStyle(
-            color: AppColors.textMuted,
-            fontSize: 14,
-          ),
+          style: TextStyle(color: AppColors.textMuted, fontSize: 14),
         ),
         const SizedBox(height: AppSpacing.sm),
-        AnimatedRetryButton(
-          onPressed: onRetry,
-          color: AppColors.primaryCta,
-        ),
+        AnimatedRetryButton(onPressed: onRetry, color: AppColors.primaryCta),
       ],
     );
   }
