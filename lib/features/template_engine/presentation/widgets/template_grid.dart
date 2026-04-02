@@ -119,6 +119,14 @@ class _StaggeredGridState extends State<_StaggeredGrid>
     final templates = widget.templates;
     final itemCount = templates.length;
 
+    // Pre-calculate stagger constants to avoid redundant math in the render loop.
+    const maxItems = AppAnimations.maxStaggerItems;
+    final clampedItemCount = templates.length.clamp(0, maxItems);
+    final totalStaggerTime =
+        AppAnimations.staggerDelay.inMilliseconds * clampedItemCount;
+    final totalDuration =
+        AppAnimations.normal.inMilliseconds + totalStaggerTime;
+
     return SliverPadding(
       padding: AppSpacing.screenPadding,
       sliver: SliverGrid.builder(
@@ -131,13 +139,7 @@ class _StaggeredGridState extends State<_StaggeredGrid>
         itemCount: itemCount,
         itemBuilder: (context, index) {
           // Stagger calculation
-          const maxItems = AppAnimations.maxStaggerItems;
-          final clampedItemCount = templates.length.clamp(0, maxItems);
           final staggerIndex = index.clamp(0, maxItems);
-          final totalStaggerTime =
-              AppAnimations.staggerDelay.inMilliseconds * clampedItemCount;
-          final totalDuration =
-              AppAnimations.normal.inMilliseconds + totalStaggerTime;
 
           final startFraction =
               (staggerIndex * AppAnimations.staggerDelay.inMilliseconds) /
