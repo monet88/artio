@@ -27,6 +27,9 @@ class MasonryImageGrid extends ConsumerStatefulWidget {
 class _MasonryImageGridState extends ConsumerState<MasonryImageGrid>
     with SingleTickerProviderStateMixin {
   late final AnimationController _staggerController;
+  // Pre-calculated animations to avoid O(n) object creation in itemBuilder
+  late final List<Animation<double>> _itemAnimations;
+
   // Stable list instance: only replaced when item URLs actually change.
   // Prevents gallerySignedUrlsProvider from re-firing on every rebuild
   // because Riverpod family uses List identity equality.
@@ -55,7 +58,39 @@ class _MasonryImageGridState extends ConsumerState<MasonryImageGrid>
             (AppAnimations.staggerDelay.inMilliseconds *
                 widget.items.length.clamp(0, AppAnimations.maxStaggerItems)),
       ),
-    )..forward();
+    );
+    _setupAnimations();
+    _staggerController.forward();
+  }
+
+  /// Memoizes staggered animations to prevent creating new Tweens during every scroll
+  /// tick in the `itemBuilder`. Reduces memory churn and improves scroll performance.
+  void _setupAnimations() {
+    const maxItems = AppAnimations.maxStaggerItems;
+    final clampedItemCount = widget.items.length.clamp(0, maxItems);
+    final totalStaggerTime = AppAnimations.staggerDelay.inMilliseconds * clampedItemCount;
+    final totalDuration = AppAnimations.normal.inMilliseconds + totalStaggerTime;
+
+    _itemAnimations = List.generate(maxItems + 1, (staggerIndex) {
+      final startFrac =
+          (staggerIndex * AppAnimations.staggerDelay.inMilliseconds) /
+          totalDuration;
+      final endFrac =
+          (staggerIndex * AppAnimations.staggerDelay.inMilliseconds +
+              AppAnimations.normal.inMilliseconds) /
+          totalDuration;
+
+      return Tween<double>(begin: 0, end: 1).animate(
+        CurvedAnimation(
+          parent: _staggerController,
+          curve: Interval(
+            startFrac.clamp(0.0, 1.0),
+            endFrac.clamp(0.0, 1.0),
+            curve: AppAnimations.defaultCurve,
+          ),
+        ),
+      );
+    });
   }
 
   @override
@@ -101,32 +136,10 @@ class _MasonryImageGridState extends ConsumerState<MasonryImageGrid>
       itemBuilder: (context, index) {
         final item = widget.items[index];
 
-        // Stagger animation
+        // Retrieve pre-calculated animation rather than allocating new Tweens
         const maxItems = AppAnimations.maxStaggerItems;
-        final clampedItemCount = widget.items.length.clamp(0, maxItems);
         final staggerIndex = index.clamp(0, maxItems);
-        final totalStaggerTime =
-            AppAnimations.staggerDelay.inMilliseconds * clampedItemCount;
-        final totalDuration =
-            AppAnimations.normal.inMilliseconds + totalStaggerTime;
-        final startFrac =
-            (staggerIndex * AppAnimations.staggerDelay.inMilliseconds) /
-            totalDuration;
-        final endFrac =
-            (staggerIndex * AppAnimations.staggerDelay.inMilliseconds +
-                AppAnimations.normal.inMilliseconds) /
-            totalDuration;
-
-        final itemAnim = Tween<double>(begin: 0, end: 1).animate(
-          CurvedAnimation(
-            parent: _staggerController,
-            curve: Interval(
-              startFrac.clamp(0.0, 1.0),
-              endFrac.clamp(0.0, 1.0),
-              curve: AppAnimations.defaultCurve,
-            ),
-          ),
-        );
+        final itemAnim = _itemAnimations[staggerIndex];
 
         return AnimatedBuilder(
           animation: itemAnim,
