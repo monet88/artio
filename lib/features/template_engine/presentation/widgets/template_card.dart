@@ -79,6 +79,7 @@ class _TemplateCardState extends State<TemplateCard>
                 CachedNetworkImage(
                   imageUrl: template.thumbnailUrl,
                   fit: BoxFit.cover,
+                  memCacheWidth: 400,
                   placeholder: (context, url) => Shimmer.fromColors(
                     baseColor: isDark
                         ? AppColors.shimmerBase
