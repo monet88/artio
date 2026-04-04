@@ -1,0 +1,4 @@
+## 2024-04-04 - Missing REVOKE FROM PUBLIC on SECURITY DEFINER functions
+**Vulnerability:** PostgreSQL automatically grants `EXECUTE` privileges to `PUBLIC` for all newly created functions. Several critical functions (e.g., `deduct_credits`, `update_subscription_status`) were created with `SECURITY DEFINER` (running with elevated privileges) but lacked the explicit `REVOKE EXECUTE ON FUNCTION ... FROM PUBLIC;` statement. This allowed any authenticated (and potentially anonymous) user to execute these functions via Supabase's API.
+**Learning:** Always explicitly revoke `PUBLIC` access when creating `SECURITY DEFINER` functions in PostgreSQL/Supabase unless public execution is strictly intended.
+**Prevention:** Add a `REVOKE EXECUTE ON FUNCTION <name> FROM PUBLIC;` statement immediately after defining any `SECURITY DEFINER` function, and ensure `service_role` or other required roles are explicitly re-granted `EXECUTE` privileges.
