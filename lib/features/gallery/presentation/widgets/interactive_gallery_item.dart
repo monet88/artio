@@ -204,6 +204,9 @@ class _InteractiveGalleryItemState extends ConsumerState<InteractiveGalleryItem>
                   // image survives signed URL expiry (signed URL rotates,
                   // but the content is the same file).
                   cacheKey: item.imageUrl,
+                  // ⚡ Bolt: Prevent OOM errors by limiting memory cache size
+                  // Reduces memory consumption by not decoding full-res images
+                  memCacheWidth: 400,
                   placeholder: (context, url) => AspectRatio(
                     aspectRatio: 1,
                     child: Shimmer.fromColors(
