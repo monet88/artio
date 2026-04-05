@@ -70,14 +70,18 @@ class _InteractiveGalleryItemState extends ConsumerState<InteractiveGalleryItem>
   Widget build(BuildContext context) {
     return ScaleTransition(
       scale: _scaleAnimation,
-      child: GestureDetector(
-        onTap: widget.onTap,
-        onLongPressStart: (_) => _pressController.forward(),
-        onLongPressEnd: (_) => _pressController.reverse(),
-        onTapDown: (_) => _pressController.forward(),
-        onTapUp: (_) => _pressController.reverse(),
-        onTapCancel: () => _pressController.reverse(),
-        child: _buildGalleryItem(context, widget.item),
+      child: Semantics(
+        button: true,
+        label: 'View gallery item',
+        child: GestureDetector(
+          onTap: widget.onTap,
+          onLongPressStart: (_) => _pressController.forward(),
+          onLongPressEnd: (_) => _pressController.reverse(),
+          onTapDown: (_) => _pressController.forward(),
+          onTapUp: (_) => _pressController.reverse(),
+          onTapCancel: () => _pressController.reverse(),
+          child: _buildGalleryItem(context, widget.item),
+        ),
       ),
     );
   }
@@ -165,9 +169,8 @@ class _InteractiveGalleryItemState extends ConsumerState<InteractiveGalleryItem>
           aspectRatio: 1,
           child: _GalleryErrorPlaceholder(
             isDark: isDark,
-            onRetry: () => ref.invalidate(
-              signedStorageUrlProvider(item.imageUrl!),
-            ),
+            onRetry: () =>
+                ref.invalidate(signedStorageUrlProvider(item.imageUrl!)),
           ),
         ),
         data: (signedUrl) {
@@ -221,9 +224,7 @@ class _InteractiveGalleryItemState extends ConsumerState<InteractiveGalleryItem>
                     child: _GalleryErrorPlaceholder(
                       isDark: isDark,
                       onRetry: () {
-                        CachedNetworkImage.evictFromCache(
-                          item.imageUrl!,
-                        );
+                        CachedNetworkImage.evictFromCache(item.imageUrl!);
                         setState(() => _retryCount++);
                         if (widget.resolvedUrl == null) {
                           ref.invalidate(
@@ -254,10 +255,7 @@ class _InteractiveGalleryItemState extends ConsumerState<InteractiveGalleryItem>
 /// Shared error placeholder for gallery grid items.
 /// Displays broken image icon, error text, and retry button.
 class _GalleryErrorPlaceholder extends StatelessWidget {
-  const _GalleryErrorPlaceholder({
-    required this.isDark,
-    required this.onRetry,
-  });
+  const _GalleryErrorPlaceholder({required this.isDark, required this.onRetry});
 
   final bool isDark;
   final VoidCallback onRetry;
@@ -280,8 +278,7 @@ class _GalleryErrorPlaceholder extends StatelessWidget {
             Text(
               GalleryStrings.failedToLoad,
               style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                color:
-                    isDark ? AppColors.textMuted : AppColors.textMutedLight,
+                color: isDark ? AppColors.textMuted : AppColors.textMutedLight,
               ),
             ),
             const SizedBox(height: AppSpacing.sm),

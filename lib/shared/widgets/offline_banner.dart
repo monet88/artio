@@ -127,17 +127,21 @@ class _OfflineBannerState extends ConsumerState<OfflineBanner>
 
               if (!_showReconnected) ...[
                 const Spacer(),
-                GestureDetector(
-                  onTap: () {
-                    _controller.reverse();
-                    ref.invalidate(connectivityProvider);
-                  },
-                  child: const Text(
-                    'Dismiss',
-                    style: TextStyle(
-                      color: Colors.white70,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
+                Semantics(
+                  button: true,
+                  label: 'Dismiss offline banner',
+                  child: GestureDetector(
+                    onTap: () {
+                      _controller.reverse();
+                      ref.invalidate(connectivityProvider);
+                    },
+                    child: const Text(
+                      'Dismiss',
+                      style: TextStyle(
+                        color: Colors.white70,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ),
                 ),
