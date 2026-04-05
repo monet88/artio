@@ -1,0 +1,4 @@
+## 2026-04-05 - Missing REVOKE PUBLIC on SECURITY DEFINER functions
+**Vulnerability:** `SECURITY DEFINER` functions in PostgreSQL grant `EXECUTE` privileges to `PUBLIC` by default, meaning unauthenticated (anon) users can invoke them via the REST API if not explicitly revoked, which can lead to unauthorized data modification (e.g. `deduct_credits`).
+**Learning:** Even if `REVOKE ALL ON FUNCTION <name> FROM authenticated;` is used, the function remains accessible to the `anon` role (which inherits from `PUBLIC`). The default Postgres behavior must be explicitly overridden for all `SECURITY DEFINER` functions exposed by Supabase.
+**Prevention:** Always explicitly run `REVOKE EXECUTE ON FUNCTION <name> FROM PUBLIC;` after defining a `SECURITY DEFINER` function. Additionally, explicitly run `GRANT EXECUTE ON FUNCTION <name> TO service_role;` to ensure Edge Functions and background tasks retain execution privileges after revoking from `PUBLIC`.
