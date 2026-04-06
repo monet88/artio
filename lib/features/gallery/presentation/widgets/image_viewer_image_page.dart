@@ -11,25 +11,60 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Single image page in the image viewer's PageView.
-class ImageViewerImagePage extends ConsumerWidget {
+class ImageViewerImagePage extends ConsumerStatefulWidget {
   const ImageViewerImagePage({
     required this.item,
     this.showWatermark = false,
+    this.resolvedUrl,
     super.key,
   });
 
   final GalleryItem item;
   final bool showWatermark;
 
+  /// Pre-resolved signed URL. When provided, skips the
+  /// per-item [signedStorageUrlProvider] to avoid N+1 API requests.
+  final String? resolvedUrl;
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ImageViewerImagePage> createState() =>
+      _ImageViewerImagePageState();
+}
+
+class _ImageViewerImagePageState extends ConsumerState<ImageViewerImagePage> {
+  bool _forceProviderSignedUrl = false;
+
+  @override
+  void didUpdateWidget(covariant ImageViewerImagePage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.item.imageUrl != widget.item.imageUrl ||
+        oldWidget.resolvedUrl != widget.resolvedUrl) {
+      _forceProviderSignedUrl = false;
+    }
+  }
+
+  void _retrySignedUrl(String rawPath) {
+    setState(() => _forceProviderSignedUrl = true);
+    ref.invalidate(signedStorageUrlProvider(rawPath));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final item = widget.item;
     final rawPath = item.imageUrl;
+    final localUrl = _forceProviderSignedUrl ? null : widget.resolvedUrl;
+
+    // ⚡ Bolt Optimization: Use pre-resolved signed URL if available
+    // Impact: Avoids firing individual N+1 signed URL generation API calls
+    // as the user swipes through the gallery pager, cutting down network latency.
     final signedUrlAsync = rawPath != null
-        ? ref.watch(signedStorageUrlProvider(rawPath))
+        ? (localUrl != null
+            ? AsyncValue.data(localUrl)
+            : ref.watch(signedStorageUrlProvider(rawPath)))
         : null;
 
     return WatermarkOverlay(
-      showWatermark: showWatermark,
+      showWatermark: widget.showWatermark,
       child: InteractiveViewer(
         child: Center(
           child: Hero(
@@ -74,9 +109,7 @@ class ImageViewerImagePage extends ConsumerWidget {
                       ),
                     ),
                     error: (_, __) => _ViewerErrorPlaceholder(
-                      onRetry: () => ref.invalidate(
-                        signedStorageUrlProvider(rawPath!),
-                      ),
+                      onRetry: () => _retrySignedUrl(rawPath!),
                     ),
                     data: (signedUrl) => signedUrl == null
                         ? const SizedBox.shrink()
@@ -116,9 +149,7 @@ class ImageViewerImagePage extends ConsumerWidget {
                             },
                             errorWidget: (context, url, error) =>
                                 _ViewerErrorPlaceholder(
-                                  onRetry: () => ref.invalidate(
-                                    signedStorageUrlProvider(rawPath!),
-                                  ),
+                                  onRetry: () => _retrySignedUrl(rawPath!),
                                 ),
                           ),
                   ),

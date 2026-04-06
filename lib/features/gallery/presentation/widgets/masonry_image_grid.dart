@@ -17,7 +17,11 @@ class MasonryImageGrid extends ConsumerStatefulWidget {
     super.key,
   });
   final List<GalleryItem> items;
-  final void Function(GalleryItem item, int index) onItemTap;
+  final void Function(
+    GalleryItem item,
+    int index,
+    Map<String, String?> preResolvedUrls,
+  ) onItemTap;
   final bool showWatermark;
 
   @override
@@ -137,6 +141,7 @@ class _MasonryImageGridState extends ConsumerState<MasonryImageGrid>
     // Batch-resolve all image URLs in a single Supabase API call.
     // _paths is a stable instance — only changes when item URLs actually change.
     final signedUrlsAsync = ref.watch(gallerySignedUrlsProvider(_paths));
+    final signedUrlMap = signedUrlsAsync.valueOrNull ?? <String, String?>{};
     return MasonryGridView.count(
       padding: AppSpacing.cardPadding,
       crossAxisCount: crossAxisCount,
@@ -164,7 +169,7 @@ class _MasonryImageGridState extends ConsumerState<MasonryImageGrid>
           ),
           child: InteractiveGalleryItem(
             item: item,
-            onTap: () => widget.onItemTap(item, index),
+            onTap: () => widget.onItemTap(item, index, signedUrlMap),
             showWatermark: widget.showWatermark,
             resolvedUrlAsync: resolvedUrlAsync,
           ),
