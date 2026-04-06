@@ -20,10 +20,17 @@ part 'app_routes.g.dart';
 
 /// Extra data for gallery image navigation
 class GalleryImageExtra {
-  const GalleryImageExtra({required this.items, required this.initialIndex});
+  const GalleryImageExtra({
+    required this.items,
+    required this.initialIndex,
+    this.preResolvedUrls = const {},
+  });
 
   final List<GalleryItem> items;
   final int initialIndex;
+
+  /// Pre-resolved map of storage paths to signed URLs
+  final Map<String, String?> preResolvedUrls;
 }
 
 @TypedGoRoute<SplashRoute>(path: '/')
@@ -167,6 +174,7 @@ class GalleryImageRoute extends GoRouteData {
     return ImageViewerPage(
       items: extra.items,
       initialIndex: extra.initialIndex,
+      preResolvedUrls: extra.preResolvedUrls,
     );
   }
 }

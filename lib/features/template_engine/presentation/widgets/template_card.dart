@@ -78,9 +78,7 @@ class _TemplateCardState extends State<TemplateCard>
                 // ── Thumbnail Image ─────────────────────────────────
                 CachedNetworkImage(
                   imageUrl: template.thumbnailUrl,
-                  // ⚡ Bolt: Prevent OOM errors by limiting memory cache size
-                  // Reduces memory consumption by not decoding full-res images
-                  memCacheWidth: 400,
+                  memCacheWidth: 400, // Optimize memory usage for card thumbnails
                   fit: BoxFit.cover,
                   placeholder: (context, url) => Shimmer.fromColors(
                     baseColor: isDark
