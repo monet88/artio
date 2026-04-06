@@ -6,24 +6,23 @@ part of 'storage_url_service.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$storageUrlServiceHash() => r'3d2f1e06fc4024a2a20dcbbf58e72b7e2b5cb2a3';
+String _$storageUrlServiceHash() => r'1468b7be459cb1125465e5ab69e26e295ee576d6';
 
 /// See also [storageUrlService].
 @ProviderFor(storageUrlService)
-final storageUrlServiceProvider =
-    AutoDisposeProvider<StorageUrlService>.internal(
-      storageUrlService,
-      name: r'storageUrlServiceProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$storageUrlServiceHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+final storageUrlServiceProvider = Provider<StorageUrlService>.internal(
+  storageUrlService,
+  name: r'storageUrlServiceProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$storageUrlServiceHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef StorageUrlServiceRef = AutoDisposeProviderRef<StorageUrlService>;
+typedef StorageUrlServiceRef = ProviderRef<StorageUrlService>;
 String _$signedStorageUrlHash() => r'dedcf7acf5f25e594f9eeb3399bce14c052e58db';
 
 /// Copied from Dart SDK
