@@ -1,3 +1,7 @@
+## 2026-03-04 - Network Image Caching
+**Learning:** Using `Image.network` for Supabase signed storage URLs causes redundant downloads when widgets rebuild or users scroll, because the standard image widget does not cache images aggressively on disk across sessions or re-renders. This leads to higher network overhead, slower UX, and higher load on Supabase Storage.
+**Action:** Always prefer `CachedNetworkImage` over `Image.network` for remote images, especially for user-generated content or template thumbnails, as it provides persistent on-disk caching, avoids unnecessary re-downloads, and improves scroll performance. Crucially, when using signed URLs that include an expiring token as a query parameter (e.g., Supabase storage URLs), you *must* explicitly set the `cacheKey` property (e.g., to the raw storage path or the URL without the query string). Otherwise, each new signed URL will be treated as a new image, resulting in cache misses and disk bloat.
+
 ## 2025-02-12 - Prevent Unnecessary Rebuilds with Riverpod `select`
 **Learning:** Watching the entirety of complex state objects (like `authViewModelProvider` or `subscriptionNotifierProvider`) in heavy UI components (like `GalleryPage` which contains a `MasonryImageGrid`) causes unnecessary, expensive rebuilds whenever unrelated sub-properties of that state change.
 **Action:** Always use `.select()` in Riverpod to watch only the specific derived primitive or object needed (e.g. `ref.watch(provider.select((state) => state.isLoggedIn))`) in complex widget trees.

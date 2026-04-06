@@ -6,6 +6,7 @@ import 'package:artio/features/gallery/presentation/constants/gallery_strings.da
 import 'package:artio/shared/widgets/animated_retry_button.dart';
 import 'package:artio/shared/widgets/watermark_overlay.dart';
 import 'package:artio/theme/app_colors.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -79,16 +80,12 @@ class ImageViewerImagePage extends ConsumerWidget {
                     ),
                     data: (signedUrl) => signedUrl == null
                         ? const SizedBox.shrink()
-                        : Image.network(
-                            signedUrl,
+                        : CachedNetworkImage(
+                            imageUrl: signedUrl,
+                            cacheKey: rawPath,
                             fit: BoxFit.contain,
-                            loadingBuilder: (context, child, loadingProgress) {
-                              if (loadingProgress == null) return child;
-                              final progress =
-                                  loadingProgress.expectedTotalBytes != null
-                                  ? loadingProgress.cumulativeBytesLoaded /
-                                        loadingProgress.expectedTotalBytes!
-                                  : null;
+                            progressIndicatorBuilder: (context, url, downloadProgress) {
+                              final progress = downloadProgress.progress;
                               return Center(
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,
@@ -117,7 +114,7 @@ class ImageViewerImagePage extends ConsumerWidget {
                                 ),
                               );
                             },
-                            errorBuilder: (context, error, stackTrace) =>
+                            errorWidget: (context, url, error) =>
                                 _ViewerErrorPlaceholder(
                                   onRetry: () => ref.invalidate(
                                     signedStorageUrlProvider(rawPath!),
