@@ -1,3 +1,7 @@
+## 2025-04-02 - Hoist constant loop calculations out of builder functions
+**Learning:** In Flutter's lazily rendered lists and grids (`MasonryGridView.count`, `SliverGrid.builder`), any logic placed inside `itemBuilder` is executed for every rendered item. Variables dependent solely on the collection's full size rather than the specific item index were being recalculated repeatedly.
+**Action:** Always hoist variables that do not change based on index (such as `maxItems`, `totalDuration`, and `clampedItemCount`) outside of the `itemBuilder` loop closure. This avoids O(N) redundant calculations per scroll frame.
+
 ## 2026-04-02 - Parallel Edge Function Promises
 **Learning:** Sequential await calls in edge function loops (like downloading/uploading multiple images) cause significant cumulative latency that can be safely reduced by parallelizing with `Promise.allSettled`.
 **Action:** Use `Promise.allSettled` over `Promise.all` when parallelizing uploads to ensure all background tasks finish cleanly and orphaned artifacts can be safely handled.

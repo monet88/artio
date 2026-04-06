@@ -91,6 +91,14 @@ class _MasonryImageGridState extends ConsumerState<MasonryImageGrid>
     // Batch-resolve all image URLs in a single Supabase API call.
     // _paths is a stable instance — only changes when item URLs actually change.
     final signedUrlsAsync = ref.watch(gallerySignedUrlsProvider(_paths));
+
+    // Pre-calculate stagger constants to avoid redundant math in the render loop.
+    const maxItems = AppAnimations.maxStaggerItems;
+    final clampedItemCount = widget.items.length.clamp(0, maxItems);
+    final totalStaggerTime =
+        AppAnimations.staggerDelay.inMilliseconds * clampedItemCount;
+    final totalDuration =
+        AppAnimations.normal.inMilliseconds + totalStaggerTime;
     return MasonryGridView.count(
       padding: AppSpacing.cardPadding,
       crossAxisCount: crossAxisCount,
@@ -100,18 +108,12 @@ class _MasonryImageGridState extends ConsumerState<MasonryImageGrid>
       itemBuilder: (context, index) {
         final item = widget.items[index];
 
-        final AsyncValue<String?>? resolvedUrlAsync = item.imageUrl != null
+        final resolvedUrlAsync = item.imageUrl != null
             ? signedUrlsAsync.whenData((map) => map[item.imageUrl])
             : null;
 
         // Stagger animation
-        const maxItems = AppAnimations.maxStaggerItems;
-        final clampedItemCount = widget.items.length.clamp(0, maxItems);
         final staggerIndex = index.clamp(0, maxItems);
-        final totalStaggerTime =
-            AppAnimations.staggerDelay.inMilliseconds * clampedItemCount;
-        final totalDuration =
-            AppAnimations.normal.inMilliseconds + totalStaggerTime;
         final startFrac =
             (staggerIndex * AppAnimations.staggerDelay.inMilliseconds) /
             totalDuration;
