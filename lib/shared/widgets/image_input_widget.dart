@@ -68,10 +68,7 @@ class ImageInputWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: theme.textTheme.bodyMedium,
-        ),
+        Text(label, style: theme.textTheme.bodyMedium),
         const SizedBox(height: 8),
         if (hasFile)
           _ImagePreview(
@@ -106,17 +103,22 @@ class _ImagePreview extends StatelessWidget {
 
     return Stack(
       children: [
-        Tooltip(
-          message: 'Tap to replace image',
-          child: GestureDetector(
-            onTap: onReplace,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: AspectRatio(
-                aspectRatio: 4 / 3,
-                child: kIsWeb
-                    ? Image.network(file.path, fit: BoxFit.cover)
-                    : Image.file(File(file.path), fit: BoxFit.cover),
+        Semantics(
+          button: true,
+          label: 'Tap to replace image',
+          child: Tooltip(
+            message: 'Tap to replace image',
+            excludeFromSemantics: true,
+            child: GestureDetector(
+              onTap: onReplace,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: AspectRatio(
+                  aspectRatio: 4 / 3,
+                  child: kIsWeb
+                      ? Image.network(file.path, fit: BoxFit.cover)
+                      : Image.file(File(file.path), fit: BoxFit.cover),
+                ),
               ),
             ),
           ),
@@ -150,10 +152,7 @@ class _ImagePreview extends StatelessWidget {
 }
 
 class _ImagePlaceholder extends StatelessWidget {
-  const _ImagePlaceholder({
-    required this.isRequired,
-    required this.onTap,
-  });
+  const _ImagePlaceholder({required this.isRequired, required this.onTap});
 
   final bool isRequired;
   final VoidCallback onTap;
@@ -162,44 +161,46 @@ class _ImagePlaceholder extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: 160,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: theme.colorScheme.outline.withAlpha(100),
+    return Semantics(
+      button: true,
+      label: 'Tap to select image',
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          height: 160,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: theme.colorScheme.outline.withAlpha(100)),
+            color: theme.colorScheme.surfaceContainerLow,
           ),
-          color: theme.colorScheme.surfaceContainerLow,
-        ),
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                Icons.add_photo_alternate_outlined,
-                size: 40,
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Tap to select image',
-                style: theme.textTheme.bodySmall?.copyWith(
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.add_photo_alternate_outlined,
+                  size: 40,
                   color: theme.colorScheme.onSurfaceVariant,
                 ),
-              ),
-              if (isRequired)
-                Padding(
-                  padding: const EdgeInsets.only(top: 4),
-                  child: Text(
-                    'Required',
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      color: theme.colorScheme.error,
-                    ),
+                const SizedBox(height: 8),
+                Text(
+                  'Tap to select image',
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
                   ),
                 ),
-            ],
+                if (isRequired)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Text(
+                      'Required',
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: theme.colorScheme.error,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
           ),
         ),
       ),

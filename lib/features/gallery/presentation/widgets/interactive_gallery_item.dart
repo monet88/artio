@@ -45,7 +45,8 @@ class _InteractiveGalleryItemState extends ConsumerState<InteractiveGalleryItem>
   /// [ValueKey]. More reliable than depending on setState alone.
   int _retryCount = 0;
 
-  /// If true, falls back to the individual provider even if a batch async value was provided.
+  /// If true, falls back to the individual provider even if a batch async value
+  /// was provided.
   bool _forceIndividualFetch = false;
 
   @override
@@ -85,14 +86,18 @@ class _InteractiveGalleryItemState extends ConsumerState<InteractiveGalleryItem>
   Widget build(BuildContext context) {
     return ScaleTransition(
       scale: _scaleAnimation,
-      child: GestureDetector(
-        onTap: widget.onTap,
-        onLongPressStart: (_) => _pressController.forward(),
-        onLongPressEnd: (_) => _pressController.reverse(),
-        onTapDown: (_) => _pressController.forward(),
-        onTapUp: (_) => _pressController.reverse(),
-        onTapCancel: () => _pressController.reverse(),
-        child: _buildGalleryItem(context, widget.item),
+      child: Semantics(
+        button: true,
+        label: 'View gallery item',
+        child: GestureDetector(
+          onTap: widget.onTap,
+          onLongPressStart: (_) => _pressController.forward(),
+          onLongPressEnd: (_) => _pressController.reverse(),
+          onTapDown: (_) => _pressController.forward(),
+          onTapUp: (_) => _pressController.reverse(),
+          onTapCancel: () => _pressController.reverse(),
+          child: _buildGalleryItem(context, widget.item),
+        ),
       ),
     );
   }
@@ -154,7 +159,8 @@ class _InteractiveGalleryItemState extends ConsumerState<InteractiveGalleryItem>
 
     // Handle Completed Status with Image
     if (item.imageUrl != null) {
-      // Use pre-resolved URL state from batch call if available and not forced to retry,
+      // Use pre-resolved URL state from batch call if available and not forced
+      // to retry,
       // otherwise fall back to per-item signed URL resolution.
       final useBatch = widget.resolvedUrlAsync != null && !_forceIndividualFetch;
       final signedUrlAsync = useBatch
@@ -217,7 +223,9 @@ class _InteractiveGalleryItemState extends ConsumerState<InteractiveGalleryItem>
                 child: CachedNetworkImage(
                   key: ValueKey(_retryCount),
                   imageUrl: signedUrl,
-                  memCacheWidth: 400, // Optimize memory usage for grid thumbnails
+                  // Limit decode size to thumbnail scale to avoid excess memory
+                  // usage while scrolling the grid.
+                  memCacheWidth: 400,
                   // Use the stable storage path as cache key so the cached
                   // image survives signed URL expiry (signed URL rotates,
                   // but the content is the same file).
@@ -267,10 +275,7 @@ class _InteractiveGalleryItemState extends ConsumerState<InteractiveGalleryItem>
 /// Shared error placeholder for gallery grid items.
 /// Displays broken image icon, error text, and retry button.
 class _GalleryErrorPlaceholder extends StatelessWidget {
-  const _GalleryErrorPlaceholder({
-    required this.isDark,
-    required this.onRetry,
-  });
+  const _GalleryErrorPlaceholder({required this.isDark, required this.onRetry});
 
   final bool isDark;
   final VoidCallback onRetry;
@@ -293,8 +298,7 @@ class _GalleryErrorPlaceholder extends StatelessWidget {
             Text(
               GalleryStrings.failedToLoad,
               style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                color:
-                    isDark ? AppColors.textMuted : AppColors.textMutedLight,
+                color: isDark ? AppColors.textMuted : AppColors.textMutedLight,
               ),
             ),
             const SizedBox(height: AppSpacing.sm),
