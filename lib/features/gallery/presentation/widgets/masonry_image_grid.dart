@@ -31,6 +31,9 @@ class MasonryImageGrid extends ConsumerStatefulWidget {
 class _MasonryImageGridState extends ConsumerState<MasonryImageGrid>
     with SingleTickerProviderStateMixin {
   late final AnimationController _staggerController;
+  late List<Animation<double>> _itemAnimations;
+  int _previousItemCount = 0;
+
   // Stable list instance: only replaced when item URLs actually change.
   // Prevents gallerySignedUrlsProvider from re-firing on every rebuild
   // because Riverpod family uses List identity equality.
@@ -51,20 +54,63 @@ class _MasonryImageGridState extends ConsumerState<MasonryImageGrid>
   void initState() {
     super.initState();
     _paths = _extractPaths(widget.items);
+    _previousItemCount = widget.items.length;
     _staggerController = AnimationController(
       vsync: this,
-      duration: Duration(
-        milliseconds:
-            AppAnimations.normal.inMilliseconds +
-            (AppAnimations.staggerDelay.inMilliseconds *
-                widget.items.length.clamp(0, AppAnimations.maxStaggerItems)),
-      ),
-    )..forward();
+      duration: _buildStaggerDuration(widget.items.length),
+    );
+    _setupAnimations();
+    _staggerController.forward();
+  }
+
+  Duration _buildStaggerDuration(int itemCount) {
+    return Duration(
+      milliseconds:
+          AppAnimations.normal.inMilliseconds +
+          (AppAnimations.staggerDelay.inMilliseconds *
+              itemCount.clamp(0, AppAnimations.maxStaggerItems)),
+    );
+  }
+
+  /// Memoizes staggered animations to prevent creating new Tweens during every scroll
+  /// tick in the `itemBuilder`. Reduces memory churn and improves scroll performance.
+  void _setupAnimations() {
+    const maxItems = AppAnimations.maxStaggerItems;
+    final clampedItemCount = widget.items.length.clamp(0, maxItems);
+    final totalStaggerTime = AppAnimations.staggerDelay.inMilliseconds * clampedItemCount;
+    final totalDuration = AppAnimations.normal.inMilliseconds + totalStaggerTime;
+
+    _itemAnimations = List.generate(maxItems + 1, (staggerIndex) {
+      final startFrac =
+          (staggerIndex * AppAnimations.staggerDelay.inMilliseconds) /
+          totalDuration;
+      final endFrac =
+          (staggerIndex * AppAnimations.staggerDelay.inMilliseconds +
+              AppAnimations.normal.inMilliseconds) /
+          totalDuration;
+
+      return Tween<double>(begin: 0, end: 1).animate(
+        CurvedAnimation(
+          parent: _staggerController,
+          curve: Interval(
+            startFrac.clamp(0.0, 1.0),
+            endFrac.clamp(0.0, 1.0),
+            curve: AppAnimations.defaultCurve,
+          ),
+        ),
+      );
+    });
   }
 
   @override
   void didUpdateWidget(MasonryImageGrid oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if (widget.items.length != _previousItemCount) {
+      _previousItemCount = widget.items.length;
+      _staggerController.duration = _buildStaggerDuration(widget.items.length);
+      _setupAnimations();
+      _staggerController.forward(from: 0);
+    }
     if (!identical(oldWidget.items, widget.items)) {
       final newPaths = _extractPaths(widget.items);
       if (!_pathsEqual(_paths, newPaths)) {
@@ -94,8 +140,8 @@ class _MasonryImageGridState extends ConsumerState<MasonryImageGrid>
 
     // Batch-resolve all image URLs in a single Supabase API call.
     // _paths is a stable instance — only changes when item URLs actually change.
-    final signedUrlMap =
-        ref.watch(gallerySignedUrlsProvider(_paths)).valueOrNull ?? {};
+    final signedUrlsAsync = ref.watch(gallerySignedUrlsProvider(_paths));
+    final signedUrlMap = signedUrlsAsync.valueOrNull ?? <String, String?>{};
     return MasonryGridView.count(
       padding: AppSpacing.cardPadding,
       crossAxisCount: crossAxisCount,
@@ -104,33 +150,13 @@ class _MasonryImageGridState extends ConsumerState<MasonryImageGrid>
       itemCount: widget.items.length,
       itemBuilder: (context, index) {
         final item = widget.items[index];
-
-        // Stagger animation
         const maxItems = AppAnimations.maxStaggerItems;
-        final clampedItemCount = widget.items.length.clamp(0, maxItems);
-        final staggerIndex = index.clamp(0, maxItems);
-        final totalStaggerTime =
-            AppAnimations.staggerDelay.inMilliseconds * clampedItemCount;
-        final totalDuration =
-            AppAnimations.normal.inMilliseconds + totalStaggerTime;
-        final startFrac =
-            (staggerIndex * AppAnimations.staggerDelay.inMilliseconds) /
-            totalDuration;
-        final endFrac =
-            (staggerIndex * AppAnimations.staggerDelay.inMilliseconds +
-                AppAnimations.normal.inMilliseconds) /
-            totalDuration;
+        final resolvedUrlAsync = item.imageUrl != null
+            ? signedUrlsAsync.whenData((map) => map[item.imageUrl])
+            : null;
 
-        final itemAnim = Tween<double>(begin: 0, end: 1).animate(
-          CurvedAnimation(
-            parent: _staggerController,
-            curve: Interval(
-              startFrac.clamp(0.0, 1.0),
-              endFrac.clamp(0.0, 1.0),
-              curve: AppAnimations.defaultCurve,
-            ),
-          ),
-        );
+        final staggerIndex = index.clamp(0, maxItems);
+        final itemAnim = _itemAnimations[staggerIndex];
 
         return AnimatedBuilder(
           animation: itemAnim,
@@ -145,9 +171,7 @@ class _MasonryImageGridState extends ConsumerState<MasonryImageGrid>
             item: item,
             onTap: () => widget.onItemTap(item, index, signedUrlMap),
             showWatermark: widget.showWatermark,
-            resolvedUrl: item.imageUrl != null
-                ? signedUrlMap[item.imageUrl]
-                : null,
+            resolvedUrlAsync: resolvedUrlAsync,
           ),
         );
       },

@@ -1,7 +1,7 @@
 import 'package:artio/core/services/storage_url_service.dart';
 import 'package:artio/features/gallery/domain/entities/gallery_item.dart';
 import 'package:artio/features/gallery/presentation/widgets/image_viewer_image_page.dart';
-import 'package:artio/shared/widgets/animated_retry_button.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -52,7 +52,7 @@ void main() {
         await tester.pumpWidget(
           _buildTestWidget(
             item: item,
-            resolvedUrl: 'invalid-url',
+            resolvedUrl: 'https://example.com/stale.jpg',
             overrides: [
               signedStorageUrlProvider(item.imageUrl!).overrideWith((_) async {
                 providerCallCount++;
@@ -61,13 +61,22 @@ void main() {
             ],
           ),
         );
-        await tester.pumpAndSettle();
+        await tester.pump();
 
         expect(providerCallCount, 0);
-        expect(find.byType(AnimatedRetryButton), findsOneWidget);
+        final cachedImage = tester.widget<CachedNetworkImage>(
+          find.byType(CachedNetworkImage),
+        );
+        final context = tester.element(find.byType(CachedNetworkImage));
+        final errorWidget = cachedImage.errorWidget!(
+          context,
+          cachedImage.imageUrl,
+          Exception('expired'),
+        );
 
-        await tester.tap(find.byType(AnimatedRetryButton));
-        await tester.pumpAndSettle();
+        (errorWidget as dynamic).onRetry();
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 200));
 
         expect(providerCallCount, 1);
       },
