@@ -69,6 +69,7 @@ class _StaggeredGrid extends StatefulWidget {
 class _StaggeredGridState extends State<_StaggeredGrid>
     with SingleTickerProviderStateMixin {
   late AnimationController _staggerController;
+  late List<Animation<double>> _itemAnimations;
   int _previousTemplateCount = 0;
 
   /// Vertical offset (px) for the stagger slide-up entrance animation.
@@ -79,6 +80,7 @@ class _StaggeredGridState extends State<_StaggeredGrid>
     super.initState();
     _previousTemplateCount = widget.templates.length;
     _staggerController = _createController();
+    _setupAnimations();
     _staggerController.forward();
   }
 
@@ -89,6 +91,7 @@ class _StaggeredGridState extends State<_StaggeredGrid>
       _previousTemplateCount = widget.templates.length;
       _staggerController.dispose();
       _staggerController = _createController();
+      _setupAnimations();
       _staggerController.forward();
     }
   }
@@ -108,6 +111,38 @@ class _StaggeredGridState extends State<_StaggeredGrid>
     );
   }
 
+  /// Memoizes staggered animations to prevent creating new Tweens during every scroll
+  /// tick in the `itemBuilder`. Reduces memory churn and improves scroll performance.
+  void _setupAnimations() {
+    const maxItems = AppAnimations.maxStaggerItems;
+    final clampedItemCount = widget.templates.length.clamp(0, maxItems);
+    final totalStaggerTime =
+        AppAnimations.staggerDelay.inMilliseconds * clampedItemCount;
+    final totalDuration =
+        AppAnimations.normal.inMilliseconds + totalStaggerTime;
+
+    _itemAnimations = List.generate(maxItems + 1, (staggerIndex) {
+      final startFraction =
+          (staggerIndex * AppAnimations.staggerDelay.inMilliseconds) /
+          totalDuration;
+      final endFraction =
+          (staggerIndex * AppAnimations.staggerDelay.inMilliseconds +
+              AppAnimations.normal.inMilliseconds) /
+          totalDuration;
+
+      return Tween<double>(begin: 0, end: 1).animate(
+        CurvedAnimation(
+          parent: _staggerController,
+          curve: Interval(
+            startFraction.clamp(0.0, 1.0),
+            endFraction.clamp(0.0, 1.0),
+            curve: AppAnimations.defaultCurve,
+          ),
+        ),
+      );
+    });
+  }
+
   @override
   void dispose() {
     _staggerController.dispose();
@@ -118,14 +153,6 @@ class _StaggeredGridState extends State<_StaggeredGrid>
   Widget build(BuildContext context) {
     final templates = widget.templates;
     final itemCount = templates.length;
-
-    // Pre-calculate stagger constants to avoid redundant math in the render loop.
-    const maxItems = AppAnimations.maxStaggerItems;
-    final clampedItemCount = templates.length.clamp(0, maxItems);
-    final totalStaggerTime =
-        AppAnimations.staggerDelay.inMilliseconds * clampedItemCount;
-    final totalDuration =
-        AppAnimations.normal.inMilliseconds + totalStaggerTime;
 
     return SliverPadding(
       padding: AppSpacing.screenPadding,
@@ -138,27 +165,9 @@ class _StaggeredGridState extends State<_StaggeredGrid>
         ),
         itemCount: itemCount,
         itemBuilder: (context, index) {
-          // Stagger calculation
+          const maxItems = AppAnimations.maxStaggerItems;
           final staggerIndex = index.clamp(0, maxItems);
-
-          final startFraction =
-              (staggerIndex * AppAnimations.staggerDelay.inMilliseconds) /
-              totalDuration;
-          final endFraction =
-              (staggerIndex * AppAnimations.staggerDelay.inMilliseconds +
-                  AppAnimations.normal.inMilliseconds) /
-              totalDuration;
-
-          final itemAnimation = Tween<double>(begin: 0, end: 1).animate(
-            CurvedAnimation(
-              parent: _staggerController,
-              curve: Interval(
-                startFraction.clamp(0.0, 1.0),
-                endFraction.clamp(0.0, 1.0),
-                curve: AppAnimations.defaultCurve,
-              ),
-            ),
-          );
+          final itemAnimation = _itemAnimations[staggerIndex];
 
           return AnimatedBuilder(
             animation: itemAnimation,

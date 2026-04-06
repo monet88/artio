@@ -1,3 +1,7 @@
+## 2026-04-02 - Pre-calculate Animations in Grid itemBuilders
+**Learning:** Instantiating `Tween` and `CurvedAnimation` objects inside an `itemBuilder` (such as in `MasonryGridView` or `SliverGrid`) creates O(n) new objects per scroll tick. This leads to memory churn and garbage collection pressure, causing UI jank during scrolling.
+**Action:** Pre-calculate and cache static stagger animations inside `initState` or `didUpdateWidget` into a list. In the `itemBuilder`, perform an O(1) array lookup using the item index to retrieve the pre-built animation.
+
 ## 2023-10-27 - Parallel I/O in Supabase Edge Functions
 **Learning:** Sequential `await` calls in a `for` loop for network requests (like generating signed URLs or uploading images) in Supabase Edge functions introduce significant latency, scaling $O(N)$ with the number of images. Replacing them with parallel execution using `Promise.all` or `Promise.allSettled` changes the time complexity to $O(1)$ relative to the network request time.
 **Action:** When performing multiple independent I/O operations, use `Promise.all` (if partial failure should abort early) or `Promise.allSettled` (if cleanup of successful partial uploads is needed) to execute them in parallel.
