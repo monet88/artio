@@ -229,3 +229,8 @@ backups/
 _prr/
 CLAUDE.OLD.md
 .worktrees/
+
+# Local code intelligence / orchestration state
+/.gitnexus/
+/.omx/
+/pnpm-lock.yaml
