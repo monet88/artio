@@ -107,25 +107,25 @@ async function resolveImageUrls(
   supabase: ReturnType<typeof createClient>,
   imageInputs: string[]
 ): Promise<string[]> {
-  const resolved: string[] = [];
-  for (const input of imageInputs) {
-    if (input.startsWith("http://") || input.startsWith("https://")) {
-      resolved.push(input);
-    } else {
-      // Treat as Supabase storage path — generate signed URL
-      const { data, error } = await supabase.storage
-        .from(STORAGE_BUCKET)
-        .createSignedUrl(input, SIGNED_URL_EXPIRY_SECONDS);
-      if (error || !data?.signedUrl) {
-        console.error(`[storage] Failed to sign URL for "${input}":`, error?.message);
-        // Fallback: construct public URL (may fail if bucket is private)
-        resolved.push(`${SUPABASE_URL}/storage/v1/object/public/${STORAGE_BUCKET}/${input}`);
+  return Promise.all(
+    imageInputs.map(async (input) => {
+      if (input.startsWith("http://") || input.startsWith("https://")) {
+        return input;
       } else {
-        resolved.push(data.signedUrl);
+        // Treat as Supabase storage path — generate signed URL
+        const { data, error } = await supabase.storage
+          .from(STORAGE_BUCKET)
+          .createSignedUrl(input, SIGNED_URL_EXPIRY_SECONDS);
+        if (error || !data?.signedUrl) {
+          console.error(`[storage] Failed to sign URL for "${input}":`, error?.message);
+          // Fallback: construct public URL (may fail if bucket is private)
+          return `${SUPABASE_URL}/storage/v1/object/public/${STORAGE_BUCKET}/${input}`;
+        } else {
+          return data.signedUrl;
+        }
       }
-    }
-  }
-  return resolved;
+    })
+  );
 }
 
 /**

@@ -1,3 +1,7 @@
+## 2023-10-27 - Parallel I/O in Supabase Edge Functions
+**Learning:** Sequential `await` calls in a `for` loop for network requests (like generating signed URLs or uploading images) in Supabase Edge functions introduce significant latency, scaling $O(N)$ with the number of images. Replacing them with parallel execution using `Promise.all` or `Promise.allSettled` changes the time complexity to $O(1)$ relative to the network request time.
+**Action:** When performing multiple independent I/O operations, use `Promise.all` (if partial failure should abort early) or `Promise.allSettled` (if cleanup of successful partial uploads is needed) to execute them in parallel.
+
 ## 2025-04-02 - Hoist constant loop calculations out of builder functions
 **Learning:** In Flutter's lazily rendered lists and grids (`MasonryGridView.count`, `SliverGrid.builder`), any logic placed inside `itemBuilder` is executed for every rendered item. Variables dependent solely on the collection's full size rather than the specific item index were being recalculated repeatedly.
 **Action:** Always hoist variables that do not change based on index (such as `maxItems`, `totalDuration`, and `clampedItemCount`) outside of the `itemBuilder` loop closure. This avoids O(N) redundant calculations per scroll frame.
