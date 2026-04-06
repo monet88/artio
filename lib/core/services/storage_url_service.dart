@@ -40,12 +40,10 @@ class StorageUrlService {
         .from(_bucket)
         .createSignedUrl(path, _signedUrlExpiry);
 
-    if (url != null) {
-      _cache[path] = _CachedUrl(
-        url,
-        now.add(const Duration(seconds: _signedUrlExpiry)),
-      );
-    }
+    _cache[path] = _CachedUrl(
+      url,
+      now.add(const Duration(seconds: _signedUrlExpiry)),
+    );
     return url;
   }
 
@@ -88,16 +86,14 @@ class StorageUrlService {
     for (final entry in signed) {
       final url = entry.signedUrl;
       result[entry.path] = url;
-      if (url != null) {
-        _cache[entry.path] = _CachedUrl(url, expiry);
-      }
+      _cache[entry.path] = _CachedUrl(url, expiry);
     }
 
     return result;
   }
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 StorageUrlService storageUrlService(Ref ref) {
   return StorageUrlService(ref.watch(supabaseClientProvider));
 }
