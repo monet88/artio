@@ -165,7 +165,6 @@ class _StaggeredGridState extends State<_StaggeredGrid>
         ),
         itemCount: itemCount,
         itemBuilder: (context, index) {
-          // Retrieve pre-calculated animation
           const maxItems = AppAnimations.maxStaggerItems;
           final staggerIndex = index.clamp(0, maxItems);
           final itemAnimation = _itemAnimations[staggerIndex];
