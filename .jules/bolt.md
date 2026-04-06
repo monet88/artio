@@ -1,3 +1,7 @@
+## 2025-05-18 - Avoid O(N) Supabase signed URL API requests on gallery updates
+**Learning:** In Riverpod, when a `FutureProvider.family` (like `gallerySignedUrlsProvider`) is invalidated due to a list of URLs changing (e.g. adding one new image to a 100-image grid), it refetches the *entire* list. Since Supabase's `createSignedUrls` was being used without local caching, this caused N redundant API requests for paths that were already signed and far from expiry.
+**Action:** Always maintain an in-memory application-level cache for backend-generated signed URLs (with an expiry buffer). This drastically reduces redundant API calls and improves UI responsiveness during pagination or realtime list updates.
+
 ## 2025-03-04 - Optimize CachedNetworkImage Memory Decoding in Grids
 **Learning:** In Flutter applications, using `CachedNetworkImage` to display high-resolution images in grids or lists without specifying `memCacheWidth` or `memCacheHeight` forces the framework to decode the images at full resolution. This leads to massive memory bloating and potential Out-Of-Memory (OOM) crashes, especially on lower-end devices or when rapidly scrolling.
 **Action:** Always configure `memCacheWidth` (e.g., to 400 for typical thumbnails) or `memCacheHeight` when using `CachedNetworkImage` for list/grid items to optimize memory footprint during image decoding.
