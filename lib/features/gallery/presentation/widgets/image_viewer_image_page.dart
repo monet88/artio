@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Single image page in the image viewer's PageView.
-class ImageViewerImagePage extends ConsumerWidget {
+class ImageViewerImagePage extends ConsumerStatefulWidget {
   const ImageViewerImagePage({
     required this.item,
     this.showWatermark = false,
@@ -26,9 +26,32 @@ class ImageViewerImagePage extends ConsumerWidget {
   final String? resolvedUrl;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ImageViewerImagePage> createState() =>
+      _ImageViewerImagePageState();
+}
+
+class _ImageViewerImagePageState extends ConsumerState<ImageViewerImagePage> {
+  bool _forceProviderSignedUrl = false;
+
+  @override
+  void didUpdateWidget(covariant ImageViewerImagePage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.item.imageUrl != widget.item.imageUrl ||
+        oldWidget.resolvedUrl != widget.resolvedUrl) {
+      _forceProviderSignedUrl = false;
+    }
+  }
+
+  void _retrySignedUrl(String rawPath) {
+    setState(() => _forceProviderSignedUrl = true);
+    ref.invalidate(signedStorageUrlProvider(rawPath));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final item = widget.item;
     final rawPath = item.imageUrl;
-    final localUrl = resolvedUrl;
+    final localUrl = _forceProviderSignedUrl ? null : widget.resolvedUrl;
 
     // ⚡ Bolt Optimization: Use pre-resolved signed URL if available
     // Impact: Avoids firing individual N+1 signed URL generation API calls
@@ -40,7 +63,7 @@ class ImageViewerImagePage extends ConsumerWidget {
         : null;
 
     return WatermarkOverlay(
-      showWatermark: showWatermark,
+      showWatermark: widget.showWatermark,
       child: InteractiveViewer(
         child: Center(
           child: Hero(
@@ -85,9 +108,7 @@ class ImageViewerImagePage extends ConsumerWidget {
                       ),
                     ),
                     error: (_, __) => _ViewerErrorPlaceholder(
-                      onRetry: () => ref.invalidate(
-                        signedStorageUrlProvider(rawPath!),
-                      ),
+                      onRetry: () => _retrySignedUrl(rawPath!),
                     ),
                     data: (signedUrl) => signedUrl == null
                         ? const SizedBox.shrink()
@@ -131,9 +152,7 @@ class ImageViewerImagePage extends ConsumerWidget {
                             },
                             errorBuilder: (context, error, stackTrace) =>
                                 _ViewerErrorPlaceholder(
-                                  onRetry: () => ref.invalidate(
-                                    signedStorageUrlProvider(rawPath!),
-                                  ),
+                                  onRetry: () => _retrySignedUrl(rawPath!),
                                 ),
                           ),
                   ),
