@@ -140,8 +140,10 @@ class _LowCreditBanner extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final balance =
-        ref.watch(creditBalanceNotifierProvider).valueOrNull?.balance;
+    final balance = ref
+        .watch(creditBalanceNotifierProvider)
+        .valueOrNull
+        ?.balance;
     final subscriptionAsync = ref.watch(subscriptionNotifierProvider);
 
     // Hide banner while subscription is loading or errored to avoid false alarm.
@@ -164,9 +166,7 @@ class _LowCreditBanner extends ConsumerWidget {
       decoration: BoxDecoration(
         color: _warningColor.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: _warningColor.withValues(alpha: 0.4),
-        ),
+        border: Border.all(color: _warningColor.withValues(alpha: 0.4)),
       ),
       child: Row(
         children: [
@@ -209,35 +209,38 @@ class _CreditChip extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final balanceAsync = ref.watch(creditBalanceNotifierProvider);
     return balanceAsync.whenOrNull(
-          data: (creditBalance) => Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: () => const CreditHistoryRoute().push<void>(context),
-              borderRadius: BorderRadius.circular(20),
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.sm,
-                  vertical: AppSpacing.xs,
-                ),
-                decoration: BoxDecoration(
-                  color: AppColors.white10,
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: AppColors.white20),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Text('💎', style: TextStyle(fontSize: 13)),
-                    const SizedBox(width: AppSpacing.xs),
-                    Text(
-                      '${creditBalance.balance}',
-                      style: const TextStyle(
-                        color: AppColors.textPrimary,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
+          data: (creditBalance) => Tooltip(
+            message: 'View credit history',
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () => const CreditHistoryRoute().push<void>(context),
+                borderRadius: BorderRadius.circular(20),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.sm,
+                    vertical: AppSpacing.xs,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.white10,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: AppColors.white20),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text('💎', style: TextStyle(fontSize: 13)),
+                      const SizedBox(width: AppSpacing.xs),
+                      Text(
+                        '${creditBalance.balance}',
+                        style: const TextStyle(
+                          color: AppColors.textPrimary,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
