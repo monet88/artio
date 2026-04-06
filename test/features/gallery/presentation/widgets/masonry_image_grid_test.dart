@@ -38,7 +38,7 @@ void main() {
             body: MasonryImageGrid(
               items: items,
               showWatermark: showWatermark,
-              onItemTap: (item, index) {
+              onItemTap: (item, index, urls) {
                 tappedItem = item;
                 tappedIndex = index;
               },

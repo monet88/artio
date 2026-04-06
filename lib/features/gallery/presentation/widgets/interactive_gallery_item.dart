@@ -20,16 +20,16 @@ class InteractiveGalleryItem extends ConsumerStatefulWidget {
     required this.onTap,
     this.showWatermark = false,
 
-    /// Pre-resolved signed URL from a batch call. When provided, skips the
-    /// per-item [signedStorageUrlProvider] to avoid N+1 API requests.
-    this.resolvedUrl,
+    /// Pre-resolved signed URL async state from a batch call. When provided,
+    /// skips the per-item [signedStorageUrlProvider] to avoid N+1 API requests.
+    this.resolvedUrlAsync,
     super.key,
   });
 
   final GalleryItem item;
   final VoidCallback onTap;
   final bool showWatermark;
-  final String? resolvedUrl;
+  final AsyncValue<String?>? resolvedUrlAsync;
 
   @override
   ConsumerState<InteractiveGalleryItem> createState() =>
@@ -44,6 +44,9 @@ class _InteractiveGalleryItemState extends ConsumerState<InteractiveGalleryItem>
   /// Incremented on retry to force [CachedNetworkImage] recreation via
   /// [ValueKey]. More reliable than depending on setState alone.
   int _retryCount = 0;
+
+  /// If true, falls back to the individual provider even if a batch async value was provided.
+  bool _forceIndividualFetch = false;
 
   @override
   void initState() {
@@ -64,6 +67,18 @@ class _InteractiveGalleryItemState extends ConsumerState<InteractiveGalleryItem>
   void dispose() {
     _pressController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(covariant InteractiveGalleryItem oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final itemChanged =
+        oldWidget.item.id != widget.item.id ||
+        oldWidget.item.imageUrl != widget.item.imageUrl;
+    if (itemChanged) {
+      _retryCount = 0;
+      _forceIndividualFetch = false;
+    }
   }
 
   @override
@@ -139,10 +154,11 @@ class _InteractiveGalleryItemState extends ConsumerState<InteractiveGalleryItem>
 
     // Handle Completed Status with Image
     if (item.imageUrl != null) {
-      // Use pre-resolved URL from batch call if available,
+      // Use pre-resolved URL state from batch call if available and not forced to retry,
       // otherwise fall back to per-item signed URL resolution.
-      final signedUrlAsync = widget.resolvedUrl != null
-          ? AsyncValue.data(widget.resolvedUrl)
+      final useBatch = widget.resolvedUrlAsync != null && !_forceIndividualFetch;
+      final signedUrlAsync = useBatch
+          ? widget.resolvedUrlAsync!
           : ref.watch(signedStorageUrlProvider(item.imageUrl!));
 
       return signedUrlAsync.when(
@@ -165,9 +181,10 @@ class _InteractiveGalleryItemState extends ConsumerState<InteractiveGalleryItem>
           aspectRatio: 1,
           child: _GalleryErrorPlaceholder(
             isDark: isDark,
-            onRetry: () => ref.invalidate(
-              signedStorageUrlProvider(item.imageUrl!),
-            ),
+            onRetry: () {
+              setState(() => _forceIndividualFetch = true);
+              ref.invalidate(signedStorageUrlProvider(item.imageUrl!));
+            },
           ),
         ),
         data: (signedUrl) {
@@ -200,6 +217,7 @@ class _InteractiveGalleryItemState extends ConsumerState<InteractiveGalleryItem>
                 child: CachedNetworkImage(
                   key: ValueKey(_retryCount),
                   imageUrl: signedUrl,
+                  memCacheWidth: 400, // Optimize memory usage for grid thumbnails
                   // Use the stable storage path as cache key so the cached
                   // image survives signed URL expiry (signed URL rotates,
                   // but the content is the same file).
@@ -224,16 +242,11 @@ class _InteractiveGalleryItemState extends ConsumerState<InteractiveGalleryItem>
                         CachedNetworkImage.evictFromCache(
                           item.imageUrl!,
                         );
-                        setState(() => _retryCount++);
-                        if (widget.resolvedUrl == null) {
-                          ref.invalidate(
-                            signedStorageUrlProvider(item.imageUrl!),
-                          );
-                        }
-                        // When resolvedUrl != null: _retryCount++
-                        // changes ValueKey -> CachedNetworkImage
-                        // fully recreated. Cache was evicted,
-                        // so re-fetch happens naturally.
+                        setState(() {
+                          _retryCount++;
+                          _forceIndividualFetch = true;
+                        });
+                        ref.invalidate(signedStorageUrlProvider(item.imageUrl!));
                       },
                     ),
                   ),

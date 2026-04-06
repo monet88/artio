@@ -16,13 +16,21 @@ class GalleryPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final galleryAsync = ref.watch(galleryStreamProvider);
-    final isLoggedIn = ref
-        .watch(authViewModelProvider)
-        .maybeMap(authenticated: (_) => true, orElse: () => false);
+    final isLoggedIn = ref.watch(
+      authViewModelProvider.select(
+        (state) =>
+            state.maybeMap(authenticated: (_) => true, orElse: () => false),
+      ),
+    );
     // Free users see watermark; default true for loading/error (safe default).
-    final showWatermark = ref
-        .watch(subscriptionNotifierProvider)
-        .maybeWhen(data: (status) => status.isFree, orElse: () => true);
+    final showWatermark = ref.watch(
+      subscriptionNotifierProvider.select(
+        (state) => state.maybeWhen(
+          data: (status) => status.isFree,
+          orElse: () => true,
+        ),
+      ),
+    );
 
     return Scaffold(
       appBar: AppBar(title: const Text('Gallery')),
@@ -46,9 +54,13 @@ class GalleryPage extends ConsumerWidget {
             child: MasonryImageGrid(
               items: items,
               showWatermark: showWatermark,
-              onItemTap: (item, index) {
+              onItemTap: (item, index, preResolvedUrls) {
                 GalleryImageRoute(
-                  $extra: GalleryImageExtra(items: items, initialIndex: index),
+                  $extra: GalleryImageExtra(
+                    items: items,
+                    initialIndex: index,
+                    preResolvedUrls: preResolvedUrls,
+                  ),
                 ).push<void>(context);
               },
             ),

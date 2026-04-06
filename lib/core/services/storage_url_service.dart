@@ -8,10 +8,18 @@ part 'storage_url_service.g.dart';
 const _bucket = 'generated-images';
 const _signedUrlExpiry = 3600; // 1 hour
 
+class _CachedUrl {
+  const _CachedUrl(this.url, this.expiresAt);
+  final String url;
+  final DateTime expiresAt;
+}
+
 /// Converts a Supabase storage path to a signed HTTPS URL.
 class StorageUrlService {
-  const StorageUrlService(this._supabase);
+  StorageUrlService(this._supabase);
   final SupabaseClient _supabase;
+
+  final Map<String, _CachedUrl> _cache = {};
 
   /// Returns a signed URL for a storage path like `userId/filename.jpg`.
   /// If the input is already a full HTTPS URL, returns it unchanged.
@@ -19,9 +27,24 @@ class StorageUrlService {
     if (path.startsWith('http://') || path.startsWith('https://')) {
       return path;
     }
-    return _supabase.storage
+
+    final now = DateTime.now();
+    final cached = _cache[path];
+    // Keep a 5-minute buffer before actual expiry to be safe
+    if (cached != null &&
+        now.isBefore(cached.expiresAt.subtract(const Duration(minutes: 5)))) {
+      return cached.url;
+    }
+
+    final url = await _supabase.storage
         .from(_bucket)
         .createSignedUrl(path, _signedUrlExpiry);
+
+    _cache[path] = _CachedUrl(
+      url,
+      now.add(const Duration(seconds: _signedUrlExpiry)),
+    );
+    return url;
   }
 
   /// Batch-resolves multiple storage paths in a single Supabase API call.
@@ -33,10 +56,19 @@ class StorageUrlService {
     // Split: paths that need signing vs already-full URLs
     final toSign = <String>[];
     final result = <String, String?>{};
+    final now = DateTime.now();
 
     for (final p in paths) {
       if (p.startsWith('http://') || p.startsWith('https://')) {
         result[p] = p;
+        continue;
+      }
+
+      final cached = _cache[p];
+      // Keep a 5-minute buffer before actual expiry to be safe
+      if (cached != null &&
+          now.isBefore(cached.expiresAt.subtract(const Duration(minutes: 5)))) {
+        result[p] = cached.url;
       } else {
         toSign.add(p);
       }
@@ -44,20 +76,24 @@ class StorageUrlService {
 
     if (toSign.isEmpty) return result;
 
-    // Single API call for all storage paths
+    // Single API call for all missing or expired storage paths
     final signed = await _supabase.storage
         .from(_bucket)
         .createSignedUrls(toSign, _signedUrlExpiry);
 
+    final expiry = now.add(const Duration(seconds: _signedUrlExpiry));
+
     for (final entry in signed) {
-      result[entry.path] = entry.signedUrl;
+      final url = entry.signedUrl;
+      result[entry.path] = url;
+      _cache[entry.path] = _CachedUrl(url, expiry);
     }
 
     return result;
   }
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 StorageUrlService storageUrlService(Ref ref) {
   return StorageUrlService(ref.watch(supabaseClientProvider));
 }
