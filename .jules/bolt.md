@@ -1,3 +1,7 @@
+## 2025-02-12 - Prevent Unnecessary Rebuilds with Riverpod `select`
+**Learning:** Watching the entirety of complex state objects (like `authViewModelProvider` or `subscriptionNotifierProvider`) in heavy UI components (like `GalleryPage` which contains a `MasonryImageGrid`) causes unnecessary, expensive rebuilds whenever unrelated sub-properties of that state change.
+**Action:** Always use `.select()` in Riverpod to watch only the specific derived primitive or object needed (e.g. `ref.watch(provider.select((state) => state.isLoggedIn))`) in complex widget trees.
+
 ## 2026-04-02 - Pre-calculate Animations in Grid itemBuilders
 **Learning:** Instantiating `Tween` and `CurvedAnimation` objects inside an `itemBuilder` (such as in `MasonryGridView` or `SliverGrid`) creates O(n) new objects per scroll tick. This leads to memory churn and garbage collection pressure, causing UI jank during scrolling.
 **Action:** Pre-calculate and cache static stagger animations inside `initState` or `didUpdateWidget` into a list. In the `itemBuilder`, perform an O(1) array lookup using the item index to retrieve the pre-built animation.
