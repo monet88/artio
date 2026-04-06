@@ -3,6 +3,7 @@ import 'package:artio/features/template_engine/presentation/widgets/input_field_
 import 'package:artio/shared/widgets/image_input_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../../../core/helpers/pump_app.dart';
 
@@ -116,6 +117,32 @@ void main() {
       );
 
       expect(find.byType(ImageInputWidget), findsOneWidget);
+    });
+
+    testWidgets('shows replace tooltip when image preview is present', (
+      tester,
+    ) async {
+      const field = InputFieldModel(
+        name: 'reference',
+        label: 'Reference Image',
+        type: 'image',
+      );
+
+      await tester.pumpApp(
+        Scaffold(
+          body: SizedBox(
+            width: 400,
+            child: InputFieldBuilder(
+              field: field,
+              imageFile: XFile('assets/feature.png'),
+              onChanged: (_) {},
+              onImageChanged: (_) {},
+            ),
+          ),
+        ),
+      );
+
+      expect(find.byTooltip('Tap to replace image'), findsOneWidget);
     });
 
     testWidgets('renders text field for unknown types (fallback)', (
