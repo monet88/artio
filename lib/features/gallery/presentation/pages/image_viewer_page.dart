@@ -24,10 +24,12 @@ class ImageViewerPage extends ConsumerStatefulWidget {
   const ImageViewerPage({
     required this.items,
     required this.initialIndex,
+    this.preResolvedUrls = const {},
     super.key,
   });
   final List<GalleryItem> items;
   final int initialIndex;
+  final Map<String, String?> preResolvedUrls;
 
   @override
   ConsumerState<ImageViewerPage> createState() => _ImageViewerPageState();
@@ -275,9 +277,12 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage>
                 _resetIndicatorTimer();
               },
               itemBuilder: (context, index) {
+                final item = _items[index];
                 return ImageViewerImagePage(
-                  item: _items[index],
+                  item: item,
                   showWatermark: showWatermark,
+                  resolvedUrl:
+                      item.imageUrl != null ? widget.preResolvedUrls[item.imageUrl] : null,
                 );
               },
             ),
