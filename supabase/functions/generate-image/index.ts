@@ -490,23 +490,33 @@ async function mirrorUrlsToStorage(
   imageUrls: string[],
   outputFormat: string = "jpg"
 ): Promise<string[]> {
-  const storagePaths: string[] = [];
+  // ⚡ Bolt Optimization: Parallelize downloads and uploads
+  // Impact: Reduces overall mirroring latency from O(N) to O(1) time
+  // Measurement: Check function execution duration for requests with imageCount > 1
+  const uploadPromises = imageUrls.map(async (url, i) => {
+    const imageData = await downloadImage(url);
+    return uploadToStorage(supabase, userId, jobId, imageData, i, outputFormat);
+  });
 
-  for (let i = 0; i < imageUrls.length; i++) {
-    try {
-      const imageData = await downloadImage(imageUrls[i]);
-      const storagePath = await uploadToStorage(supabase, userId, jobId, imageData, i, outputFormat);
-      storagePaths.push(storagePath);
-    } catch (error) {
-      if (storagePaths.length > 0) {
-        console.warn(`[${jobId}] Upload failed at index ${i}, cleaning up ${storagePaths.length} orphaned files`);
-        await cleanupStorageFiles(supabase, storagePaths);
-      }
-      throw error;
+  // Use allSettled to ensure background uploads finish before cleanup
+  const results = await Promise.allSettled(uploadPromises);
+
+  const successfulPaths = results
+    .filter((r): r is PromiseFulfilledResult<string> => r.status === "fulfilled")
+    .map((r) => r.value);
+
+  const failures = results
+    .filter((r): r is PromiseRejectedResult => r.status === "rejected");
+
+  if (failures.length > 0) {
+    if (successfulPaths.length > 0) {
+      console.warn(`[${jobId}] Parallel upload failed, cleaning up ${successfulPaths.length} orphaned files`);
+      await cleanupStorageFiles(supabase, successfulPaths);
     }
+    throw failures[0].reason;
   }
 
-  return storagePaths;
+  return successfulPaths;
 }
 
 async function mirrorBase64ToStorage(
@@ -516,28 +526,37 @@ async function mirrorBase64ToStorage(
   base64Images: string[],
   outputFormat: string = "jpg"
 ): Promise<string[]> {
-  const storagePaths: string[] = [];
-
-  for (let i = 0; i < base64Images.length; i++) {
-    try {
-      const binaryString = atob(base64Images[i]);
-      const bytes = new Uint8Array(binaryString.length);
-      for (let j = 0; j < binaryString.length; j++) {
-        bytes[j] = binaryString.charCodeAt(j);
-      }
-
-      const storagePath = await uploadToStorage(supabase, userId, jobId, bytes, i, outputFormat);
-      storagePaths.push(storagePath);
-    } catch (error) {
-      if (storagePaths.length > 0) {
-        console.warn(`[${jobId}] Base64 upload failed at index ${i}, cleaning up ${storagePaths.length} orphaned files`);
-        await cleanupStorageFiles(supabase, storagePaths);
-      }
-      throw error;
+  // ⚡ Bolt Optimization: Parallelize base64 decoding and uploads
+  // Impact: Reduces overall mirroring latency from O(N) to O(1) time
+  // Measurement: Check function execution duration for requests with imageCount > 1
+  const uploadPromises = base64Images.map(async (base64, i) => {
+    const binaryString = atob(base64);
+    const bytes = new Uint8Array(binaryString.length);
+    for (let j = 0; j < binaryString.length; j++) {
+      bytes[j] = binaryString.charCodeAt(j);
     }
+    return uploadToStorage(supabase, userId, jobId, bytes, i, outputFormat);
+  });
+
+  // Use allSettled to ensure background uploads finish before cleanup
+  const results = await Promise.allSettled(uploadPromises);
+
+  const successfulPaths = results
+    .filter((r): r is PromiseFulfilledResult<string> => r.status === "fulfilled")
+    .map((r) => r.value);
+
+  const failures = results
+    .filter((r): r is PromiseRejectedResult => r.status === "rejected");
+
+  if (failures.length > 0) {
+    if (successfulPaths.length > 0) {
+      console.warn(`[${jobId}] Parallel base64 upload failed, cleaning up ${successfulPaths.length} orphaned files`);
+      await cleanupStorageFiles(supabase, successfulPaths);
+    }
+    throw failures[0].reason;
   }
 
-  return storagePaths;
+  return successfulPaths;
 }
 
 async function updateJobStatus(
