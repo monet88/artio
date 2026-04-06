@@ -29,10 +29,12 @@ class _FakeUrlLauncherPlatform extends UrlLauncherPlatform {
 
 Widget _scaffoldWith(Future<void> Function(BuildContext) action) {
   return MaterialApp(
-    home: Builder(
-      builder: (context) => ElevatedButton(
-        onPressed: () => action(context),
-        child: const Text('Launch'),
+    home: Scaffold(
+      body: Builder(
+        builder: (context) => ElevatedButton(
+          onPressed: () => action(context),
+          child: const Text('Launch'),
+        ),
       ),
     ),
   );
