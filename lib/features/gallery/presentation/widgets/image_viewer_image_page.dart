@@ -11,25 +11,60 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Single image page in the image viewer's PageView.
-class ImageViewerImagePage extends ConsumerWidget {
+class ImageViewerImagePage extends ConsumerStatefulWidget {
   const ImageViewerImagePage({
     required this.item,
     this.showWatermark = false,
+    this.resolvedUrl,
     super.key,
   });
 
   final GalleryItem item;
   final bool showWatermark;
 
+  /// Pre-resolved signed URL. When provided, skips the
+  /// per-item [signedStorageUrlProvider] to avoid N+1 API requests.
+  final String? resolvedUrl;
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ImageViewerImagePage> createState() =>
+      _ImageViewerImagePageState();
+}
+
+class _ImageViewerImagePageState extends ConsumerState<ImageViewerImagePage> {
+  bool _forceProviderSignedUrl = false;
+
+  @override
+  void didUpdateWidget(covariant ImageViewerImagePage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.item.imageUrl != widget.item.imageUrl ||
+        oldWidget.resolvedUrl != widget.resolvedUrl) {
+      _forceProviderSignedUrl = false;
+    }
+  }
+
+  void _retrySignedUrl(String rawPath) {
+    setState(() => _forceProviderSignedUrl = true);
+    ref.invalidate(signedStorageUrlProvider(rawPath));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final item = widget.item;
     final rawPath = item.imageUrl;
+    final localUrl = _forceProviderSignedUrl ? null : widget.resolvedUrl;
+
+    // ⚡ Bolt Optimization: Use pre-resolved signed URL if available
+    // Impact: Avoids firing individual N+1 signed URL generation API calls
+    // as the user swipes through the gallery pager, cutting down network latency.
     final signedUrlAsync = rawPath != null
-        ? ref.watch(signedStorageUrlProvider(rawPath))
+        ? (localUrl != null
+            ? AsyncValue.data(localUrl)
+            : ref.watch(signedStorageUrlProvider(rawPath)))
         : null;
 
     return WatermarkOverlay(
-      showWatermark: showWatermark,
+      showWatermark: widget.showWatermark,
       child: InteractiveViewer(
         child: Center(
           child: Hero(
@@ -74,57 +109,47 @@ class ImageViewerImagePage extends ConsumerWidget {
                       ),
                     ),
                     error: (_, __) => _ViewerErrorPlaceholder(
-                      onRetry: () =>
-                          ref.invalidate(signedStorageUrlProvider(rawPath!)),
+                      onRetry: () => _retrySignedUrl(rawPath!),
                     ),
                     data: (signedUrl) => signedUrl == null
                         ? const SizedBox.shrink()
                         : CachedNetworkImage(
                             imageUrl: signedUrl,
-                            // ⚡ Bolt Optimization: Use raw storage path as cache key
-                            // This ensures the image stays cached even when the signed URL expires
-                            // and rotates, preventing redundant downloads when opening the viewer
                             cacheKey: rawPath,
                             fit: BoxFit.contain,
-                            progressIndicatorBuilder:
-                                (context, url, downloadProgress) {
-                                  final progress = downloadProgress.progress;
-                                  return Center(
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        SizedBox(
-                                          width: 48,
-                                          height: 48,
-                                          child: CircularProgressIndicator(
-                                            value: progress,
-                                            strokeWidth: 2.5,
-                                            color: AppColors.primaryCta,
-                                            backgroundColor: AppColors.white10,
-                                          ),
-                                        ),
-                                        if (progress != null) ...[
-                                          const SizedBox(height: 12),
-                                          Text(
-                                            '${(progress * 100).toInt()}%',
-                                            style: const TextStyle(
-                                              color: AppColors.textMuted,
-                                              fontSize: 13,
-                                            ),
-                                          ),
-                                        ],
-                                      ],
+                            progressIndicatorBuilder: (context, url, downloadProgress) {
+                              final progress = downloadProgress.progress;
+                              return Center(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    SizedBox(
+                                      width: 48,
+                                      height: 48,
+                                      child: CircularProgressIndicator(
+                                        value: progress,
+                                        strokeWidth: 2.5,
+                                        color: AppColors.primaryCta,
+                                        backgroundColor: AppColors.white10,
+                                      ),
                                     ),
-                                  );
-                                },
+                                    if (progress != null) ...[
+                                      const SizedBox(height: 12),
+                                      Text(
+                                        '${(progress * 100).toInt()}%',
+                                        style: const TextStyle(
+                                          color: AppColors.textMuted,
+                                          fontSize: 13,
+                                        ),
+                                      ),
+                                    ],
+                                  ],
+                                ),
+                              );
+                            },
                             errorWidget: (context, url, error) =>
                                 _ViewerErrorPlaceholder(
-                                  onRetry: () {
-                                    CachedNetworkImage.evictFromCache(rawPath!);
-                                    ref.invalidate(
-                                      signedStorageUrlProvider(rawPath),
-                                    );
-                                  },
+                                  onRetry: () => _retrySignedUrl(rawPath!),
                                 ),
                           ),
                   ),
@@ -151,15 +176,24 @@ class _ViewerErrorPlaceholder extends StatelessWidget {
           blendMode: BlendMode.srcIn,
           shaderCallback: (bounds) =>
               AppGradients.primaryGradient.createShader(bounds),
-          child: const Icon(Icons.broken_image_rounded, size: 56),
+          child: const Icon(
+            Icons.broken_image_rounded,
+            size: 56,
+          ),
         ),
         const SizedBox(height: AppSpacing.md),
         const Text(
           GalleryStrings.failedToLoadImage,
-          style: TextStyle(color: AppColors.textMuted, fontSize: 14),
+          style: TextStyle(
+            color: AppColors.textMuted,
+            fontSize: 14,
+          ),
         ),
         const SizedBox(height: AppSpacing.sm),
-        AnimatedRetryButton(onPressed: onRetry, color: AppColors.primaryCta),
+        AnimatedRetryButton(
+          onPressed: onRetry,
+          color: AppColors.primaryCta,
+        ),
       ],
     );
   }

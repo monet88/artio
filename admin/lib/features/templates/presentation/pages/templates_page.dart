@@ -271,7 +271,8 @@ class _TemplatesPageState extends ConsumerState<TemplatesPage> {
                       if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
-                            content: Text('Clear filters before reordering'),
+                            content:
+                                Text('Clear filters before reordering'),
                           ),
                         );
                       }

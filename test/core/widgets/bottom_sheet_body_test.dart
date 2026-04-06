@@ -8,7 +8,11 @@ void main() {
     testWidgets('renders child widget', (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(body: BottomSheetBody(child: Text('Hello'))),
+          home: Scaffold(
+            body: BottomSheetBody(
+              child: Text('Hello'),
+            ),
+          ),
         ),
       );
 
@@ -18,7 +22,11 @@ void main() {
     testWidgets('wraps content in SafeArea with top:false', (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(body: BottomSheetBody(child: SizedBox())),
+          home: Scaffold(
+            body: BottomSheetBody(
+              child: SizedBox(),
+            ),
+          ),
         ),
       );
 
@@ -28,29 +36,32 @@ void main() {
     });
 
     testWidgets(
-      'applies default padding EdgeInsets.all(AppSpacing.lg) when no padding given',
-      (tester) async {
-        await tester.pumpWidget(
-          const MaterialApp(
-            home: MediaQuery(
-              data: MediaQueryData(),
-              child: Scaffold(body: BottomSheetBody(child: SizedBox())),
+        'applies default padding EdgeInsets.all(AppSpacing.lg) when no padding given',
+        (tester) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: MediaQuery(
+            data: MediaQueryData(),
+            child: Scaffold(
+              body: BottomSheetBody(
+                child: SizedBox(),
+              ),
             ),
           ),
-        );
+        ),
+      );
 
-        // SafeArea adds its own internal Padding(EdgeInsets.zero) as first descendant.
-        // Our BottomSheetBody Padding is the last one inside SafeArea.
-        final safeAreaFinder = find.byType(SafeArea);
-        final paddingFinder = find.descendant(
-          of: safeAreaFinder,
-          matching: find.byType(Padding),
-        );
-        final padding = tester.widget<Padding>(paddingFinder.last);
-        const expected = EdgeInsets.all(AppSpacing.lg);
-        expect(padding.padding, expected);
-      },
-    );
+      // SafeArea adds its own internal Padding(EdgeInsets.zero) as first descendant.
+      // Our BottomSheetBody Padding is the last one inside SafeArea.
+      final safeAreaFinder = find.byType(SafeArea);
+      final paddingFinder = find.descendant(
+        of: safeAreaFinder,
+        matching: find.byType(Padding),
+      );
+      final padding = tester.widget<Padding>(paddingFinder.last);
+      const expected = EdgeInsets.all(AppSpacing.lg);
+      expect(padding.padding, expected);
+    });
 
     testWidgets('applies custom padding when provided', (tester) async {
       const customPadding = EdgeInsets.symmetric(horizontal: 12, vertical: 8);
@@ -60,7 +71,10 @@ void main() {
           home: MediaQuery(
             data: MediaQueryData(),
             child: Scaffold(
-              body: BottomSheetBody(padding: customPadding, child: SizedBox()),
+              body: BottomSheetBody(
+                padding: customPadding,
+                child: SizedBox(),
+              ),
             ),
           ),
         ),

@@ -5,6 +5,7 @@ import 'package:artio/features/template_engine/domain/entities/generation_job_mo
 import 'package:artio/features/template_engine/domain/entities/template_model.dart';
 import 'package:artio/features/template_engine/presentation/widgets/generation_progress.dart';
 import 'package:artio/shared/widgets/loading_state_widget.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -22,11 +23,12 @@ class TemplateDetailHeader extends StatelessWidget {
         if (template.thumbnailUrl.isNotEmpty) ...[
           ClipRRect(
             borderRadius: AppDimensions.buttonRadius,
-            child: Image.network(
-              template.thumbnailUrl,
+            child: CachedNetworkImage(
+              imageUrl: template.thumbnailUrl,
+              cacheKey: template.thumbnailUrl.split('?').first,
               height: 200,
               fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) => const SizedBox(
+              errorWidget: (context, url, error) => const SizedBox(
                 height: 200,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,

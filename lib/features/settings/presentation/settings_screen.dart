@@ -79,9 +79,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       } else {
         message = 'No active subscription found.';
       }
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(message)));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
     } on Object {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -182,8 +182,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
     // Prefer RevenueCat SDK data (immediate) over DB value (webhook-dependent).
     // Falls back to DB if RevenueCat hasn't loaded yet.
-    final isPremium =
-        subStatus.valueOrNull?.isActive ??
+    final isPremium = subStatus.valueOrNull?.isActive ??
         authState.maybeMap(
           authenticated: (s) => s.user.isPremium,
           orElse: () => false,

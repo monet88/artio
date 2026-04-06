@@ -231,7 +231,9 @@ void main() {
 
     group('deleteAccount', () {
       test('completes without error', () async {
-        when(() => mockAuthRepository.deleteAccount()).thenAnswer((_) async {});
+        when(
+          () => mockAuthRepository.deleteAccount(),
+        ).thenAnswer((_) async {});
 
         await expectLater(mockAuthRepository.deleteAccount(), completes);
 
@@ -239,7 +241,9 @@ void main() {
       });
 
       test('throws AppException on failure', () async {
-        when(() => mockAuthRepository.deleteAccount()).thenThrow(
+        when(
+          () => mockAuthRepository.deleteAccount(),
+        ).thenThrow(
           const AppException.auth(message: 'Failed to delete account'),
         );
 

@@ -19,7 +19,9 @@ void main() {
       var tapped = false;
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(body: RetryTextButton(onPressed: () => tapped = true)),
+          home: Scaffold(
+            body: RetryTextButton(onPressed: () => tapped = true),
+          ),
         ),
       );
 
@@ -33,7 +35,10 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: RetryTextButton(onPressed: () {}, label: 'Try Again'),
+            body: RetryTextButton(
+              onPressed: () {},
+              label: 'Try Again',
+            ),
           ),
         ),
       );

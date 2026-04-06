@@ -410,7 +410,9 @@ void main() {
           // _handleSignedIn() now uses currentUser + fetchOrCreateProfile()
           final fakeUser = _FakeUser();
           when(() => mockAuthRepo.currentUser).thenReturn(fakeUser);
-          when(() => mockAuthRepo.fetchOrCreateProfile(fakeUser)).thenAnswer(
+          when(
+            () => mockAuthRepo.fetchOrCreateProfile(fakeUser),
+          ).thenAnswer(
             (_) async => {
               'id': 'test-user-123',
               'display_name': 'Test User',
@@ -476,12 +478,10 @@ void main() {
             authRepositoryProvider.overrideWithValue(mockAuthRepo),
             // Override providers that watch authViewModelProvider to avoid
             // CircularDependencyError when invalidateUserScopedProviders fires.
-            galleryStreamProvider.overrideWith(
-              (ref) => Stream.value(<GalleryItem>[]),
-            ),
-            subscriptionNotifierProvider.overrideWith(
-              _StubSubscriptionNotifier.new,
-            ),
+            galleryStreamProvider
+                .overrideWith((ref) => Stream.value(<GalleryItem>[])),
+            subscriptionNotifierProvider
+                .overrideWith(_StubSubscriptionNotifier.new),
           ],
         )..listen(authViewModelProvider, (_, __) {});
         for (var i = 0; i < 20; i++) {
@@ -524,7 +524,10 @@ void main() {
           reason: 'precondition: must start from authenticated state',
         );
 
-        await expectLater(notifier.deleteAccount, throwsA(isA<AppException>()));
+        await expectLater(
+          notifier.deleteAccount,
+          throwsA(isA<AppException>()),
+        );
 
         expect(
           container.read(authViewModelProvider),

@@ -11,7 +11,10 @@ void main() async {
   // Load fallback defaults first, then override with real local env if present.
   await dotenv.load(fileName: '.env.example');
   final fallback = Map<String, String>.from(dotenv.env);
-  await dotenv.load(isOptional: true, mergeWith: fallback);
+  await dotenv.load(
+    isOptional: true,
+    mergeWith: fallback,
+  );
 
   final supabaseUrl = dotenv.env['SUPABASE_URL'];
   final supabaseAnonKey = dotenv.env['SUPABASE_ANON_KEY'];
@@ -24,7 +27,10 @@ void main() async {
     );
   }
 
-  await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
+  await Supabase.initialize(
+    url: supabaseUrl,
+    anonKey: supabaseAnonKey,
+  );
 
   runApp(const ProviderScope(child: AdminApp()));
 }

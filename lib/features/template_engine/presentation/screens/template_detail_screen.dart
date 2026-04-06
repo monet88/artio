@@ -281,7 +281,9 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
             children: [
               Text(
                 AppExceptionMapper.toUserMessage(e),
-                style: TextStyle(color: Theme.of(context).colorScheme.error),
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.error,
+                ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: AppSpacing.md),

@@ -111,16 +111,10 @@ void main() {
       }
 
       for (final update in updates) {
-        expect(
-          update.containsKey('sort_order'),
-          isTrue,
-          reason: 'Upsert payload must use sort_order key',
-        );
-        expect(
-          update.containsKey('order'),
-          isFalse,
-          reason: 'Upsert payload must NOT use order key',
-        );
+        expect(update.containsKey('sort_order'), isTrue,
+            reason: 'Upsert payload must use sort_order key');
+        expect(update.containsKey('order'), isFalse,
+            reason: 'Upsert payload must NOT use order key');
       }
     });
   });

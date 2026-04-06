@@ -86,9 +86,7 @@ class AppExceptionMapper {
     if (lower.contains('declined')) {
       return 'Payment was declined. Please try another method.';
     }
-    if (lower.contains('insufficient credits') ||
-        lower.contains('credit balance') ||
-        lower.contains('not enough credits')) {
+    if (lower.contains('insufficient credits') || lower.contains('credit balance') || lower.contains('not enough credits')) {
       return 'Not enough credits. Watch an ad or upgrade your plan.';
     }
 

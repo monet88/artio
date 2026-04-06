@@ -181,10 +181,7 @@ void main() {
 
         final message = AppExceptionMapper.toUserMessage(error);
 
-        expect(
-          message,
-          'Not enough credits. Watch an ad or upgrade your plan.',
-        );
+        expect(message, 'Not enough credits. Watch an ad or upgrade your plan.');
       });
 
       test('maps "credit balance" to credits message', () {
@@ -192,10 +189,7 @@ void main() {
 
         final message = AppExceptionMapper.toUserMessage(error);
 
-        expect(
-          message,
-          'Not enough credits. Watch an ad or upgrade your plan.',
-        );
+        expect(message, 'Not enough credits. Watch an ad or upgrade your plan.');
       });
 
       test('does not map "credit card declined" to credits message', () {

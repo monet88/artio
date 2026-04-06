@@ -79,9 +79,7 @@ class SubscriptionRepository implements ISubscriptionRepository {
         // Non-blocking: user already charged — don't delay success UI.
         unawaited(_verifyWithGooglePlay(rawToken, productId));
       } else {
-        Log.w(
-          '[RC] orderId empty (free trial?) — skipping immediate verify, RC webhook will handle credits',
-        );
+        Log.w('[RC] orderId empty (free trial?) — skipping immediate verify, RC webhook will handle credits');
       }
 
       return _mapCustomerInfo(result.customerInfo);
@@ -112,10 +110,7 @@ class SubscriptionRepository implements ISubscriptionRepository {
 
   /// Validate purchase with Google Play Publisher API via Supabase edge function.
   /// Non-blocking: errors logged but do NOT throw (don't break purchase flow).
-  Future<void> _verifyWithGooglePlay(
-    String purchaseToken,
-    String productId,
-  ) async {
+  Future<void> _verifyWithGooglePlay(String purchaseToken, String productId) async {
     try {
       final supabase = Supabase.instance.client;
       final response = await supabase.functions.invoke(
@@ -125,13 +120,9 @@ class SubscriptionRepository implements ISubscriptionRepository {
       final body = response.data as Map<String, dynamic>?;
       if (body?['verified'] == true) {
         if (body?['credits'] == 0 && body?['credits_already_granted'] != true) {
-          Log.w(
-            '[RC] GP verify: grant may have failed — credits:0 from server',
-          );
+          Log.w('[RC] GP verify: grant may have failed — credits:0 from server');
         } else {
-          Log.i(
-            '[RC] GP verify OK: tier=${body?['tier']}, credits=${body?['credits']}',
-          );
+          Log.i('[RC] GP verify OK: tier=${body?['tier']}, credits=${body?['credits']}');
         }
       } else if (body?['error'] != null) {
         Log.w('[RC] GP verify error from server: ${body?['error']}');
