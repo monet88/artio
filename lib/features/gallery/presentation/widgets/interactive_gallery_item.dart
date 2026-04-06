@@ -70,6 +70,18 @@ class _InteractiveGalleryItemState extends ConsumerState<InteractiveGalleryItem>
   }
 
   @override
+  void didUpdateWidget(covariant InteractiveGalleryItem oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final itemChanged =
+        oldWidget.item.id != widget.item.id ||
+        oldWidget.item.imageUrl != widget.item.imageUrl;
+    if (itemChanged) {
+      _retryCount = 0;
+      _forceIndividualFetch = false;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return ScaleTransition(
       scale: _scaleAnimation,

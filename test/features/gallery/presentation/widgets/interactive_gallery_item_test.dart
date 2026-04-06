@@ -113,7 +113,7 @@ void main() {
             child: InteractiveGalleryItem(
               item: item,
               onTap: () {},
-              resolvedUrlAsync: AsyncData(resolvedUrl),
+              resolvedUrlAsync: const AsyncData(resolvedUrl),
             ),
           ),
         ),
@@ -191,7 +191,7 @@ void main() {
             child: InteractiveGalleryItem(
               item: item,
               onTap: () {},
-              resolvedUrlAsync: AsyncData(resolvedUrl),
+              resolvedUrlAsync: const AsyncData(resolvedUrl),
             ),
           ),
         ),
@@ -206,6 +206,89 @@ void main() {
         find.byType(CachedNetworkImage),
       );
       expect(cachedImage.imageUrl, equals(resolvedUrl));
+    });
+
+    testWidgets(
+        'resets forced individual fetch when rebuilt with a different item',
+        (tester) async {
+      var firstProviderCalls = 0;
+      var secondProviderCalls = 0;
+      final firstItem = _completedItem(imageUrl: 'user123/first.jpg');
+      final secondItem = GalleryItem(
+        id: 'item-2',
+        jobId: 'job-2',
+        userId: 'user123',
+        templateId: 'tmpl-1',
+        templateName: 'Test Template',
+        createdAt: DateTime(2026, 2, 24),
+        status: GenerationStatus.completed,
+        imageUrl: 'user123/second.jpg',
+      );
+
+      await tester.pumpWidget(
+        _buildTestWidget(
+          overrides: [
+            signedStorageUrlProvider(firstItem.imageUrl!).overrideWith((_) {
+              firstProviderCalls++;
+              throw Exception('network error');
+            }),
+            signedStorageUrlProvider(secondItem.imageUrl!).overrideWith((_) {
+              secondProviderCalls++;
+              throw Exception('should not be called for new item');
+            }),
+          ],
+          child: SizedBox(
+            width: 200,
+            height: 200,
+            child: InteractiveGalleryItem(
+              item: firstItem,
+              onTap: () {},
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byType(RetryTextButton));
+      await tester.pumpAndSettle();
+      expect(firstProviderCalls, greaterThan(1));
+
+      await tester.pumpWidget(
+        _buildTestWidget(
+          overrides: [
+            signedStorageUrlProvider(firstItem.imageUrl!).overrideWith((_) {
+              firstProviderCalls++;
+              throw Exception('network error');
+            }),
+            signedStorageUrlProvider(secondItem.imageUrl!).overrideWith((_) {
+              secondProviderCalls++;
+              throw Exception('should not be called for new item');
+            }),
+          ],
+          child: SizedBox(
+            width: 200,
+            height: 200,
+            child: InteractiveGalleryItem(
+              item: secondItem,
+              onTap: () {},
+              resolvedUrlAsync: const AsyncData(
+                'https://example.com/signed/second.jpg',
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      expect(secondProviderCalls, 0);
+      final cachedImage = tester.widget<CachedNetworkImage>(
+        find.byType(CachedNetworkImage),
+      );
+      expect(
+        cachedImage.imageUrl,
+        'https://example.com/signed/second.jpg',
+      );
+      expect(cachedImage.key, const ValueKey(0));
     });
   });
 }
