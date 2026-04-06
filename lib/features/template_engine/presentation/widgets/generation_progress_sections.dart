@@ -7,6 +7,7 @@ import 'package:artio/core/services/storage_url_service.dart';
 import 'package:artio/features/template_engine/domain/entities/generation_job_model.dart';
 import 'package:artio/shared/widgets/loading_state_widget.dart';
 import 'package:artio/theme/app_colors.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -195,14 +196,14 @@ class _SignedStorageImage extends ConsumerWidget {
         }
         return ClipRRect(
           borderRadius: AppDimensions.cardRadius,
-          child: Image.network(
-            url,
+          child: CachedNetworkImage(
+            imageUrl: url,
+            cacheKey: storagePath,
             fit: BoxFit.cover,
-            loadingBuilder: (context, child, loadingProgress) {
-              if (loadingProgress == null) return child;
+            progressIndicatorBuilder: (context, url, progress) {
               return const LoadingStateWidget();
             },
-            errorBuilder: (context, error, stackTrace) => Icon(
+            errorWidget: (context, url, error) => Icon(
               Icons.broken_image_outlined,
               size: 48,
               color: AppColors.error.withValues(alpha: 0.5),

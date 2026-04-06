@@ -78,6 +78,7 @@ class _TemplateCardState extends State<TemplateCard>
                 // ── Thumbnail Image ─────────────────────────────────
                 CachedNetworkImage(
                   imageUrl: template.thumbnailUrl,
+                  memCacheWidth: 400, // Optimize memory usage for card thumbnails
                   fit: BoxFit.cover,
                   placeholder: (context, url) => Shimmer.fromColors(
                     baseColor: isDark

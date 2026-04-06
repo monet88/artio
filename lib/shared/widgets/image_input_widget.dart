@@ -106,15 +106,18 @@ class _ImagePreview extends StatelessWidget {
 
     return Stack(
       children: [
-        GestureDetector(
-          onTap: onReplace,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: AspectRatio(
-              aspectRatio: 4 / 3,
-              child: kIsWeb
-                  ? Image.network(file.path, fit: BoxFit.cover)
-                  : Image.file(File(file.path), fit: BoxFit.cover),
+        Tooltip(
+          message: 'Tap to replace image',
+          child: GestureDetector(
+            onTap: onReplace,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: AspectRatio(
+                aspectRatio: 4 / 3,
+                child: kIsWeb
+                    ? Image.network(file.path, fit: BoxFit.cover)
+                    : Image.file(File(file.path), fit: BoxFit.cover),
+              ),
             ),
           ),
         ),
