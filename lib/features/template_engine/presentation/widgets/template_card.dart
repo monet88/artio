@@ -58,136 +58,143 @@ class _TemplateCardState extends State<TemplateCard>
 
     return ScaleTransition(
       scale: _scaleAnimation,
-      child: GestureDetector(
-        onTapDown: _onTapDown,
-        onTapUp: _onTapUp,
-        onTapCancel: _onTapCancel,
-        onTap: () => TemplateDetailRoute(id: template.id).push<void>(context),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: isDark
-                ? AppShadows.cardShadowDark
-                : AppShadows.cardShadow,
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(16),
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                // ── Thumbnail Image ─────────────────────────────────
-                CachedNetworkImage(
-                  imageUrl: template.thumbnailUrl,
-                  memCacheWidth: 400, // Optimize memory usage for card thumbnails
-                  fit: BoxFit.cover,
-                  placeholder: (context, url) => Shimmer.fromColors(
-                    baseColor: isDark
-                        ? AppColors.shimmerBase
-                        : const Color(0xFFE8EAF0),
-                    highlightColor: isDark
-                        ? AppColors.shimmerHighlight
-                        : const Color(0xFFF3F4F8),
-                    child: Container(color: Colors.white),
-                  ),
-                  errorWidget: (context, url, error) => ColoredBox(
-                    color: isDark
-                        ? AppColors.darkSurface2
-                        : AppColors.lightSurface2,
-                    child: Icon(
-                      Icons.broken_image_rounded,
+      child: Semantics(
+        button: true,
+        label: 'View ${template.name} template',
+        child: GestureDetector(
+          onTapDown: _onTapDown,
+          onTapUp: _onTapUp,
+          onTapCancel: _onTapCancel,
+          onTap: () => TemplateDetailRoute(id: template.id).push<void>(context),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: isDark
+                  ? AppShadows.cardShadowDark
+                  : AppShadows.cardShadow,
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  // ── Thumbnail Image ─────────────────────────────────
+                  CachedNetworkImage(
+                    imageUrl: template.thumbnailUrl,
+                    memCacheWidth:
+                        400, // Optimize memory usage for card thumbnails
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => Shimmer.fromColors(
+                      baseColor: isDark
+                          ? AppColors.shimmerBase
+                          : const Color(0xFFE8EAF0),
+                      highlightColor: isDark
+                          ? AppColors.shimmerHighlight
+                          : const Color(0xFFF3F4F8),
+                      child: Container(color: Colors.white),
+                    ),
+                    errorWidget: (context, url, error) => ColoredBox(
                       color: isDark
-                          ? AppColors.textMuted
-                          : AppColors.textMutedLight,
-                      size: 32,
-                    ),
-                  ),
-                ),
-
-                // ── Gradient Overlay ────────────────────────────────
-                const DecoratedBox(
-                  decoration: BoxDecoration(gradient: AppGradients.cardOverlay),
-                ),
-
-                // ── Category Tag (top-left) ─────────────────────────
-                Positioned(
-                  top: 8,
-                  left: 8,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.black40,
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    child: Text(
-                      template.category,
-                      style: AppTypography.labelTag.copyWith(
-                        color: AppColors.white60,
+                          ? AppColors.darkSurface2
+                          : AppColors.lightSurface2,
+                      child: Icon(
+                        Icons.broken_image_rounded,
+                        color: isDark
+                            ? AppColors.textMuted
+                            : AppColors.textMutedLight,
+                        size: 32,
                       ),
                     ),
                   ),
-                ),
 
-                // ── PRO Badge (top-right) ───────────────────────────
-                if (template.isPremium)
+                  // ── Gradient Overlay ────────────────────────────────
+                  const DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: AppGradients.cardOverlay,
+                    ),
+                  ),
+
+                  // ── Category Tag (top-left) ─────────────────────────
                   Positioned(
                     top: 8,
-                    right: 8,
+                    left: 8,
                     child: Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 8,
                         vertical: 4,
                       ),
                       decoration: BoxDecoration(
-                        gradient: AppGradients.primaryGradient,
+                        color: AppColors.black40,
                         borderRadius: BorderRadius.circular(6),
                       ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(
-                            Icons.workspace_premium,
-                            size: 12,
-                            color: Colors.white,
-                          ),
-                          const SizedBox(width: 3),
-                          Text(
-                            'PRO',
-                            style: AppTypography.labelBadge.copyWith(
-                              color: Colors.white,
-                            ),
-                          ),
-                        ],
+                      child: Text(
+                        template.category,
+                        style: AppTypography.labelTag.copyWith(
+                          color: AppColors.white60,
+                        ),
                       ),
                     ),
                   ),
 
-                // ── Bottom Text Overlay ─────────────────────────────
-                Positioned(
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  child: Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: Text(
-                      template.name,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                        height: 1.2,
-                        shadows: [
-                          Shadow(color: Color(0x80000000), blurRadius: 4),
-                        ],
+                  // ── PRO Badge (top-right) ───────────────────────────
+                  if (template.isPremium)
+                    Positioned(
+                      top: 8,
+                      right: 8,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          gradient: AppGradients.primaryGradient,
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(
+                              Icons.workspace_premium,
+                              size: 12,
+                              color: Colors.white,
+                            ),
+                            const SizedBox(width: 3),
+                            Text(
+                              'PRO',
+                              style: AppTypography.labelBadge.copyWith(
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
+                    ),
+
+                  // ── Bottom Text Overlay ─────────────────────────────
+                  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Text(
+                        template.name,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                          height: 1.2,
+                          shadows: [
+                            Shadow(color: Color(0x80000000), blurRadius: 4),
+                          ],
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
