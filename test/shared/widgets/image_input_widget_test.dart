@@ -30,33 +30,34 @@ void main() {
     }
   });
 
-  testWidgets('ImageInputWidget keeps tooltip and semantics for replacing image', (
-    WidgetTester tester,
-  ) async {
-    final semantics = tester.ensureSemantics();
-    try {
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: SizedBox(
-              width: 400,
-              child: ImageInputWidget(
-                label: 'Test',
-                isRequired: false,
-                file: XFile('assets/feature.png'),
-                onChanged: (_) {},
+  testWidgets(
+    'ImageInputWidget keeps tooltip and semantics for replacing image',
+    (WidgetTester tester) async {
+      final semantics = tester.ensureSemantics();
+      try {
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: SizedBox(
+                width: 400,
+                child: ImageInputWidget(
+                  label: 'Test',
+                  isRequired: false,
+                  file: XFile('assets/feature.png'),
+                  onChanged: (_) {},
+                ),
               ),
             ),
           ),
-        ),
-      );
+        );
 
-      expect(find.byTooltip('Tap to replace image'), findsOneWidget);
-      final node = tester.getSemantics(find.byType(GestureDetector).first);
-      expect(node.label, contains('Tap to replace image'));
-      expect(node.flagsCollection.isButton, isTrue);
-    } finally {
-      semantics.dispose();
-    }
-  });
+        expect(find.byTooltip('Tap to replace image'), findsOneWidget);
+        final node = tester.getSemantics(find.byType(GestureDetector).first);
+        expect(node.label, contains('Tap to replace image'));
+        expect(node.flagsCollection.isButton, isTrue);
+      } finally {
+        semantics.dispose();
+      }
+    },
+  );
 }

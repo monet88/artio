@@ -258,150 +258,156 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
         subscription.valueOrNull?.tier == (isPro ? 'pro' : 'ultra');
     final isRecommended = !isPro;
 
-    return GestureDetector(
-      onTap: isCurrentPlan
-          ? null
-          : () => setState(() => _selectedPackage = pkg),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        margin: const EdgeInsets.only(bottom: AppSpacing.md),
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        decoration: BoxDecoration(
-          gradient: isSelected
-              ? LinearGradient(
-                  colors: [
-                    AppColors.gradientStart.withValues(alpha: 0.1),
-                    AppColors.gradientEnd.withValues(alpha: 0.1),
-                  ],
-                )
-              : null,
-          color: isSelected ? null : AppColors.darkSurface2,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: isSelected
-                ? AppColors.primaryCta
-                : isRecommended
-                ? AppColors.accent.withValues(alpha: 0.4)
-                : AppColors.white10,
-            width: isSelected ? 2 : 1,
+    return Semantics(
+      button: true,
+      label: 'Select ${isPro ? "Pro" : "Ultra"} plan',
+      child: GestureDetector(
+        onTap: isCurrentPlan
+            ? null
+            : () => setState(() => _selectedPackage = pkg),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          margin: const EdgeInsets.only(bottom: AppSpacing.md),
+          padding: const EdgeInsets.all(AppSpacing.lg),
+          decoration: BoxDecoration(
+            gradient: isSelected
+                ? LinearGradient(
+                    colors: [
+                      AppColors.gradientStart.withValues(alpha: 0.1),
+                      AppColors.gradientEnd.withValues(alpha: 0.1),
+                    ],
+                  )
+                : null,
+            color: isSelected ? null : AppColors.darkSurface2,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: isSelected
+                  ? AppColors.primaryCta
+                  : isRecommended
+                  ? AppColors.accent.withValues(alpha: 0.4)
+                  : AppColors.white10,
+              width: isSelected ? 2 : 1,
+            ),
           ),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Text(
-                  isPro ? 'Pro' : 'Ultra',
-                  style: const TextStyle(
-                    color: AppColors.textPrimary,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                if (isRecommended) ...[
-                  const SizedBox(width: 8),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 3,
-                    ),
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [
-                          AppColors.gradientStart,
-                          AppColors.gradientEnd,
-                        ],
-                      ),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: const Text(
-                      'POPULAR',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 10,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0.5,
-                      ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Text(
+                    isPro ? 'Pro' : 'Ultra',
+                    style: const TextStyle(
+                      color: AppColors.textPrimary,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
-                ],
-                if (isCurrentPlan) ...[
-                  const SizedBox(width: 8),
-                  const Text(
-                    'Current',
-                    style: TextStyle(
-                      color: AppColors.primaryCta,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-                Builder(
-                  builder: (context) {
-                    final savings = _savingsPercent(pkg, packages);
-                    if (savings == null) return const SizedBox.shrink();
-                    return Container(
-                      margin: const EdgeInsets.only(left: 6),
+                  if (isRecommended) ...[
+                    const SizedBox(width: 8),
+                    Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 8,
                         vertical: 3,
                       ),
                       decoration: BoxDecoration(
-                        color: AppColors.savingsGreen.withValues(alpha: 0.15),
+                        gradient: const LinearGradient(
+                          colors: [
+                            AppColors.gradientStart,
+                            AppColors.gradientEnd,
+                          ],
+                        ),
                         borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color: AppColors.savingsGreen.withValues(alpha: 0.4),
-                        ),
                       ),
-                      child: Text(
-                        'Save $savings%',
-                        style: const TextStyle(
-                          color: AppColors.savingsGreen,
+                      child: const Text(
+                        'POPULAR',
+                        style: TextStyle(
+                          color: Colors.white,
                           fontSize: 10,
-                          fontWeight: FontWeight.w700,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 0.5,
                         ),
-                      ),
-                    );
-                  },
-                ),
-                const Spacer(),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(
-                      pkg.priceString,
-                      style: const TextStyle(
-                        color: AppColors.textPrimary,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                    Text(
-                      pkg.identifier.contains('yearly')
-                          ? 'per year'
-                          : 'per month',
-                      style: const TextStyle(
-                        color: AppColors.textMuted,
-                        fontSize: 11,
                       ),
                     ),
                   ],
-                ),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              isPro
-                  ? '200 credits/month • All AI models • No ads'
-                  : '500 credits/month • Priority queue • Early access',
-              style: const TextStyle(
-                color: AppColors.textSecondary,
-                fontSize: 13,
-                height: 1.4,
+                  if (isCurrentPlan) ...[
+                    const SizedBox(width: 8),
+                    const Text(
+                      'Current',
+                      style: TextStyle(
+                        color: AppColors.primaryCta,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                  Builder(
+                    builder: (context) {
+                      final savings = _savingsPercent(pkg, packages);
+                      if (savings == null) return const SizedBox.shrink();
+                      return Container(
+                        margin: const EdgeInsets.only(left: 6),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 3,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.savingsGreen.withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: AppColors.savingsGreen.withValues(
+                              alpha: 0.4,
+                            ),
+                          ),
+                        ),
+                        child: Text(
+                          'Save $savings%',
+                          style: const TextStyle(
+                            color: AppColors.savingsGreen,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  const Spacer(),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        pkg.priceString,
+                        style: const TextStyle(
+                          color: AppColors.textPrimary,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      Text(
+                        pkg.identifier.contains('yearly')
+                            ? 'per year'
+                            : 'per month',
+                        style: const TextStyle(
+                          color: AppColors.textMuted,
+                          fontSize: 11,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-            ),
-          ],
+              const SizedBox(height: AppSpacing.sm),
+              Text(
+                isPro
+                    ? '200 credits/month • All AI models • No ads'
+                    : '500 credits/month • Priority queue • Early access',
+                style: const TextStyle(
+                  color: AppColors.textSecondary,
+                  fontSize: 13,
+                  height: 1.4,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -461,15 +467,22 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
           const TextSpan(text: 'By subscribing you agree to our '),
           WidgetSpan(
             alignment: PlaceholderAlignment.middle,
-            child: GestureDetector(
-              onTap: () => launchInAppUrl(context, 'https://ainear.github.io/artio-legal/terms.html'),
-              child: const Text(
-                'Terms of Service',
-                style: TextStyle(
-                  color: AppColors.primaryCta,
-                  fontSize: 11,
-                  decoration: TextDecoration.underline,
-                  decorationColor: AppColors.primaryCta,
+            child: Semantics(
+              button: true,
+              label: 'Terms of Service link',
+              child: GestureDetector(
+                onTap: () => launchInAppUrl(
+                  context,
+                  'https://ainear.github.io/artio-legal/terms.html',
+                ),
+                child: const Text(
+                  'Terms of Service',
+                  style: TextStyle(
+                    color: AppColors.primaryCta,
+                    fontSize: 11,
+                    decoration: TextDecoration.underline,
+                    decorationColor: AppColors.primaryCta,
+                  ),
                 ),
               ),
             ),
@@ -477,15 +490,22 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
           const TextSpan(text: ' and '),
           WidgetSpan(
             alignment: PlaceholderAlignment.middle,
-            child: GestureDetector(
-              onTap: () => launchInAppUrl(context, 'https://ainear.github.io/artio-legal/privacy.html'),
-              child: const Text(
-                'Privacy Policy',
-                style: TextStyle(
-                  color: AppColors.primaryCta,
-                  fontSize: 11,
-                  decoration: TextDecoration.underline,
-                  decorationColor: AppColors.primaryCta,
+            child: Semantics(
+              button: true,
+              label: 'Privacy Policy link',
+              child: GestureDetector(
+                onTap: () => launchInAppUrl(
+                  context,
+                  'https://ainear.github.io/artio-legal/privacy.html',
+                ),
+                child: const Text(
+                  'Privacy Policy',
+                  style: TextStyle(
+                    color: AppColors.primaryCta,
+                    fontSize: 11,
+                    decoration: TextDecoration.underline,
+                    decorationColor: AppColors.primaryCta,
+                  ),
                 ),
               ),
             ),

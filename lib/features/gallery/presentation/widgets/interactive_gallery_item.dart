@@ -162,7 +162,8 @@ class _InteractiveGalleryItemState extends ConsumerState<InteractiveGalleryItem>
       // Use pre-resolved URL state from batch call if available and not forced
       // to retry,
       // otherwise fall back to per-item signed URL resolution.
-      final useBatch = widget.resolvedUrlAsync != null && !_forceIndividualFetch;
+      final useBatch =
+          widget.resolvedUrlAsync != null && !_forceIndividualFetch;
       final signedUrlAsync = useBatch
           ? widget.resolvedUrlAsync!
           : ref.watch(signedStorageUrlProvider(item.imageUrl!));
@@ -247,14 +248,14 @@ class _InteractiveGalleryItemState extends ConsumerState<InteractiveGalleryItem>
                     child: _GalleryErrorPlaceholder(
                       isDark: isDark,
                       onRetry: () {
-                        CachedNetworkImage.evictFromCache(
-                          item.imageUrl!,
-                        );
+                        CachedNetworkImage.evictFromCache(item.imageUrl!);
                         setState(() {
                           _retryCount++;
                           _forceIndividualFetch = true;
                         });
-                        ref.invalidate(signedStorageUrlProvider(item.imageUrl!));
+                        ref.invalidate(
+                          signedStorageUrlProvider(item.imageUrl!),
+                        );
                       },
                     ),
                   ),

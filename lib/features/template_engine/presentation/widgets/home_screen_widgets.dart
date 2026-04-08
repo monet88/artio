@@ -76,35 +76,42 @@ class _CategoryChipsState extends State<CategoryChips> {
         separatorBuilder: (_, __) => const SizedBox(width: 8),
         itemBuilder: (context, index) {
           final isSelected = _selectedIndex == index;
-          return GestureDetector(
-            onTap: () => setState(() => _selectedIndex = index),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              curve: Curves.easeOutCubic,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              decoration: BoxDecoration(
-                color: isSelected
-                    ? AppColors.primaryCta
-                    : isDark
-                    ? AppColors.darkSurface2
-                    : AppColors.lightSurface2,
-                borderRadius: BorderRadius.circular(20),
-                border: isSelected
-                    ? null
-                    : isDark
-                    ? Border.all(color: AppColors.white10, width: 0.5)
-                    : null,
-              ),
-              child: Text(
-                _categories[index],
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+          return Semantics(
+            button: true,
+            label: 'Filter category',
+            child: GestureDetector(
+              onTap: () => setState(() => _selectedIndex = index),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                curve: Curves.easeOutCubic,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
+                decoration: BoxDecoration(
                   color: isSelected
-                      ? Colors.white
+                      ? AppColors.primaryCta
                       : isDark
-                      ? AppColors.textSecondary
-                      : AppColors.textSecondaryLight,
+                      ? AppColors.darkSurface2
+                      : AppColors.lightSurface2,
+                  borderRadius: BorderRadius.circular(20),
+                  border: isSelected
+                      ? null
+                      : isDark
+                      ? Border.all(color: AppColors.white10, width: 0.5)
+                      : null,
+                ),
+                child: Text(
+                  _categories[index],
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                    color: isSelected
+                        ? Colors.white
+                        : isDark
+                        ? AppColors.textSecondary
+                        : AppColors.textSecondaryLight,
+                  ),
                 ),
               ),
             ),

@@ -281,8 +281,9 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage>
                 return ImageViewerImagePage(
                   item: item,
                   showWatermark: showWatermark,
-                  resolvedUrl:
-                      item.imageUrl != null ? widget.preResolvedUrls[item.imageUrl] : null,
+                  resolvedUrl: item.imageUrl != null
+                      ? widget.preResolvedUrls[item.imageUrl]
+                      : null,
                 );
               },
             ),

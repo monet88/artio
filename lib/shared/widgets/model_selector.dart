@@ -32,8 +32,7 @@ class _ModelSelectorState extends State<ModelSelector> {
     }
     if (widget.filterSupportsImageInput != null) {
       models = models
-          .where(
-              (m) => m.supportsImageInput == widget.filterSupportsImageInput)
+          .where((m) => m.supportsImageInput == widget.filterSupportsImageInput)
           .toList();
     }
     return models;

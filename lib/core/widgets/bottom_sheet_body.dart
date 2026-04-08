@@ -7,11 +7,7 @@ import 'package:flutter/widgets.dart';
 /// Applies `SafeArea(top: false)` which automatically insets content by
 /// `MediaQuery.padding.bottom`, keeping interactive elements above system UI.
 class BottomSheetBody extends StatelessWidget {
-  const BottomSheetBody({
-    required this.child,
-    this.padding,
-    super.key,
-  });
+  const BottomSheetBody({required this.child, this.padding, super.key});
 
   final Widget child;
 
@@ -27,10 +23,7 @@ class BottomSheetBody extends StatelessWidget {
     final base = padding ?? const EdgeInsets.all(AppSpacing.lg);
     return SafeArea(
       top: false,
-      child: Padding(
-        padding: base,
-        child: child,
-      ),
+      child: Padding(padding: base, child: child),
     );
   }
 }

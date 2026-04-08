@@ -40,12 +40,12 @@ class ImageUploadService {
     final mimeType = _detectMimeType(file);
     final ext = _extensionFromMime(mimeType);
     final path = '$userId/inputs/${const Uuid().v4()}$ext';
-    await _supabase.storage.from(_bucket).uploadBinary(
+    await _supabase.storage
+        .from(_bucket)
+        .uploadBinary(
           path,
           bytes,
-          fileOptions: FileOptions(
-            contentType: mimeType,
-          ),
+          fileOptions: FileOptions(contentType: mimeType),
         );
     return path;
   }

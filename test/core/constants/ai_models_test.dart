@@ -109,13 +109,7 @@ void main() {
       test('contains unified ratio set', () {
         expect(
           AiModels.supportedAspectRatios,
-          containsAll([
-            '1:1',
-            '3:4',
-            '4:3',
-            '9:16',
-            '16:9',
-          ]),
+          containsAll(['1:1', '3:4', '4:3', '9:16', '16:9']),
         );
       });
     });
@@ -139,12 +133,15 @@ void main() {
         expect(AiModels.imageCapableModels.length, 8);
       });
 
-      test('all models with supportsImageInput=true are in imageCapableModels', () {
-        final imageModels = AiModels.imageCapableModels;
-        for (final model in imageModels) {
-          expect(model.supportsImageInput, isTrue);
-        }
-      });
+      test(
+        'all models with supportsImageInput=true are in imageCapableModels',
+        () {
+          final imageModels = AiModels.imageCapableModels;
+          for (final model in imageModels) {
+            expect(model.supportsImageInput, isTrue);
+          }
+        },
+      );
 
       test('nano-banana-edit has supportsImageInput true', () {
         final model = AiModels.getById('google/nano-banana-edit');
@@ -197,8 +194,12 @@ void main() {
       });
 
       test('bidirectional filter excludes correctly', () {
-        final imageModels = AiModels.all.where((m) => m.supportsImageInput).toList();
-        final textModels = AiModels.all.where((m) => !m.supportsImageInput).toList();
+        final imageModels = AiModels.all
+            .where((m) => m.supportsImageInput)
+            .toList();
+        final textModels = AiModels.all
+            .where((m) => !m.supportsImageInput)
+            .toList();
         // No overlap
         final imageIds = imageModels.map((m) => m.id).toSet();
         final textIds = textModels.map((m) => m.id).toSet();
