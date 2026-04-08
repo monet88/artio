@@ -41,6 +41,8 @@ class TemplateCard extends StatelessWidget {
                   child: thumbnailUrl != null
                       ? CachedNetworkImage(
                           imageUrl: thumbnailUrl,
+                          memCacheWidth:
+                              200, // Optimize memory usage for small list thumbnails
                           fit: BoxFit.cover,
                           placeholder: (_, _) => Container(
                             color: isDark

@@ -37,3 +37,7 @@
 ## 2026-04-02 - Fix N+1 API Calls on Riverpod Batch Loading
 **Learning:** When using Riverpod to batch API requests (e.g., gallery signed URLs) and passing results to children, extracting `.valueOrNull` in the parent while the provider is `AsyncLoading` results in passing `null` to children. If children interpret `null` as "no batch available" and fallback to individual `ref.watch` calls, it triggers N simultaneous API calls before the batch resolves, defeating the purpose of the batch.
 **Action:** Pass the full `AsyncValue` state to child widgets. This allows children to observe the loading state and display placeholders, rather than falling back to individual fetching while the batch is still loading.
+
+## 2024-05-15 - [Optimize memory consumption of image thumbnails]
+**Learning:** [In Flutter applications, displaying high-resolution images via `CachedNetworkImage` inside scrollable list or grid views can rapidly exhaust device memory and cause Out-Of-Memory (OOM) crashes, as the widget decodes the full image size into memory by default.]
+**Action:** [Always specify `memCacheWidth` or `memCacheHeight` (e.g. `memCacheWidth: 200` for a small thumbnail, or `800` for a larger preview) when rendering known-size imagery, especially inside bounded containers, cards, and grid item builders. This instructs the underlying image provider to decode a downscaled version into memory instead of the original.]
