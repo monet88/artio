@@ -9,7 +9,9 @@ DO $$
 BEGIN
   IF NOT EXISTS (
     SELECT 1 FROM information_schema.columns
-    WHERE table_name = 'profiles' AND column_name = 'role'
+    WHERE table_schema = 'public'
+      AND table_name = 'profiles'
+      AND column_name = 'role'
   ) THEN
     ALTER TABLE profiles ADD COLUMN role TEXT DEFAULT 'user' CHECK (role IN ('user', 'admin'));
     CREATE INDEX IF NOT EXISTS idx_profiles_role ON profiles(role);

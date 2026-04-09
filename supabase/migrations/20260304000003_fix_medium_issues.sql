@@ -10,7 +10,9 @@ DO $$
 BEGIN
   IF EXISTS (
     SELECT 1 FROM information_schema.columns
-    WHERE table_name = 'templates' AND column_name = 'order'
+    WHERE table_schema = 'public'
+      AND table_name = 'templates'
+      AND column_name = 'order'
   ) THEN
     ALTER TABLE templates RENAME COLUMN "order" TO sort_order;
   END IF;

@@ -7,16 +7,36 @@
 -- =============================================================================
 DO $$
 BEGIN
-  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'profiles' AND column_name = 'is_premium') THEN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_schema = 'public'
+      AND table_name = 'profiles'
+      AND column_name = 'is_premium'
+  ) THEN
     ALTER TABLE profiles ADD COLUMN is_premium BOOLEAN DEFAULT false;
   END IF;
-  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'profiles' AND column_name = 'subscription_tier') THEN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_schema = 'public'
+      AND table_name = 'profiles'
+      AND column_name = 'subscription_tier'
+  ) THEN
     ALTER TABLE profiles ADD COLUMN subscription_tier TEXT DEFAULT 'free';
   END IF;
-  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'profiles' AND column_name = 'premium_expires_at') THEN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_schema = 'public'
+      AND table_name = 'profiles'
+      AND column_name = 'premium_expires_at'
+  ) THEN
     ALTER TABLE profiles ADD COLUMN premium_expires_at TIMESTAMPTZ;
   END IF;
-  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'profiles' AND column_name = 'revenuecat_app_user_id') THEN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_schema = 'public'
+      AND table_name = 'profiles'
+      AND column_name = 'revenuecat_app_user_id'
+  ) THEN
     ALTER TABLE profiles ADD COLUMN revenuecat_app_user_id TEXT;
   END IF;
 END $$;
@@ -55,10 +75,14 @@ BEGIN
       ON pending_ad_rewards(expires_at) WHERE claimed = false;
   ELSIF EXISTS (
     SELECT 1 FROM information_schema.columns
-    WHERE table_name = 'pending_ad_rewards' AND column_name = 'expires_at'
+    WHERE table_schema = 'public'
+      AND table_name = 'pending_ad_rewards'
+      AND column_name = 'expires_at'
   ) AND EXISTS (
     SELECT 1 FROM information_schema.columns
-    WHERE table_name = 'pending_ad_rewards' AND column_name = 'claimed'
+    WHERE table_schema = 'public'
+      AND table_name = 'pending_ad_rewards'
+      AND column_name = 'claimed'
   ) THEN
     CREATE INDEX IF NOT EXISTS idx_pending_ad_rewards_cleanup
       ON pending_ad_rewards(expires_at) WHERE claimed = false;
