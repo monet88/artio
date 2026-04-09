@@ -9,25 +9,28 @@ class MockSupabaseClient extends Mock implements SupabaseClient {}
 
 void main() {
   group('storageUrlServiceProvider', () {
-    test('keeps the same service instance after the last listener is removed', () async {
-      final mockSupabase = MockSupabaseClient();
-      final container = ProviderContainer(
-        overrides: [supabaseClientProvider.overrideWithValue(mockSupabase)],
-      );
-      addTearDown(container.dispose);
+    test(
+      'keeps the same service instance after the last listener is removed',
+      () async {
+        final mockSupabase = MockSupabaseClient();
+        final container = ProviderContainer(
+          overrides: [supabaseClientProvider.overrideWithValue(mockSupabase)],
+        );
+        addTearDown(container.dispose);
 
-      final subscription = container.listen<StorageUrlService>(
-        storageUrlServiceProvider,
-        (_, __) {},
-      );
-      final first = subscription.read();
+        final subscription = container.listen<StorageUrlService>(
+          storageUrlServiceProvider,
+          (_, __) {},
+        );
+        final first = subscription.read();
 
-      subscription.close();
-      await container.pump();
+        subscription.close();
+        await container.pump();
 
-      final second = container.read(storageUrlServiceProvider);
+        final second = container.read(storageUrlServiceProvider);
 
-      expect(identical(first, second), isTrue);
-    });
+        expect(identical(first, second), isTrue);
+      },
+    );
   });
 }

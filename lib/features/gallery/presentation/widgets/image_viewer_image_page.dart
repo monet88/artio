@@ -59,8 +59,8 @@ class _ImageViewerImagePageState extends ConsumerState<ImageViewerImagePage> {
     // as the user swipes through the gallery pager, cutting down network latency.
     final signedUrlAsync = rawPath != null
         ? (localUrl != null
-            ? AsyncValue.data(localUrl)
-            : ref.watch(signedStorageUrlProvider(rawPath)))
+              ? AsyncValue.data(localUrl)
+              : ref.watch(signedStorageUrlProvider(rawPath)))
         : null;
 
     return WatermarkOverlay(
@@ -117,36 +117,37 @@ class _ImageViewerImagePageState extends ConsumerState<ImageViewerImagePage> {
                             imageUrl: signedUrl,
                             cacheKey: rawPath,
                             fit: BoxFit.contain,
-                            progressIndicatorBuilder: (context, url, downloadProgress) {
-                              final progress = downloadProgress.progress;
-                              return Center(
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    SizedBox(
-                                      width: 48,
-                                      height: 48,
-                                      child: CircularProgressIndicator(
-                                        value: progress,
-                                        strokeWidth: 2.5,
-                                        color: AppColors.primaryCta,
-                                        backgroundColor: AppColors.white10,
-                                      ),
-                                    ),
-                                    if (progress != null) ...[
-                                      const SizedBox(height: 12),
-                                      Text(
-                                        '${(progress * 100).toInt()}%',
-                                        style: const TextStyle(
-                                          color: AppColors.textMuted,
-                                          fontSize: 13,
+                            progressIndicatorBuilder:
+                                (context, url, downloadProgress) {
+                                  final progress = downloadProgress.progress;
+                                  return Center(
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        SizedBox(
+                                          width: 48,
+                                          height: 48,
+                                          child: CircularProgressIndicator(
+                                            value: progress,
+                                            strokeWidth: 2.5,
+                                            color: AppColors.primaryCta,
+                                            backgroundColor: AppColors.white10,
+                                          ),
                                         ),
-                                      ),
-                                    ],
-                                  ],
-                                ),
-                              );
-                            },
+                                        if (progress != null) ...[
+                                          const SizedBox(height: 12),
+                                          Text(
+                                            '${(progress * 100).toInt()}%',
+                                            style: const TextStyle(
+                                              color: AppColors.textMuted,
+                                              fontSize: 13,
+                                            ),
+                                          ),
+                                        ],
+                                      ],
+                                    ),
+                                  );
+                                },
                             errorWidget: (context, url, error) =>
                                 _ViewerErrorPlaceholder(
                                   onRetry: () => _retrySignedUrl(rawPath!),
@@ -176,24 +177,15 @@ class _ViewerErrorPlaceholder extends StatelessWidget {
           blendMode: BlendMode.srcIn,
           shaderCallback: (bounds) =>
               AppGradients.primaryGradient.createShader(bounds),
-          child: const Icon(
-            Icons.broken_image_rounded,
-            size: 56,
-          ),
+          child: const Icon(Icons.broken_image_rounded, size: 56),
         ),
         const SizedBox(height: AppSpacing.md),
         const Text(
           GalleryStrings.failedToLoadImage,
-          style: TextStyle(
-            color: AppColors.textMuted,
-            fontSize: 14,
-          ),
+          style: TextStyle(color: AppColors.textMuted, fontSize: 14),
         ),
         const SizedBox(height: AppSpacing.sm),
-        AnimatedRetryButton(
-          onPressed: onRetry,
-          color: AppColors.primaryCta,
-        ),
+        AnimatedRetryButton(onPressed: onRetry, color: AppColors.primaryCta),
       ],
     );
   }

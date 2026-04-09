@@ -31,10 +31,7 @@ Widget _buildTestWidget({
         body: SizedBox(
           width: 300,
           height: 300,
-          child: ImageViewerImagePage(
-            item: item,
-            resolvedUrl: resolvedUrl,
-          ),
+          child: ImageViewerImagePage(item: item, resolvedUrl: resolvedUrl),
         ),
       ),
     ),

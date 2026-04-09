@@ -123,8 +123,9 @@ void main() {
       expect(find.text('Restore Purchases'), findsOneWidget);
     });
 
-    testWidgets('hides Restore Purchases tile when not logged in',
-        (tester) async {
+    testWidgets('hides Restore Purchases tile when not logged in', (
+      tester,
+    ) async {
       await tester.pumpWidget(buildWidget(isLoggedIn: false));
       await tester.pumpAndSettle();
 
@@ -150,8 +151,9 @@ void main() {
       expect(find.text('Delete Account'), findsNothing);
     });
 
-    testWidgets('invokes onDeleteAccount callback when tile is tapped',
-        (tester) async {
+    testWidgets('invokes onDeleteAccount callback when tile is tapped', (
+      tester,
+    ) async {
       var called = false;
       await tester.pumpWidget(
         ProviderScope(
@@ -182,38 +184,39 @@ void main() {
     });
 
     testWidgets(
-        'Restore Purchases tile is disabled on non-mobile (desktop test host)',
-        (tester) async {
-      // RevenueCat only supports Android/iOS. On the macOS test host,
-      // Platform.isAndroid and Platform.isIOS are both false → tile is
-      // disabled (onTap = null) so tapping it must NOT invoke the callback.
-      var called = false;
-      await tester.pumpWidget(
-        ProviderScope(
-          child: MaterialApp(
-            home: Scaffold(
-              body: SingleChildScrollView(
-                child: SettingsSections(
-                  email: 'test@example.com',
-                  isDark: false,
-                  version: '1.0.0',
-                  isLoggedIn: true,
-                  isPremium: false,
-                  onResetPassword: () {},
-                  onSignOut: () {},
-                  onRestore: () {
-                    called = true;
-                  },
-                  onDeleteAccount: () {},
+      'Restore Purchases tile is disabled on non-mobile (desktop test host)',
+      (tester) async {
+        // RevenueCat only supports Android/iOS. On the macOS test host,
+        // Platform.isAndroid and Platform.isIOS are both false → tile is
+        // disabled (onTap = null) so tapping it must NOT invoke the callback.
+        var called = false;
+        await tester.pumpWidget(
+          ProviderScope(
+            child: MaterialApp(
+              home: Scaffold(
+                body: SingleChildScrollView(
+                  child: SettingsSections(
+                    email: 'test@example.com',
+                    isDark: false,
+                    version: '1.0.0',
+                    isLoggedIn: true,
+                    isPremium: false,
+                    onResetPassword: () {},
+                    onSignOut: () {},
+                    onRestore: () {
+                      called = true;
+                    },
+                    onDeleteAccount: () {},
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-      );
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Restore Purchases'), warnIfMissed: false);
-      expect(called, isFalse);
-    });
+        );
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Restore Purchases'), warnIfMissed: false);
+        expect(called, isFalse);
+      },
+    );
   });
 }

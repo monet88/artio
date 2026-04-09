@@ -58,10 +58,16 @@ void main() {
         expect(json['name'], template.name);
         expect(json['category'], template.category);
         expect(json['input_fields'], isList);
-        expect(json.containsKey('sort_order'), isTrue,
-            reason: 'toJson must emit sort_order key');
-        expect(json.containsKey('order'), isFalse,
-            reason: 'toJson must NOT emit order key');
+        expect(
+          json.containsKey('sort_order'),
+          isTrue,
+          reason: 'toJson must emit sort_order key',
+        );
+        expect(
+          json.containsKey('order'),
+          isFalse,
+          reason: 'toJson must NOT emit order key',
+        );
         expect(json['sort_order'], template.order);
       });
 

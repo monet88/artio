@@ -73,14 +73,15 @@ void main() {
 
     testWidgets('rejects unsafe schemes', (tester) async {
       await tester.pumpWidget(
-        _scaffoldWith(
-          (ctx) => launchUrlSafely(ctx, 'javascript:alert("XSS")'),
-        ),
+        _scaffoldWith((ctx) => launchUrlSafely(ctx, 'javascript:alert("XSS")')),
       );
       await tester.tap(find.text('Launch'));
       await tester.pumpAndSettle();
 
-      expect(fakePlatform.launchedUrls, isNot(contains('javascript:alert("XSS")')));
+      expect(
+        fakePlatform.launchedUrls,
+        isNot(contains('javascript:alert("XSS")')),
+      );
       expect(find.text('Invalid URL'), findsOneWidget);
     });
   });
@@ -122,9 +123,7 @@ void main() {
 
     testWidgets('rejects unsafe schemes', (tester) async {
       await tester.pumpWidget(
-        _scaffoldWith(
-          (ctx) => launchInAppUrl(ctx, 'file:///etc/passwd'),
-        ),
+        _scaffoldWith((ctx) => launchInAppUrl(ctx, 'file:///etc/passwd')),
       );
       await tester.tap(find.text('Launch'));
       await tester.pumpAndSettle();
@@ -133,5 +132,4 @@ void main() {
       expect(find.text('Invalid URL'), findsOneWidget);
     });
   });
-
 }

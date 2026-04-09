@@ -47,9 +47,7 @@ void main() {
       container = ProviderContainer(
         overrides: [
           authRepositoryProvider.overrideWithValue(mockAuthRepo),
-          onboardingDoneProvider.overrideWith(
-            (ref) async => onboardingDone,
-          ),
+          onboardingDoneProvider.overrideWith((ref) async => onboardingDone),
         ],
       );
 

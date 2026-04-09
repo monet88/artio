@@ -21,7 +21,8 @@ class MasonryImageGrid extends ConsumerStatefulWidget {
     GalleryItem item,
     int index,
     Map<String, String?> preResolvedUrls,
-  ) onItemTap;
+  )
+  onItemTap;
   final bool showWatermark;
 
   @override
@@ -77,8 +78,10 @@ class _MasonryImageGridState extends ConsumerState<MasonryImageGrid>
   void _setupAnimations() {
     const maxItems = AppAnimations.maxStaggerItems;
     final clampedItemCount = widget.items.length.clamp(0, maxItems);
-    final totalStaggerTime = AppAnimations.staggerDelay.inMilliseconds * clampedItemCount;
-    final totalDuration = AppAnimations.normal.inMilliseconds + totalStaggerTime;
+    final totalStaggerTime =
+        AppAnimations.staggerDelay.inMilliseconds * clampedItemCount;
+    final totalDuration =
+        AppAnimations.normal.inMilliseconds + totalStaggerTime;
 
     _itemAnimations = List.generate(maxItems + 1, (staggerIndex) {
       final startFrac =
