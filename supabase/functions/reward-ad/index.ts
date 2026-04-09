@@ -501,7 +501,7 @@ Deno.serve(async (req) => {
     console.error("[reward-ad] Unexpected error:", error);
     return new Response(
       JSON.stringify({
-        error: error instanceof Error ? error.message : "Unknown error",
+        error: "Internal server error",
       }),
       {
         status: 500,

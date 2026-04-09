@@ -182,17 +182,21 @@ class _LowCreditBanner extends ConsumerWidget {
               ),
             ),
           ),
-          InkWell(
-            onTap: () => const PaywallRoute().push<void>(context),
-            borderRadius: BorderRadius.circular(4),
-            child: const Text(
-              'Upgrade',
-              style: TextStyle(
-                color: _warningColor,
-                fontSize: 13,
-                fontWeight: FontWeight.w700,
-                decoration: TextDecoration.underline,
-                decorationColor: _warningColor,
+          Semantics(
+            button: true,
+            label: 'Upgrade subscription',
+            child: InkWell(
+              onTap: () => const PaywallRoute().push<void>(context),
+              borderRadius: BorderRadius.circular(4),
+              child: const Text(
+                'Upgrade',
+                style: TextStyle(
+                  color: _warningColor,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  decoration: TextDecoration.underline,
+                  decorationColor: _warningColor,
+                ),
               ),
             ),
           ),
@@ -213,33 +217,37 @@ class _CreditChip extends ConsumerWidget {
             message: 'View credit history',
             child: Material(
               color: Colors.transparent,
-              child: InkWell(
-                onTap: () => const CreditHistoryRoute().push<void>(context),
-                borderRadius: BorderRadius.circular(20),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.sm,
-                    vertical: AppSpacing.xs,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.white10,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: AppColors.white20),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Text('💎', style: TextStyle(fontSize: 13)),
-                      const SizedBox(width: AppSpacing.xs),
-                      Text(
-                        '${creditBalance.balance}',
-                        style: const TextStyle(
-                          color: AppColors.textPrimary,
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
+              child: Semantics(
+                button: true,
+                label: 'View credit history',
+                child: InkWell(
+                  onTap: () => const CreditHistoryRoute().push<void>(context),
+                  borderRadius: BorderRadius.circular(20),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.sm,
+                      vertical: AppSpacing.xs,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.white10,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: AppColors.white20),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Text('💎', style: TextStyle(fontSize: 13)),
+                        const SizedBox(width: AppSpacing.xs),
+                        Text(
+                          '${creditBalance.balance}',
+                          style: const TextStyle(
+                            color: AppColors.textPrimary,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),

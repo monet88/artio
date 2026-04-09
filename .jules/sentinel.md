@@ -14,3 +14,7 @@
 **Vulnerability:** The `update_subscription_status` PostgreSQL function was declared as `SECURITY DEFINER` without explicitly revoking `EXECUTE` privileges from the `PUBLIC` role. Because PostgreSQL grants execution rights to `PUBLIC` by default on new functions, any user (including anonymous) could potentially call this function to escalate their privileges (e.g. set their status to premium).
 **Learning:** Even if a function is intended for internal use via RPC by edge functions running as `service_role`, explicitly revoking `PUBLIC` execution access is critical.
 **Prevention:** Always explicitly revoke `EXECUTE` from `PUBLIC` and `authenticated` roles for all newly created `SECURITY DEFINER` functions, and explicitly grant it only to the necessary roles (e.g., `service_role`).
+## 2024-10-24 - Edge Function Information Leakage
+**Vulnerability:** Edge Functions (`delete-account`, `generate-image`, `reward-ad`) were catching all exceptions and returning `error.message` in 500 error responses, potentially leaking stack traces or internal environment details to clients.
+**Learning:** Returning raw Error messages in HTTP 500 responses is an information disclosure risk (CWE-209). While developers need this for debugging, clients should only receive a generic message.
+**Prevention:** In top-level catch blocks of API handlers or Edge Functions, always log the detailed error internally (e.g., `console.error`) and return a generic error message (e.g., `"Internal server error"`) to the client.

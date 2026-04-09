@@ -79,8 +79,11 @@ class _TemplateCardState extends State<TemplateCard>
                 fit: StackFit.expand,
                 children: [
                   // ── Thumbnail Image ─────────────────────────────────
+                  // ⚡ Bolt Optimization: Use the stable storage path as the cache key by stripping query parameters.
+                  // Impact: Prevents continuous cache misses and redundant downloads when signed URL query parameters (like expiring tokens) rotate.
                   CachedNetworkImage(
                     imageUrl: template.thumbnailUrl,
+                    cacheKey: template.thumbnailUrl.split('?').first,
                     memCacheWidth:
                         400, // Optimize memory usage for card thumbnails
                     fit: BoxFit.cover,
