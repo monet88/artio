@@ -81,6 +81,7 @@ class _TemplateCardState extends State<TemplateCard>
                   // ── Thumbnail Image ─────────────────────────────────
                   CachedNetworkImage(
                     imageUrl: template.thumbnailUrl,
+                    cacheKey: template.thumbnailUrl.split('?').first,
                     memCacheWidth:
                         400, // Optimize memory usage for card thumbnails
                     fit: BoxFit.cover,
