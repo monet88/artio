@@ -26,6 +26,8 @@ class TemplateDetailHeader extends StatelessWidget {
             child: CachedNetworkImage(
               imageUrl: template.thumbnailUrl,
               cacheKey: template.thumbnailUrl.split('?').first,
+              memCacheWidth:
+                  800, // Optimize memory usage by limiting decode size
               height: 200,
               fit: BoxFit.cover,
               errorWidget: (context, url, error) => const SizedBox(

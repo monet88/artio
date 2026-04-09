@@ -199,6 +199,8 @@ class _SignedStorageImage extends ConsumerWidget {
           child: CachedNetworkImage(
             imageUrl: url,
             cacheKey: storagePath,
+            memCacheWidth:
+                600, // Limit decode size to prevent excessive memory usage
             fit: BoxFit.cover,
             progressIndicatorBuilder: (context, url, progress) {
               return const LoadingStateWidget();
