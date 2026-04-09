@@ -43,6 +43,7 @@ export async function refundCreditsOnFailure(
   maxRetries: number = 3
 ): Promise<{ success: boolean; attempts: number }> {
   let lastError: unknown = null;
+  const refundReferenceId = `refund:${jobId}`;
 
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
@@ -50,7 +51,7 @@ export async function refundCreditsOnFailure(
         p_user_id: userId,
         p_amount: amount,
         p_description: "Generation failed — refund",
-        p_reference_id: jobId,
+        p_reference_id: refundReferenceId,
       });
 
       if (error) {

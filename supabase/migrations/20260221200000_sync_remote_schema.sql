@@ -34,172 +34,44 @@ CREATE TABLE IF NOT EXISTS generation_rate_limits (
 ALTER TABLE generation_rate_limits ENABLE ROW LEVEL SECURITY;
 
 -- pending_ad_rewards
-CREATE TABLE IF NOT EXISTS pending_ad_rewards (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  nonce UUID NOT NULL UNIQUE,
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  expires_at TIMESTAMPTZ DEFAULT (NOW() + INTERVAL '5 minutes'),
-  claimed BOOLEAN DEFAULT false
-);
-CREATE INDEX IF NOT EXISTS idx_pending_ad_rewards_nonce ON pending_ad_rewards(nonce);
-CREATE INDEX IF NOT EXISTS idx_pending_ad_rewards_cleanup ON pending_ad_rewards(expires_at) WHERE claimed = false;
-ALTER TABLE pending_ad_rewards ENABLE ROW LEVEL SECURITY;
+-- This sync migration predates the later claimed_at-based normalization. Guard
+-- the legacy shape so fresh local bootstrap can coexist with the newer schema.
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.tables
+    WHERE table_schema = 'public' AND table_name = 'pending_ad_rewards'
+  ) THEN
+    CREATE TABLE pending_ad_rewards (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+      nonce UUID NOT NULL UNIQUE,
+      created_at TIMESTAMPTZ DEFAULT NOW(),
+      expires_at TIMESTAMPTZ DEFAULT (NOW() + INTERVAL '5 minutes'),
+      claimed BOOLEAN DEFAULT false
+    );
+    CREATE INDEX IF NOT EXISTS idx_pending_ad_rewards_nonce ON pending_ad_rewards(nonce);
+    CREATE INDEX IF NOT EXISTS idx_pending_ad_rewards_cleanup
+      ON pending_ad_rewards(expires_at) WHERE claimed = false;
+  ELSIF EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_name = 'pending_ad_rewards' AND column_name = 'expires_at'
+  ) AND EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_name = 'pending_ad_rewards' AND column_name = 'claimed'
+  ) THEN
+    CREATE INDEX IF NOT EXISTS idx_pending_ad_rewards_cleanup
+      ON pending_ad_rewards(expires_at) WHERE claimed = false;
+  END IF;
+
+  ALTER TABLE pending_ad_rewards ENABLE ROW LEVEL SECURITY;
+END $$;
 
 -- =============================================================================
 -- 3. Missing functions
 -- =============================================================================
-
-CREATE OR REPLACE FUNCTION check_rate_limit(
-  p_user_id UUID,
-  p_max_requests INTEGER DEFAULT 10,
-  p_window_seconds INTEGER DEFAULT 60
-)
-RETURNS BOOLEAN
-LANGUAGE plpgsql SECURITY DEFINER
-SET search_path = 'public'
-AS $$
-DECLARE
-  v_count INTEGER;
-  v_window_start TIMESTAMPTZ;
-BEGIN
-  SELECT request_count, window_start INTO v_count, v_window_start
-  FROM generation_rate_limits WHERE user_id = p_user_id FOR UPDATE;
-
-  IF NOT FOUND THEN
-    INSERT INTO generation_rate_limits (user_id, request_count, window_start)
-    VALUES (p_user_id, 1, NOW());
-    RETURN TRUE;
-  END IF;
-
-  IF v_window_start < NOW() - (p_window_seconds || ' seconds')::INTERVAL THEN
-    UPDATE generation_rate_limits SET request_count = 1, window_start = NOW()
-    WHERE user_id = p_user_id;
-    RETURN TRUE;
-  END IF;
-
-  IF v_count >= p_max_requests THEN
-    RETURN FALSE;
-  END IF;
-
-  UPDATE generation_rate_limits SET request_count = request_count + 1
-  WHERE user_id = p_user_id;
-  RETURN TRUE;
-END;
-$$;
-
-CREATE OR REPLACE FUNCTION request_ad_nonce(p_user_id UUID)
-RETURNS UUID
-LANGUAGE plpgsql SECURITY DEFINER
-SET search_path = 'public'
-AS $$
-DECLARE
-  v_nonce UUID;
-BEGIN
-  DELETE FROM pending_ad_rewards WHERE user_id = p_user_id AND claimed = false;
-  v_nonce := gen_random_uuid();
-  INSERT INTO pending_ad_rewards (user_id, nonce) VALUES (p_user_id, v_nonce);
-  RETURN v_nonce;
-END;
-$$;
-
-CREATE OR REPLACE FUNCTION claim_ad_reward(p_user_id UUID, p_nonce UUID)
-RETURNS BOOLEAN
-LANGUAGE plpgsql SECURITY DEFINER
-SET search_path = 'public'
-AS $$
-DECLARE
-  v_found BOOLEAN;
-BEGIN
-  UPDATE pending_ad_rewards
-  SET claimed = true
-  WHERE user_id = p_user_id AND nonce = p_nonce AND claimed = false AND expires_at > NOW();
-  GET DIAGNOSTICS v_found = ROW_COUNT;
-  IF NOT v_found THEN RETURN FALSE; END IF;
-
-  UPDATE user_credits SET balance = balance + 1 WHERE user_id = p_user_id;
-  IF NOT FOUND THEN
-    INSERT INTO user_credits (user_id, balance) VALUES (p_user_id, 1);
-  END IF;
-
-  INSERT INTO credit_transactions (user_id, amount, type, description, reference_id)
-  VALUES (p_user_id, 1, 'ad_reward', 'Reward for watching ad', p_nonce::TEXT);
-  RETURN TRUE;
-END;
-$$;
-
-CREATE OR REPLACE FUNCTION reward_ad_credits(p_user_id UUID)
-RETURNS VOID
-LANGUAGE plpgsql SECURITY DEFINER
-SET search_path = 'public'
-AS $$
-BEGIN
-  UPDATE user_credits SET balance = balance + 1 WHERE user_id = p_user_id;
-  IF NOT FOUND THEN
-    INSERT INTO user_credits (user_id, balance) VALUES (p_user_id, 1);
-  END IF;
-  INSERT INTO credit_transactions (user_id, amount, type, description)
-  VALUES (p_user_id, 1, 'ad_reward', 'Reward for watching ad');
-END;
-$$;
-
-CREATE OR REPLACE FUNCTION update_subscription_status(
-  p_user_id UUID,
-  p_is_premium BOOLEAN,
-  p_tier TEXT DEFAULT 'free',
-  p_expires_at TIMESTAMPTZ DEFAULT NULL
-)
-RETURNS VOID
-LANGUAGE plpgsql SECURITY DEFINER
-SET search_path = 'public'
-AS $$
-BEGIN
-  UPDATE profiles
-  SET is_premium = p_is_premium,
-      subscription_tier = p_tier,
-      premium_expires_at = p_expires_at,
-      updated_at = NOW()
-  WHERE id = p_user_id;
-END;
-$$;
-
-CREATE OR REPLACE FUNCTION grant_subscription_credits(
-  p_user_id UUID,
-  p_amount INTEGER,
-  p_description TEXT DEFAULT 'Subscription credits',
-  p_reference_id TEXT DEFAULT NULL
-)
-RETURNS VOID
-LANGUAGE plpgsql SECURITY DEFINER
-SET search_path = 'public'
-AS $$
-BEGIN
-  UPDATE user_credits SET balance = balance + p_amount WHERE user_id = p_user_id;
-  IF NOT FOUND THEN
-    INSERT INTO user_credits (user_id, balance) VALUES (p_user_id, p_amount);
-  END IF;
-  INSERT INTO credit_transactions (user_id, amount, type, description, reference_id)
-  VALUES (p_user_id, p_amount, 'subscription', p_description, p_reference_id);
-END;
-$$;
-
-CREATE OR REPLACE FUNCTION prevent_premium_self_update()
-RETURNS TRIGGER
-LANGUAGE plpgsql SECURITY DEFINER
-AS $$
-BEGIN
-  IF OLD.is_premium IS DISTINCT FROM NEW.is_premium
-     OR OLD.subscription_tier IS DISTINCT FROM NEW.subscription_tier
-     OR OLD.premium_expires_at IS DISTINCT FROM NEW.premium_expires_at THEN
-    IF current_setting('role') != 'service_role' THEN
-      NEW.is_premium := OLD.is_premium;
-      NEW.subscription_tier := OLD.subscription_tier;
-      NEW.premium_expires_at := OLD.premium_expires_at;
-    END IF;
-  END IF;
-  RETURN NEW;
-END;
-$$;
+-- Legacy remote backfill intentionally skipped for fresh local bootstrap.
+-- Canonical function definitions are provided by later migrations in this repo.
 
 -- =============================================================================
 -- 4. Missing trigger
