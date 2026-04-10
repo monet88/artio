@@ -18,3 +18,8 @@
 **Vulnerability:** Edge Functions (`delete-account`, `generate-image`, `reward-ad`) were catching all exceptions and returning `error.message` in 500 error responses, potentially leaking stack traces or internal environment details to clients.
 **Learning:** Returning raw Error messages in HTTP 500 responses is an information disclosure risk (CWE-209). While developers need this for debugging, clients should only receive a generic message.
 **Prevention:** In top-level catch blocks of API handlers or Edge Functions, always log the detailed error internally (e.g., `console.error`) and return a generic error message (e.g., `"Internal server error"`) to the client.
+
+## 2024-05-18 - Prevent Timing Attacks in Secret Validation
+**Vulnerability:** A manual XOR loop in TypeScript was used to validate the `REVENUECAT_WEBHOOK_SECRET` in `revenuecat-webhook`. While logically correct, JIT compilers (like V8 used by Deno) can optimize such loops unpredictably, potentially breaking constant-time execution and allowing timing attacks.
+**Learning:** Native cryptographic methods implemented in C++/Rust are necessary to guarantee timing safety in JS/TS environments. The Edge Runtime provides `timingSafeEqual` as a non-standard addition on `crypto.subtle`.
+**Prevention:** Always use `(crypto.subtle as any).timingSafeEqual(a, b)` for secret validation in Supabase Edge Functions instead of manually implementing bitwise XOR loops. Ensure a prior length check (`a.length === b.length`) is made, as native `timingSafeEqual` typically requires equal-length buffers.

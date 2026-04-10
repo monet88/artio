@@ -42,9 +42,8 @@ Deno.serve(async (req) => {
     });
   }
 
-  // Verify webhook auth header (no early-exit XOR comparison — length and bytes both checked).
-  // crypto.subtle.timingSafeEqual is available in Deno via type cast (see IAP SKILL.md Gotcha #11)
-  // but we use a manual XOR loop here — simpler, zero deps, and equally timing-safe.
+  // Verify webhook auth header securely.
+  // crypto.subtle.timingSafeEqual is available in Deno via type cast (see IAP SKILL.md Gotcha #11).
   // RC sends the Authorization header value EXACTLY as configured in the dashboard (no auto-added
   // "Bearer " prefix). Store just the raw token in REVENUECAT_WEBHOOK_SECRET and compare directly.
   const authHeader = req.headers.get("Authorization");
@@ -52,10 +51,12 @@ Deno.serve(async (req) => {
   const encoder = new TextEncoder();
   const a = encoder.encode(authHeader ?? "");
   const b = encoder.encode(expectedAuth);
-  let diff = a.length ^ b.length;
-  const len = Math.min(a.length, b.length);
-  for (let i = 0; i < len; i++) diff |= a[i] ^ b[i];
-  const authValid = authHeader !== null && diff === 0;
+
+  // Cast to any to access timingSafeEqual which is available in edge-runtime
+  const authValid = authHeader !== null &&
+    a.length === b.length &&
+    (crypto.subtle as any).timingSafeEqual(a, b);
+
   if (!authValid) {
     console.error(
       "[revenuecat-webhook] Invalid or missing authorization header",
