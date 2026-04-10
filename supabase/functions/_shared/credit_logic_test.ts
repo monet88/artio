@@ -1,4 +1,5 @@
 import { assertEquals } from "jsr:@std/assert";
+import type { SupabaseClient } from "jsr:@supabase/supabase-js@2";
 import { checkAndDeductCredits, refundCreditsOnFailure } from "./credit_logic.ts";
 
 // ── Mock Supabase client factory ──
@@ -11,7 +12,7 @@ function createMockSupabase(rpcResults: Array<{ data: unknown; error: unknown }>
             callIndex++;
             return Promise.resolve(result);
         },
-    };
+    } as unknown as SupabaseClient;
 }
 
 // ── checkAndDeductCredits ──
@@ -44,6 +45,31 @@ Deno.test("refundCreditsOnFailure succeeds on first attempt", async () => {
     assertEquals(result, { success: true, attempts: 1 });
 });
 
+Deno.test("refundCreditsOnFailure uses a distinct refund reference id", async () => {
+    const calls: Array<{ fn: string; params: Record<string, unknown> }> = [];
+    const supabase = {
+        rpc: (fn: string, params: Record<string, unknown>) => {
+            calls.push({ fn, params });
+            return Promise.resolve({ data: null, error: null });
+        },
+    } as unknown as SupabaseClient;
+
+    const result = await refundCreditsOnFailure(supabase, "user-1", 10, "job-1", 1);
+
+    assertEquals(result, { success: true, attempts: 1 });
+    assertEquals(calls, [
+        {
+            fn: "refund_credits",
+            params: {
+                p_user_id: "user-1",
+                p_amount: 10,
+                p_description: "Generation failed — refund",
+                p_reference_id: "refund:job-1",
+            },
+        },
+    ]);
+});
+
 Deno.test("refundCreditsOnFailure retries and succeeds on 2nd attempt", async () => {
     const supabase = createMockSupabase([
         { data: null, error: { message: "transient error" } }, // fail
@@ -73,7 +99,7 @@ Deno.test("refundCreditsOnFailure handles thrown exceptions", async () => {
             if (callCount === 1) throw new Error("network error");
             return Promise.resolve({ data: null, error: null });
         },
-    };
+    } as unknown as SupabaseClient;
     const result = await refundCreditsOnFailure(supabase, "user-1", 10, "job-1", 2);
     assertEquals(result, { success: true, attempts: 2 });
 });

@@ -194,7 +194,10 @@ supabase secrets set GEMINI_API_KEY=...
 supabase secrets set REVENUECAT_WEBHOOK_SECRET=...
 ```
 
-Detailed guide: `docs/local-supabase-setup-guide.md`
+Local dev note:
+- `supabase/functions/deno.lock` is used to pin Edge Function dependencies.
+- Local `supabase functions serve` should use a recent Supabase CLI/edge runtime. Older CLI builds may fail to read newer lockfile formats.
+- If local serving fails while reading `supabase/functions/deno.lock`, upgrade Supabase CLI first.
 
 ## Development Commands
 
@@ -228,7 +231,6 @@ Current test file count in this repo:
 - `docs/project-overview-pdr.md`
 - `docs/project-roadmap.md`
 - `docs/project-changelog.md`
-- `docs/local-supabase-setup-guide.md`
 
 ## Notes
 

@@ -12,7 +12,9 @@ DO $$
 BEGIN
   IF NOT EXISTS (
     SELECT 1 FROM information_schema.columns
-    WHERE table_name = 'pending_ad_rewards' AND column_name = 'claimed_at'
+    WHERE table_schema = 'public'
+      AND table_name = 'pending_ad_rewards'
+      AND column_name = 'claimed_at'
   ) THEN
     ALTER TABLE pending_ad_rewards ADD COLUMN claimed_at TIMESTAMPTZ;
   END IF;
@@ -23,7 +25,9 @@ DO $$
 BEGIN
   IF EXISTS (
     SELECT 1 FROM information_schema.columns
-    WHERE table_name = 'pending_ad_rewards' AND column_name = 'claimed'
+    WHERE table_schema = 'public'
+      AND table_name = 'pending_ad_rewards'
+      AND column_name = 'claimed'
   ) THEN
     UPDATE pending_ad_rewards SET claimed_at = NOW()
     WHERE claimed = true AND claimed_at IS NULL;
@@ -35,14 +39,18 @@ DO $$
 BEGIN
   IF EXISTS (
     SELECT 1 FROM information_schema.columns
-    WHERE table_name = 'pending_ad_rewards' AND column_name = 'expires_at'
+    WHERE table_schema = 'public'
+      AND table_name = 'pending_ad_rewards'
+      AND column_name = 'expires_at'
   ) THEN
     ALTER TABLE pending_ad_rewards DROP COLUMN expires_at;
   END IF;
 
   IF EXISTS (
     SELECT 1 FROM information_schema.columns
-    WHERE table_name = 'pending_ad_rewards' AND column_name = 'claimed'
+    WHERE table_schema = 'public'
+      AND table_name = 'pending_ad_rewards'
+      AND column_name = 'claimed'
   ) THEN
     ALTER TABLE pending_ad_rewards DROP COLUMN claimed;
   END IF;

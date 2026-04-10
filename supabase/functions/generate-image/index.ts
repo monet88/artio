@@ -104,7 +104,7 @@ const SIGNED_URL_EXPIRY_SECONDS = 3600; // 1 hour
  * - Already full URLs (http/https) → passed through unchanged
  */
 async function resolveImageUrls(
-  supabase: ReturnType<typeof createClient>,
+  supabase: ReturnType<typeof getSupabaseClient>,
   imageInputs: string[]
 ): Promise<string[]> {
   return Promise.all(
@@ -597,6 +597,13 @@ async function refundAndBuildErrorMsg(
     : `${originalError} [refund_pending_manual attempts=${refund.attempts}]`;
 }
 
+function buildInternalServerErrorResponse(headers: Record<string, string>): Response {
+  return new Response(
+    JSON.stringify({ error: "Internal server error" }),
+    { status: 500, headers: { ...headers, "Content-Type": "application/json" } }
+  );
+}
+
 Deno.serve(async (req) => {
   const preflight = handleCorsIfPreflight(req);
   if (preflight) return preflight;
@@ -757,12 +764,10 @@ Deno.serve(async (req) => {
         const createResult = await createKieTask(prompt, model, aspectRatio, imageCount, resolvedImages);
 
         if ("error" in createResult) {
+          console.error(`[${jobId}] Kie task creation failed: ${createResult.error}`);
           const errorMsg = await refundAndBuildErrorMsg(supabase, userId, creditCost, jobId, createResult.error);
           await updateJobStatus(supabase, jobId, { status: "failed", error_message: errorMsg });
-          return new Response(JSON.stringify({ error: createResult.error }), {
-            status: 500,
-            headers: { ...headers, "Content-Type": "application/json" },
-          });
+          return buildInternalServerErrorResponse(headers);
         }
 
         await updateJobStatus(supabase, jobId, { provider_task_id: createResult.taskId });
@@ -771,12 +776,10 @@ Deno.serve(async (req) => {
         const pollResult = await pollKieTask(createResult.taskId);
 
         if ("error" in pollResult) {
+          console.error(`[${jobId}] Kie task polling failed: ${pollResult.error}`);
           const errorMsg = await refundAndBuildErrorMsg(supabase, userId, creditCost, jobId, pollResult.error);
           await updateJobStatus(supabase, jobId, { status: "failed", error_message: errorMsg });
-          return new Response(JSON.stringify({ error: pollResult.error }), {
-            status: 500,
-            headers: { ...headers, "Content-Type": "application/json" },
-          });
+          return buildInternalServerErrorResponse(headers);
         }
 
         console.log(`[${jobId}] Mirroring ${pollResult.images.length} images`);
@@ -788,12 +791,10 @@ Deno.serve(async (req) => {
         const imagenResult = await generateViaImagen(prompt, model, aspectRatio, imageCount);
 
         if ("error" in imagenResult) {
+          console.error(`[${jobId}] Imagen generation failed: ${imagenResult.error}`);
           const errorMsg = await refundAndBuildErrorMsg(supabase, userId, creditCost, jobId, imagenResult.error);
           await updateJobStatus(supabase, jobId, { status: "failed", error_message: errorMsg });
-          return new Response(JSON.stringify({ error: imagenResult.error }), {
-            status: 500,
-            headers: { ...headers, "Content-Type": "application/json" },
-          });
+          return buildInternalServerErrorResponse(headers);
         }
 
         console.log(`[${jobId}] Mirroring ${imagenResult.base64Images.length} images`);
@@ -810,12 +811,10 @@ Deno.serve(async (req) => {
         const geminiResult = await generateViaGemini(prompt, model, aspectRatio, resolvedGeminiImages);
 
         if ("error" in geminiResult) {
+          console.error(`[${jobId}] Gemini generation failed: ${geminiResult.error}`);
           const errorMsg = await refundAndBuildErrorMsg(supabase, userId, creditCost, jobId, geminiResult.error);
           await updateJobStatus(supabase, jobId, { status: "failed", error_message: errorMsg });
-          return new Response(JSON.stringify({ error: geminiResult.error }), {
-            status: 500,
-            headers: { ...headers, "Content-Type": "application/json" },
-          });
+          return buildInternalServerErrorResponse(headers);
         }
 
         console.log(`[${jobId}] Mirroring ${geminiResult.base64Images.length} images`);
@@ -837,18 +836,13 @@ Deno.serve(async (req) => {
     } catch (postDeductionError) {
       // Refund credits if any step after deduction fails (e.g. mirroring)
       const rawMsg = postDeductionError instanceof Error ? postDeductionError.message : "Unknown error";
+      console.error(`[${jobId}] Post-deduction failure: ${rawMsg}`);
       const errorMsg = await refundAndBuildErrorMsg(supabase, userId, creditCost, jobId, rawMsg);
       await updateJobStatus(supabase, jobId, { status: "failed", error_message: errorMsg });
-      return new Response(
-        JSON.stringify({ error: rawMsg }),
-        { status: 500, headers: { ...headers, "Content-Type": "application/json" } }
-      );
+      return buildInternalServerErrorResponse(headers);
     }
   } catch (error) {
     console.error("Edge function error:", error);
-    return new Response(
-      JSON.stringify({ error: "Internal server error" }),
-      { status: 500, headers: { ...headers, "Content-Type": "application/json" } }
-    );
+    return buildInternalServerErrorResponse(headers);
   }
 });

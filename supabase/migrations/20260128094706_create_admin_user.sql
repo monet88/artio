@@ -9,7 +9,9 @@ DO $$
 BEGIN
   IF NOT EXISTS (
     SELECT 1 FROM information_schema.columns
-    WHERE table_name = 'profiles' AND column_name = 'role'
+    WHERE table_schema = 'public'
+      AND table_name = 'profiles'
+      AND column_name = 'role'
   ) THEN
     ALTER TABLE profiles ADD COLUMN role TEXT DEFAULT 'user' CHECK (role IN ('user', 'admin'));
     CREATE INDEX IF NOT EXISTS idx_profiles_role ON profiles(role);
@@ -29,16 +31,27 @@ USING (
 );
 
 -- Admin RLS Policies for generation_jobs
-DROP POLICY IF EXISTS "Admins can view all generation jobs" ON generation_jobs;
-CREATE POLICY "Admins can view all generation jobs"
-ON generation_jobs FOR SELECT
-USING (
-  EXISTS (
-    SELECT 1 FROM profiles
-    WHERE profiles.id = auth.uid()
-    AND profiles.role = 'admin'
-  )
-);
+-- generation_jobs is introduced by a later migration in this repo, so guard the
+-- policy setup to keep fresh local bootstrap working.
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1
+    FROM information_schema.tables
+    WHERE table_schema = 'public' AND table_name = 'generation_jobs'
+  ) THEN
+    DROP POLICY IF EXISTS "Admins can view all generation jobs" ON generation_jobs;
+    CREATE POLICY "Admins can view all generation jobs"
+    ON generation_jobs FOR SELECT
+    USING (
+      EXISTS (
+        SELECT 1 FROM profiles
+        WHERE profiles.id = auth.uid()
+        AND profiles.role = 'admin'
+      )
+    );
+  END IF;
+END $$;
 
 -- Note: To set a user as admin, run after creating the user:
 -- UPDATE profiles SET role = 'admin' WHERE email = 'minhthang4292@gmail.com';
