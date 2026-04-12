@@ -164,12 +164,14 @@ class _CreateScreenState extends ConsumerState<CreateScreen> {
       createViewModelProvider.select(CreateViewModel.isJobActive),
     );
 
-    final isPremium = ref
-        .watch(authViewModelProvider)
-        .maybeMap(
-          authenticated: (state) => state.user.isPremium,
+    final isPremium = ref.watch(
+      authViewModelProvider.select(
+        (state) => state.maybeMap(
+          authenticated: (s) => s.user.isPremium,
           orElse: () => false,
-        );
+        ),
+      ),
+    );
 
     final promptLength = formState.prompt.trim().length;
     final showPromptError = !formState.isValid && formNotifier.hasInteracted;
