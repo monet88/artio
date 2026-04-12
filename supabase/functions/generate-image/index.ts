@@ -610,6 +610,13 @@ Deno.serve(async (req) => {
 
   const headers = corsHeaders();
 
+  if (req.method !== "POST") {
+    return new Response(JSON.stringify({ error: "Method not allowed" }), {
+      status: 405,
+      headers: { ...headers, "Content-Type": "application/json" },
+    });
+  }
+
   try {
     // Extract userId from JWT token (not from request body)
     const authHeader = req.headers.get("Authorization");
