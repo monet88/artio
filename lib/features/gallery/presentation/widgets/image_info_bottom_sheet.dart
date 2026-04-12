@@ -181,20 +181,24 @@ class _GlassIconButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Tooltip(
       message: tooltip ?? '',
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(10),
-          onTap: onTap,
-          child: Container(
-            width: 38,
-            height: 38,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: AppColors.white10,
-              border: Border.all(color: AppColors.white10, width: 0.5),
+      child: Semantics(
+        button: true,
+        label: tooltip ?? 'Button',
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(10),
+            onTap: onTap,
+            child: Container(
+              width: 38,
+              height: 38,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: AppColors.white10,
+                border: Border.all(color: AppColors.white10, width: 0.5),
+              ),
+              child: Icon(icon, color: Colors.white70, size: 18),
             ),
-            child: Icon(icon, color: Colors.white70, size: 18),
           ),
         ),
       ),
