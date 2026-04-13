@@ -55,10 +55,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authState = ref.watch(authViewModelProvider);
-    final isLoading = authState is AuthStateAuthenticating;
+    final isLoading = ref.watch(
+      authViewModelProvider.select((state) => state is AuthStateAuthenticating),
+    );
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    Log.d('[LoginScreen] build — authState: $authState, isLoading: $isLoading');
+    Log.d('[LoginScreen] build — isLoading: $isLoading');
 
     ref.listen<AuthState>(authViewModelProvider, (_, state) {
       if (state is AuthStateError) {

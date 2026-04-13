@@ -264,12 +264,14 @@ class _TemplateDetailScreenState extends ConsumerState<TemplateDetailScreen> {
     final templateAsync = ref.watch(templateByIdProvider(widget.templateId));
     final jobAsync = ref.watch(generationViewModelProvider);
     final options = ref.watch(generationOptionsProvider);
-    final isPremium = ref
-        .watch(authViewModelProvider)
-        .maybeMap(
+    final isPremium = ref.watch(
+      authViewModelProvider.select(
+        (state) => state.maybeMap(
           authenticated: (state) => state.user.isPremium,
           orElse: () => false,
-        );
+        ),
+      ),
+    );
 
     return Scaffold(
       appBar: AppBar(title: const Text('Generate')),
