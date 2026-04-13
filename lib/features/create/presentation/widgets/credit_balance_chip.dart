@@ -13,9 +13,12 @@ class CreditBalanceChip extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isLoggedIn = ref
-        .watch(authViewModelProvider)
-        .maybeMap(authenticated: (_) => true, orElse: () => false);
+    final isLoggedIn = ref.watch(
+      authViewModelProvider.select(
+        (state) =>
+            state.maybeMap(authenticated: (_) => true, orElse: () => false),
+      ),
+    );
     if (!isLoggedIn) return const SizedBox.shrink();
 
     return Padding(

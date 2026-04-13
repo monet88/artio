@@ -50,8 +50,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authState = ref.watch(authViewModelProvider);
-    final isLoading = authState is AuthStateAuthenticating;
+    final isLoading = ref.watch(
+      authViewModelProvider.select((state) => state is AuthStateAuthenticating),
+    );
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     ref.listen<AuthState>(authViewModelProvider, (_, state) {

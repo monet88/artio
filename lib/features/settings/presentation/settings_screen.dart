@@ -170,23 +170,35 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authState = ref.watch(authViewModelProvider);
-    final subStatus = ref.watch(subscriptionNotifierProvider);
-    final isLoggedIn = authState.maybeMap(
-      authenticated: (_) => true,
-      orElse: () => false,
+    final isLoggedIn = ref.watch(
+      authViewModelProvider.select(
+        (state) =>
+            state.maybeMap(authenticated: (_) => true, orElse: () => false),
+      ),
     );
-    final email = authState.maybeMap(
-      authenticated: (s) => s.user.email,
-      orElse: () => '',
+    final email = ref.watch(
+      authViewModelProvider.select(
+        (state) => state.maybeMap(
+          authenticated: (s) => s.user.email,
+          orElse: () => '',
+        ),
+      ),
     );
     // Prefer RevenueCat SDK data (immediate) over DB value (webhook-dependent).
     // Falls back to DB if RevenueCat hasn't loaded yet.
     final isPremium =
-        subStatus.valueOrNull?.isActive ??
-        authState.maybeMap(
-          authenticated: (s) => s.user.isPremium,
-          orElse: () => false,
+        ref.watch(
+          subscriptionNotifierProvider.select(
+            (state) => state.valueOrNull?.isActive,
+          ),
+        ) ??
+        ref.watch(
+          authViewModelProvider.select(
+            (state) => state.maybeMap(
+              authenticated: (s) => s.user.isPremium,
+              orElse: () => false,
+            ),
+          ),
         ) ??
         false;
     final isDark = Theme.of(context).brightness == Brightness.dark;
