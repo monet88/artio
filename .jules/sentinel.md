@@ -23,3 +23,8 @@
 **Vulnerability:** A manual XOR loop in TypeScript was used to validate the `REVENUECAT_WEBHOOK_SECRET` in `revenuecat-webhook`. While logically correct, JIT compilers (like V8 used by Deno) can optimize such loops unpredictably, potentially breaking constant-time execution and allowing timing attacks.
 **Learning:** Native cryptographic methods implemented in C++/Rust are necessary to guarantee timing safety in JS/TS environments. The Edge Runtime provides `timingSafeEqual` as a non-standard addition on `crypto.subtle`.
 **Prevention:** Always use `(crypto.subtle as any).timingSafeEqual(a, b)` for secret validation in Supabase Edge Functions instead of manually implementing bitwise XOR loops. Ensure a prior length check (`a.length === b.length`) is made, as native `timingSafeEqual` typically requires equal-length buffers.
+
+## 2024-10-25 - Explicit HTTP Method Validation in Edge Functions
+**Vulnerability:** The `generate-image` Edge Function was missing explicit validation of the HTTP method (e.g., checking for `POST`). This could lead to unexpected behavior if a client sent a `GET` request, potentially triggering unhandled exceptions during JSON parsing and leaking internal errors.
+**Learning:** All Supabase Edge Functions should explicitly validate the incoming HTTP request method early in their execution flow.
+**Prevention:** Always include `if (req.method !== 'POST') { return new Response(JSON.stringify({ error: 'Method not allowed' }), { status: 405, headers: ... }); }` immediately after CORS handling in POST-only endpoints.
