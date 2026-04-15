@@ -78,7 +78,7 @@ class _CategoryChipsState extends State<CategoryChips> {
           final isSelected = _selectedIndex == index;
           return Semantics(
             button: true,
-            label: 'Filter category',
+            label: 'Filter category: ${_categories[index]}',
             child: GestureDetector(
               onTap: () => setState(() => _selectedIndex = index),
               child: AnimatedContainer(
