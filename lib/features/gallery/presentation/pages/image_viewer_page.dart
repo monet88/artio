@@ -231,9 +231,14 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage>
   Widget build(BuildContext context) {
     const kOpacityFadeStart = 100.0;
     const kOpacityFadeRange = 200.0;
-    final showWatermark = ref
-        .watch(subscriptionNotifierProvider)
-        .maybeWhen(data: (status) => status.isFree, orElse: () => true);
+    final showWatermark = ref.watch(
+      subscriptionNotifierProvider.select(
+        (state) => state.maybeWhen(
+          data: (status) => status.isFree,
+          orElse: () => true,
+        ),
+      ),
+    );
     final viewerOpacity = (_dragOffset.abs() > kOpacityFadeStart)
         ? (1.0 -
               ((_dragOffset.abs() - kOpacityFadeStart) / kOpacityFadeRange)
