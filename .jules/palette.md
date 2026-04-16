@@ -4,3 +4,6 @@
 ## 2025-03-04 - Tooltip and Semantics on custom icon buttons
 **Learning:** Adding `Semantics(button: true, label: ...)` to an `InkWell` that only contains an icon is necessary when we are creating custom buttons (like `_GlassIconButton` or a remove icon overlaid on an image). Without it, the screen reader does not announce the action properly.
 **Action:** Always wrap custom icon-only interactive elements (like `InkWell` around an `Icon`) in `Semantics` with a descriptive label.
+## 2025-03-04 - UX pattern for destructive dialog actions
+**Learning:** Using a simple `TextButton` with red text for destructive actions (like "Delete") in dialogs provides weak visual distinction and poor accessibility cues for critical actions.
+**Action:** Use a `FilledButton` (or `FilledButton.icon` to be even clearer) with a strong color background (e.g., `Colors.red`) and contrasting text (`Colors.white`) for destructive actions to ensure users clearly recognize the severity of the action before confirming.

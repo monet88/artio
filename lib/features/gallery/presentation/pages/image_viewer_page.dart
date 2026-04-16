@@ -116,9 +116,10 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage>
               onPressed: () => Navigator.of(context).pop(false),
               child: const Text('Cancel'),
             ),
-            FilledButton(
+            FilledButton.icon(
               onPressed: () => Navigator.of(context).pop(true),
-              child: const Text('Download Anyway'),
+              icon: const Icon(Icons.download_rounded, size: 18),
+              label: const Text('Download Anyway'),
             ),
           ],
         ),
@@ -181,10 +182,14 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage>
             onPressed: () => Navigator.of(context).pop(false),
             child: const Text('Cancel'),
           ),
-          TextButton(
+          FilledButton.icon(
             onPressed: () => Navigator.of(context).pop(true),
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('Delete'),
+            style: FilledButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+            ),
+            icon: const Icon(Icons.delete_outline_rounded, size: 18),
+            label: const Text('Delete'),
           ),
         ],
       ),
