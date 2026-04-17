@@ -471,6 +471,13 @@ Deno.serve(async (req) => {
       );
     }
 
+    if (req.method !== "POST") {
+      return new Response(JSON.stringify({ error: "Method not allowed" }), {
+        status: 405,
+        headers: { ...headers, "Content-Type": "application/json" },
+      });
+    }
+
     const supabase = getSupabaseClient();
     const authResult = await authenticateUser(req, supabase);
 

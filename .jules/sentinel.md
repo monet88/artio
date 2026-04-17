@@ -28,3 +28,7 @@
 **Vulnerability:** The `generate-image` Edge Function was missing explicit validation of the HTTP method (e.g., checking for `POST`). This could lead to unexpected behavior if a client sent a `GET` request, potentially triggering unhandled exceptions during JSON parsing and leaking internal errors.
 **Learning:** All Supabase Edge Functions should explicitly validate the incoming HTTP request method early in their execution flow.
 **Prevention:** Always include `if (req.method !== 'POST') { return new Response(JSON.stringify({ error: 'Method not allowed' }), { status: 405, headers: ... }); }` immediately after CORS handling in POST-only endpoints.
+## 2024-05-15 - Missing HTTP Method Validation in Edge Function
+**Vulnerability:** The `reward-ad` Edge Function did not validate the HTTP method (`req.method`) for its main actions (`request-nonce` and `claim`), allowing non-POST requests to execute potentially state-modifying logic.
+**Learning:** Default unhandled methods in Supabase Edge Functions do not automatically reject unless explicitly checked, meaning endpoints intended for POST could be accessed via GET or other methods, increasing the risk of CSRF or unintended execution.
+**Prevention:** Always explicitly validate the expected HTTP method (e.g., `if (req.method !== "POST")`) at the start of the handler and return a `405 Method Not Allowed` response if the condition is not met.
