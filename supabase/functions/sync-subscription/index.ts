@@ -16,6 +16,8 @@ const ENTITLEMENT_MAP: Record<string, { tier: string; credits: number }> = {
   entl2665d1fa2e: { tier: "pro", credits: 200 },
 };
 
+const TIER_PRIORITY = Object.keys(ENTITLEMENT_MAP);
+
 function getSupabaseClient() {
   return createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
     auth: { persistSession: false },
@@ -135,8 +137,7 @@ Deno.serve(async (req) => {
     let resolvedExpiresAt: string | null = null;
 
     // Priority order derived from ENTITLEMENT_MAP key insertion order (ultra → pro).
-    const tierPriority = Object.keys(ENTITLEMENT_MAP);
-    for (const entitlementId of tierPriority) {
+    for (const entitlementId of TIER_PRIORITY) {
       const match = rcData.items.find(
         (e) => e.entitlement_id === entitlementId,
       );
