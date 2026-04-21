@@ -41,3 +41,7 @@
 ## 2025-05-18 - Optimize CachedNetworkImage Cache Key
 **Learning:** When using signed URLs that include an expiring token as a query parameter (e.g., Supabase storage URLs), `CachedNetworkImage` defaults to using the full URL as the cache key. This causes continuous cache misses and redundant downloads when the token rotates.
 **Action:** Always explicitly set the `cacheKey` property to the URL stripped of its query string (e.g., `url.split('?').first`) to ensure the cache survives token expiration.
+
+## 2024-05-18 - Hoist constant computations out of Deno.serve in Edge Functions
+**Learning:** In Supabase Edge Functions, computations dependent entirely on constant module-level data (like `Object.keys` on a configuration map or priority sorting) that are executed inside the `Deno.serve` request loop will redundantly re-run on every single HTTP request. This causes unnecessary array allocation and processor overhead over high volumes of traffic.
+**Action:** Always hoist static computations derived from constants to the top-level module scope (outside of `Deno.serve`).
