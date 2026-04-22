@@ -101,7 +101,7 @@ const SIGNED_URL_EXPIRY_SECONDS = 3600; // 1 hour
 /**
  * Resolve image inputs to publicly accessible URLs.
  * - Supabase storage paths (no protocol) → signed URLs
- * - Already full URLs (http/https) → passed through unchanged
+ * - Already full URLs (http/https) → passed through unchanged if valid
  */
 async function resolveImageUrls(
   supabase: ReturnType<typeof getSupabaseClient>,
@@ -110,8 +110,30 @@ async function resolveImageUrls(
   return Promise.all(
     imageInputs.map(async (input) => {
       if (input.startsWith("http://") || input.startsWith("https://")) {
+        // Block known private networks and metadata endpoints to prevent SSRF
+        try {
+          const url = new URL(input);
+          const hostname = url.hostname.toLowerCase();
+          const invalidHostnames = ['localhost', '127.0.0.1', '::1', '169.254.169.254'];
+
+          if (invalidHostnames.includes(hostname)) {
+            throw new Error("Invalid URL");
+          }
+
+          // Pattern match for local network IP spaces to prevent accessing internal services
+          if (/^10\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(hostname) ||
+              /^192\.168\.\d{1,3}\.\d{1,3}$/.test(hostname) ||
+              /^172\.(1[6-9]|2\d|3[0-1])\.\d{1,3}\.\d{1,3}$/.test(hostname)) {
+            throw new Error("Invalid URL");
+          }
+        } catch (e) {
+          throw new Error("Invalid URL provided to resolveImageUrls");
+        }
         return input;
       } else {
+        if (input.includes("../") || input.includes("..\\")) {
+          throw new Error("Path traversal is not allowed in image inputs.");
+        }
         // Treat as Supabase storage path — generate signed URL
         const { data, error } = await supabase.storage
           .from(STORAGE_BUCKET)
