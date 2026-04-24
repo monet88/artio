@@ -32,3 +32,8 @@
 **Vulnerability:** The `reward-ad` Edge Function did not validate the HTTP method (`req.method`) for its main actions (`request-nonce` and `claim`), allowing non-POST requests to execute potentially state-modifying logic.
 **Learning:** Default unhandled methods in Supabase Edge Functions do not automatically reject unless explicitly checked, meaning endpoints intended for POST could be accessed via GET or other methods, increasing the risk of CSRF or unintended execution.
 **Prevention:** Always explicitly validate the expected HTTP method (e.g., `if (req.method !== "POST")`) at the start of the handler and return a `405 Method Not Allowed` response if the condition is not met.
+
+## 2024-10-26 - SSRF and Path Traversal in Image Generation
+**Vulnerability:** The `generate-image` Edge Function allowed user-provided URLs for image inputs without validating them against Server-Side Request Forgery (SSRF) and Path Traversal patterns. This allowed potential access to internal cloud metadata IP addresses (`169.254.169.254`), private IP ranges, or traversing storage paths (`../`) to access unintended objects.
+**Learning:** Functions that fetch URLs or resolve storage paths on behalf of users must strictly validate and sanitize those inputs to prevent SSRF and Path Traversal attacks. Client input should never be inherently trusted for file retrieval or external requests.
+**Prevention:** Always parse user-provided URLs using the `URL` class and validate the hostname against forbidden patterns like localhost, internal IP ranges, and metadata IPs. For storage paths, explicitly check for and reject sequence combinations like `../` and `..\` to confine path access.
