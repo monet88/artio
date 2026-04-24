@@ -140,10 +140,9 @@ class _LowCreditBanner extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final balance = ref
-        .watch(creditBalanceNotifierProvider)
-        .valueOrNull
-        ?.balance;
+    final balance = ref.watch(
+      creditBalanceNotifierProvider.select((state) => state.valueOrNull?.balance),
+    );
     final subscriptionAsync = ref.watch(subscriptionNotifierProvider);
 
     // Hide banner while subscription is loading or errored to avoid false alarm.

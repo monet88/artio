@@ -9,10 +9,13 @@ part 'gallery_provider.g.dart';
 /// Stream provider for realtime gallery updates
 @riverpod
 Stream<List<GalleryItem>> galleryStream(Ref ref) {
-  final authState = ref.watch(authViewModelProvider);
-  final userId = authState.maybeMap(
-    authenticated: (s) => s.user.id,
-    orElse: () => null,
+  final userId = ref.watch(
+    authViewModelProvider.select(
+      (state) => state.maybeMap(
+        authenticated: (s) => s.user.id,
+        orElse: () => null,
+      ),
+    ),
   );
 
   if (userId == null) return Stream.value([]);
