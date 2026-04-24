@@ -18,11 +18,14 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
   @override
   Future<SubscriptionStatus> build() async {
     // Admin/DB-premium users bypass RevenueCat and get Ultra status.
-    final authState = ref.watch(authViewModelProvider);
-    final isDbPremium = switch (authState) {
-      AuthStateAuthenticated(user: final u) => u.isPremium,
-      _ => false,
-    };
+    final isDbPremium = ref.watch(
+      authViewModelProvider.select(
+        (state) => switch (state) {
+          AuthStateAuthenticated(user: final u) => u.isPremium,
+          _ => false,
+        },
+      ),
+    );
     if (isDbPremium) {
       return const SubscriptionStatus(
         tier: SubscriptionTiers.ultra,
