@@ -110,8 +110,22 @@ async function resolveImageUrls(
   return Promise.all(
     imageInputs.map(async (input) => {
       if (input.startsWith("http://") || input.startsWith("https://")) {
-        return input;
+        try {
+          const parsed = new URL(input);
+          const host = parsed.hostname;
+          const blockedPattern = /^(localhost|127\.\d+\.\d+\.\d+|0\.0\.0\.0|169\.254\.169\.254|10\.\d+\.\d+\.\d+|192\.168\.\d+\.\d+|172\.(1[6-9]|2\d|3[0-1])\.\d+\.\d+|\[::1\])$/i;
+          if (blockedPattern.test(host)) {
+            throw new Error(`SSRF validation failed: blocked host ${host}`);
+          }
+          return input;
+        } catch (e) {
+          throw new Error(`Invalid URL provided: ${e instanceof Error ? e.message : "Unknown error"}`);
+        }
       } else {
+        // Path traversal validation
+        if (input.includes("../") || input.includes("..\\")) {
+          throw new Error(`Invalid path: blocked path traversal detected`);
+        }
         // Treat as Supabase storage path — generate signed URL
         const { data, error } = await supabase.storage
           .from(STORAGE_BUCKET)
