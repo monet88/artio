@@ -69,7 +69,7 @@ class ImageViewerAppBar extends StatelessWidget implements PreferredSizeWidget {
                 )
               : const Icon(Icons.share_rounded),
           onPressed: (isSharing || !hasImageUrl) ? null : onShare,
-          tooltip: 'Share',
+          tooltip: isSharing ? 'Sharing...' : 'Share',
         ),
         // Download
         IconButton(
@@ -84,7 +84,7 @@ class ImageViewerAppBar extends StatelessWidget implements PreferredSizeWidget {
                 )
               : const Icon(Icons.download_rounded),
           onPressed: (isDownloading || !hasImageUrl) ? null : onDownload,
-          tooltip: 'Download',
+          tooltip: isDownloading ? 'Downloading...' : 'Download',
         ),
         // Delete
         IconButton(

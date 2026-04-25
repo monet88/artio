@@ -21,7 +21,7 @@ class GradientButton extends StatelessWidget {
     return Semantics(
       button: true,
       enabled: onPressed != null,
-      label: label,
+      label: isLoading ? 'Loading $label' : label,
       child: Container(
         height: 52,
         decoration: BoxDecoration(
