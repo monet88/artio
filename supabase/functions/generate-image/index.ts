@@ -110,8 +110,33 @@ async function resolveImageUrls(
   return Promise.all(
     imageInputs.map(async (input) => {
       if (input.startsWith("http://") || input.startsWith("https://")) {
+        try {
+          const parsedUrl = new URL(input);
+          const hostname = parsedUrl.hostname.toLowerCase();
+
+          // Basic SSRF protection - reject private and metadata IP ranges
+          if (
+            hostname === "localhost" ||
+            hostname === "127.0.0.1" ||
+            hostname === "169.254.169.254" ||
+            hostname === "0.0.0.0" ||
+            hostname.startsWith("10.") ||
+            hostname.startsWith("192.168.") ||
+            hostname.match(/^172\.(1[6-9]|2[0-9]|3[0-1])\./)
+          ) {
+            throw new Error(`Invalid URL hostname: ${hostname}`);
+          }
+        } catch (e) {
+          console.error(`[storage] Invalid URL provided: ${input}`, e);
+          throw new Error("Invalid image URL provided");
+        }
         return input;
       } else {
+        // Prevent path traversal
+        if (input.includes("../") || input.includes("..\\")) {
+          throw new Error("Invalid storage path provided");
+        }
+
         // Treat as Supabase storage path — generate signed URL
         const { data, error } = await supabase.storage
           .from(STORAGE_BUCKET)
