@@ -212,11 +212,13 @@ class AiModels {
     ),
   ];
 
+  // Pre-computed map for O(1) lookups by ID
+  static final Map<String, AiModelConfig> _idMap = {
+    for (final model in all) model.id: model,
+  };
+
   /// Get model by ID
-  static AiModelConfig? getById(String id) {
-    final matches = all.where((m) => m.id == id);
-    return matches.isEmpty ? null : matches.first;
-  }
+  static AiModelConfig? getById(String id) => _idMap[id];
 
   /// Get default model
   static AiModelConfig get defaultModel => getById(defaultModelId) ?? all.first;

@@ -41,3 +41,7 @@
 ## 2025-05-18 - Optimize CachedNetworkImage Cache Key
 **Learning:** When using signed URLs that include an expiring token as a query parameter (e.g., Supabase storage URLs), `CachedNetworkImage` defaults to using the full URL as the cache key. This causes continuous cache misses and redundant downloads when the token rotates.
 **Action:** Always explicitly set the `cacheKey` property to the URL stripped of its query string (e.g., `url.split('?').first`) to ensure the cache survives token expiration.
+
+## 2024-05-24 - Pre-compute Static Maps for O(1) Lookups
+**Learning:** Using `List.where` (e.g., `all.where((m) => m.id == id)`) for frequent targeted lookups on static lists inside heavily used methods or UI builds creates unnecessary $O(N)$ linear scans. This compounds overhead in lists and builders.
+**Action:** Always pre-compute a static `Map` (e.g., `static final Map<String, Config> _idMap = { for (final m in all) m.id: m };`) to convert these $O(N)$ list traversals into $O(1)$ hash map lookups.
