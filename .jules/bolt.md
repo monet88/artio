@@ -41,3 +41,6 @@
 ## 2025-05-18 - Optimize CachedNetworkImage Cache Key
 **Learning:** When using signed URLs that include an expiring token as a query parameter (e.g., Supabase storage URLs), `CachedNetworkImage` defaults to using the full URL as the cache key. This causes continuous cache misses and redundant downloads when the token rotates.
 **Action:** Always explicitly set the `cacheKey` property to the URL stripped of its query string (e.g., `url.split('?').first`) to ensure the cache survives token expiration.
+## 2024-05-24 - O(1) Lookups for Static Lists
+**Learning:** In Dart, calling `Iterable.where(...)` inside a highly requested getter or builder method causes a linear O(N) search on each invocation. This is particularly wasteful for static, unchanging lists like configuration maps or available AI models.
+**Action:** When a static list requires frequent ID-based lookups across the application lifecycle, pre-compute a static `Map` keyed by ID at load-time to enable O(1) hash map lookups.

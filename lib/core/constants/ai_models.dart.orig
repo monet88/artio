@@ -212,12 +212,11 @@ class AiModels {
     ),
   ];
 
-  static final Map<String, AiModelConfig> _modelsById = {
-    for (final model in all) model.id: model,
-  };
-
   /// Get model by ID
-  static AiModelConfig? getById(String id) => _modelsById[id];
+  static AiModelConfig? getById(String id) {
+    final matches = all.where((m) => m.id == id);
+    return matches.isEmpty ? null : matches.first;
+  }
 
   /// Get default model
   static AiModelConfig get defaultModel => getById(defaultModelId) ?? all.first;
