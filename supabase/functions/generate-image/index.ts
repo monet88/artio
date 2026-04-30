@@ -110,8 +110,30 @@ async function resolveImageUrls(
   return Promise.all(
     imageInputs.map(async (input) => {
       if (input.startsWith("http://") || input.startsWith("https://")) {
+        try {
+          const parsedUrl = new URL(input);
+          const host = parsedUrl.hostname;
+
+          if (
+            host === "localhost" ||
+            host.match(/^127\.\d+\.\d+\.\d+$/) ||
+            host.match(/^169\.254\.\d+\.\d+$/) ||
+            host.match(/^10\.\d+\.\d+\.\d+$/) ||
+            host.match(/^192\.168\.\d+\.\d+$/) ||
+            host.match(/^172\.(1[6-9]|2[0-9]|3[0-1])\.\d+\.\d+$/)
+          ) {
+            throw new Error(`Invalid URL hostname: ${host}`);
+          }
+        } catch (e) {
+          console.error(`[security] SSRF attempt or invalid URL: ${input}`);
+          throw new Error("Invalid image input URL");
+        }
         return input;
       } else {
+        if (input.includes("../") || input.includes("..\\")) {
+           console.error(`[security] Path traversal attempt: ${input}`);
+           throw new Error("Invalid storage path");
+        }
         // Treat as Supabase storage path — generate signed URL
         const { data, error } = await supabase.storage
           .from(STORAGE_BUCKET)
