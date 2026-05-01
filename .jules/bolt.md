@@ -41,3 +41,7 @@
 ## 2025-05-18 - Optimize CachedNetworkImage Cache Key
 **Learning:** When using signed URLs that include an expiring token as a query parameter (e.g., Supabase storage URLs), `CachedNetworkImage` defaults to using the full URL as the cache key. This causes continuous cache misses and redundant downloads when the token rotates.
 **Action:** Always explicitly set the `cacheKey` property to the URL stripped of its query string (e.g., `url.split('?').first`) to ensure the cache survives token expiration.
+
+## 2024-05-24 - Pre-compute static Map for O(1) list lookup
+**Learning:** O(N) lookup operations via `Iterable.where` on static configuration lists (e.g., matching a model ID to an AI model configuration in `AiModels.getById`) can add noticeable CPU overhead when called frequently during rapid UI rebuilds (e.g., when updating dropdowns or filtering UI lists).
+**Action:** When working with static constant lists that require frequent ID lookups or filtering, pre-compute a static `Map` to enable $O(1)$ lookups, and declare filtered lists as `static final` properties to prevent redundant runtime array allocations.
