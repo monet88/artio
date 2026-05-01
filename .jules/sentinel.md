@@ -32,3 +32,8 @@
 **Vulnerability:** The `reward-ad` Edge Function did not validate the HTTP method (`req.method`) for its main actions (`request-nonce` and `claim`), allowing non-POST requests to execute potentially state-modifying logic.
 **Learning:** Default unhandled methods in Supabase Edge Functions do not automatically reject unless explicitly checked, meaning endpoints intended for POST could be accessed via GET or other methods, increasing the risk of CSRF or unintended execution.
 **Prevention:** Always explicitly validate the expected HTTP method (e.g., `if (req.method !== "POST")`) at the start of the handler and return a `405 Method Not Allowed` response if the condition is not met.
+
+## 2024-10-25 - Prevent SSRF False Positives in URL Validation
+**Vulnerability:** Mitigating Server-Side Request Forgery (SSRF) by validating `URL.hostname` using simple string prefixes (e.g., `host.startsWith("10.")`) can inadvertently block valid public domains (e.g., `10.example.com` or `127.my-domain.com`).
+**Learning:** Hostname validation requires distinguishing between IP literals and fully qualified domain names (FQDNs) to avoid false positives.
+**Prevention:** Always verify that the hostname is actually an IP-like structure (e.g., via regex `/^(\d{1,3}\.){3}\d{1,3}$/.test(host)` for IPv4 or checking for `:` for IPv6) before applying IP prefix blocklists.

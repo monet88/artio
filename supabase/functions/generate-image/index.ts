@@ -317,9 +317,63 @@ async function pollKieTask(
   return { error: "Generation timed out after 120 seconds" };
 }
 
+/**
+ * Validates URLs against SSRF (Server-Side Request Forgery) by ensuring they use
+ * appropriate protocols and do not point to internal/private IP ranges.
+ */
+function isValidUrl(urlString: string): boolean {
+  try {
+    const url = new URL(urlString);
+
+    // Only allow http and https
+    if (url.protocol !== "http:" && url.protocol !== "https:") {
+      return false;
+    }
+
+    const host = url.hostname;
+
+    // Check if the host is strictly an IP address to avoid false positives on valid domains
+    // that just happen to start with these numbers (e.g., 10.example.com).
+    const isIpLike = /^(\d{1,3}\.){3}\d{1,3}$/.test(host) || host.includes(":");
+
+    if (isIpLike || host === "localhost") {
+      // Reject localhost/loopback
+      if (host === "localhost" || host === "127.0.0.1" || host.startsWith("127.")) {
+        return false;
+      }
+      // Reject link-local (metadata service)
+      if (host === "169.254.169.254" || host.startsWith("169.254.")) {
+        return false;
+      }
+      // Reject private IP ranges
+      if (host.startsWith("10.") || host.startsWith("192.168.")) {
+        return false;
+      }
+      // Reject Carrier-grade NAT
+      if (host.startsWith("100.64.")) {
+        return false;
+      }
+      // Reject 172.16.x.x - 172.31.x.x
+      if (host.match(/^172\.(1[6-9]|2\d|3[0-1])\./)) {
+        return false;
+      }
+    }
+
+    // Note: To fully block all internal IPs like 172.16.0.0/12, we could
+    // add more checks, but these cover the most common high-risk targets.
+
+    return true;
+  } catch (error) {
+    return false; // Malformed URLs are invalid
+  }
+}
+
 async function downloadImageAsBase64(
   url: string
 ): Promise<{ mimeType: string; data: string }> {
+  if (!isValidUrl(url)) {
+    throw new Error(`Invalid or disallowed URL: ${url}`);
+  }
   const response = await fetch(url);
   if (!response.ok) throw new Error(`Failed to download image: ${response.status}`);
   const contentType = response.headers.get("content-type") || "image/jpeg";
@@ -435,6 +489,9 @@ async function generateViaImagen(
 }
 
 async function downloadImage(url: string): Promise<Uint8Array> {
+  if (!isValidUrl(url)) {
+    throw new Error(`Invalid or disallowed URL: ${url}`);
+  }
   const response = await fetch(url);
   if (!response.ok) {
     throw new Error(`Failed to download image: ${response.status}`);
