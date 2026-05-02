@@ -41,3 +41,7 @@
 ## 2025-05-18 - Optimize CachedNetworkImage Cache Key
 **Learning:** When using signed URLs that include an expiring token as a query parameter (e.g., Supabase storage URLs), `CachedNetworkImage` defaults to using the full URL as the cache key. This causes continuous cache misses and redundant downloads when the token rotates.
 **Action:** Always explicitly set the `cacheKey` property to the URL stripped of its query string (e.g., `url.split('?').first`) to ensure the cache survives token expiration.
+
+## 2024-05-02 - Optimize Static List Filtering in Dart
+**Learning:** In Dart, calling `.where(...).toList()` on a static or constant list (like `AiModels.all`) inside a dynamic getter function forces an O(N) evaluation and allocates a new list in memory every single time the getter is accessed. In reactive UI frameworks like Flutter/Riverpod, this can happen many times per frame during rebuilds, leading to unnecessary CPU overhead and garbage collection pressure.
+**Action:** When creating filtered subsets of static reference data that never changes at runtime, always declare them as `static final` fields so they are computed exactly once at app startup and cached. Similarly, pre-compute a `Map` for $O(1)$ lookups instead of using `.where(...).first` (or `.firstWhere(...)`), which requires an O(N) scan.
