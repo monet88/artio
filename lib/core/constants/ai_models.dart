@@ -212,10 +212,15 @@ class AiModels {
     ),
   ];
 
+  // ⚡ Bolt Optimization: Use a Map for O(1) model lookup
+  // Impact: Reduces complexity from O(N) to O(1) for frequent ID lookups
+  static final Map<String, AiModelConfig> _idMap = {
+    for (final m in all) m.id: m,
+  };
+
   /// Get model by ID
   static AiModelConfig? getById(String id) {
-    final matches = all.where((m) => m.id == id);
-    return matches.isEmpty ? null : matches.first;
+    return _idMap[id];
   }
 
   /// Get default model
@@ -225,14 +230,18 @@ class AiModels {
   static List<AiModelConfig> byType(String type) =>
       all.where((m) => m.type == type).toList();
 
+  // ⚡ Bolt Optimization: Cache filtered lists in static final fields
+  // Impact: Prevents O(N) filtering and memory allocations on every UI rebuild
+
   /// Get text-to-image models only
-  static List<AiModelConfig> get textToImageModels => byType('text-to-image');
+  static final List<AiModelConfig> textToImageModels =
+      List.unmodifiable(byType('text-to-image'));
 
   /// Get free models only
-  static List<AiModelConfig> get freeModels =>
-      all.where((m) => !m.isPremium).toList();
+  static final List<AiModelConfig> freeModels =
+      List.unmodifiable(all.where((m) => !m.isPremium));
 
   /// Get models that support image input
-  static List<AiModelConfig> get imageCapableModels =>
-      all.where((m) => m.supportsImageInput).toList();
+  static final List<AiModelConfig> imageCapableModels =
+      List.unmodifiable(all.where((m) => m.supportsImageInput));
 }
