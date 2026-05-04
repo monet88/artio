@@ -41,3 +41,7 @@
 ## 2025-05-18 - Optimize CachedNetworkImage Cache Key
 **Learning:** When using signed URLs that include an expiring token as a query parameter (e.g., Supabase storage URLs), `CachedNetworkImage` defaults to using the full URL as the cache key. This causes continuous cache misses and redundant downloads when the token rotates.
 **Action:** Always explicitly set the `cacheKey` property to the URL stripped of its query string (e.g., `url.split('?').first`) to ensure the cache survives token expiration.
+
+## $(date +%Y-%m-%d) - Dynamic Initialization for Static Grouping
+**Learning:** Hardcoding string keys when grouping a static list into a Map (e.g., `_modelsByType`) creates a maintainability trap where adding a new type silently breaks without a compiler warning.
+**Action:** When pre-computing an O(1) grouped lookup table from a static list, always dynamically build the map (e.g., using `.fold()` or collection `for` in Dart) over the list elements to ensure automatic synchronization and support for new values.
