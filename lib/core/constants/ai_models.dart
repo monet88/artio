@@ -212,27 +212,34 @@ class AiModels {
     ),
   ];
 
+  static final Map<String, AiModelConfig> _modelsById = {
+    for (final model in all) model.id: model,
+  };
+
+  static final Map<String, List<AiModelConfig>> _modelsByType =
+      all.fold<Map<String, List<AiModelConfig>>>(
+    {},
+    (map, model) {
+      map.putIfAbsent(model.type, () => []).add(model);
+      return map;
+    },
+  );
+
+  static final List<AiModelConfig> textToImageModels =
+      _modelsByType['text-to-image'] ?? [];
+
+  static final List<AiModelConfig> freeModels =
+      all.where((m) => !m.isPremium).toList();
+
+  static final List<AiModelConfig> imageCapableModels =
+      all.where((m) => m.supportsImageInput).toList();
+
   /// Get model by ID
-  static AiModelConfig? getById(String id) {
-    final matches = all.where((m) => m.id == id);
-    return matches.isEmpty ? null : matches.first;
-  }
+  static AiModelConfig? getById(String id) => _modelsById[id];
 
   /// Get default model
   static AiModelConfig get defaultModel => getById(defaultModelId) ?? all.first;
 
   /// Filter models by type
-  static List<AiModelConfig> byType(String type) =>
-      all.where((m) => m.type == type).toList();
-
-  /// Get text-to-image models only
-  static List<AiModelConfig> get textToImageModels => byType('text-to-image');
-
-  /// Get free models only
-  static List<AiModelConfig> get freeModels =>
-      all.where((m) => !m.isPremium).toList();
-
-  /// Get models that support image input
-  static List<AiModelConfig> get imageCapableModels =>
-      all.where((m) => m.supportsImageInput).toList();
+  static List<AiModelConfig> byType(String type) => _modelsByType[type] ?? [];
 }
