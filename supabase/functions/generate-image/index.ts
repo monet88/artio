@@ -105,13 +105,33 @@ const SIGNED_URL_EXPIRY_SECONDS = 3600; // 1 hour
  */
 async function resolveImageUrls(
   supabase: ReturnType<typeof getSupabaseClient>,
-  imageInputs: string[]
+  imageInputs: string[],
+  userId: string
 ): Promise<string[]> {
   return Promise.all(
     imageInputs.map(async (input) => {
       if (input.startsWith("http://") || input.startsWith("https://")) {
+        try {
+          const url = new URL(input);
+          const host = url.hostname;
+          const isIpv4Literal = /^(\d{1,3}\.){3}\d{1,3}$/.test(host);
+          const isIpv6Literal = host.includes(':');
+
+          if (host === 'localhost' || host === '0.0.0.0' || (isIpv4Literal && (host.startsWith('127.') || host.startsWith('10.') || host.startsWith('169.254.') || host.startsWith('192.168.') || /^172\.(1[6-9]|2[0-9]|3[0-1])\./.test(host))) || isIpv6Literal) {
+            throw new Error(`Invalid URL: Disallowed host`);
+          }
+        } catch (e) {
+          throw new Error(`Invalid URL provided`);
+        }
         return input;
       } else {
+        if (input.includes('../') || input.includes('..\\')) {
+          throw new Error(`Invalid storage path: Path traversal detected`);
+        }
+        if (!input.startsWith(`${userId}/`)) {
+          throw new Error(`Invalid storage path: Unauthorized path`);
+        }
+
         // Treat as Supabase storage path — generate signed URL
         const { data, error } = await supabase.storage
           .from(STORAGE_BUCKET)
@@ -765,7 +785,7 @@ Deno.serve(async (req) => {
 
         // Resolve Supabase storage paths to signed URLs for KIE access
         const resolvedImages = imageInputs?.length
-          ? await resolveImageUrls(supabase, imageInputs)
+          ? await resolveImageUrls(supabase, imageInputs, userId)
           : undefined;
 
         const createResult = await createKieTask(prompt, model, aspectRatio, imageCount, resolvedImages);
@@ -812,7 +832,7 @@ Deno.serve(async (req) => {
 
         // Resolve Supabase storage paths to signed URLs for Gemini access
         const resolvedGeminiImages = imageInputs?.length
-          ? await resolveImageUrls(supabase, imageInputs)
+          ? await resolveImageUrls(supabase, imageInputs, userId)
           : undefined;
 
         const geminiResult = await generateViaGemini(prompt, model, aspectRatio, resolvedGeminiImages);

@@ -226,9 +226,14 @@ class AiModels {
   /// Get default model
   static AiModelConfig get defaultModel => getById(defaultModelId) ?? all.first;
 
-  /// Filter models by type
-  static List<AiModelConfig> byType(String type) =>
-      all.where((m) => m.type == type).toList();
+  static final Map<String, List<AiModelConfig>> _modelsByType =
+      all.fold<Map<String, List<AiModelConfig>>>(
+    {},
+    (map, model) {
+      map.putIfAbsent(model.type, () => []).add(model);
+      return map;
+    },
+  );
 
   // ⚡ Bolt Optimization: Cache filtered lists in static final fields
   // Impact: Prevents O(N) filtering and memory allocations on every UI rebuild
