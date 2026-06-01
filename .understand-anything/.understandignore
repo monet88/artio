@@ -1,0 +1,43 @@
+# .understandignore — patterns for files/dirs to exclude from analysis
+# Syntax: same as .gitignore (globs, # comments, ! negation, trailing / for dirs)
+# Lines below are suggestions — uncomment to activate.
+# Use ! prefix to force-include something excluded by defaults.
+#
+# Built-in defaults (always excluded unless negated):
+#   node_modules/, .git/, dist/, build/, obj/, *.lock, *.min.js, etc.
+#
+# --- From .gitignore (uncomment to exclude) ---
+
+# .env
+# .env.*
+# !.env.example
+# *.iml
+# .dart_tool/
+# .idea/
+# .vscode/
+# pubspec.lock
+# .flutter-plugins
+# .flutter-plugins-dependencies
+# .packages
+# android/key.properties
+# ios/Flutter/Flutter.podspec
+# ios/Pods/
+# ios/.symlinks/
+# ios/Flutter/App.framework
+# ios/Flutter/Flutter.framework
+# macos/Flutter/ephemeral/
+# linux/flutter/ephemeral/
+# windows/flutter/ephemeral/
+# .codegraph/
+
+# --- Detected directories (uncomment to exclude) ---
+
+# test/
+# docs/
+# scripts/
+
+# --- Test file patterns (uncomment to exclude) ---
+
+# *.test.*
+# *.spec.*
+# *.snap
