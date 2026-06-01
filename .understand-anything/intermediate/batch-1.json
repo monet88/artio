@@ -1,0 +1,98 @@
+{
+  "nodes": [
+    {
+      "id": "file:supabase/functions/_shared/cors.ts",
+      "type": "file",
+      "name": "cors.ts",
+      "summary": "Backend source file cors.ts used by Supabase functions or shared server utilities in the Artio generation platform.",
+      "tags": [
+        "backend"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/_shared/cors.ts"
+    },
+    {
+      "id": "function:supabase/functions/_shared/cors.ts:corsHeaders",
+      "type": "function",
+      "name": "corsHeaders",
+      "summary": "Function corsHeaders defined in cors.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/_shared/cors.ts"
+    },
+    {
+      "id": "function:supabase/functions/_shared/cors.ts:handleCorsIfPreflight",
+      "type": "function",
+      "name": "handleCorsIfPreflight",
+      "summary": "Function handleCorsIfPreflight defined in cors.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/_shared/cors.ts"
+    },
+    {
+      "id": "file:supabase/functions/sync-subscription/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "summary": "Backend source file index.ts used by Supabase functions or shared server utilities in the Artio generation platform.",
+      "tags": [
+        "backend"
+      ],
+      "complexity": "complex",
+      "filePath": "supabase/functions/sync-subscription/index.ts"
+    },
+    {
+      "id": "file:supabase/functions/verify-google-purchase/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "summary": "Backend source file index.ts used by Supabase functions or shared server utilities in the Artio generation platform.",
+      "tags": [
+        "backend"
+      ],
+      "complexity": "complex",
+      "filePath": "supabase/functions/verify-google-purchase/index.ts"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:supabase/functions/_shared/cors.ts",
+      "target": "function:supabase/functions/_shared/cors.ts:corsHeaders",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/_shared/cors.ts",
+      "target": "function:supabase/functions/_shared/cors.ts:handleCorsIfPreflight",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "function:supabase/functions/_shared/cors.ts:handleCorsIfPreflight",
+      "target": "function:supabase/functions/_shared/cors.ts:corsHeaders",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/sync-subscription/index.ts",
+      "target": "file:supabase/functions/_shared/cors.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/verify-google-purchase/index.ts",
+      "target": "file:supabase/functions/_shared/cors.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    }
+  ]
+}

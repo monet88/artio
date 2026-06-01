@@ -1,0 +1,12 @@
+{
+  "issues": [],
+  "warnings": [
+    "Merge completed without dropped coverage; most edges are structural and sparse, so higher-level semantic relationships may be underrepresented."
+  ],
+  "notes": {
+    "fileCoverageVerified": true,
+    "scannedFiles": 277,
+    "fileLevelNodes": 277,
+    "mergeWarningsLog": "/media/monet/SSD Web/CodeBase/artio/.understand-anything/intermediate/merge-batch-stderr.log"
+  }
+}

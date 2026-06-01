@@ -1,0 +1,300 @@
+{
+  "nodes": [
+    {
+      "id": "file:lib/features/template_engine/presentation/providers/generation_policy_provider.g.dart",
+      "type": "file",
+      "name": "generation_policy_provider.g.dart",
+      "summary": "Application source file generation_policy_provider.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/template_engine/presentation/providers/generation_policy_provider.g.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/presentation/providers/template_provider.dart",
+      "type": "file",
+      "name": "template_provider.dart",
+      "summary": "Application source file template_provider.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/template_engine/presentation/providers/template_provider.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/presentation/providers/template_provider.g.dart",
+      "type": "file",
+      "name": "template_provider.g.dart",
+      "summary": "Application source file template_provider.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/template_engine/presentation/providers/template_provider.g.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/presentation/screens/home_screen.dart",
+      "type": "file",
+      "name": "home_screen.dart",
+      "summary": "Application source file home_screen.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/template_engine/presentation/screens/home_screen.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/presentation/screens/template_detail_screen.dart",
+      "type": "file",
+      "name": "template_detail_screen.dart",
+      "summary": "Application source file template_detail_screen.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/template_engine/presentation/screens/template_detail_screen.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/presentation/view_models/generation_view_model.dart",
+      "type": "file",
+      "name": "generation_view_model.dart",
+      "summary": "Application source file generation_view_model.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/template_engine/presentation/view_models/generation_view_model.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/presentation/view_models/generation_view_model.g.dart",
+      "type": "file",
+      "name": "generation_view_model.g.dart",
+      "summary": "Application source file generation_view_model.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/template_engine/presentation/view_models/generation_view_model.g.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/presentation/widgets/generation_progress_sections.dart",
+      "type": "file",
+      "name": "generation_progress_sections.dart",
+      "summary": "Application source file generation_progress_sections.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/template_engine/presentation/widgets/generation_progress_sections.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/presentation/widgets/generation_progress.dart",
+      "type": "file",
+      "name": "generation_progress.dart",
+      "summary": "Application source file generation_progress.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/template_engine/presentation/widgets/generation_progress.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/presentation/widgets/home_screen_widgets.dart",
+      "type": "file",
+      "name": "home_screen_widgets.dart",
+      "summary": "Application source file home_screen_widgets.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/template_engine/presentation/widgets/home_screen_widgets.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/presentation/widgets/input_field_builder.dart",
+      "type": "file",
+      "name": "input_field_builder.dart",
+      "summary": "Application source file input_field_builder.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/template_engine/presentation/widgets/input_field_builder.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/presentation/widgets/template_card.dart",
+      "type": "file",
+      "name": "template_card.dart",
+      "summary": "Application source file template_card.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/template_engine/presentation/widgets/template_card.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/presentation/widgets/template_detail_widgets.dart",
+      "type": "file",
+      "name": "template_detail_widgets.dart",
+      "summary": "Application source file template_detail_widgets.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/template_engine/presentation/widgets/template_detail_widgets.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/presentation/widgets/template_grid.dart",
+      "type": "file",
+      "name": "template_grid.dart",
+      "summary": "Application source file template_grid.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/template_engine/presentation/widgets/template_grid.dart"
+    },
+    {
+      "id": "file:lib/main.dart",
+      "type": "file",
+      "name": "main.dart",
+      "summary": "Application source file main.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/main.dart"
+    },
+    {
+      "id": "file:lib/routing/app_router.dart",
+      "type": "file",
+      "name": "app_router.dart",
+      "summary": "Application source file app_router.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/routing/app_router.dart"
+    },
+    {
+      "id": "file:lib/routing/app_router.g.dart",
+      "type": "file",
+      "name": "app_router.g.dart",
+      "summary": "Application source file app_router.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/routing/app_router.g.dart"
+    },
+    {
+      "id": "file:lib/routing/routes/app_routes.dart",
+      "type": "file",
+      "name": "app_routes.dart",
+      "summary": "Application source file app_routes.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/routing/routes/app_routes.dart"
+    },
+    {
+      "id": "file:lib/routing/routes/app_routes.g.dart",
+      "type": "file",
+      "name": "app_routes.g.dart",
+      "summary": "Application source file app_routes.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/routing/routes/app_routes.g.dart"
+    },
+    {
+      "id": "file:lib/shared/widgets/animated_retry_button.dart",
+      "type": "file",
+      "name": "animated_retry_button.dart",
+      "summary": "Application source file animated_retry_button.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/shared/widgets/animated_retry_button.dart"
+    },
+    {
+      "id": "file:lib/shared/widgets/app_snackbar.dart",
+      "type": "file",
+      "name": "app_snackbar.dart",
+      "summary": "Application source file app_snackbar.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/shared/widgets/app_snackbar.dart"
+    },
+    {
+      "id": "file:lib/shared/widgets/aspect_ratio_selector.dart",
+      "type": "file",
+      "name": "aspect_ratio_selector.dart",
+      "summary": "Application source file aspect_ratio_selector.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/shared/widgets/aspect_ratio_selector.dart"
+    },
+    {
+      "id": "file:lib/shared/widgets/error_illustration.dart",
+      "type": "file",
+      "name": "error_illustration.dart",
+      "summary": "Application source file error_illustration.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/shared/widgets/error_illustration.dart"
+    },
+    {
+      "id": "file:lib/shared/widgets/error_page.dart",
+      "type": "file",
+      "name": "error_page.dart",
+      "summary": "Application source file error_page.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/shared/widgets/error_page.dart"
+    },
+    {
+      "id": "file:lib/shared/widgets/error_state_widget.dart",
+      "type": "file",
+      "name": "error_state_widget.dart",
+      "summary": "Application source file error_state_widget.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/shared/widgets/error_state_widget.dart"
+    }
+  ],
+  "edges": []
+}

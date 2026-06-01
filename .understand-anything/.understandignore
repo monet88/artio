@@ -1,0 +1,38 @@
+# .understandignore — scope optimized for Artio main app + Supabase backend
+# Syntax: same as .gitignore (globs, # comments, ! negation, trailing / for dirs)
+# Goal: keep lib/, supabase/, and root project config/docs needed for architectural context.
+
+# Keep generated Understand Anything outputs out of subsequent scans.
+.understand-anything/
+
+# Exclude secondary app and non-product documentation for the first graph pass.
+admin/
+docs/
+plans/
+.jules/
+
+# Exclude tests initially; add later if test-coverage graph is needed.
+test/
+integration_test/
+
+# Exclude platform boilerplate/native project files for a cleaner app/backend graph.
+android/
+ios/
+linux/
+macos/
+windows/
+web/
+
+# Exclude helper artifacts that are not central to app/backend architecture.
+scripts/
+*.log
+
+# Exclude local env and tool caches.
+.env
+.env.*
+!.env.example
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.codegraph/

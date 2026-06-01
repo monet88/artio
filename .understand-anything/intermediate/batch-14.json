@@ -1,0 +1,378 @@
+{
+  "nodes": [
+    {
+      "id": "file:lib/shared/widgets/gradient_button.dart",
+      "type": "file",
+      "name": "gradient_button.dart",
+      "summary": "Application source file gradient_button.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/shared/widgets/gradient_button.dart"
+    },
+    {
+      "id": "file:lib/shared/widgets/image_count_dropdown.dart",
+      "type": "file",
+      "name": "image_count_dropdown.dart",
+      "summary": "Application source file image_count_dropdown.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/shared/widgets/image_count_dropdown.dart"
+    },
+    {
+      "id": "file:lib/shared/widgets/image_input_widget.dart",
+      "type": "file",
+      "name": "image_input_widget.dart",
+      "summary": "Application source file image_input_widget.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/shared/widgets/image_input_widget.dart"
+    },
+    {
+      "id": "file:lib/shared/widgets/loading_state_widget.dart",
+      "type": "file",
+      "name": "loading_state_widget.dart",
+      "summary": "Application source file loading_state_widget.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/shared/widgets/loading_state_widget.dart"
+    },
+    {
+      "id": "file:lib/shared/widgets/main_shell.dart",
+      "type": "file",
+      "name": "main_shell.dart",
+      "summary": "Application source file main_shell.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/shared/widgets/main_shell.dart"
+    },
+    {
+      "id": "file:lib/shared/widgets/model_selector.dart",
+      "type": "file",
+      "name": "model_selector.dart",
+      "summary": "Application source file model_selector.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/shared/widgets/model_selector.dart"
+    },
+    {
+      "id": "file:lib/shared/widgets/offline_banner.dart",
+      "type": "file",
+      "name": "offline_banner.dart",
+      "summary": "Application source file offline_banner.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/shared/widgets/offline_banner.dart"
+    },
+    {
+      "id": "file:lib/shared/widgets/output_format_toggle.dart",
+      "type": "file",
+      "name": "output_format_toggle.dart",
+      "summary": "Application source file output_format_toggle.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/shared/widgets/output_format_toggle.dart"
+    },
+    {
+      "id": "file:lib/shared/widgets/retry_text_button.dart",
+      "type": "file",
+      "name": "retry_text_button.dart",
+      "summary": "Application source file retry_text_button.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/shared/widgets/retry_text_button.dart"
+    },
+    {
+      "id": "file:lib/shared/widgets/section_header.dart",
+      "type": "file",
+      "name": "section_header.dart",
+      "summary": "Application source file section_header.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/shared/widgets/section_header.dart"
+    },
+    {
+      "id": "file:lib/shared/widgets/watermark_overlay.dart",
+      "type": "file",
+      "name": "watermark_overlay.dart",
+      "summary": "Application source file watermark_overlay.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/shared/widgets/watermark_overlay.dart"
+    },
+    {
+      "id": "file:lib/theme/app_button_themes.dart",
+      "type": "file",
+      "name": "app_button_themes.dart",
+      "summary": "Application source file app_button_themes.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/theme/app_button_themes.dart"
+    },
+    {
+      "id": "file:lib/theme/app_colors.dart",
+      "type": "file",
+      "name": "app_colors.dart",
+      "summary": "Application source file app_colors.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/theme/app_colors.dart"
+    },
+    {
+      "id": "file:lib/theme/app_component_themes.dart",
+      "type": "file",
+      "name": "app_component_themes.dart",
+      "summary": "Application source file app_component_themes.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/theme/app_component_themes.dart"
+    },
+    {
+      "id": "file:lib/theme/app_theme.dart",
+      "type": "file",
+      "name": "app_theme.dart",
+      "summary": "Application source file app_theme.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/theme/app_theme.dart"
+    },
+    {
+      "id": "file:lib/theme/theme_provider.dart",
+      "type": "file",
+      "name": "theme_provider.dart",
+      "summary": "Application source file theme_provider.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/theme/theme_provider.dart"
+    },
+    {
+      "id": "file:lib/theme/theme_provider.g.dart",
+      "type": "file",
+      "name": "theme_provider.g.dart",
+      "summary": "Application source file theme_provider.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/theme/theme_provider.g.dart"
+    },
+    {
+      "id": "file:lib/utils/logger_service.dart",
+      "type": "file",
+      "name": "logger_service.dart",
+      "summary": "Application source file logger_service.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/utils/logger_service.dart"
+    },
+    {
+      "id": "document:supabase/AGENTS.md",
+      "type": "document",
+      "name": "AGENTS.md",
+      "summary": "Documentation file AGENTS.md that explains project workflow, architecture, or operational guidance for the Artio codebase.",
+      "tags": [
+        "documentation"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/AGENTS.md"
+    },
+    {
+      "id": "config:supabase/config.toml",
+      "type": "config",
+      "name": "config.toml",
+      "summary": "Configuration file config.toml that defines tooling, analysis, environment, or build behavior for the project.",
+      "tags": [
+        "configuration"
+      ],
+      "complexity": "complex",
+      "filePath": "supabase/config.toml"
+    },
+    {
+      "id": "file:supabase/functions/_shared/credit_logic_test.ts",
+      "type": "file",
+      "name": "credit_logic_test.ts",
+      "summary": "Backend source file credit_logic_test.ts used by Supabase functions or shared server utilities in the Artio generation platform.",
+      "tags": [
+        "test",
+        "backend"
+      ],
+      "complexity": "moderate",
+      "filePath": "supabase/functions/_shared/credit_logic_test.ts"
+    },
+    {
+      "id": "function:supabase/functions/_shared/credit_logic_test.ts:createMockSupabase",
+      "type": "function",
+      "name": "createMockSupabase",
+      "summary": "Function createMockSupabase defined in credit_logic_test.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic",
+        "test"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/_shared/credit_logic_test.ts"
+    },
+    {
+      "id": "file:supabase/functions/_shared/credit_logic.ts",
+      "type": "file",
+      "name": "credit_logic.ts",
+      "summary": "Backend source file credit_logic.ts used by Supabase functions or shared server utilities in the Artio generation platform.",
+      "tags": [
+        "backend"
+      ],
+      "complexity": "moderate",
+      "filePath": "supabase/functions/_shared/credit_logic.ts"
+    },
+    {
+      "id": "function:supabase/functions/_shared/credit_logic.ts:checkAndDeductCredits",
+      "type": "function",
+      "name": "checkAndDeductCredits",
+      "summary": "Function checkAndDeductCredits defined in credit_logic.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/_shared/credit_logic.ts"
+    },
+    {
+      "id": "function:supabase/functions/_shared/credit_logic.ts:refundCreditsOnFailure",
+      "type": "function",
+      "name": "refundCreditsOnFailure",
+      "summary": "Function refundCreditsOnFailure defined in credit_logic.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/_shared/credit_logic.ts"
+    },
+    {
+      "id": "file:supabase/functions/delete-account/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "summary": "Backend source file index.ts used by Supabase functions or shared server utilities in the Artio generation platform.",
+      "tags": [
+        "backend"
+      ],
+      "complexity": "moderate",
+      "filePath": "supabase/functions/delete-account/index.ts"
+    },
+    {
+      "id": "function:supabase/functions/delete-account/index.ts:corsHeaders",
+      "type": "function",
+      "name": "corsHeaders",
+      "summary": "Function corsHeaders defined in index.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/delete-account/index.ts"
+    },
+    {
+      "id": "config:supabase/functions/deno.json",
+      "type": "config",
+      "name": "deno.json",
+      "summary": "Configuration file deno.json that defines tooling, analysis, environment, or build behavior for the project.",
+      "tags": [
+        "configuration",
+        "backend"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/deno.json"
+    },
+    {
+      "id": "file:supabase/functions/generate-image/.npmrc",
+      "type": "file",
+      "name": ".npmrc",
+      "summary": "Backend source file .npmrc used by Supabase functions or shared server utilities in the Artio generation platform.",
+      "tags": [
+        "backend"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/generate-image/.npmrc"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:supabase/functions/_shared/credit_logic_test.ts",
+      "target": "function:supabase/functions/_shared/credit_logic_test.ts:createMockSupabase",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/_shared/credit_logic.ts",
+      "target": "function:supabase/functions/_shared/credit_logic.ts:checkAndDeductCredits",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/_shared/credit_logic.ts",
+      "target": "function:supabase/functions/_shared/credit_logic.ts:refundCreditsOnFailure",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/delete-account/index.ts",
+      "target": "function:supabase/functions/delete-account/index.ts:corsHeaders",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/_shared/credit_logic_test.ts",
+      "target": "file:supabase/functions/_shared/credit_logic.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    }
+  ]
+}

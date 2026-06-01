@@ -1,0 +1,395 @@
+{
+  "nodes": [
+    {
+      "id": "file:supabase/functions/_shared/model_config.ts",
+      "type": "file",
+      "name": "model_config.ts",
+      "summary": "Backend source file model_config.ts used by Supabase functions or shared server utilities in the Artio generation platform.",
+      "tags": [
+        "backend"
+      ],
+      "complexity": "moderate",
+      "filePath": "supabase/functions/_shared/model_config.ts"
+    },
+    {
+      "id": "function:supabase/functions/_shared/model_config.ts:isPremiumModel",
+      "type": "function",
+      "name": "isPremiumModel",
+      "summary": "Function isPremiumModel defined in model_config.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/_shared/model_config.ts"
+    },
+    {
+      "id": "function:supabase/functions/_shared/model_config.ts:getModelCreditCost",
+      "type": "function",
+      "name": "getModelCreditCost",
+      "summary": "Function getModelCreditCost defined in model_config.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/_shared/model_config.ts"
+    },
+    {
+      "id": "file:supabase/functions/_shared/model_config_test.ts",
+      "type": "file",
+      "name": "model_config_test.ts",
+      "summary": "Backend source file model_config_test.ts used by Supabase functions or shared server utilities in the Artio generation platform.",
+      "tags": [
+        "test",
+        "backend"
+      ],
+      "complexity": "moderate",
+      "filePath": "supabase/functions/_shared/model_config_test.ts"
+    },
+    {
+      "id": "file:supabase/functions/generate-image/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "summary": "Backend source file index.ts used by Supabase functions or shared server utilities in the Artio generation platform.",
+      "tags": [
+        "backend"
+      ],
+      "complexity": "complex",
+      "filePath": "supabase/functions/generate-image/index.ts"
+    },
+    {
+      "id": "function:supabase/functions/generate-image/index.ts:resolveImageUrls",
+      "type": "function",
+      "name": "resolveImageUrls",
+      "summary": "Function resolveImageUrls defined in index.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/generate-image/index.ts"
+    },
+    {
+      "id": "function:supabase/functions/generate-image/index.ts:buildKieInput",
+      "type": "function",
+      "name": "buildKieInput",
+      "summary": "Function buildKieInput defined in index.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "moderate",
+      "filePath": "supabase/functions/generate-image/index.ts"
+    },
+    {
+      "id": "function:supabase/functions/generate-image/index.ts:createKieTask",
+      "type": "function",
+      "name": "createKieTask",
+      "summary": "Function createKieTask defined in index.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/generate-image/index.ts"
+    },
+    {
+      "id": "function:supabase/functions/generate-image/index.ts:pollKieTask",
+      "type": "function",
+      "name": "pollKieTask",
+      "summary": "Function pollKieTask defined in index.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "moderate",
+      "filePath": "supabase/functions/generate-image/index.ts"
+    },
+    {
+      "id": "function:supabase/functions/generate-image/index.ts:downloadImageAsBase64",
+      "type": "function",
+      "name": "downloadImageAsBase64",
+      "summary": "Function downloadImageAsBase64 defined in index.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/generate-image/index.ts"
+    },
+    {
+      "id": "function:supabase/functions/generate-image/index.ts:generateViaGemini",
+      "type": "function",
+      "name": "generateViaGemini",
+      "summary": "Function generateViaGemini defined in index.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "moderate",
+      "filePath": "supabase/functions/generate-image/index.ts"
+    },
+    {
+      "id": "function:supabase/functions/generate-image/index.ts:generateViaImagen",
+      "type": "function",
+      "name": "generateViaImagen",
+      "summary": "Function generateViaImagen defined in index.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/generate-image/index.ts"
+    },
+    {
+      "id": "function:supabase/functions/generate-image/index.ts:uploadToStorage",
+      "type": "function",
+      "name": "uploadToStorage",
+      "summary": "Function uploadToStorage defined in index.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/generate-image/index.ts"
+    },
+    {
+      "id": "function:supabase/functions/generate-image/index.ts:cleanupStorageFiles",
+      "type": "function",
+      "name": "cleanupStorageFiles",
+      "summary": "Function cleanupStorageFiles defined in index.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/generate-image/index.ts"
+    },
+    {
+      "id": "function:supabase/functions/generate-image/index.ts:mirrorUrlsToStorage",
+      "type": "function",
+      "name": "mirrorUrlsToStorage",
+      "summary": "Function mirrorUrlsToStorage defined in index.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/generate-image/index.ts"
+    },
+    {
+      "id": "function:supabase/functions/generate-image/index.ts:mirrorBase64ToStorage",
+      "type": "function",
+      "name": "mirrorBase64ToStorage",
+      "summary": "Function mirrorBase64ToStorage defined in index.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/generate-image/index.ts"
+    },
+    {
+      "id": "function:supabase/functions/generate-image/index.ts:updateJobStatus",
+      "type": "function",
+      "name": "updateJobStatus",
+      "summary": "Function updateJobStatus defined in index.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/generate-image/index.ts"
+    },
+    {
+      "id": "function:supabase/functions/generate-image/index.ts:refundAndBuildErrorMsg",
+      "type": "function",
+      "name": "refundAndBuildErrorMsg",
+      "summary": "Function refundAndBuildErrorMsg defined in index.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/generate-image/index.ts"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:supabase/functions/_shared/model_config.ts",
+      "target": "function:supabase/functions/_shared/model_config.ts:isPremiumModel",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/_shared/model_config.ts",
+      "target": "function:supabase/functions/_shared/model_config.ts:getModelCreditCost",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/generate-image/index.ts",
+      "target": "function:supabase/functions/generate-image/index.ts:resolveImageUrls",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/generate-image/index.ts",
+      "target": "function:supabase/functions/generate-image/index.ts:buildKieInput",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/generate-image/index.ts",
+      "target": "function:supabase/functions/generate-image/index.ts:createKieTask",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/generate-image/index.ts",
+      "target": "function:supabase/functions/generate-image/index.ts:pollKieTask",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/generate-image/index.ts",
+      "target": "function:supabase/functions/generate-image/index.ts:downloadImageAsBase64",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/generate-image/index.ts",
+      "target": "function:supabase/functions/generate-image/index.ts:generateViaGemini",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/generate-image/index.ts",
+      "target": "function:supabase/functions/generate-image/index.ts:generateViaImagen",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/generate-image/index.ts",
+      "target": "function:supabase/functions/generate-image/index.ts:uploadToStorage",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/generate-image/index.ts",
+      "target": "function:supabase/functions/generate-image/index.ts:cleanupStorageFiles",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/generate-image/index.ts",
+      "target": "function:supabase/functions/generate-image/index.ts:mirrorUrlsToStorage",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/generate-image/index.ts",
+      "target": "function:supabase/functions/generate-image/index.ts:mirrorBase64ToStorage",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/generate-image/index.ts",
+      "target": "function:supabase/functions/generate-image/index.ts:updateJobStatus",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/generate-image/index.ts",
+      "target": "function:supabase/functions/generate-image/index.ts:refundAndBuildErrorMsg",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/_shared/model_config_test.ts",
+      "target": "file:supabase/functions/_shared/model_config.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/generate-image/index.ts",
+      "target": "file:supabase/functions/_shared/cors.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/generate-image/index.ts",
+      "target": "file:supabase/functions/_shared/credit_logic.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/generate-image/index.ts",
+      "target": "file:supabase/functions/_shared/model_config.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "function:supabase/functions/generate-image/index.ts:createKieTask",
+      "target": "function:supabase/functions/generate-image/index.ts:buildKieInput",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "function:supabase/functions/generate-image/index.ts:generateViaGemini",
+      "target": "function:supabase/functions/generate-image/index.ts:downloadImageAsBase64",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "function:supabase/functions/generate-image/index.ts:mirrorUrlsToStorage",
+      "target": "function:supabase/functions/generate-image/index.ts:uploadToStorage",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "function:supabase/functions/generate-image/index.ts:mirrorUrlsToStorage",
+      "target": "function:supabase/functions/generate-image/index.ts:cleanupStorageFiles",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "function:supabase/functions/generate-image/index.ts:mirrorBase64ToStorage",
+      "target": "function:supabase/functions/generate-image/index.ts:uploadToStorage",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "function:supabase/functions/generate-image/index.ts:mirrorBase64ToStorage",
+      "target": "function:supabase/functions/generate-image/index.ts:cleanupStorageFiles",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    }
+  ]
+}

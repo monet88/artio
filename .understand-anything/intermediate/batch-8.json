@@ -1,0 +1,305 @@
+{
+  "nodes": [
+    {
+      "id": "file:lib/features/auth/domain/providers/onboarding_provider.dart",
+      "type": "file",
+      "name": "onboarding_provider.dart",
+      "summary": "Application source file onboarding_provider.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/auth/domain/providers/onboarding_provider.dart"
+    },
+    {
+      "id": "file:lib/features/auth/domain/providers/onboarding_provider.g.dart",
+      "type": "file",
+      "name": "onboarding_provider.g.dart",
+      "summary": "Application source file onboarding_provider.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/auth/domain/providers/onboarding_provider.g.dart"
+    },
+    {
+      "id": "file:lib/features/auth/domain/repositories/i_auth_repository.dart",
+      "type": "file",
+      "name": "i_auth_repository.dart",
+      "summary": "Application source file i_auth_repository.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/auth/domain/repositories/i_auth_repository.dart"
+    },
+    {
+      "id": "file:lib/features/auth/presentation/screens/forgot_password_screen.dart",
+      "type": "file",
+      "name": "forgot_password_screen.dart",
+      "summary": "Application source file forgot_password_screen.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/auth/presentation/screens/forgot_password_screen.dart"
+    },
+    {
+      "id": "file:lib/features/auth/presentation/screens/login_screen.dart",
+      "type": "file",
+      "name": "login_screen.dart",
+      "summary": "Application source file login_screen.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/auth/presentation/screens/login_screen.dart"
+    },
+    {
+      "id": "file:lib/features/auth/presentation/screens/onboarding_screen.dart",
+      "type": "file",
+      "name": "onboarding_screen.dart",
+      "summary": "Application source file onboarding_screen.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/auth/presentation/screens/onboarding_screen.dart"
+    },
+    {
+      "id": "file:lib/features/auth/presentation/screens/register_screen.dart",
+      "type": "file",
+      "name": "register_screen.dart",
+      "summary": "Application source file register_screen.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/auth/presentation/screens/register_screen.dart"
+    },
+    {
+      "id": "file:lib/features/auth/presentation/screens/splash_screen.dart",
+      "type": "file",
+      "name": "splash_screen.dart",
+      "summary": "Application source file splash_screen.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/auth/presentation/screens/splash_screen.dart"
+    },
+    {
+      "id": "file:lib/features/auth/presentation/state/auth_state.dart",
+      "type": "file",
+      "name": "auth_state.dart",
+      "summary": "Application source file auth_state.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/auth/presentation/state/auth_state.dart"
+    },
+    {
+      "id": "file:lib/features/auth/presentation/state/auth_state.freezed.dart",
+      "type": "file",
+      "name": "auth_state.freezed.dart",
+      "summary": "Application source file auth_state.freezed.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/auth/presentation/state/auth_state.freezed.dart"
+    },
+    {
+      "id": "file:lib/features/auth/presentation/view_models/auth_view_model.dart",
+      "type": "file",
+      "name": "auth_view_model.dart",
+      "summary": "Application source file auth_view_model.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/auth/presentation/view_models/auth_view_model.dart"
+    },
+    {
+      "id": "file:lib/features/auth/presentation/view_models/auth_view_model.g.dart",
+      "type": "file",
+      "name": "auth_view_model.g.dart",
+      "summary": "Application source file auth_view_model.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/auth/presentation/view_models/auth_view_model.g.dart"
+    },
+    {
+      "id": "file:lib/features/auth/presentation/widgets/social_login_buttons.dart",
+      "type": "file",
+      "name": "social_login_buttons.dart",
+      "summary": "Application source file social_login_buttons.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/auth/presentation/widgets/social_login_buttons.dart"
+    },
+    {
+      "id": "file:lib/features/create/domain/entities/create_form_state.dart",
+      "type": "file",
+      "name": "create_form_state.dart",
+      "summary": "Application source file create_form_state.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/create/domain/entities/create_form_state.dart"
+    },
+    {
+      "id": "file:lib/features/create/domain/entities/create_form_state.freezed.dart",
+      "type": "file",
+      "name": "create_form_state.freezed.dart",
+      "summary": "Application source file create_form_state.freezed.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/create/domain/entities/create_form_state.freezed.dart"
+    },
+    {
+      "id": "file:lib/features/create/presentation/create_screen.dart",
+      "type": "file",
+      "name": "create_screen.dart",
+      "summary": "Application source file create_screen.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/create/presentation/create_screen.dart"
+    },
+    {
+      "id": "file:lib/features/create/presentation/providers/create_form_provider.dart",
+      "type": "file",
+      "name": "create_form_provider.dart",
+      "summary": "Application source file create_form_provider.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/create/presentation/providers/create_form_provider.dart"
+    },
+    {
+      "id": "file:lib/features/create/presentation/providers/create_form_provider.g.dart",
+      "type": "file",
+      "name": "create_form_provider.g.dart",
+      "summary": "Application source file create_form_provider.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/create/presentation/providers/create_form_provider.g.dart"
+    },
+    {
+      "id": "file:lib/features/create/presentation/view_models/create_view_model.dart",
+      "type": "file",
+      "name": "create_view_model.dart",
+      "summary": "Application source file create_view_model.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/create/presentation/view_models/create_view_model.dart"
+    },
+    {
+      "id": "file:lib/features/create/presentation/view_models/create_view_model.g.dart",
+      "type": "file",
+      "name": "create_view_model.g.dart",
+      "summary": "Application source file create_view_model.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/create/presentation/view_models/create_view_model.g.dart"
+    },
+    {
+      "id": "file:lib/features/create/presentation/widgets/aspect_ratio_selector.dart",
+      "type": "file",
+      "name": "aspect_ratio_selector.dart",
+      "summary": "Application source file aspect_ratio_selector.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/create/presentation/widgets/aspect_ratio_selector.dart"
+    },
+    {
+      "id": "file:lib/features/create/presentation/widgets/auth_gate_sheet.dart",
+      "type": "file",
+      "name": "auth_gate_sheet.dart",
+      "summary": "Application source file auth_gate_sheet.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/create/presentation/widgets/auth_gate_sheet.dart"
+    },
+    {
+      "id": "file:lib/features/create/presentation/widgets/credit_balance_chip.dart",
+      "type": "file",
+      "name": "credit_balance_chip.dart",
+      "summary": "Application source file credit_balance_chip.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/create/presentation/widgets/credit_balance_chip.dart"
+    },
+    {
+      "id": "file:lib/features/create/presentation/widgets/generation_progress_overlay.dart",
+      "type": "file",
+      "name": "generation_progress_overlay.dart",
+      "summary": "Application source file generation_progress_overlay.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/create/presentation/widgets/generation_progress_overlay.dart"
+    },
+    {
+      "id": "file:lib/features/create/presentation/widgets/generation_starting_overlay.dart",
+      "type": "file",
+      "name": "generation_starting_overlay.dart",
+      "summary": "Application source file generation_starting_overlay.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/create/presentation/widgets/generation_starting_overlay.dart"
+    }
+  ],
+  "edges": []
+}

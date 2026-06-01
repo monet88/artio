@@ -1,0 +1,1983 @@
+{
+  "name": "artio",
+  "description": "AI Art Generation App. Note: this project has over 100 source files; consider scoping analysis to a subdirectory for faster results.",
+  "languages": [
+    "config",
+    "dart",
+    "json",
+    "makefile",
+    "markdown",
+    "shell",
+    "sql",
+    "toml",
+    "txt",
+    "typescript",
+    "unknown",
+    "yaml"
+  ],
+  "frameworks": [
+    "Flutter",
+    "GitHub Actions",
+    "GoRouter",
+    "Riverpod",
+    "Supabase"
+  ],
+  "files": [
+    {
+      "path": ".ckignore",
+      "language": "unknown",
+      "sizeLines": 136,
+      "fileCategory": "code"
+    },
+    {
+      "path": ".env.example",
+      "language": "config",
+      "sizeLines": 63,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".gitattributes",
+      "language": "unknown",
+      "sizeLines": 31,
+      "fileCategory": "code"
+    },
+    {
+      "path": ".github/workflows/supabase-keepalive.yml",
+      "language": "yaml",
+      "sizeLines": 24,
+      "fileCategory": "infra"
+    },
+    {
+      "path": ".metadata",
+      "language": "unknown",
+      "sizeLines": 39,
+      "fileCategory": "code"
+    },
+    {
+      "path": "AGENTS.md",
+      "language": "markdown",
+      "sizeLines": 18,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "analysis_options.yaml",
+      "language": "yaml",
+      "sizeLines": 14,
+      "fileCategory": "config"
+    },
+    {
+      "path": "build.yaml",
+      "language": "yaml",
+      "sizeLines": 7,
+      "fileCategory": "config"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "language": "markdown",
+      "sizeLines": 25,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "CLAUDE.md",
+      "language": "markdown",
+      "sizeLines": 194,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "dart_test.yaml",
+      "language": "yaml",
+      "sizeLines": 7,
+      "fileCategory": "config"
+    },
+    {
+      "path": "devtools_options.yaml",
+      "language": "yaml",
+      "sizeLines": 3,
+      "fileCategory": "config"
+    },
+    {
+      "path": "lib/core/AGENTS.md",
+      "language": "markdown",
+      "sizeLines": 45,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "lib/core/config/env_config.dart",
+      "language": "dart",
+      "sizeLines": 56,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/core/config/sentry_config.dart",
+      "language": "dart",
+      "sizeLines": 26,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/core/constants/ai_models.dart",
+      "language": "dart",
+      "sizeLines": 245,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/core/constants/app_constants.dart",
+      "language": "dart",
+      "sizeLines": 37,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/core/constants/generation_constants.dart",
+      "language": "dart",
+      "sizeLines": 12,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/core/design_system/app_animations.dart",
+      "language": "dart",
+      "sizeLines": 126,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/core/design_system/app_dimensions.dart",
+      "language": "dart",
+      "sizeLines": 24,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/core/design_system/app_gradients.dart",
+      "language": "dart",
+      "sizeLines": 91,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/core/design_system/app_shadows.dart",
+      "language": "dart",
+      "sizeLines": 95,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/core/design_system/app_spacing.dart",
+      "language": "dart",
+      "sizeLines": 19,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/core/design_system/app_typography.dart",
+      "language": "dart",
+      "sizeLines": 172,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/core/exceptions/app_exception.dart",
+      "language": "dart",
+      "sizeLines": 30,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/core/exceptions/app_exception.freezed.dart",
+      "language": "dart",
+      "sizeLines": 1218,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/core/providers/connectivity_provider.dart",
+      "language": "dart",
+      "sizeLines": 15,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/core/providers/connectivity_provider.g.dart",
+      "language": "dart",
+      "sizeLines": 27,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/core/providers/supabase_provider.dart",
+      "language": "dart",
+      "sizeLines": 8,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/core/providers/supabase_provider.g.dart",
+      "language": "dart",
+      "sizeLines": 27,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/core/services/att_service.dart",
+      "language": "dart",
+      "sizeLines": 54,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/core/services/content_moderation_service.dart",
+      "language": "dart",
+      "sizeLines": 71,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/core/services/haptic_service.dart",
+      "language": "dart",
+      "sizeLines": 69,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/core/services/image_upload_service.dart",
+      "language": "dart",
+      "sizeLines": 77,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/core/services/image_upload_service.g.dart",
+      "language": "dart",
+      "sizeLines": 29,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/core/services/rewarded_ad_service.dart",
+      "language": "dart",
+      "sizeLines": 137,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/core/services/rewarded_ad_service.g.dart",
+      "language": "dart",
+      "sizeLines": 28,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/core/services/storage_url_service.dart",
+      "language": "dart",
+      "sizeLines": 119,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/core/services/storage_url_service.g.dart",
+      "language": "dart",
+      "sizeLines": 334,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/core/state/auth_view_model_provider.dart",
+      "language": "dart",
+      "sizeLines": 2,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/core/state/credit_balance_state_provider.dart",
+      "language": "dart",
+      "sizeLines": 2,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/core/state/subscription_state_provider.dart",
+      "language": "dart",
+      "sizeLines": 2,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/core/state/user_scoped_providers.dart",
+      "language": "dart",
+      "sizeLines": 24,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/core/utils/app_exception_mapper.dart",
+      "language": "dart",
+      "sizeLines": 97,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/core/utils/date_time_utils.dart",
+      "language": "dart",
+      "sizeLines": 11,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/core/utils/email_validator.dart",
+      "language": "dart",
+      "sizeLines": 23,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/core/utils/prompt_validator.dart",
+      "language": "dart",
+      "sizeLines": 26,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/core/utils/retry.dart",
+      "language": "dart",
+      "sizeLines": 45,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/core/utils/subagent_smoke_codegen.dart",
+      "language": "dart",
+      "sizeLines": 1,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/core/utils/url_launcher_utils.dart",
+      "language": "dart",
+      "sizeLines": 88,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/core/utils/watermark_util.dart",
+      "language": "dart",
+      "sizeLines": 84,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/core/widgets/bottom_sheet_body.dart",
+      "language": "dart",
+      "sizeLines": 29,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/AGENTS.md",
+      "language": "markdown",
+      "sizeLines": 49,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "lib/features/auth/data/repositories/auth_repository.dart",
+      "language": "dart",
+      "sizeLines": 264,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/auth/data/repositories/auth_repository.g.dart",
+      "language": "dart",
+      "sizeLines": 27,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/auth/domain/entities/user_model.dart",
+      "language": "dart",
+      "sizeLines": 60,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/auth/domain/entities/user_model.freezed.dart",
+      "language": "dart",
+      "sizeLines": 334,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/auth/domain/entities/user_model.g.dart",
+      "language": "dart",
+      "sizeLines": 35,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/auth/domain/providers/auth_repository_provider.dart",
+      "language": "dart",
+      "sizeLines": 2,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/auth/domain/providers/onboarding_provider.dart",
+      "language": "dart",
+      "sizeLines": 21,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/auth/domain/providers/onboarding_provider.g.dart",
+      "language": "dart",
+      "sizeLines": 30,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/auth/domain/repositories/i_auth_repository.dart",
+      "language": "dart",
+      "sizeLines": 28,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/auth/presentation/screens/forgot_password_screen.dart",
+      "language": "dart",
+      "sizeLines": 152,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/auth/presentation/screens/login_screen.dart",
+      "language": "dart",
+      "sizeLines": 234,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/auth/presentation/screens/onboarding_screen.dart",
+      "language": "dart",
+      "sizeLines": 290,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/auth/presentation/screens/register_screen.dart",
+      "language": "dart",
+      "sizeLines": 254,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/auth/presentation/screens/splash_screen.dart",
+      "language": "dart",
+      "sizeLines": 211,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/auth/presentation/state/auth_state.dart",
+      "language": "dart",
+      "sizeLines": 14,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/auth/presentation/state/auth_state.freezed.dart",
+      "language": "dart",
+      "sizeLines": 807,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/auth/presentation/view_models/auth_view_model.dart",
+      "language": "dart",
+      "sizeLines": 310,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/auth/presentation/view_models/auth_view_model.g.dart",
+      "language": "dart",
+      "sizeLines": 26,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/auth/presentation/widgets/social_login_buttons.dart",
+      "language": "dart",
+      "sizeLines": 90,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/create/domain/entities/create_form_state.dart",
+      "language": "dart",
+      "sizeLines": 56,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/create/domain/entities/create_form_state.freezed.dart",
+      "language": "dart",
+      "sizeLines": 282,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/create/presentation/create_screen.dart",
+      "language": "dart",
+      "sizeLines": 273,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/create/presentation/providers/create_form_provider.dart",
+      "language": "dart",
+      "sizeLines": 65,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/create/presentation/providers/create_form_provider.g.dart",
+      "language": "dart",
+      "sizeLines": 27,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/create/presentation/view_models/create_view_model.dart",
+      "language": "dart",
+      "sizeLines": 190,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/create/presentation/view_models/create_view_model.g.dart",
+      "language": "dart",
+      "sizeLines": 30,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/create/presentation/widgets/aspect_ratio_selector.dart",
+      "language": "dart",
+      "sizeLines": 46,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/create/presentation/widgets/auth_gate_sheet.dart",
+      "language": "dart",
+      "sizeLines": 58,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/create/presentation/widgets/credit_balance_chip.dart",
+      "language": "dart",
+      "sizeLines": 49,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/create/presentation/widgets/generation_progress_overlay.dart",
+      "language": "dart",
+      "sizeLines": 67,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/create/presentation/widgets/generation_starting_overlay.dart",
+      "language": "dart",
+      "sizeLines": 34,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/create/presentation/widgets/model_selector.dart",
+      "language": "dart",
+      "sizeLines": 25,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/create/presentation/widgets/prompt_input_field.dart",
+      "language": "dart",
+      "sizeLines": 72,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/credits/data/repositories/credit_repository.dart",
+      "language": "dart",
+      "sizeLines": 199,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/credits/data/repositories/credit_repository.g.dart",
+      "language": "dart",
+      "sizeLines": 27,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/credits/domain/entities/credit_balance.dart",
+      "language": "dart",
+      "sizeLines": 17,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/credits/domain/entities/credit_balance.freezed.dart",
+      "language": "dart",
+      "sizeLines": 226,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/credits/domain/entities/credit_balance.g.dart",
+      "language": "dart",
+      "sizeLines": 21,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/credits/domain/entities/credit_transaction.dart",
+      "language": "dart",
+      "sizeLines": 34,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/credits/domain/entities/credit_transaction.freezed.dart",
+      "language": "dart",
+      "sizeLines": 332,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/credits/domain/entities/credit_transaction.g.dart",
+      "language": "dart",
+      "sizeLines": 31,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/credits/domain/providers/credit_repository_provider.dart",
+      "language": "dart",
+      "sizeLines": 2,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/credits/domain/repositories/i_credit_repository.dart",
+      "language": "dart",
+      "sizeLines": 30,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/credits/presentation/providers/ad_reward_provider.dart",
+      "language": "dart",
+      "sizeLines": 72,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/credits/presentation/providers/ad_reward_provider.g.dart",
+      "language": "dart",
+      "sizeLines": 36,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/credits/presentation/providers/credit_balance_provider.dart",
+      "language": "dart",
+      "sizeLines": 17,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/credits/presentation/providers/credit_balance_provider.g.dart",
+      "language": "dart",
+      "sizeLines": 30,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/credits/presentation/providers/credit_history_provider.dart",
+      "language": "dart",
+      "sizeLines": 16,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/credits/presentation/providers/credit_history_provider.g.dart",
+      "language": "dart",
+      "sizeLines": 172,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/credits/presentation/screens/credit_history_screen.dart",
+      "language": "dart",
+      "sizeLines": 259,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/credits/presentation/widgets/insufficient_credits_sheet.dart",
+      "language": "dart",
+      "sizeLines": 228,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/credits/presentation/widgets/premium_model_sheet.dart",
+      "language": "dart",
+      "sizeLines": 54,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/gallery/data/repositories/gallery_repository_helpers.dart",
+      "language": "dart",
+      "sizeLines": 83,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/gallery/data/repositories/gallery_repository.dart",
+      "language": "dart",
+      "sizeLines": 363,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/gallery/data/repositories/gallery_repository.g.dart",
+      "language": "dart",
+      "sizeLines": 28,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/gallery/data/services/gallery_cache_service.dart",
+      "language": "dart",
+      "sizeLines": 94,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/gallery/data/services/gallery_cache_service.g.dart",
+      "language": "dart",
+      "sizeLines": 29,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/gallery/domain/entities/gallery_item.dart",
+      "language": "dart",
+      "sizeLines": 39,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/gallery/domain/entities/gallery_item.freezed.dart",
+      "language": "dart",
+      "sizeLines": 431,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/gallery/domain/entities/gallery_item.g.dart",
+      "language": "dart",
+      "sizeLines": 51,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/gallery/domain/providers/gallery_repository_provider.dart",
+      "language": "dart",
+      "sizeLines": 2,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/gallery/domain/repositories/i_gallery_repository.dart",
+      "language": "dart",
+      "sizeLines": 43,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/gallery/presentation/constants/gallery_strings.dart",
+      "language": "dart",
+      "sizeLines": 8,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/gallery/presentation/pages/gallery_page.dart",
+      "language": "dart",
+      "sizeLines": 72,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/gallery/presentation/pages/image_viewer_action_helper.dart",
+      "language": "dart",
+      "sizeLines": 71,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/gallery/presentation/pages/image_viewer_page.dart",
+      "language": "dart",
+      "sizeLines": 320,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/gallery/presentation/providers/gallery_provider.dart",
+      "language": "dart",
+      "sizeLines": 86,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/gallery/presentation/providers/gallery_provider.g.dart",
+      "language": "dart",
+      "sizeLines": 49,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/gallery/presentation/widgets/empty_gallery_illustration.dart",
+      "language": "dart",
+      "sizeLines": 155,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/gallery/presentation/widgets/empty_gallery_state.dart",
+      "language": "dart",
+      "sizeLines": 139,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/gallery/presentation/widgets/failed_image_card.dart",
+      "language": "dart",
+      "sizeLines": 69,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/gallery/presentation/widgets/image_info_bottom_sheet.dart",
+      "language": "dart",
+      "sizeLines": 233,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/gallery/presentation/widgets/image_viewer_app_bar.dart",
+      "language": "dart",
+      "sizeLines": 98,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/gallery/presentation/widgets/image_viewer_image_page.dart",
+      "language": "dart",
+      "sizeLines": 192,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/gallery/presentation/widgets/image_viewer_page_indicator.dart",
+      "language": "dart",
+      "sizeLines": 41,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/gallery/presentation/widgets/image_viewer_swipe_dismiss.dart",
+      "language": "dart",
+      "sizeLines": 81,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/gallery/presentation/widgets/interactive_gallery_item.dart",
+      "language": "dart",
+      "sizeLines": 312,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/gallery/presentation/widgets/masonry_image_grid.dart",
+      "language": "dart",
+      "sizeLines": 183,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/gallery/presentation/widgets/shimmer_grid.dart",
+      "language": "dart",
+      "sizeLines": 53,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/settings/data/notifications_provider.dart",
+      "language": "dart",
+      "sizeLines": 39,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/settings/data/notifications_provider.g.dart",
+      "language": "dart",
+      "sizeLines": 27,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/settings/domain/providers/notifications_provider.dart",
+      "language": "dart",
+      "sizeLines": 2,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/settings/presentation/settings_screen.dart",
+      "language": "dart",
+      "sizeLines": 250,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/settings/presentation/widgets/settings_helpers.dart",
+      "language": "dart",
+      "sizeLines": 137,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/settings/presentation/widgets/settings_sections.dart",
+      "language": "dart",
+      "sizeLines": 294,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/settings/presentation/widgets/subscription_card.dart",
+      "language": "dart",
+      "sizeLines": 209,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/settings/presentation/widgets/theme_switcher.dart",
+      "language": "dart",
+      "sizeLines": 44,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/settings/presentation/widgets/user_profile_card.dart",
+      "language": "dart",
+      "sizeLines": 106,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/subscription/data/repositories/subscription_repository.dart",
+      "language": "dart",
+      "sizeLines": 201,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/subscription/data/repositories/subscription_repository.g.dart",
+      "language": "dart",
+      "sizeLines": 30,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/subscription/domain/entities/subscription_package.dart",
+      "language": "dart",
+      "sizeLines": 26,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/subscription/domain/entities/subscription_package.freezed.dart",
+      "language": "dart",
+      "sizeLines": 290,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/subscription/domain/entities/subscription_status.dart",
+      "language": "dart",
+      "sizeLines": 42,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/subscription/domain/entities/subscription_status.freezed.dart",
+      "language": "dart",
+      "sizeLines": 242,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/subscription/domain/entities/subscription_status.g.dart",
+      "language": "dart",
+      "sizeLines": 27,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/subscription/domain/providers/subscription_repository_provider.dart",
+      "language": "dart",
+      "sizeLines": 2,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/subscription/domain/repositories/i_subscription_repository.dart",
+      "language": "dart",
+      "sizeLines": 16,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/subscription/presentation/providers/subscription_provider.dart",
+      "language": "dart",
+      "sizeLines": 103,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/subscription/presentation/providers/subscription_provider.g.dart",
+      "language": "dart",
+      "sizeLines": 50,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/subscription/presentation/screens/paywall_screen.dart",
+      "language": "dart",
+      "sizeLines": 760,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/subscription/presentation/widgets/tier_comparison_card.dart",
+      "language": "dart",
+      "sizeLines": 154,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/template_engine/AGENTS.md",
+      "language": "markdown",
+      "sizeLines": 53,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "lib/features/template_engine/data/policies/credit_check_policy.dart",
+      "language": "dart",
+      "sizeLines": 32,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/template_engine/data/repositories/generation_repository.dart",
+      "language": "dart",
+      "sizeLines": 212,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/template_engine/data/repositories/generation_repository.g.dart",
+      "language": "dart",
+      "sizeLines": 29,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/template_engine/data/repositories/template_repository.dart",
+      "language": "dart",
+      "sizeLines": 153,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/template_engine/data/repositories/template_repository.g.dart",
+      "language": "dart",
+      "sizeLines": 29,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/template_engine/data/services/template_cache_service.dart",
+      "language": "dart",
+      "sizeLines": 97,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/template_engine/data/services/template_cache_service.g.dart",
+      "language": "dart",
+      "sizeLines": 29,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/template_engine/domain/entities/generation_job_model.dart",
+      "language": "dart",
+      "sizeLines": 45,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/template_engine/domain/entities/generation_job_model.freezed.dart",
+      "language": "dart",
+      "sizeLines": 461,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/template_engine/domain/entities/generation_job_model.g.dart",
+      "language": "dart",
+      "sizeLines": 57,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/template_engine/domain/entities/generation_options_model.dart",
+      "language": "dart",
+      "sizeLines": 22,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/template_engine/domain/entities/generation_options_model.freezed.dart",
+      "language": "dart",
+      "sizeLines": 288,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/template_engine/domain/entities/generation_options_model.g.dart",
+      "language": "dart",
+      "sizeLines": 27,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/template_engine/domain/entities/input_field_model.dart",
+      "language": "dart",
+      "sizeLines": 23,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/template_engine/domain/entities/input_field_model.freezed.dart",
+      "language": "dart",
+      "sizeLines": 370,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/template_engine/domain/entities/input_field_model.g.dart",
+      "language": "dart",
+      "sizeLines": 37,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/template_engine/domain/entities/template_model.dart",
+      "language": "dart",
+      "sizeLines": 27,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/template_engine/domain/entities/template_model.freezed.dart",
+      "language": "dart",
+      "sizeLines": 406,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/template_engine/domain/entities/template_model.g.dart",
+      "language": "dart",
+      "sizeLines": 37,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/template_engine/domain/policies/generation_policy.dart",
+      "language": "dart",
+      "sizeLines": 28,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/template_engine/domain/policies/generation_policy.freezed.dart",
+      "language": "dart",
+      "sizeLines": 364,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/template_engine/domain/providers/generation_repository_provider.dart",
+      "language": "dart",
+      "sizeLines": 2,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/template_engine/domain/providers/template_repository_provider.dart",
+      "language": "dart",
+      "sizeLines": 2,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/template_engine/domain/repositories/i_generation_repository.dart",
+      "language": "dart",
+      "sizeLines": 21,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/template_engine/domain/repositories/i_template_repository.dart",
+      "language": "dart",
+      "sizeLines": 9,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/template_engine/presentation/helpers/generation_job_manager.dart",
+      "language": "dart",
+      "sizeLines": 133,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/template_engine/presentation/providers/generation_options_provider.dart",
+      "language": "dart",
+      "sizeLines": 36,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/template_engine/presentation/providers/generation_options_provider.g.dart",
+      "language": "dart",
+      "sizeLines": 29,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/template_engine/presentation/providers/generation_policy_provider.dart",
+      "language": "dart",
+      "sizeLines": 11,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/template_engine/presentation/providers/generation_policy_provider.g.dart",
+      "language": "dart",
+      "sizeLines": 28,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/template_engine/presentation/providers/template_provider.dart",
+      "language": "dart",
+      "sizeLines": 18,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/template_engine/presentation/providers/template_provider.g.dart",
+      "language": "dart",
+      "sizeLines": 294,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/template_engine/presentation/screens/home_screen.dart",
+      "language": "dart",
+      "sizeLines": 259,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/template_engine/presentation/screens/template_detail_screen.dart",
+      "language": "dart",
+      "sizeLines": 407,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/template_engine/presentation/view_models/generation_view_model.dart",
+      "language": "dart",
+      "sizeLines": 110,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/template_engine/presentation/view_models/generation_view_model.g.dart",
+      "language": "dart",
+      "sizeLines": 31,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/template_engine/presentation/widgets/generation_progress_sections.dart",
+      "language": "dart",
+      "sizeLines": 255,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/template_engine/presentation/widgets/generation_progress.dart",
+      "language": "dart",
+      "sizeLines": 161,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/template_engine/presentation/widgets/home_screen_widgets.dart",
+      "language": "dart",
+      "sizeLines": 123,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/template_engine/presentation/widgets/input_field_builder.dart",
+      "language": "dart",
+      "sizeLines": 150,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/template_engine/presentation/widgets/template_card.dart",
+      "language": "dart",
+      "sizeLines": 207,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/template_engine/presentation/widgets/template_detail_widgets.dart",
+      "language": "dart",
+      "sizeLines": 131,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/features/template_engine/presentation/widgets/template_grid.dart",
+      "language": "dart",
+      "sizeLines": 262,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/main.dart",
+      "language": "dart",
+      "sizeLines": 149,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/routing/app_router.dart",
+      "language": "dart",
+      "sizeLines": 67,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/routing/app_router.g.dart",
+      "language": "dart",
+      "sizeLines": 27,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/routing/routes/app_routes.dart",
+      "language": "dart",
+      "sizeLines": 199,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/routing/routes/app_routes.g.dart",
+      "language": "dart",
+      "sizeLines": 301,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/shared/widgets/animated_retry_button.dart",
+      "language": "dart",
+      "sizeLines": 71,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/shared/widgets/app_snackbar.dart",
+      "language": "dart",
+      "sizeLines": 231,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/shared/widgets/aspect_ratio_selector.dart",
+      "language": "dart",
+      "sizeLines": 84,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/shared/widgets/error_illustration.dart",
+      "language": "dart",
+      "sizeLines": 70,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/shared/widgets/error_page.dart",
+      "language": "dart",
+      "sizeLines": 35,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/shared/widgets/error_state_widget.dart",
+      "language": "dart",
+      "sizeLines": 221,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/shared/widgets/gradient_button.dart",
+      "language": "dart",
+      "sizeLines": 70,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/shared/widgets/image_count_dropdown.dart",
+      "language": "dart",
+      "sizeLines": 42,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/shared/widgets/image_input_widget.dart",
+      "language": "dart",
+      "sizeLines": 214,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/shared/widgets/loading_state_widget.dart",
+      "language": "dart",
+      "sizeLines": 272,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/shared/widgets/main_shell.dart",
+      "language": "dart",
+      "sizeLines": 89,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/shared/widgets/model_selector.dart",
+      "language": "dart",
+      "sizeLines": 185,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/shared/widgets/offline_banner.dart",
+      "language": "dart",
+      "sizeLines": 194,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/shared/widgets/output_format_toggle.dart",
+      "language": "dart",
+      "sizeLines": 66,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/shared/widgets/retry_text_button.dart",
+      "language": "dart",
+      "sizeLines": 42,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/shared/widgets/section_header.dart",
+      "language": "dart",
+      "sizeLines": 34,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/shared/widgets/watermark_overlay.dart",
+      "language": "dart",
+      "sizeLines": 41,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/theme/app_button_themes.dart",
+      "language": "dart",
+      "sizeLines": 81,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/theme/app_colors.dart",
+      "language": "dart",
+      "sizeLines": 130,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/theme/app_component_themes.dart",
+      "language": "dart",
+      "sizeLines": 211,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/theme/app_theme.dart",
+      "language": "dart",
+      "sizeLines": 193,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/theme/theme_provider.dart",
+      "language": "dart",
+      "sizeLines": 29,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/theme/theme_provider.g.dart",
+      "language": "dart",
+      "sizeLines": 26,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/utils/logger_service.dart",
+      "language": "dart",
+      "sizeLines": 26,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lint_baseline.txt",
+      "language": "txt",
+      "sizeLines": 41,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "Makefile",
+      "language": "makefile",
+      "sizeLines": 88,
+      "fileCategory": "infra"
+    },
+    {
+      "path": "model_capabilities.yaml",
+      "language": "yaml",
+      "sizeLines": 108,
+      "fileCategory": "config"
+    },
+    {
+      "path": "pubspec.yaml",
+      "language": "yaml",
+      "sizeLines": 82,
+      "fileCategory": "config"
+    },
+    {
+      "path": "README.md",
+      "language": "markdown",
+      "sizeLines": 238,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "security_check.sh",
+      "language": "shell",
+      "sizeLines": 24,
+      "fileCategory": "script"
+    },
+    {
+      "path": "supabase/AGENTS.md",
+      "language": "markdown",
+      "sizeLines": 57,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "supabase/config.toml",
+      "language": "toml",
+      "sizeLines": 404,
+      "fileCategory": "config"
+    },
+    {
+      "path": "supabase/functions/_shared/cors.ts",
+      "language": "typescript",
+      "sizeLines": 29,
+      "fileCategory": "code"
+    },
+    {
+      "path": "supabase/functions/_shared/credit_logic_test.ts",
+      "language": "typescript",
+      "sizeLines": 105,
+      "fileCategory": "code"
+    },
+    {
+      "path": "supabase/functions/_shared/credit_logic.ts",
+      "language": "typescript",
+      "sizeLines": 83,
+      "fileCategory": "code"
+    },
+    {
+      "path": "supabase/functions/_shared/model_config_test.ts",
+      "language": "typescript",
+      "sizeLines": 134,
+      "fileCategory": "code"
+    },
+    {
+      "path": "supabase/functions/_shared/model_config.ts",
+      "language": "typescript",
+      "sizeLines": 59,
+      "fileCategory": "code"
+    },
+    {
+      "path": "supabase/functions/delete-account/index.ts",
+      "language": "typescript",
+      "sizeLines": 139,
+      "fileCategory": "code"
+    },
+    {
+      "path": "supabase/functions/deno.json",
+      "language": "json",
+      "sizeLines": 6,
+      "fileCategory": "config"
+    },
+    {
+      "path": "supabase/functions/generate-image/.npmrc",
+      "language": "unknown",
+      "sizeLines": 3,
+      "fileCategory": "code"
+    },
+    {
+      "path": "supabase/functions/generate-image/deno.json",
+      "language": "json",
+      "sizeLines": 3,
+      "fileCategory": "config"
+    },
+    {
+      "path": "supabase/functions/generate-image/index.ts",
+      "language": "typescript",
+      "sizeLines": 875,
+      "fileCategory": "code"
+    },
+    {
+      "path": "supabase/functions/revenuecat-webhook/index.ts",
+      "language": "typescript",
+      "sizeLines": 411,
+      "fileCategory": "code"
+    },
+    {
+      "path": "supabase/functions/reward-ad/index.ts",
+      "language": "typescript",
+      "sizeLines": 519,
+      "fileCategory": "code"
+    },
+    {
+      "path": "supabase/functions/sync-subscription/index.ts",
+      "language": "typescript",
+      "sizeLines": 258,
+      "fileCategory": "code"
+    },
+    {
+      "path": "supabase/functions/verify-google-purchase/index.ts",
+      "language": "typescript",
+      "sizeLines": 241,
+      "fileCategory": "code"
+    },
+    {
+      "path": "supabase/migrations/20260127000000_create_templates_table.sql",
+      "language": "sql",
+      "sizeLines": 47,
+      "fileCategory": "data"
+    },
+    {
+      "path": "supabase/migrations/20260128000000_create_profiles_table.sql",
+      "language": "sql",
+      "sizeLines": 49,
+      "fileCategory": "data"
+    },
+    {
+      "path": "supabase/migrations/20260128094706_create_admin_user.sql",
+      "language": "sql",
+      "sizeLines": 57,
+      "fileCategory": "data"
+    },
+    {
+      "path": "supabase/migrations/20260128115551_add_deleted_at_and_storage_bucket.sql",
+      "language": "sql",
+      "sizeLines": 82,
+      "fileCategory": "data"
+    },
+    {
+      "path": "supabase/migrations/20260128130000_add_25_templates.sql",
+      "language": "sql",
+      "sizeLines": 351,
+      "fileCategory": "data"
+    },
+    {
+      "path": "supabase/migrations/20260218000000_create_credit_system.sql",
+      "language": "sql",
+      "sizeLines": 176,
+      "fileCategory": "data"
+    },
+    {
+      "path": "supabase/migrations/20260218100000_create_reward_ad_function.sql",
+      "language": "sql",
+      "sizeLines": 61,
+      "fileCategory": "data"
+    },
+    {
+      "path": "supabase/migrations/20260219000000_add_subscription_support.sql",
+      "language": "sql",
+      "sizeLines": 70,
+      "fileCategory": "data"
+    },
+    {
+      "path": "supabase/migrations/20260219000001_restrict_profiles_update_rls.sql",
+      "language": "sql",
+      "sizeLines": 28,
+      "fileCategory": "data"
+    },
+    {
+      "path": "supabase/migrations/20260220160000_create_pending_ad_rewards.sql",
+      "language": "sql",
+      "sizeLines": 141,
+      "fileCategory": "data"
+    },
+    {
+      "path": "supabase/migrations/20260220170000_create_rate_limit.sql",
+      "language": "sql",
+      "sizeLines": 85,
+      "fileCategory": "data"
+    },
+    {
+      "path": "supabase/migrations/20260220180000_concurrency_locks.sql",
+      "language": "sql",
+      "sizeLines": 9,
+      "fileCategory": "data"
+    },
+    {
+      "path": "supabase/migrations/20260221000000_fix_subscription_trigger.sql",
+      "language": "sql",
+      "sizeLines": 29,
+      "fileCategory": "data"
+    },
+    {
+      "path": "supabase/migrations/20260221200000_sync_remote_schema.sql",
+      "language": "sql",
+      "sizeLines": 161,
+      "fileCategory": "data"
+    },
+    {
+      "path": "supabase/migrations/20260222_add_model_id_to_generation_jobs.sql",
+      "language": "sql",
+      "sizeLines": 6,
+      "fileCategory": "data"
+    },
+    {
+      "path": "supabase/migrations/20260222130000_add_input_image_paths.sql",
+      "language": "sql",
+      "sizeLines": 9,
+      "fileCategory": "data"
+    },
+    {
+      "path": "supabase/migrations/20260222140000_add_model_id_to_generation_jobs.sql",
+      "language": "sql",
+      "sizeLines": 6,
+      "fileCategory": "data"
+    },
+    {
+      "path": "supabase/migrations/20260223000000_add_nanobananaprompt_templates.sql",
+      "language": "sql",
+      "sizeLines": 260,
+      "fileCategory": "data"
+    },
+    {
+      "path": "supabase/migrations/20260304000001_fix_critical_security.sql",
+      "language": "sql",
+      "sizeLines": 119,
+      "fileCategory": "data"
+    },
+    {
+      "path": "supabase/migrations/20260304000002_fix_function_signatures.sql",
+      "language": "sql",
+      "sizeLines": 305,
+      "fileCategory": "data"
+    },
+    {
+      "path": "supabase/migrations/20260304000003_fix_medium_issues.sql",
+      "language": "sql",
+      "sizeLines": 45,
+      "fileCategory": "data"
+    },
+    {
+      "path": "supabase/migrations/20260304000004_fix_revoke_public_and_index.sql",
+      "language": "sql",
+      "sizeLines": 20,
+      "fileCategory": "data"
+    },
+    {
+      "path": "supabase/migrations/20260304100000_fix_credit_idempotency_and_rc_index.sql",
+      "language": "sql",
+      "sizeLines": 56,
+      "fileCategory": "data"
+    },
+    {
+      "path": "supabase/migrations/20260315120000_fix_grant_credits_advisory_lock_and_recent_guard.sql",
+      "language": "sql",
+      "sizeLines": 84,
+      "fileCategory": "data"
+    },
+    {
+      "path": "supabase/migrations/20260315130000_fix_update_subscription_status_security.sql",
+      "language": "sql",
+      "sizeLines": 22,
+      "fileCategory": "data"
+    },
+    {
+      "path": "supabase/migrations/20260403175956_revoke_public_from_security_definer.sql",
+      "language": "sql",
+      "sizeLines": 17,
+      "fileCategory": "data"
+    },
+    {
+      "path": "supabase/migrations/20260404174417_revoke_public_from_security_definer.sql",
+      "language": "sql",
+      "sizeLines": 5,
+      "fileCategory": "data"
+    },
+    {
+      "path": "TODOS.md",
+      "language": "markdown",
+      "sizeLines": 38,
+      "fileCategory": "docs"
+    }
+  ],
+  "totalFiles": 277,
+  "filteredByIgnore": 280,
+  "estimatedComplexity": "large",
+  "importMap": {
+    ".ckignore": [],
+    ".env.example": [],
+    ".gitattributes": [],
+    ".github/workflows/supabase-keepalive.yml": [],
+    ".metadata": [],
+    "AGENTS.md": [],
+    "analysis_options.yaml": [],
+    "build.yaml": [],
+    "CHANGELOG.md": [],
+    "CLAUDE.md": [],
+    "dart_test.yaml": [],
+    "devtools_options.yaml": [],
+    "lib/core/AGENTS.md": [],
+    "lib/core/config/env_config.dart": [],
+    "lib/core/config/sentry_config.dart": [],
+    "lib/core/constants/ai_models.dart": [],
+    "lib/core/constants/app_constants.dart": [],
+    "lib/core/constants/generation_constants.dart": [],
+    "lib/core/design_system/app_animations.dart": [],
+    "lib/core/design_system/app_dimensions.dart": [],
+    "lib/core/design_system/app_gradients.dart": [],
+    "lib/core/design_system/app_shadows.dart": [],
+    "lib/core/design_system/app_spacing.dart": [],
+    "lib/core/design_system/app_typography.dart": [],
+    "lib/core/exceptions/app_exception.dart": [],
+    "lib/core/exceptions/app_exception.freezed.dart": [],
+    "lib/core/providers/connectivity_provider.dart": [],
+    "lib/core/providers/connectivity_provider.g.dart": [],
+    "lib/core/providers/supabase_provider.dart": [],
+    "lib/core/providers/supabase_provider.g.dart": [],
+    "lib/core/services/att_service.dart": [],
+    "lib/core/services/content_moderation_service.dart": [],
+    "lib/core/services/haptic_service.dart": [],
+    "lib/core/services/image_upload_service.dart": [],
+    "lib/core/services/image_upload_service.g.dart": [],
+    "lib/core/services/rewarded_ad_service.dart": [],
+    "lib/core/services/rewarded_ad_service.g.dart": [],
+    "lib/core/services/storage_url_service.dart": [],
+    "lib/core/services/storage_url_service.g.dart": [],
+    "lib/core/state/auth_view_model_provider.dart": [],
+    "lib/core/state/credit_balance_state_provider.dart": [],
+    "lib/core/state/subscription_state_provider.dart": [],
+    "lib/core/state/user_scoped_providers.dart": [],
+    "lib/core/utils/app_exception_mapper.dart": [],
+    "lib/core/utils/date_time_utils.dart": [],
+    "lib/core/utils/email_validator.dart": [],
+    "lib/core/utils/prompt_validator.dart": [],
+    "lib/core/utils/retry.dart": [],
+    "lib/core/utils/subagent_smoke_codegen.dart": [],
+    "lib/core/utils/url_launcher_utils.dart": [],
+    "lib/core/utils/watermark_util.dart": [],
+    "lib/core/widgets/bottom_sheet_body.dart": [],
+    "lib/features/AGENTS.md": [],
+    "lib/features/auth/data/repositories/auth_repository.dart": [],
+    "lib/features/auth/data/repositories/auth_repository.g.dart": [],
+    "lib/features/auth/domain/entities/user_model.dart": [],
+    "lib/features/auth/domain/entities/user_model.freezed.dart": [],
+    "lib/features/auth/domain/entities/user_model.g.dart": [],
+    "lib/features/auth/domain/providers/auth_repository_provider.dart": [],
+    "lib/features/auth/domain/providers/onboarding_provider.dart": [],
+    "lib/features/auth/domain/providers/onboarding_provider.g.dart": [],
+    "lib/features/auth/domain/repositories/i_auth_repository.dart": [],
+    "lib/features/auth/presentation/screens/forgot_password_screen.dart": [],
+    "lib/features/auth/presentation/screens/login_screen.dart": [],
+    "lib/features/auth/presentation/screens/onboarding_screen.dart": [],
+    "lib/features/auth/presentation/screens/register_screen.dart": [],
+    "lib/features/auth/presentation/screens/splash_screen.dart": [],
+    "lib/features/auth/presentation/state/auth_state.dart": [],
+    "lib/features/auth/presentation/state/auth_state.freezed.dart": [],
+    "lib/features/auth/presentation/view_models/auth_view_model.dart": [],
+    "lib/features/auth/presentation/view_models/auth_view_model.g.dart": [],
+    "lib/features/auth/presentation/widgets/social_login_buttons.dart": [],
+    "lib/features/create/domain/entities/create_form_state.dart": [],
+    "lib/features/create/domain/entities/create_form_state.freezed.dart": [],
+    "lib/features/create/presentation/create_screen.dart": [],
+    "lib/features/create/presentation/providers/create_form_provider.dart": [],
+    "lib/features/create/presentation/providers/create_form_provider.g.dart": [],
+    "lib/features/create/presentation/view_models/create_view_model.dart": [],
+    "lib/features/create/presentation/view_models/create_view_model.g.dart": [],
+    "lib/features/create/presentation/widgets/aspect_ratio_selector.dart": [],
+    "lib/features/create/presentation/widgets/auth_gate_sheet.dart": [],
+    "lib/features/create/presentation/widgets/credit_balance_chip.dart": [],
+    "lib/features/create/presentation/widgets/generation_progress_overlay.dart": [],
+    "lib/features/create/presentation/widgets/generation_starting_overlay.dart": [],
+    "lib/features/create/presentation/widgets/model_selector.dart": [],
+    "lib/features/create/presentation/widgets/prompt_input_field.dart": [],
+    "lib/features/credits/data/repositories/credit_repository.dart": [],
+    "lib/features/credits/data/repositories/credit_repository.g.dart": [],
+    "lib/features/credits/domain/entities/credit_balance.dart": [],
+    "lib/features/credits/domain/entities/credit_balance.freezed.dart": [],
+    "lib/features/credits/domain/entities/credit_balance.g.dart": [],
+    "lib/features/credits/domain/entities/credit_transaction.dart": [],
+    "lib/features/credits/domain/entities/credit_transaction.freezed.dart": [],
+    "lib/features/credits/domain/entities/credit_transaction.g.dart": [],
+    "lib/features/credits/domain/providers/credit_repository_provider.dart": [],
+    "lib/features/credits/domain/repositories/i_credit_repository.dart": [],
+    "lib/features/credits/presentation/providers/ad_reward_provider.dart": [],
+    "lib/features/credits/presentation/providers/ad_reward_provider.g.dart": [],
+    "lib/features/credits/presentation/providers/credit_balance_provider.dart": [],
+    "lib/features/credits/presentation/providers/credit_balance_provider.g.dart": [],
+    "lib/features/credits/presentation/providers/credit_history_provider.dart": [],
+    "lib/features/credits/presentation/providers/credit_history_provider.g.dart": [],
+    "lib/features/credits/presentation/screens/credit_history_screen.dart": [],
+    "lib/features/credits/presentation/widgets/insufficient_credits_sheet.dart": [],
+    "lib/features/credits/presentation/widgets/premium_model_sheet.dart": [],
+    "lib/features/gallery/data/repositories/gallery_repository_helpers.dart": [],
+    "lib/features/gallery/data/repositories/gallery_repository.dart": [],
+    "lib/features/gallery/data/repositories/gallery_repository.g.dart": [],
+    "lib/features/gallery/data/services/gallery_cache_service.dart": [],
+    "lib/features/gallery/data/services/gallery_cache_service.g.dart": [],
+    "lib/features/gallery/domain/entities/gallery_item.dart": [],
+    "lib/features/gallery/domain/entities/gallery_item.freezed.dart": [],
+    "lib/features/gallery/domain/entities/gallery_item.g.dart": [],
+    "lib/features/gallery/domain/providers/gallery_repository_provider.dart": [],
+    "lib/features/gallery/domain/repositories/i_gallery_repository.dart": [],
+    "lib/features/gallery/presentation/constants/gallery_strings.dart": [],
+    "lib/features/gallery/presentation/pages/gallery_page.dart": [],
+    "lib/features/gallery/presentation/pages/image_viewer_action_helper.dart": [],
+    "lib/features/gallery/presentation/pages/image_viewer_page.dart": [],
+    "lib/features/gallery/presentation/providers/gallery_provider.dart": [],
+    "lib/features/gallery/presentation/providers/gallery_provider.g.dart": [],
+    "lib/features/gallery/presentation/widgets/empty_gallery_illustration.dart": [],
+    "lib/features/gallery/presentation/widgets/empty_gallery_state.dart": [],
+    "lib/features/gallery/presentation/widgets/failed_image_card.dart": [],
+    "lib/features/gallery/presentation/widgets/image_info_bottom_sheet.dart": [],
+    "lib/features/gallery/presentation/widgets/image_viewer_app_bar.dart": [],
+    "lib/features/gallery/presentation/widgets/image_viewer_image_page.dart": [],
+    "lib/features/gallery/presentation/widgets/image_viewer_page_indicator.dart": [],
+    "lib/features/gallery/presentation/widgets/image_viewer_swipe_dismiss.dart": [],
+    "lib/features/gallery/presentation/widgets/interactive_gallery_item.dart": [],
+    "lib/features/gallery/presentation/widgets/masonry_image_grid.dart": [],
+    "lib/features/gallery/presentation/widgets/shimmer_grid.dart": [],
+    "lib/features/settings/data/notifications_provider.dart": [],
+    "lib/features/settings/data/notifications_provider.g.dart": [],
+    "lib/features/settings/domain/providers/notifications_provider.dart": [],
+    "lib/features/settings/presentation/settings_screen.dart": [],
+    "lib/features/settings/presentation/widgets/settings_helpers.dart": [],
+    "lib/features/settings/presentation/widgets/settings_sections.dart": [],
+    "lib/features/settings/presentation/widgets/subscription_card.dart": [],
+    "lib/features/settings/presentation/widgets/theme_switcher.dart": [],
+    "lib/features/settings/presentation/widgets/user_profile_card.dart": [],
+    "lib/features/subscription/data/repositories/subscription_repository.dart": [],
+    "lib/features/subscription/data/repositories/subscription_repository.g.dart": [],
+    "lib/features/subscription/domain/entities/subscription_package.dart": [],
+    "lib/features/subscription/domain/entities/subscription_package.freezed.dart": [],
+    "lib/features/subscription/domain/entities/subscription_status.dart": [],
+    "lib/features/subscription/domain/entities/subscription_status.freezed.dart": [],
+    "lib/features/subscription/domain/entities/subscription_status.g.dart": [],
+    "lib/features/subscription/domain/providers/subscription_repository_provider.dart": [],
+    "lib/features/subscription/domain/repositories/i_subscription_repository.dart": [],
+    "lib/features/subscription/presentation/providers/subscription_provider.dart": [],
+    "lib/features/subscription/presentation/providers/subscription_provider.g.dart": [],
+    "lib/features/subscription/presentation/screens/paywall_screen.dart": [],
+    "lib/features/subscription/presentation/widgets/tier_comparison_card.dart": [],
+    "lib/features/template_engine/AGENTS.md": [],
+    "lib/features/template_engine/data/policies/credit_check_policy.dart": [],
+    "lib/features/template_engine/data/repositories/generation_repository.dart": [],
+    "lib/features/template_engine/data/repositories/generation_repository.g.dart": [],
+    "lib/features/template_engine/data/repositories/template_repository.dart": [],
+    "lib/features/template_engine/data/repositories/template_repository.g.dart": [],
+    "lib/features/template_engine/data/services/template_cache_service.dart": [],
+    "lib/features/template_engine/data/services/template_cache_service.g.dart": [],
+    "lib/features/template_engine/domain/entities/generation_job_model.dart": [],
+    "lib/features/template_engine/domain/entities/generation_job_model.freezed.dart": [],
+    "lib/features/template_engine/domain/entities/generation_job_model.g.dart": [],
+    "lib/features/template_engine/domain/entities/generation_options_model.dart": [],
+    "lib/features/template_engine/domain/entities/generation_options_model.freezed.dart": [],
+    "lib/features/template_engine/domain/entities/generation_options_model.g.dart": [],
+    "lib/features/template_engine/domain/entities/input_field_model.dart": [],
+    "lib/features/template_engine/domain/entities/input_field_model.freezed.dart": [],
+    "lib/features/template_engine/domain/entities/input_field_model.g.dart": [],
+    "lib/features/template_engine/domain/entities/template_model.dart": [],
+    "lib/features/template_engine/domain/entities/template_model.freezed.dart": [],
+    "lib/features/template_engine/domain/entities/template_model.g.dart": [],
+    "lib/features/template_engine/domain/policies/generation_policy.dart": [],
+    "lib/features/template_engine/domain/policies/generation_policy.freezed.dart": [],
+    "lib/features/template_engine/domain/providers/generation_repository_provider.dart": [],
+    "lib/features/template_engine/domain/providers/template_repository_provider.dart": [],
+    "lib/features/template_engine/domain/repositories/i_generation_repository.dart": [],
+    "lib/features/template_engine/domain/repositories/i_template_repository.dart": [],
+    "lib/features/template_engine/presentation/helpers/generation_job_manager.dart": [],
+    "lib/features/template_engine/presentation/providers/generation_options_provider.dart": [],
+    "lib/features/template_engine/presentation/providers/generation_options_provider.g.dart": [],
+    "lib/features/template_engine/presentation/providers/generation_policy_provider.dart": [],
+    "lib/features/template_engine/presentation/providers/generation_policy_provider.g.dart": [],
+    "lib/features/template_engine/presentation/providers/template_provider.dart": [],
+    "lib/features/template_engine/presentation/providers/template_provider.g.dart": [],
+    "lib/features/template_engine/presentation/screens/home_screen.dart": [],
+    "lib/features/template_engine/presentation/screens/template_detail_screen.dart": [],
+    "lib/features/template_engine/presentation/view_models/generation_view_model.dart": [],
+    "lib/features/template_engine/presentation/view_models/generation_view_model.g.dart": [],
+    "lib/features/template_engine/presentation/widgets/generation_progress_sections.dart": [],
+    "lib/features/template_engine/presentation/widgets/generation_progress.dart": [],
+    "lib/features/template_engine/presentation/widgets/home_screen_widgets.dart": [],
+    "lib/features/template_engine/presentation/widgets/input_field_builder.dart": [],
+    "lib/features/template_engine/presentation/widgets/template_card.dart": [],
+    "lib/features/template_engine/presentation/widgets/template_detail_widgets.dart": [],
+    "lib/features/template_engine/presentation/widgets/template_grid.dart": [],
+    "lib/main.dart": [],
+    "lib/routing/app_router.dart": [],
+    "lib/routing/app_router.g.dart": [],
+    "lib/routing/routes/app_routes.dart": [],
+    "lib/routing/routes/app_routes.g.dart": [],
+    "lib/shared/widgets/animated_retry_button.dart": [],
+    "lib/shared/widgets/app_snackbar.dart": [],
+    "lib/shared/widgets/aspect_ratio_selector.dart": [],
+    "lib/shared/widgets/error_illustration.dart": [],
+    "lib/shared/widgets/error_page.dart": [],
+    "lib/shared/widgets/error_state_widget.dart": [],
+    "lib/shared/widgets/gradient_button.dart": [],
+    "lib/shared/widgets/image_count_dropdown.dart": [],
+    "lib/shared/widgets/image_input_widget.dart": [],
+    "lib/shared/widgets/loading_state_widget.dart": [],
+    "lib/shared/widgets/main_shell.dart": [],
+    "lib/shared/widgets/model_selector.dart": [],
+    "lib/shared/widgets/offline_banner.dart": [],
+    "lib/shared/widgets/output_format_toggle.dart": [],
+    "lib/shared/widgets/retry_text_button.dart": [],
+    "lib/shared/widgets/section_header.dart": [],
+    "lib/shared/widgets/watermark_overlay.dart": [],
+    "lib/theme/app_button_themes.dart": [],
+    "lib/theme/app_colors.dart": [],
+    "lib/theme/app_component_themes.dart": [],
+    "lib/theme/app_theme.dart": [],
+    "lib/theme/theme_provider.dart": [],
+    "lib/theme/theme_provider.g.dart": [],
+    "lib/utils/logger_service.dart": [],
+    "lint_baseline.txt": [],
+    "Makefile": [],
+    "model_capabilities.yaml": [],
+    "pubspec.yaml": [],
+    "README.md": [],
+    "security_check.sh": [],
+    "supabase/AGENTS.md": [],
+    "supabase/config.toml": [],
+    "supabase/functions/_shared/cors.ts": [],
+    "supabase/functions/_shared/credit_logic_test.ts": [
+      "supabase/functions/_shared/credit_logic.ts"
+    ],
+    "supabase/functions/_shared/credit_logic.ts": [],
+    "supabase/functions/_shared/model_config_test.ts": [
+      "supabase/functions/_shared/model_config.ts"
+    ],
+    "supabase/functions/_shared/model_config.ts": [],
+    "supabase/functions/delete-account/index.ts": [],
+    "supabase/functions/deno.json": [],
+    "supabase/functions/generate-image/.npmrc": [],
+    "supabase/functions/generate-image/deno.json": [],
+    "supabase/functions/generate-image/index.ts": [
+      "supabase/functions/_shared/cors.ts",
+      "supabase/functions/_shared/credit_logic.ts",
+      "supabase/functions/_shared/model_config.ts"
+    ],
+    "supabase/functions/revenuecat-webhook/index.ts": [],
+    "supabase/functions/reward-ad/index.ts": [],
+    "supabase/functions/sync-subscription/index.ts": [
+      "supabase/functions/_shared/cors.ts"
+    ],
+    "supabase/functions/verify-google-purchase/index.ts": [
+      "supabase/functions/_shared/cors.ts"
+    ],
+    "supabase/migrations/20260127000000_create_templates_table.sql": [],
+    "supabase/migrations/20260128000000_create_profiles_table.sql": [],
+    "supabase/migrations/20260128094706_create_admin_user.sql": [],
+    "supabase/migrations/20260128115551_add_deleted_at_and_storage_bucket.sql": [],
+    "supabase/migrations/20260128130000_add_25_templates.sql": [],
+    "supabase/migrations/20260218000000_create_credit_system.sql": [],
+    "supabase/migrations/20260218100000_create_reward_ad_function.sql": [],
+    "supabase/migrations/20260219000000_add_subscription_support.sql": [],
+    "supabase/migrations/20260219000001_restrict_profiles_update_rls.sql": [],
+    "supabase/migrations/20260220160000_create_pending_ad_rewards.sql": [],
+    "supabase/migrations/20260220170000_create_rate_limit.sql": [],
+    "supabase/migrations/20260220180000_concurrency_locks.sql": [],
+    "supabase/migrations/20260221000000_fix_subscription_trigger.sql": [],
+    "supabase/migrations/20260221200000_sync_remote_schema.sql": [],
+    "supabase/migrations/20260222_add_model_id_to_generation_jobs.sql": [],
+    "supabase/migrations/20260222130000_add_input_image_paths.sql": [],
+    "supabase/migrations/20260222140000_add_model_id_to_generation_jobs.sql": [],
+    "supabase/migrations/20260223000000_add_nanobananaprompt_templates.sql": [],
+    "supabase/migrations/20260304000001_fix_critical_security.sql": [],
+    "supabase/migrations/20260304000002_fix_function_signatures.sql": [],
+    "supabase/migrations/20260304000003_fix_medium_issues.sql": [],
+    "supabase/migrations/20260304000004_fix_revoke_public_and_index.sql": [],
+    "supabase/migrations/20260304100000_fix_credit_idempotency_and_rc_index.sql": [],
+    "supabase/migrations/20260315120000_fix_grant_credits_advisory_lock_and_recent_guard.sql": [],
+    "supabase/migrations/20260315130000_fix_update_subscription_status_security.sql": [],
+    "supabase/migrations/20260403175956_revoke_public_from_security_definer.sql": [],
+    "supabase/migrations/20260404174417_revoke_public_from_security_definer.sql": [],
+    "TODOS.md": []
+  }
+}
