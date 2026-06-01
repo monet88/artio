@@ -1,0 +1,371 @@
+# Instincts generated from https://github.com/monet88/artio
+# Generated: 2026-06-01T05:17:53.303Z
+# Version: 2.0
+# NOTE: This file supplements (does not replace) any existing curated instincts.
+# High-confidence manually curated instincts should be preserved alongside these.
+
+---
+id: artio-commit-conventional
+trigger: "when writing a commit message"
+confidence: 0.85
+domain: git
+source: repo-analysis
+source_repo: https://github.com/monet88/artio
+---
+
+# Artio Commit Conventional
+
+## Action
+
+Use conventional commit format with prefixes: docs, chore
+
+## Evidence
+
+- 5 commits analyzed
+- Detected conventional commit pattern
+- Examples: docs: reorganize project documentation with new architecture, decision logs, and template structures while removing obsolete files and scripts., chore: update local analysis configuration
+
+---
+id: artio-commit-length
+trigger: "when writing a commit message"
+confidence: 0.6
+domain: git
+source: repo-analysis
+source_repo: https://github.com/monet88/artio
+---
+
+# Artio Commit Length
+
+## Action
+
+Write moderate-length commit messages (~66 characters)
+
+## Evidence
+
+- Average commit message length: 66 chars
+- Based on 5 commits
+
+---
+id: artio-naming-files
+trigger: "when creating a new file"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/monet88/artio
+---
+
+# Artio Naming Files
+
+## Action
+
+Use kebab-case naming convention
+
+## Evidence
+
+- Analyzed file naming patterns in repository
+- Dominant pattern: kebab-case
+
+---
+id: artio-import-relative
+trigger: "when importing modules"
+confidence: 0.75
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/monet88/artio
+---
+
+# Artio Import Relative
+
+## Action
+
+Use relative imports for project files
+
+## Evidence
+
+- Import analysis shows relative import pattern
+- Example: import { x } from '../lib/x'
+
+---
+id: artio-export-style
+trigger: "when exporting from a module"
+confidence: 0.7
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/monet88/artio
+---
+
+# Artio Export Style
+
+## Action
+
+Prefer named exports
+
+## Evidence
+
+- Export pattern analysis
+- Dominant style: named
+
+---
+id: artio-test-separate
+trigger: "when writing tests"
+confidence: 0.8
+domain: testing
+source: repo-analysis
+source_repo: https://github.com/monet88/artio
+---
+
+# Artio Test Separate
+
+## Action
+
+Place tests in the tests/ or __tests__/ directory, mirroring src structure
+
+## Evidence
+
+- Separate test directory pattern detected
+- Tests live in dedicated test folders
+
+---
+id: artio-workflow-project-documentation-restructure
+trigger: "when doing project documentation restructure"
+confidence: 0.6
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/monet88/artio
+---
+
+# Artio Workflow Project Documentation Restructure
+
+## Action
+
+Follow the project-documentation-restructure workflow:
+1. Create or update multiple markdown documentation files under docs/ (e.g., ARCHITECTURE.md, README.md, decision logs, templates).
+2. Add or update scripts in scripts/ to support documentation validation or search.
+3. Remove obsolete documentation or script files.
+4. Update .gitignore if new documentation/script artifacts are generated.
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~2x per month
+- Files: docs/ARCHITECTURE.md, docs/README.md, docs/decisions/README.md
+
+---
+id: artio-workflow-understand-anything-graph-artifact-update
+trigger: "when doing understand anything graph artifact update"
+confidence: 0.6
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/monet88/artio
+---
+
+# Artio Workflow Understand Anything Graph Artifact Update
+
+## Action
+
+Follow the understand-anything-graph-artifact-update workflow:
+1. Add or update .understand-anything/intermediate/*.json files (batches, graphs, reviews, etc.).
+2. Update .understand-anything/knowledge-graph.json and meta.json.
+3. Update .understand-anything/.understandignore to ignore new or obsolete artifacts.
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~2x per month
+- Files: .understand-anything/intermediate/*.json, .understand-anything/knowledge-graph.json, .understand-anything/meta.json
+
+---
+id: artio-instinct-file-naming
+trigger: "When creating or renaming files in the codebase"
+confidence: 0.9
+domain: code-style
+source: repo-analysis
+source_repo: monet88/artio
+---
+
+# Artio Instinct File Naming
+
+## Action
+
+Use kebab-case for all file names
+
+## Evidence
+
+- Pattern in namingConventions.files: kebab-case
+
+---
+id: artio-instinct-function-naming
+trigger: "When defining functions"
+confidence: 0.9
+domain: code-style
+source: repo-analysis
+source_repo: monet88/artio
+---
+
+# Artio Instinct Function Naming
+
+## Action
+
+Use camelCase for function names
+
+## Evidence
+
+- Pattern in namingConventions.functions: camelCase
+
+---
+id: artio-instinct-class-naming
+trigger: "When defining classes"
+confidence: 0.9
+domain: code-style
+source: repo-analysis
+source_repo: monet88/artio
+---
+
+# Artio Instinct Class Naming
+
+## Action
+
+Use PascalCase for class names
+
+## Evidence
+
+- Pattern in namingConventions.classes: PascalCase
+
+---
+id: artio-instinct-constant-naming
+trigger: "When defining constants"
+confidence: 0.9
+domain: code-style
+source: repo-analysis
+source_repo: monet88/artio
+---
+
+# Artio Instinct Constant Naming
+
+## Action
+
+Use SCREAMING_SNAKE_CASE for constant names
+
+## Evidence
+
+- Pattern in namingConventions.constants: SCREAMING_SNAKE_CASE
+
+---
+id: artio-instinct-import-style
+trigger: "When importing modules"
+confidence: 0.85
+domain: code-style
+source: repo-analysis
+source_repo: monet88/artio
+---
+
+# Artio Instinct Import Style
+
+## Action
+
+Use relative import paths
+
+## Evidence
+
+- Pattern in importStyle: relative
+
+---
+id: artio-instinct-export-style
+trigger: "When exporting from a module"
+confidence: 0.85
+domain: code-style
+source: repo-analysis
+source_repo: monet88/artio
+---
+
+# Artio Instinct Export Style
+
+## Action
+
+Use named exports
+
+## Evidence
+
+- Pattern in exportStyle: named
+
+---
+id: artio-instinct-test-location
+trigger: "When adding or updating tests"
+confidence: 0.8
+domain: testing
+source: repo-analysis
+source_repo: monet88/artio
+---
+
+# Artio Instinct Test Location
+
+## Action
+
+Place test files in a separate directory from source files
+
+## Evidence
+
+- Pattern in architecture.folderStructure.testLocation: separate
+
+---
+id: artio-instinct-git-commit-format
+trigger: "When writing a commit message"
+confidence: 0.9
+domain: git
+source: repo-analysis
+source_repo: monet88/artio
+---
+
+# Artio Instinct Git Commit Format
+
+## Action
+
+Use the Conventional Commits format with prefixes such as 'docs' or 'chore'
+
+## Evidence
+
+- Pattern in commits.type: conventional
+- Pattern in commits.prefixes: ['docs', 'chore']
+- Seen in commit: 'docs: reorganize project documentation with new architecture, decision logs, and template structures while removing obsolete files and scripts.'
+
+---
+id: artio-instinct-docs-restructure-workflow
+trigger: "When reorganizing, initializing, or significantly updating project documentation or supporting scripts"
+confidence: 0.9
+domain: workflow
+source: repo-analysis
+source_repo: monet88/artio
+---
+
+# Artio Instinct Docs Restructure Workflow
+
+## Action
+
+Update markdown files in docs/, add/update scripts in scripts/, remove obsolete docs/scripts, and update .gitignore if needed
+
+## Evidence
+
+- Workflow: project-documentation-restructure
+- Files involved: docs/ARCHITECTURE.md, docs/README.md, docs/decisions/README.md, docs/templates/*.md, scripts/*.sh, scripts/*.ps1
+- Seen in commit: 'docs: reorganize project documentation with new architecture, decision logs, and template structures while removing obsolete files and scripts.'
+
+---
+id: artio-instinct-ua-graph-artifact-update
+trigger: "When persisting or refreshing analyzed architecture/graph outputs for the dashboard or analysis pipeline"
+confidence: 0.85
+domain: workflow
+source: repo-analysis
+source_repo: monet88/artio
+---
+
+# Artio Instinct Ua Graph Artifact Update
+
+## Action
+
+Update .understand-anything/intermediate/*.json, knowledge-graph.json, meta.json, and .understandignore as needed
+
+## Evidence
+
+- Workflow: understand-anything-graph-artifact-update
+- Files involved: .understand-anything/intermediate/*.json, .understand-anything/knowledge-graph.json, .understand-anything/meta.json, .understand-anything/.understandignore
+
