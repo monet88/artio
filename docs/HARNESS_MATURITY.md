@@ -1,7 +1,7 @@
 # Harness Maturity Ladder
 
-This ladder defines how `harness-experimental` should progress from static
-agent instructions to measurable harness improvement.
+This ladder describes how the Artio Harness surface progresses from static
+policy docs to measurable self-improvement.
 
 The levels are intentionally verifiable. A level is achieved only when its
 criteria can be inspected in repository files, durable Harness records, or
@@ -17,27 +17,13 @@ record work.
 
 Criteria:
 
-- No `AGENTS.md` Harness block exists.
+- No `AGENTS.md` harness block exists.
 - No feature intake policy exists.
 - No story, decision, validation, or trace artifact exists.
 
-Required files:
-
-- None.
-
-Benchmark indicators:
-
-- Functional score is the only meaningful metric.
-- Harness compliance: 0%.
-- Trace quality: 0/3.
-
 Current status:
 
-- Passed. This repository is beyond H0.
-
-Activated responsibilities:
-
-- None.
+- Passed. Artio is beyond H0.
 
 ### H1 - Scaffolding And Policy
 
@@ -53,33 +39,9 @@ Criteria:
 - Story, decision, and validation templates exist under `docs/templates/`.
 - `docs/TEST_MATRIX.md` defines proof columns and status meanings.
 
-Required files:
-
-- `AGENTS.md`
-- `docs/HARNESS.md`
-- `docs/FEATURE_INTAKE.md`
-- `docs/ARCHITECTURE.md`
-- `docs/TEST_MATRIX.md`
-- `docs/templates/story.md`
-- `docs/templates/decision.md`
-- `docs/templates/validation-report.md`
-
-Benchmark indicators:
-
-- Harness compliance: 20-40%.
-- Lane accuracy improves when agents read the intake policy.
-- Trace quality remains low unless traces are separately requested.
-
 Current status:
 
-- Achieved. H1 files exist and are used by current Harness instructions.
-
-Activated responsibilities:
-
-- Task specification.
-- Permissions.
-- Project memory.
-- Verification.
+- Achieved. The policy layer exists and is used by current instructions.
 
 ### H2 - Durable State And Observability
 
@@ -89,8 +51,8 @@ traces with predictable depth.
 
 Criteria:
 
-- `scripts/bin/harness-cli` can record intake, story, decision, backlog, and trace
-  data in `harness.db`.
+- `scripts/bin/harness-cli` can record intake, story, decision, backlog, and
+  trace data in `harness.db`.
 - `scripts/schema/001-init.sql` defines durable tables for intake, story,
   decision, backlog, and trace records.
 - `docs/HARNESS_COMPONENTS.md` maps files and responsibilities.
@@ -98,37 +60,14 @@ Criteria:
 - `docs/TRACE_SPEC.md` defines trace fields, quality tiers, and friction
   capture.
 - `docs/CONTEXT_RULES.md` defines phase-by-lane context rules.
-- `AGENTS.md` and `docs/HARNESS.md` reference the Phase 2 operating docs.
-
-Required files:
-
-- `scripts/bin/harness-cli`
-- `scripts/schema/001-init.sql`
-- `docs/HARNESS_COMPONENTS.md`
-- `docs/HARNESS_MATURITY.md`
-- `docs/TRACE_SPEC.md`
-- `docs/CONTEXT_RULES.md`
-
-Benchmark indicators:
-
-- Harness compliance: 75-90%.
-- Trace quality: at least 2.0/3 on normal-lane tasks.
-- Lane accuracy: 6/6 on the current benchmark suite.
-- Friction captured: at least 4/6 benchmark tasks when friction exists.
 
 Current status:
 
-- Achieved. Durable state exists, and the Phase 2 docs define the
-  observability and context specification. Phase 3 active scoring builds on
-  this layer.
-
-Activated responsibilities:
-
-- Task state.
-- Observability.
-- Failure attribution.
-- Context selection.
-- Entropy auditing.
+- Partial in a fresh clone until the local durable database is initialized and
+  imported from markdown state.
+- The repo has the docs, schema, and CLI entrypoint, but `query matrix` may need
+  `scripts/bin/harness-cli init` followed by `scripts/bin/harness-cli import
+  brownfield` before the first use.
 
 ### H3 - Active Observability And Evolution
 
@@ -143,35 +82,10 @@ Criteria:
 - Benchmark comparison output identifies which harness responsibility moved or
   regressed.
 
-Required files:
-
-- H2 files.
-- A benchmark protocol or report that references maturity levels.
-- A documented trace quality scoring method.
-- A documented friction-to-backlog review loop.
-
-Benchmark indicators:
-
-- Harness compliance: 85-95%.
-- Trace quality: 2.3-2.7/3.
-- Friction captured and classified by component for most failed or awkward
-  tasks.
-- Regressions include an attributed harness component.
-
 Current status:
 
-- Partially achieved by Phase 3. `scripts/bin/harness-cli score-trace` scores trace
-  quality against tier rules, `query friction` includes linked intake context,
-  and the backlog outcome loop documents predicted impact versus actual
-  outcome. Full H3 still requires benchmark comparison output that attributes
-  moved or regressed responsibilities.
-
-Activated responsibilities:
-
-- Observability.
-- Failure attribution.
-- Entropy auditing.
-- Intervention recording.
+- Partially achieved. Trace scoring and the backlog outcome loop are documented,
+  but the repo still lacks component-level benchmark comparison output.
 
 ### H4 - Automated Verification
 
@@ -186,31 +100,9 @@ Criteria:
 - Decision verification commands can be run in batch.
 - Missing validation evidence is surfaced before a task is marked implemented.
 
-Required files:
-
-- H3 files.
-- A verification protocol or command reference.
-- Validation report examples tied to story proof columns.
-- Batch decision or story verification documentation.
-
-Benchmark indicators:
-
-- Functional score remains stable.
-- Harness compliance: at least 90%.
-- Fewer false "done" claims in benchmark review.
-- Missing proof is detected before merge or final response.
-
 Current status:
 
-- Not achieved. Current verification is manual through commands and story proof
-  fields.
-
-Activated responsibilities:
-
-- Verification.
-- Task state.
-- Permissions.
-- Intervention recording.
+- Not achieved. Current verification is still manual through commands and docs.
 
 ### H5 - Self-Improving Harness
 
@@ -227,40 +119,19 @@ Criteria:
 - High-risk harness changes pause for human confirmation before changing source
   hierarchy, architecture direction, or validation requirements.
 
-Required files:
-
-- H4 files.
-- Self-improvement protocol.
-- Historical improvement reports.
-- Backlog outcome reviews.
-
-Benchmark indicators:
-
-- Harness compliance remains at least 90% across repeated benchmark runs.
-- Trace quality remains at least 2.5/3.
-- Improvements show measurable positive deltas or are explicitly reverted.
-- Scope creep and validation weakening are caught by policy.
-
 Current status:
 
-- Not achieved. Phase 2 names the direction; later phases must implement the
-  evolution loop.
-
-Activated responsibilities:
-
-- Entropy auditing.
-- Failure attribution.
-- Intervention recording.
-- Permissions.
+- Not achieved. The repo has the policy surface, but not the automated evolution
+  loop.
 
 ## Current Assessment
 
 | Level | Status | Evidence |
 | --- | --- | --- |
-| H0 | Passed | Harness docs, templates, and durable records exist. |
+| H0 | Passed | Harness docs, templates, and durable record docs exist. |
 | H1 | Achieved | `AGENTS.md`, `docs/HARNESS.md`, `docs/FEATURE_INTAKE.md`, `docs/ARCHITECTURE.md`, `docs/templates/*`, and `docs/TEST_MATRIX.md` exist. |
-| H2 | Achieved | `scripts/bin/harness-cli`, `scripts/schema/001-init.sql`, durable story records, `docs/HARNESS_COMPONENTS.md`, `docs/HARNESS_MATURITY.md`, `docs/TRACE_SPEC.md`, and `docs/CONTEXT_RULES.md` define the Phase 2 surface. |
-| H3 | Partial | Phase 3 adds `scripts/bin/harness-cli score-trace`, enriched friction context, and the backlog outcome loop. Component-level benchmark attribution remains open. |
+| H2 | Partial | `scripts/bin/harness-cli`, `scripts/schema/001-init.sql`, `scripts/bin/harness-cli import brownfield`, `docs/HARNESS_COMPONENTS.md`, `docs/TRACE_SPEC.md`, and `docs/CONTEXT_RULES.md` define the durable surface, but a fresh clone still needs init and import. |
+| H3 | Partial | `scripts/bin/harness-cli score-trace`, `docs/HARNESS_BACKLOG.md`, and `docs/HARNESS_COMPONENTS.md` define the loop, but benchmark comparison output is still missing. |
 | H4 | Not achieved | No generic verification runner or batch proof updater exists. |
 | H5 | Not achieved | No self-improvement protocol or automated evolution loop exists. |
 
@@ -284,5 +155,5 @@ Activated responsibilities:
 
 Phase 3 starts the H2 to H3 transition. It claims active trace scoring and a
 documented improvement feedback loop, but it does not claim full H3 because
-benchmark comparison and component-level regression attribution are explicitly
-outside this repository's Phase 3 scope.
+benchmark comparison and component-level regression attribution are still
+outside the repo's current surface.

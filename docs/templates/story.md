@@ -1,4 +1,4 @@
-# US-XXX Story Title
+# Story Title
 
 ## Status
 
@@ -6,7 +6,7 @@ planned
 
 ## Lane
 
-tiny | normal | high-risk
+tiny / normal / high-risk
 
 ## Product Contract
 

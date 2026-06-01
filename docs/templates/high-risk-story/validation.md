@@ -25,7 +25,7 @@ fixtures needed for repeatable proof.
 Add commands after scripts exist.
 
 ```text
-TBD
+# Add the exact verification commands for this story here.
 ```
 
 ## Acceptance Evidence

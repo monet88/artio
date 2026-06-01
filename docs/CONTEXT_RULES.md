@@ -20,9 +20,13 @@ Read to classify the request, find the affected surface, and choose a lane.
 | `README.md` | Should | Must | Must |
 | `docs/HARNESS.md` | Should | Must | Must |
 | `docs/ARCHITECTURE.md` | Skip | Should | Must |
-| Relevant `docs/product/*` | Skip if unrelated | Must if product behavior changes | Must |
+| `docs/project-overview-pdr.md` | Should | Must | Must |
+| `docs/codebase-summary.md` | Should | Must | Must |
+| `docs/system-architecture.md` | Skip | Must if architecture changed | Must |
+| `docs/code-standards.md` | Skip | Should when style or test norms matter | Must |
+| `docs/project-roadmap.md` | Skip | Should for roadmap or scope changes | Must |
+| Relevant `docs/decisions/*` | Skip | Should if architecture or durable rules are touched | Must |
 | Relevant `docs/stories/*` | Skip if unrelated | Must if a story exists | Must |
-| `docs/decisions/*` | Skip | Should if architecture or durable rules are touched | Must |
 | `docs/HARNESS_COMPONENTS.md` | Skip | Should for Harness improvements | Must for observability or benchmark work |
 
 ### Planning Phase
@@ -36,6 +40,7 @@ Read to decide the smallest safe approach and expected proof.
 | `docs/templates/high-risk-story/*` | Skip | Skip unless risk escalates | Must |
 | `docs/ARCHITECTURE.md` | Skip | Should for code or boundary changes | Must |
 | `docs/TEST_MATRIX.md` or `scripts/bin/harness-cli query matrix` | Should | Must | Must |
+| `docs/project-overview-pdr.md` | Should | Must | Must |
 | Relevant decisions | Skip | Should | Must |
 | `docs/HARNESS_MATURITY.md` | Skip | Should for Harness improvements | Must for maturity or process changes |
 | `docs/HARNESS_BACKLOG.md` and `scripts/bin/harness-cli query backlog` | Skip | Should if friction repeats | Must if changing Harness behavior |
@@ -79,7 +84,7 @@ Read to leave useful evidence for the next agent and for benchmark scoring.
 | `docs/TRACE_SPEC.md` | Should | Must | Must |
 | `scripts/bin/harness-cli query matrix` | Should | Must | Must |
 | `scripts/bin/harness-cli query backlog` | Skip | Should if friction occurred | Must |
-| Changed-file list from `git status --short` | Must | Must | Must |
+| `git status --short` | Must | Must | Must |
 | Validation command output | Should | Must | Must |
 | Story packet or progress log | Skip if no story | Must | Must |
 | `docs/HARNESS_COMPONENTS.md` | Skip | Should if attributing friction | Must if failure attribution is needed |
@@ -90,8 +95,8 @@ Read to leave useful evidence for the next agent and for benchmark scoring.
 | --- | --- |
 | Task touches database schema, durable records, or migrations | Read `docs/decisions/0004-sqlite-durable-layer.md`, `scripts/schema/`, and relevant CLI code before planning. |
 | Task touches CLI command behavior or installer distribution | Read `docs/decisions/0005-prebuilt-rust-harness-cli.md`, `scripts/README.md`, relevant `crates/harness-cli/*` code, CLI help output, and installer docs. |
-| Task touches auth, authorization, audit/security, data loss, or external providers | Treat as high-risk, read `docs/templates/high-risk-story/*`, and check prior decisions before implementation. |
-| Task changes public API shape, product behavior, or user-visible workflow | Read relevant `docs/product/*`, story packets, and validation expectations before editing. |
+| Task touches auth, authorization, audit/security, data loss, subscriptions, credits, or external providers | Treat as high-risk, read the relevant product docs and decisions, and check prior validation before implementation. |
+| Task changes public API shape, product behavior, or user-visible workflow | Read relevant product docs, story packets, and validation expectations before editing. |
 | Task changes Harness policy, source hierarchy, risk classification, or validation requirements | Read `docs/HARNESS.md`, `docs/FEATURE_INTAKE.md`, `docs/ARCHITECTURE.md`, and `docs/decisions/*`; pause if direction is ambiguous. |
 | Task discovers repeated confusion, stale docs, or missing proof | Read `docs/HARNESS_BACKLOG.md`, record `harness_friction`, and add a backlog item when the fix is out of scope. |
 | Task makes a maturity, observability, trace quality, or benchmark claim | Read `docs/HARNESS_COMPONENTS.md`, `docs/HARNESS_MATURITY.md`, and `docs/TRACE_SPEC.md`. |
