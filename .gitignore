@@ -234,3 +234,10 @@ CLAUDE.OLD.md
 /.gitnexus/
 /.omx/
 /pnpm-lock.yaml
+
+# Harness durable layer
+harness.db
+harness.db-wal
+harness.db-shm
+scripts/bin/harness-cli
+.harness-backup/

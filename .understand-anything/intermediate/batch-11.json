@@ -1,0 +1,305 @@
+{
+  "nodes": [
+    {
+      "id": "file:lib/features/settings/domain/providers/notifications_provider.dart",
+      "type": "file",
+      "name": "notifications_provider.dart",
+      "summary": "Application source file notifications_provider.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/settings/domain/providers/notifications_provider.dart"
+    },
+    {
+      "id": "file:lib/features/settings/presentation/settings_screen.dart",
+      "type": "file",
+      "name": "settings_screen.dart",
+      "summary": "Application source file settings_screen.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/settings/presentation/settings_screen.dart"
+    },
+    {
+      "id": "file:lib/features/settings/presentation/widgets/settings_helpers.dart",
+      "type": "file",
+      "name": "settings_helpers.dart",
+      "summary": "Application source file settings_helpers.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/settings/presentation/widgets/settings_helpers.dart"
+    },
+    {
+      "id": "file:lib/features/settings/presentation/widgets/settings_sections.dart",
+      "type": "file",
+      "name": "settings_sections.dart",
+      "summary": "Application source file settings_sections.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/settings/presentation/widgets/settings_sections.dart"
+    },
+    {
+      "id": "file:lib/features/settings/presentation/widgets/subscription_card.dart",
+      "type": "file",
+      "name": "subscription_card.dart",
+      "summary": "Application source file subscription_card.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/settings/presentation/widgets/subscription_card.dart"
+    },
+    {
+      "id": "file:lib/features/settings/presentation/widgets/theme_switcher.dart",
+      "type": "file",
+      "name": "theme_switcher.dart",
+      "summary": "Application source file theme_switcher.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/settings/presentation/widgets/theme_switcher.dart"
+    },
+    {
+      "id": "file:lib/features/settings/presentation/widgets/user_profile_card.dart",
+      "type": "file",
+      "name": "user_profile_card.dart",
+      "summary": "Application source file user_profile_card.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/settings/presentation/widgets/user_profile_card.dart"
+    },
+    {
+      "id": "file:lib/features/subscription/data/repositories/subscription_repository.dart",
+      "type": "file",
+      "name": "subscription_repository.dart",
+      "summary": "Application source file subscription_repository.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "data-layer"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/subscription/data/repositories/subscription_repository.dart"
+    },
+    {
+      "id": "file:lib/features/subscription/data/repositories/subscription_repository.g.dart",
+      "type": "file",
+      "name": "subscription_repository.g.dart",
+      "summary": "Application source file subscription_repository.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "data-layer"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/subscription/data/repositories/subscription_repository.g.dart"
+    },
+    {
+      "id": "file:lib/features/subscription/domain/entities/subscription_package.dart",
+      "type": "file",
+      "name": "subscription_package.dart",
+      "summary": "Application source file subscription_package.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/subscription/domain/entities/subscription_package.dart"
+    },
+    {
+      "id": "file:lib/features/subscription/domain/entities/subscription_package.freezed.dart",
+      "type": "file",
+      "name": "subscription_package.freezed.dart",
+      "summary": "Application source file subscription_package.freezed.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/subscription/domain/entities/subscription_package.freezed.dart"
+    },
+    {
+      "id": "file:lib/features/subscription/domain/entities/subscription_status.dart",
+      "type": "file",
+      "name": "subscription_status.dart",
+      "summary": "Application source file subscription_status.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/subscription/domain/entities/subscription_status.dart"
+    },
+    {
+      "id": "file:lib/features/subscription/domain/entities/subscription_status.freezed.dart",
+      "type": "file",
+      "name": "subscription_status.freezed.dart",
+      "summary": "Application source file subscription_status.freezed.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/subscription/domain/entities/subscription_status.freezed.dart"
+    },
+    {
+      "id": "file:lib/features/subscription/domain/entities/subscription_status.g.dart",
+      "type": "file",
+      "name": "subscription_status.g.dart",
+      "summary": "Application source file subscription_status.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/subscription/domain/entities/subscription_status.g.dart"
+    },
+    {
+      "id": "file:lib/features/subscription/domain/providers/subscription_repository_provider.dart",
+      "type": "file",
+      "name": "subscription_repository_provider.dart",
+      "summary": "Application source file subscription_repository_provider.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/subscription/domain/providers/subscription_repository_provider.dart"
+    },
+    {
+      "id": "file:lib/features/subscription/domain/repositories/i_subscription_repository.dart",
+      "type": "file",
+      "name": "i_subscription_repository.dart",
+      "summary": "Application source file i_subscription_repository.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/subscription/domain/repositories/i_subscription_repository.dart"
+    },
+    {
+      "id": "file:lib/features/subscription/presentation/providers/subscription_provider.dart",
+      "type": "file",
+      "name": "subscription_provider.dart",
+      "summary": "Application source file subscription_provider.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/subscription/presentation/providers/subscription_provider.dart"
+    },
+    {
+      "id": "file:lib/features/subscription/presentation/providers/subscription_provider.g.dart",
+      "type": "file",
+      "name": "subscription_provider.g.dart",
+      "summary": "Application source file subscription_provider.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/subscription/presentation/providers/subscription_provider.g.dart"
+    },
+    {
+      "id": "file:lib/features/subscription/presentation/screens/paywall_screen.dart",
+      "type": "file",
+      "name": "paywall_screen.dart",
+      "summary": "Application source file paywall_screen.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/subscription/presentation/screens/paywall_screen.dart"
+    },
+    {
+      "id": "file:lib/features/subscription/presentation/widgets/tier_comparison_card.dart",
+      "type": "file",
+      "name": "tier_comparison_card.dart",
+      "summary": "Application source file tier_comparison_card.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/subscription/presentation/widgets/tier_comparison_card.dart"
+    },
+    {
+      "id": "document:lib/features/template_engine/AGENTS.md",
+      "type": "document",
+      "name": "AGENTS.md",
+      "summary": "Documentation file AGENTS.md that explains project workflow, architecture, or operational guidance for the Artio codebase.",
+      "tags": [
+        "documentation",
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/template_engine/AGENTS.md"
+    },
+    {
+      "id": "file:lib/features/template_engine/data/policies/credit_check_policy.dart",
+      "type": "file",
+      "name": "credit_check_policy.dart",
+      "summary": "Application source file credit_check_policy.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "data-layer"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/template_engine/data/policies/credit_check_policy.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/data/repositories/generation_repository.dart",
+      "type": "file",
+      "name": "generation_repository.dart",
+      "summary": "Application source file generation_repository.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "data-layer"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/template_engine/data/repositories/generation_repository.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/data/repositories/generation_repository.g.dart",
+      "type": "file",
+      "name": "generation_repository.g.dart",
+      "summary": "Application source file generation_repository.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "data-layer"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/template_engine/data/repositories/generation_repository.g.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/data/repositories/template_repository.dart",
+      "type": "file",
+      "name": "template_repository.dart",
+      "summary": "Application source file template_repository.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "data-layer"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/template_engine/data/repositories/template_repository.dart"
+    }
+  ],
+  "edges": []
+}

@@ -1,879 +1,134 @@
 # System Architecture
 
-**Project**: Artio - AI Image Generation SaaS
-**Updated**: 2026-03-04
-**Version**: 1.8
+## High-Level Shape
 
----
-
-## High-Level Overview
-
-Artio is a cross-platform (Android, iOS, Web, Windows) AI image generation SaaS with dual generation modes:
-- **Template Engine** (Home tab): Image-to-image with curated templates (Portrait, Art Style, Editing, etc.)
-- **Text-to-Image** (Create tab): Custom prompt generation with prompt + params UI wired to Supabase jobs and the shared Edge Function
-Both flows now post to `supabase/functions/generate-image/index.ts`, which deducts credits via `user_credits`/`credit_transactions` (`supabase/migrations/20260218000000_create_credit_system.sql`), polls Kie/Gemini, mirrors outputs into `generated-images`, and emits 402 responses when the balance is insufficient. The same server-side model-cost map constant (defined in the Edge Function) mirrors `core/constants/ai_models.dart`, ensuring consistent price tiers across client and server.
-### Technology Stack
-
-```
-┌─────────────────────────────────────────────────────┐
-│                   Flutter App                       │
-│  (Android, iOS, Web, Windows - Single Codebase)    │
-│  • Riverpod State Management                        │
-│  • GoRouter Navigation                             │
-│  • Freezed + JSON Serializable                     │
-└─────────────────────────────────────────────────────┘
-                         ↓↑
-┌─────────────────────────────────────────────────────┐
-│              Admin Flutter App                      │
-│  (Web - Separate Codebase at /admin)               │
-│  • NavigationRail sidebar                           │
-│  • GoRouter auth guard (protected admin routes)    │
-│  • Dashboard stats                                  │
-│  • Template CRUD + drag-reorder                     │
-└─────────────────────────────────────────────────────┘
-                         ↓↑
-┌─────────────────────────────────────────────────────┐
-│               Supabase Backend                      │
-│  • PostgreSQL (templates, jobs, profiles)          │
-│  • Auth (email/password, Google, Apple OAuth)      │
-│  • Storage (user uploads, generated images)        │
-│  • Realtime (job progress updates)                 │
-│  • Edge Functions (KIE API integration)            │
-└─────────────────────────────────────────────────────┘
-                         ↓↑
-┌─────────────────────────────────────────────────────┐
-│            RevenueCat (Mobile Subscriptions)        │
-│  • App Store & Play Store integration             │
-│  • Subscription tier management                    │
-│  • Cross-platform entitlement sync                 │
-└─────────────────────────────────────────────────────┘
-                         ↓↑
-┌─────────────────────────────────────────────────────┐
-│              Kie API (Primary AI Provider)         │
-│  • Google Imagen 4 & Nano Banana                   │
-│  • Flux-2 (Flex & Pro variants)                    │
-│  • GPT Image 1.5                                   │
-│  • Seedream 4.5                                    │
-└─────────────────────────────────────────────────────┘
-                         ↓↑
-┌─────────────────────────────────────────────────────┐
-│           Gemini API (Fallback AI Provider)         │
-│  • Multimodal image analysis and generation        │
-└─────────────────────────────────────────────────────┘
-                         ↓↑
-┌─────────────────────────────────────────────────────┐
-│              Google AdMob (Rewarded Ads)            │
-│  • Server-side verification (SSV)                  │
-│  • Credit earning via reward-ad Edge Function      │
-└─────────────────────────────────────────────────────┘
-
-**AI Model Reference**: See `docs/kie-api/` for complete model specifications
+```text
+Main Flutter app        Admin Flutter Web app
+        |                         |
+        v                         v
+   Riverpod / GoRouter       Riverpod providers / router
+        |                         |
+        +----------- Supabase -----+
+                    |   |   |
+                    |   |   +--> Storage buckets
+                    |   +-------> Postgres + RPCs
+                    +-----------> Edge Functions
+                                   |
+                                   +--> AI providers
+                                   +--> RevenueCat
+                                   +--> Google AdMob / Google Play
 ```
 
----
+## Main App Flow
 
-## Application Architecture
+### App bootstrap
 
-### Feature-First Clean Architecture
+1. `lib/main.dart` loads `EnvConfig` from `--dart-define=ENV=<name>`.
+2. Supabase is initialized with the configured URL and anon key.
+3. Sentry initializes non-blockingly.
+4. AdMob initializes after the iOS ATT prompt when applicable.
+5. RevenueCat initializes on native platforms when keys are present.
+6. The Riverpod app shell starts with typed routing and theming.
 
-```
-lib/
-├── core/                    # Shared infrastructure
-│   ├── config/              # Environment and service configs
-│   ├── constants/           # App-wide constants
-│   ├── design_system/       # Design tokens (spacing, dimensions)
-│   ├── exceptions/          # Exception hierarchy
-│   ├── providers/           # Global dependencies (Supabase)
-│   ├── services/            # App services (haptic, rewarded ads)
-│   ├── state/               # User-scoped state providers
-│   └── utils/               # Helpers (error mapper, retry, validation)
-├── features/                # Feature modules
-│   ├── auth/                # Authentication feature
-│   │   ├── domain/          # Business logic
-│   │   │   ├── entities/    # User models
-│   │   │   └── repositories/# IAuthRepository interface
-│   │   ├── data/            # Data access
-│   │   │   └── repositories/# AuthRepository impl
-│   │   └── presentation/    # UI layer
-│   │       ├── providers/   # Auth state (Riverpod)
-│   │       ├── screens/     # Login/Signup screens
-│   │       └── widgets/     # Auth-specific widgets
-│   └── template_engine/     # Image generation feature
-│       ├── domain/          # Business logic
-│       │   ├── entities/    # Template, GenerationJob models
-│       │   └── repositories/# ITemplateRepository, IGenerationRepository
-│       ├── data/            # Data access
-│       │   └── repositories/# Supabase implementations
-│       └── presentation/    # UI layer
-│           ├── providers/   # Template, generation state
-│           ├── screens/     # List, detail, progress screens
-│           └── widgets/     # Template card, input builder
-├── routing/                 # Navigation configuration
-│   ├── app_router.dart      # GoRouter setup with auth guards
-│   └── routes/
-│       └── app_routes.dart  # TypedGoRoute definitions
-├── theme/                   # Material theme
-│   └── app_theme.dart       # Light/dark theme definitions
-└── main.dart                # App entry point
+### Generation flow
+
+```text
+UI -> ViewModel/Provider -> Repository -> generate-image function
+   -> provider selection (KIE / Gemini / Imagen)
+   -> credit check + deduct
+   -> provider call
+   -> storage upload or mirror
+   -> generation_jobs update
+   -> UI refresh
 ```
 
-### Dependency Flow (Clean Architecture)
+Current guardrails:
 
-```
-┌─────────────────────┐
-│   Presentation      │  • Screens, Widgets, Providers
-│   (UI Layer)        │  • Depends on Domain (interfaces)
-└─────────────────────┘
-          ↓
-┌─────────────────────┐
-│      Domain         │  • Entities (models)
-│  (Business Logic)   │  • Repository interfaces
-│                     │  • Pure Dart (no framework deps)
-└─────────────────────┘
-          ↑
-┌─────────────────────┐
-│       Data          │  • Repository implementations
-│  (Data Access)      │  • API clients (Supabase)
-│                     │  • Depends on Domain (implements interfaces)
-└─────────────────────┘
-```
+- Rate limiting happens before generation work starts.
+- Premium models are blocked unless the user is premium.
+- Credits are deducted server-side.
+- Failed post-deduction work triggers a refund attempt.
+- Results are mirrored into `generated-images`.
 
-**Key Rules:**
-- Presentation calls Domain interfaces (never Data directly)
-- Data implements Domain interfaces
-- Domain has no external dependencies
+### Authentication and config
 
----
+- Env loading uses `.env.<ENV>` files.
+- Auth flows support email/password, Google OAuth, Apple Sign-In, and reset.
+- Guest browsing is allowed before login.
+- Sensitive secrets stay outside the repo.
 
-## State Management (Riverpod)
+## Admin App Flow
 
-### Provider Hierarchy
+- `admin/lib/main.dart` loads `.env.example` first, then optional local overrides.
+- Supabase is initialized with the admin anon key.
+- `AdminShell` renders a sidebar-based navigation rail.
+- Admin auth gates the dashboard and template management pages.
+- Template changes persist through Supabase-backed providers.
 
-```dart
-// Global Dependencies
-supabaseProvider           → SupabaseClient (singleton)
+## Backend Flow
 
-// Auth Feature
-authRepositoryProvider     → IAuthRepository (DI from Supabase)
-authViewModelProvider      → AuthViewModel (manages auth state, implements Listenable)
+### `generate-image`
 
-// Template Engine Feature
-templateRepositoryProvider → ITemplateRepository
-generationRepositoryProvider → IGenerationRepository
-templateProvider           → AsyncValue<List<TemplateModel>>
-generationJobProvider(id)  → Stream<GenerationJobModel>
-```
+- Validates JWT and request shape.
+- Checks rate limits and job ownership.
+- Enforces premium access before charging credits.
+- Deducts credits using server-side RPCs.
+- Calls KIE, Gemini, or Imagen based on model routing.
+- Uploads or mirrors outputs into storage.
+- Updates `generation_jobs` with status and result URLs.
+- Refunds credits if post-deduction work fails.
 
-### State Flow Example (Sign In)
+### Subscription and credit flows
 
-```
-User taps "Sign In"
-      ↓
-LoginScreen calls ref.read(authViewModelProvider.notifier).signIn(...)
-      ↓
-AuthViewModel updates state to AsyncLoading
-      ↓
-AuthViewModel calls ref.read(authRepositoryProvider).signInWithEmail(...)
-      ↓
-AuthRepository calls Supabase.auth.signInWithPassword(...)
-      ↓
-On success: AuthViewModel updates state to AsyncData(UserModel)
-On error: AuthViewModel updates state to AsyncError(AppException)
-      ↓
-LoginScreen rebuilds via ref.watch(authViewModelProvider)
-      ↓
-UI shows success (navigate) or error (snackbar)
-```
+| Function | Responsibility | Ownership rule |
+| --- | --- | --- |
+| `verify-google-purchase` | Grant subscription credits for Google Play purchase | Credits only; does not set tier |
+| `sync-subscription` | Reconcile tier and expiry from RevenueCat entitlements | Tier only; does not grant credits |
+| `revenuecat-webhook` | Process authoritative RevenueCat events | Tier plus credits for supported events |
 
----
+Important constraints:
 
-## Data Models
+- `update_subscription_status` is the source of subscription tier truth.
+- `grant_subscription_credits` handles idempotent credit grants.
+- Downgrades write `free`, not `null`.
+- `revenuecat-webhook` validates the raw Authorization header token.
+- `verify-google-purchase` uses the Google Play order ID format as its
+  idempotency key.
 
-### Freezed Pattern
+### Account deletion
 
-**All domain entities use Freezed for immutability + JSON serialization:**
+- `delete-account` authenticates the user with Supabase JWT.
+- It removes generated images and uploaded inputs from storage.
+- It then deletes the auth user, which cascades related database records.
 
-```dart
-@freezed
-class TemplateModel with _$TemplateModel {
-  const factory TemplateModel({
-    required String id,
-    required String name,
-    required String category,
-    @JsonKey(name: 'thumbnail_url') required String thumbnailUrl,
-    @JsonKey(name: 'input_fields') required List<InputField> inputFields,
-    @JsonKey(name: 'prompt_template') String? promptTemplate,
-    @JsonKey(name: 'default_aspect_ratio') String? defaultAspectRatio,
-    @JsonKey(name: 'is_active') @Default(true) bool isActive,
-    int? order,
-    String? description,
-  }) = _TemplateModel;
+## Data Layer
 
-  factory TemplateModel.fromJson(Map<String, dynamic> json) =>
-      _$TemplateModelFromJson(json);
-}
-```
+Key operational tables and storage areas include:
 
-**Key Models:**
+- `profiles`
+- `generation_jobs`
+- `credits`
+- `subscriptions`
+- `templates`
+- `generated-images` storage bucket
 
-| Model | Purpose | Location |
-|-------|---------|----------|
-| `UserModel` | Auth user + profile | `features/auth/domain/entities/` |
-| `TemplateModel` | Template metadata | `features/template_engine/domain/entities/` |
-| `GenerationJobModel` | Job status tracking | `features/template_engine/domain/entities/` |
-| `InputField` | Dynamic form field config | `features/template_engine/domain/entities/` |
+## Shared Backend Helpers
 
----
+- `_shared/cors.ts`
+- `_shared/credit_logic.ts`
+- `_shared/model_config.ts`
 
-## Database Schema (Supabase)
+The shared model config is a critical contract: the client model list and server
+model cost/premium flags must stay aligned.
 
-### Tables
+## Boundaries to Keep Stable
 
-```sql
--- User profiles (linked to auth.users)
-CREATE TABLE profiles (
-  id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
-  email TEXT NOT NULL,
-  display_name TEXT,
-  avatar_url TEXT,
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ DEFAULT NOW()
-);
+- Client configuration is for initialization and UX, not trust.
+- Credits and subscription state are server-owned.
+- Model cost sync must be updated in both client and server code.
+- Edge Functions should remain small enough to reason about per request path.
 
--- Templates
-CREATE TABLE templates (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  name TEXT NOT NULL,
-  category TEXT NOT NULL,
-  description TEXT,
-  thumbnail_url TEXT NOT NULL,
-  input_fields JSONB NOT NULL,  -- Array of InputField specs
-  prompt_template TEXT,
-  default_aspect_ratio TEXT,
-  is_active BOOLEAN DEFAULT true,
-  "order" INTEGER,
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ DEFAULT NOW()
-);
+## Notes
 
--- Generation jobs
-CREATE TABLE generation_jobs (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  template_id UUID REFERENCES templates(id) ON DELETE SET NULL,
-  status TEXT NOT NULL CHECK (status IN ('pending', 'processing', 'completed', 'failed')),
-  input_data JSONB NOT NULL,     -- User-provided values for input_fields
-  provider_used TEXT,            -- AI provider (kie, gemini)
-  result_urls TEXT[],            -- Array of generated image URLs
-  error_message TEXT,
-  deleted_at TIMESTAMPTZ,        -- Soft delete timestamp
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ DEFAULT NOW()
-);
-
-CREATE INDEX idx_jobs_user_id ON generation_jobs(user_id);
-CREATE INDEX idx_jobs_status ON generation_jobs(status);
-
--- User credits (one row per user)
-CREATE TABLE user_credits (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE UNIQUE,
-  balance INTEGER NOT NULL DEFAULT 0,
-  is_premium BOOLEAN DEFAULT false,
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ DEFAULT NOW()
-);
-
--- Credit transactions (audit log)
-CREATE TABLE credit_transactions (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  amount INTEGER NOT NULL,
-  transaction_type TEXT NOT NULL CHECK (transaction_type IN ('welcome_bonus', 'generation', 'purchase', 'refund', 'subscription')),
-  description TEXT,
-  created_at TIMESTAMPTZ DEFAULT NOW()
-);
-
-CREATE INDEX idx_credits_user_id ON user_credits(user_id);
-CREATE INDEX idx_transactions_user_id ON credit_transactions(user_id);
-
--- Pending ad rewards (rate-limited ad credit claims)
-CREATE TABLE pending_ad_rewards (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  nonce TEXT NOT NULL UNIQUE,
-  status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'claimed', 'expired')),
-  created_at TIMESTAMPTZ DEFAULT NOW()
-);
-
--- RevenueCat events log
-CREATE TABLE revenuecat_events (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  event_type TEXT NOT NULL,
-  app_user_id UUID REFERENCES auth.users(id),
-  product_id TEXT,
-  entitlement_id TEXT,
-  raw_payload JSONB NOT NULL,
-  processed_at TIMESTAMPTZ DEFAULT NOW()
-);
-```
-
-### Database Functions (SECURITY DEFINER)
-
-All credit/subscription RPCs use `SECURITY DEFINER` with `SET search_path = public`:
-
-- `deduct_credits(p_user_id, p_amount, p_description)` — Atomic credit deduction with balance check
-- `refund_credits(p_user_id, p_amount, p_description)` — Credit refund on generation failure
-- `claim_ad_reward(p_user_id, p_nonce)` — Idempotent ad reward claim with nonce validation
-- `check_rate_limit(p_user_id, p_window_seconds, p_max_requests)` — Rate limiting
-- `handle_new_user()` — Trigger: seeds user_credits with welcome bonus
-- `grant_subscription_credits(p_user_id, p_amount)` — Grant credits on subscription purchase
-
-### Row Level Security (RLS)
-
-```sql
--- Profiles: Users can read all, update own
-ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Profiles are viewable by everyone"
-  ON profiles FOR SELECT USING (true);
-CREATE POLICY "Users can update own profile"
-  ON profiles FOR UPDATE USING (auth.uid() = id);
-
--- Templates: Read-only for users, admin writes via separate policy
-ALTER TABLE templates ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Templates are viewable by everyone"
-  ON templates FOR SELECT USING (true);
-
--- Generation jobs: Users can CRUD own jobs
-ALTER TABLE generation_jobs ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Users can view own jobs"
-  ON generation_jobs FOR SELECT USING (auth.uid() = user_id);
-CREATE POLICY "Users can insert own jobs"
-  ON generation_jobs FOR INSERT WITH CHECK (auth.uid() = user_id);
-CREATE POLICY "Users can update own jobs"
-  ON generation_jobs FOR UPDATE USING (auth.uid() = user_id);
-
--- User credits: Users can read own, service role manages
-ALTER TABLE user_credits ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Users can view own credits"
-  ON user_credits FOR SELECT USING (auth.uid() = user_id);
-
--- Credit transactions: Users can view own, service role manages
-ALTER TABLE credit_transactions ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Users can view own transactions"
-  ON credit_transactions FOR SELECT USING (auth.uid() = user_id);
-
--- Pending ad rewards: Users can manage own
-ALTER TABLE pending_ad_rewards ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Users can manage own ad rewards"
-  ON pending_ad_rewards FOR ALL USING (auth.uid() = user_id);
-
--- Storage: Authenticated users only, scoped to own prefix
--- Bucket: generated-images (INSERT/SELECT restricted to {user_id}/ path)
-```
-
-### Security Hardening (2026-03-04 Audit)
-
-- All `SECURITY DEFINER` functions have `SET search_path = public`
-- `EXECUTE` permission revoked from `authenticated` role on sensitive RPCs
-- RLS policies restrict `profiles` UPDATE to specific columns only
-- Storage bucket policies scope to `{user_id}/` prefix
-- Public schema usage revoked from `anon` and `authenticated` (granted selectively)
-
----
-
-## Storage Buckets (Supabase)
-
-```
-generated-images/         # User uploads + AI-generated outputs (note: hyphen, not underscore)
-  {user_id}/
-    inputs/               # User-selected source images for templates
-      {uuid}.jpg
-      {uuid}.jpg
-    {job_id}.jpg          # AI-generated output image
-```
-
-**RLS Policies:**
-- `generated-images`:
-  - Users can upload/read own files in `{user_id}/` prefix
-  - Edge Function can write outputs
-  - Signed URLs for image inputs (60-min expiry)
-
----
-
-## Authentication Flow
-
-### Email/Password
-
-```
-User submits email/password
-      ↓
-AuthRepository.signInWithEmail()
-      ↓
-Supabase.auth.signInWithPassword()
-      ↓
-On success:
-  - Supabase returns User + Session
-  - AuthRepository fetches/creates profile from profiles table
-  - Returns UserModel (merged user + profile data)
-      ↓
-AuthViewModel updates state → AsyncData(UserModel)
-      ↓
-Router redirects to Home (auth guard detects session)
-```
-
-### OAuth (Google/Apple)
-
-```
-User taps "Sign in with Google"
-      ↓
-AuthRepository.signInWithGoogle()
-      ↓
-Supabase.auth.signInWithOAuth(provider: 'google', redirectTo: AppConstants.googleRedirectUrl)
-      ↓
-Opens browser → Google consent screen
-      ↓
-Redirects to app via deep link (com.artio.app://)
-      ↓
-Supabase handles callback, creates auth.users entry
-      ↓
-AuthRepository.onAuthStateChange() stream emits new user
-      ↓
-AuthNotifier fetches profile, updates state
-      ↓
-Router redirects to Home
-```
-
-**Deep Link Configuration:**
-- iOS: `CFBundleURLSchemes` in `Info.plist`
-- Android: `intent-filter` in `AndroidManifest.xml`
-- Web: Browser redirect to origin domain
-
----
-
-## Image Generation Flow
-
-### Template-Based Generation (Image Input Support)
-
-```
-User selects template
-      ↓
-Template detail screen loads template data
-      ↓
-Dynamic input form renders (text, image upload, dropdown, image picker)
-      ↓
-User fills inputs, selects images from gallery/camera, taps "Generate"
-      ↓
-Generation ViewModel processes inputs:
-  1. Validates selected images (format, size)
-  2. Uploads images to Storage: {userId}/inputs/{uuid}.jpg
-  3. Passes imageInputs paths to repository
-      ↓
-Generation repository starts a job
-  1. Creates generation_jobs row (status: 'pending')
-  2. Calls Edge Function with imageInputs parameter
-      ↓
-Edge Function:
-  1. Resolves Storage paths → signed URLs (60-min expiry)
-  2. Maps image fields to correct KIE/Gemini parameter names per model
-  3. Builds request payload (image-to-image or text-to-image)
-  4. Calls KIE API or Gemini API
-  5. Downloads result, uploads to Storage
-  6. Updates generation_jobs (status: 'completed', result_urls)
-      ↓
-Realtime subscription streams job updates to UI
-  - Pending → "Queued..."
-  - Processing → "Generating..."
-  - Completed → Shows result image
-  - Failed → Shows error message (via AppExceptionMapper)
-```
-
-**Image Input Features:**
-- User can select 1-3 images per template (based on `input_fields`)
-- Images compressed to max 2MB before upload (JPEG, quality 85%)
-- Upload progress indicator during generation
-- Image preview + remove button in UI
-- Model selector auto-filters to image-capable models only
-
-### Text-to-Image Generation
-
-**Current Status**:
-- Create screen UI implemented with prompt input
-- Parameter selection UI implemented
-- Generation flow wired to `GenerationRepository`
-- Edge Function (`supabase/functions/generate-image/index.ts`) enforces credits before calling Kie/Gemini
-- Model selection: Imagen 4 (primary), Flux-2 (Pro), GPT Image, Seedream (fallback options)
-
-**Flow**:
-1. User enters prompt and selects parameters
-2. CreateViewModel validates input and calls `GenerationRepository.createJob()`
-3. Repository posts to Edge Function (requires `user_id` in JWT)
-4. Edge Function deducts credits via `deduct_credits` RPC
-5. If insufficient balance (402): repository catches and returns error
-6. If balance ok: Edge Function calls selected AI model (Kie or Gemini)
-7. Result uploaded to `generated-images` bucket
-8. Realtime stream updates UI from `generation_jobs` table
-
-**Notes**:
-- Model-cost map in Edge Function mirrors `core/constants/ai_models.dart`
-- Edge Function timeout: 120 seconds (Supabase limit)
-- Rate limiting and anti-abuse checks are enforced in `generate-image`
-
----
-
-## Navigation (go_router)
-
-### Route Structure (TypedGoRoute)
-
-```
-/ (home)                      → HomeScreen (auth required)
-/template/:id                 → TemplateDetailScreen (auth required)
-/login                        → LoginScreen (redirect to / if authenticated)
-/register                     → RegisterScreen (redirect to / if authenticated)
-/forgot-password              → ForgotPasswordScreen
-/gallery                      → GalleryPage (auth required)
-/create                       → CreateScreen (auth required)
-/settings                     → SettingsScreen (auth required)
-```
-
-**Navigation**: Uses TypedGoRoute classes in `lib/routing/routes/app_routes.dart`
-
-### Auth Guards
-
-```dart
-redirect: (context, state) {
-  final isAuthenticated = supabase.auth.currentUser != null;
-  final isLoginPage = state.matchedLocation == '/login' || state.matchedLocation == '/signup';
-
-  if (!isAuthenticated && !isLoginPage) {
-    return '/login';  // Redirect unauthenticated to login
-  }
-  if (isAuthenticated && isLoginPage) {
-    return '/';  // Redirect authenticated away from login
-  }
-  return null;  // No redirect
-}
-```
-
----
-
-## Error Handling
-
-### Exception Hierarchy
-
-```dart
-@freezed
-sealed class AppException with _$AppException implements Exception {
-  const factory AppException.network({required String message, int? statusCode}) = NetworkException;
-  const factory AppException.auth({required String message, String? code}) = AuthException;
-  const factory AppException.storage({required String message}) = StorageException;
-  const factory AppException.payment({required String message, String? code}) = PaymentException;
-  const factory AppException.generation({required String message, String? jobId}) = GenerationException;
-  const factory AppException.unknown({required String message, Object? originalError}) = UnknownException;
-}
-```
-
-### Error Propagation
-
-```
-Data Layer (Repository)
-      ↓ throws AppException
-Domain Layer (use case)
-      ↓ throws AppException (or wraps)
-Presentation Layer (Notifier)
-      ↓ catches, sets state to AsyncError(exception)
-UI (Screen/Widget)
-      ↓ ref.watch() → AsyncError case
-      ↓ Shows user-friendly message via AppExceptionMapper
-```
-
-**User-Facing Messages:**
-```dart
-// Also handles non-AppException types:
-AppExceptionMapper.toUserMessage(error) →
-  SocketException → "No internet connection. Please check your network."
-  TimeoutException → "Request timed out. Please try again."
-  AuthException('invalid_credentials') → "Invalid email or password."
-  NetworkException(statusCode: 500) → "Server error. Please try again later."
-  PaymentException('cancelled') → "Payment was cancelled."
-  GenerationException() → (message passed through)
-```
-
----
-
-## Theming
-
-### Material Theme Setup
-
-```dart
-MaterialApp.router(
-  theme: AppTheme.lightTheme,       // Light mode
-  darkTheme: AppTheme.darkTheme,    // Dark mode
-  themeMode: ThemeMode.system,      // Follow system preference
-  // ...
-)
-```
-
-**Theme Switching:**
-- Persisted via SharedPreferences in `ThemeModeNotifier`
-- Managed by `themeModeNotifierProvider` (Riverpod codegen)
-- Updates `MaterialApp.themeMode` reactively
-
----
-
-## RevenueCat Integration
-
-### Webhook Flow
-
-```
-App Store / Play Store purchase event
-      ↓
-RevenueCat processes subscription
-      ↓
-RevenueCat sends webhook to Supabase Edge Function
-      ↓
-supabase/functions/revenuecat-webhook/index.ts:
-  1. Validates webhook signature (REVENUECAT_WEBHOOK_SECRET)
-  2. Extracts event type + app_user_id
-  3. Logs event to revenuecat_events table
-  4. On INITIAL_PURCHASE / RENEWAL:
-     - Grants subscription credits via grant_subscription_credits RPC
-     - Updates user_credits.is_premium = true
-  5. On EXPIRATION / CANCELLATION:
-     - Updates user_credits.is_premium = false
-      ↓
-Flutter app detects entitlement change via RevenueCat SDK listener
-```
-
-### Client Integration
-
-- `purchases_flutter` ^9.0.0 for iOS/Android
-- `SubscriptionRepository` wraps RevenueCat SDK
-- User identity linked on login via `Purchases.logIn(supabaseUserId)`
-- Entitlement check: `customerInfo.entitlements.active['pro']`
-- Paywall shows Pro/Ultra tiers with animated plan cards
-
----
-
-## Edge Functions (Supabase)
-
-### generate_image Function
-
-**Trigger:** HTTP POST from Flutter app
-
-**Input:**
-```json
-{
-  "job_id": "uuid",
-  "template_id": "uuid|null",
-  "model_id": "google/imagen4-fast|flux-2/flex-image-to-image|etc",
-  "output_format": "portrait|square|landscape",
-  "prompt": "a red car",
-  "imageInputs": [
-    "user-id/inputs/uuid-1.jpg",
-    "user-id/inputs/uuid-2.jpg"
-  ],
-  "input_data": {
-    "style": "photorealistic"
-  }
-}
-```
-
-**Flow:**
-1. Authenticate request (verify JWT)
-2. Deduct credits via `deduct_credits` RPC (402 if insufficient)
-3. Resolve image paths to signed URLs (imageInputs array)
-4. Build API request (KIE or Gemini)
-   - Maps field names per model: `input_urls`, `image_urls`, `image_input`, etc.
-   - Includes signed URLs for image inputs
-5. Call KIE API or Gemini API
-6. Download result image
-7. Upload to `generated-images` Storage bucket
-8. Update `generation_jobs` table (status: 'completed', result_urls)
-
-**Output (example shape):**
-```json
-{
-  "job_id": "uuid",
-  "status": "completed",
-  "result_urls": ["https://storage.supabase.co/.../output.png"]
-}
-```
-
-**Image Input Mapping by Model:**
-| Model Family | Field Name |
-|-------------|-----------|
-| `flux-2/*-image-to-image` | `input_urls` |
-| `gpt-image/*-image-to-image` | `input_urls` |
-| `seedream/*-edit` | `image_urls` |
-| `google/nano-banana-edit` | `image_urls` |
-| `nano-banana-pro`, `gemini-*` | `image_input` |
-
-**Error Handling:**
-- KIE/Gemini API failures → Update job status to 'failed', set error_message
-- Insufficient credits → Return 402, no charge
-- Image resolution errors → Return 400 with descriptive message
-- Retry logic for transient errors (exponential backoff)
-
----
-
-## Realtime Updates
-
-### Job Status Streaming
-
-```dart
-// Repository
-Stream<GenerationJobModel> watchJob(String jobId) {
-  return supabase
-    .from('generation_jobs')
-    .stream(primaryKey: ['id'])
-    .eq('id', jobId)
-    .map((rows) => GenerationJobModel.fromJson(rows.first));
-}
-
-// Provider
-@riverpod
-Stream<GenerationJobModel> generationJob(GenerationJobRef ref, String jobId) {
-  return ref.watch(generationRepositoryProvider).watchJob(jobId);
-}
-
-// UI
-ref.listen(generationJobProvider(jobId), (prev, next) {
-  next.when(
-    data: (job) {
-      if (job.status == 'completed') {
-        showSnackbar('Image ready!');
-        context.go('/gallery');
-      }
-    },
-    error: (err, stack) => showSnackbar('Generation failed'),
-  );
-});
-```
-
----
-
-## Security Considerations
-
-### Secrets Management
-
-- **Supabase URL/Anon Key:** Public (safe, enforced by RLS)
-- **Kie API Key:** Server-side only (Edge Function env vars)
-- **Gemini API Key:** Server-side only (Edge Function env vars)
-- **OAuth Credentials:** Native app config (iOS/Android)
-- **No secrets in code:** All config via Supabase dashboard or `.env` (excluded from git)
-
-### RLS Enforcement
-
-- All tables have RLS enabled
-- Users can only access own data (jobs, profiles)
-- Templates are read-only for users
-- Admin writes via service role key (not exposed to client)
-
-### Input Validation
-
-- Client-side: Flutter form validators
-- Server-side: Edge Function validates input_data against template schema
-- SQL injection: PostgreSQL prepared statements (Supabase client handles)
-
----
-
-## Deployment
-
-### Flutter App
-
-**Platforms:**
-- iOS: Xcode build → App Store Connect → TestFlight/Production
-- Android: Gradle build → Google Play Console → Internal/Production
-- Web: `flutter build web` → Firebase Hosting / Vercel
-- Windows: `flutter build windows` → Desktop installer (development/testing)
-
-**Environment Config:**
-- Dev: `.env.dev` via `EnvConfig` (staging Supabase project)
-- Prod: `.env` via `EnvConfig` (production Supabase project)
-
-### Supabase Backend
-
-**Infrastructure:**
-- PostgreSQL: Managed by Supabase (auto-scaling)
-- Storage: S3-compatible (CDN cached)
-- Edge Functions: Deno runtime (auto-deploy on push)
-
-**CI/CD:**
-- GitHub Actions → Supabase CLI → Deploy Edge Functions
-- Database migrations: Supabase CLI (`supabase db push`)
-
----
-
-## Performance Optimization
-
-### Image Loading
-
-- `cached_network_image` for thumbnails (in-memory + disk cache)
-- Progressive loading (low-res placeholder → full-res)
-- Lazy loading in gallery (pagination)
-
-### State Management
-
-- Riverpod auto-dispose for unused providers
-- `family` modifiers for parameterized providers (e.g., `templateProvider(id)`)
-- `keepAlive()` for persistent providers (auth state)
-
-### Database Queries
-
-- Indexed columns: `user_id`, `status` on `generation_jobs`
-- RLS policies use indexed columns for performance
-- Pagination: `limit` + `offset` for gallery
-
----
-
-## Monitoring
-
-### Metrics to Track
-
-- Generation success rate (completed / total jobs)
-- Average generation time (processing → completed)
-- Error rate by exception type
-- User retention (DAU/MAU)
-
-### Active Tools
-
-- Sentry (`sentry_flutter ^8.12.0`): active in `main.dart` via `SentryConfig.init()` with non-blocking startup
-- Supabase Analytics: Database query performance
-- RevenueCat: Subscription analytics (debug logging enabled in dev)
-- AdMob: Rewarded ads with server-side verification (SSV)
-
----
-
-## Scalability Considerations
-
-### Current Limits (MVP)
-
-- Supabase plan limits are tracked via dashboard usage metrics
-- Kie API rate limits are handled with retry and monitored in production
-- Gemini API: rate limits per project tier
-- Edge Functions: invocations/month depends on plan tier
-
-### Future Scaling
-
-- **Database:** Upgrade Supabase plan, add read replicas
-- **Storage:** CDN in front of Storage (Cloudflare)
-- **Generation Queue:** Redis queue for job processing (prevent Edge Function timeouts)
-- **Caching:** Redis for template metadata, user profiles
-
----
-
-## References
-
-- **Architecture Guide:** `AGENTS.md`
-- **Code Standards:** `docs/code-standards.md`
-- **Database Schema:** `supabase/migrations/`
-- **API Documentation:** `docs/kie-api-llms.txt`
-- **Phase 4 Plan:** `plans/260125-0120-artio-bootstrap/phase-04-template-engine.md`
-- **Phase 4.6 Plan:** `plans/260125-1516-phase46-architecture-hardening/plan.md`
-
----
-
-**AI Model Documentation**: `docs/kie-api/` (source of truth for model specs, parameters, Edge Function integration)
-
-**Last Updated**: 2026-03-04 (v1.8 — RevenueCat integration, security audit, updated database schema)
+This document describes the current runtime shape inferred from the live code,
+not a future architecture proposal.
