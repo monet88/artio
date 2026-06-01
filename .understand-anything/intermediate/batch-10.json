@@ -1,0 +1,305 @@
+{
+  "nodes": [
+    {
+      "id": "file:lib/features/gallery/data/services/gallery_cache_service.g.dart",
+      "type": "file",
+      "name": "gallery_cache_service.g.dart",
+      "summary": "Application source file gallery_cache_service.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "data-layer"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/gallery/data/services/gallery_cache_service.g.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/domain/entities/gallery_item.dart",
+      "type": "file",
+      "name": "gallery_item.dart",
+      "summary": "Application source file gallery_item.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/gallery/domain/entities/gallery_item.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/domain/entities/gallery_item.freezed.dart",
+      "type": "file",
+      "name": "gallery_item.freezed.dart",
+      "summary": "Application source file gallery_item.freezed.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/gallery/domain/entities/gallery_item.freezed.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/domain/entities/gallery_item.g.dart",
+      "type": "file",
+      "name": "gallery_item.g.dart",
+      "summary": "Application source file gallery_item.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/gallery/domain/entities/gallery_item.g.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/domain/providers/gallery_repository_provider.dart",
+      "type": "file",
+      "name": "gallery_repository_provider.dart",
+      "summary": "Application source file gallery_repository_provider.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/gallery/domain/providers/gallery_repository_provider.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/domain/repositories/i_gallery_repository.dart",
+      "type": "file",
+      "name": "i_gallery_repository.dart",
+      "summary": "Application source file i_gallery_repository.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/gallery/domain/repositories/i_gallery_repository.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/presentation/constants/gallery_strings.dart",
+      "type": "file",
+      "name": "gallery_strings.dart",
+      "summary": "Application source file gallery_strings.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/gallery/presentation/constants/gallery_strings.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/presentation/pages/gallery_page.dart",
+      "type": "file",
+      "name": "gallery_page.dart",
+      "summary": "Application source file gallery_page.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/gallery/presentation/pages/gallery_page.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/presentation/pages/image_viewer_action_helper.dart",
+      "type": "file",
+      "name": "image_viewer_action_helper.dart",
+      "summary": "Application source file image_viewer_action_helper.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/gallery/presentation/pages/image_viewer_action_helper.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/presentation/pages/image_viewer_page.dart",
+      "type": "file",
+      "name": "image_viewer_page.dart",
+      "summary": "Application source file image_viewer_page.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/gallery/presentation/pages/image_viewer_page.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/presentation/providers/gallery_provider.dart",
+      "type": "file",
+      "name": "gallery_provider.dart",
+      "summary": "Application source file gallery_provider.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/gallery/presentation/providers/gallery_provider.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/presentation/providers/gallery_provider.g.dart",
+      "type": "file",
+      "name": "gallery_provider.g.dart",
+      "summary": "Application source file gallery_provider.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/gallery/presentation/providers/gallery_provider.g.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/presentation/widgets/empty_gallery_illustration.dart",
+      "type": "file",
+      "name": "empty_gallery_illustration.dart",
+      "summary": "Application source file empty_gallery_illustration.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/gallery/presentation/widgets/empty_gallery_illustration.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/presentation/widgets/empty_gallery_state.dart",
+      "type": "file",
+      "name": "empty_gallery_state.dart",
+      "summary": "Application source file empty_gallery_state.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/gallery/presentation/widgets/empty_gallery_state.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/presentation/widgets/failed_image_card.dart",
+      "type": "file",
+      "name": "failed_image_card.dart",
+      "summary": "Application source file failed_image_card.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/gallery/presentation/widgets/failed_image_card.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/presentation/widgets/image_info_bottom_sheet.dart",
+      "type": "file",
+      "name": "image_info_bottom_sheet.dart",
+      "summary": "Application source file image_info_bottom_sheet.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/gallery/presentation/widgets/image_info_bottom_sheet.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/presentation/widgets/image_viewer_app_bar.dart",
+      "type": "file",
+      "name": "image_viewer_app_bar.dart",
+      "summary": "Application source file image_viewer_app_bar.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/gallery/presentation/widgets/image_viewer_app_bar.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/presentation/widgets/image_viewer_image_page.dart",
+      "type": "file",
+      "name": "image_viewer_image_page.dart",
+      "summary": "Application source file image_viewer_image_page.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/gallery/presentation/widgets/image_viewer_image_page.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/presentation/widgets/image_viewer_page_indicator.dart",
+      "type": "file",
+      "name": "image_viewer_page_indicator.dart",
+      "summary": "Application source file image_viewer_page_indicator.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/gallery/presentation/widgets/image_viewer_page_indicator.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/presentation/widgets/image_viewer_swipe_dismiss.dart",
+      "type": "file",
+      "name": "image_viewer_swipe_dismiss.dart",
+      "summary": "Application source file image_viewer_swipe_dismiss.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/gallery/presentation/widgets/image_viewer_swipe_dismiss.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/presentation/widgets/interactive_gallery_item.dart",
+      "type": "file",
+      "name": "interactive_gallery_item.dart",
+      "summary": "Application source file interactive_gallery_item.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/gallery/presentation/widgets/interactive_gallery_item.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/presentation/widgets/masonry_image_grid.dart",
+      "type": "file",
+      "name": "masonry_image_grid.dart",
+      "summary": "Application source file masonry_image_grid.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/gallery/presentation/widgets/masonry_image_grid.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/presentation/widgets/shimmer_grid.dart",
+      "type": "file",
+      "name": "shimmer_grid.dart",
+      "summary": "Application source file shimmer_grid.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/gallery/presentation/widgets/shimmer_grid.dart"
+    },
+    {
+      "id": "file:lib/features/settings/data/notifications_provider.dart",
+      "type": "file",
+      "name": "notifications_provider.dart",
+      "summary": "Application source file notifications_provider.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "data-layer"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/settings/data/notifications_provider.dart"
+    },
+    {
+      "id": "file:lib/features/settings/data/notifications_provider.g.dart",
+      "type": "file",
+      "name": "notifications_provider.g.dart",
+      "summary": "Application source file notifications_provider.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "data-layer"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/settings/data/notifications_provider.g.dart"
+    }
+  ],
+  "edges": []
+}

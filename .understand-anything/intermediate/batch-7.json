@@ -1,0 +1,288 @@
+{
+  "nodes": [
+    {
+      "id": "file:lib/core/services/image_upload_service.g.dart",
+      "type": "file",
+      "name": "image_upload_service.g.dart",
+      "summary": "Application source file image_upload_service.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/core/services/image_upload_service.g.dart"
+    },
+    {
+      "id": "file:lib/core/services/rewarded_ad_service.dart",
+      "type": "file",
+      "name": "rewarded_ad_service.dart",
+      "summary": "Application source file rewarded_ad_service.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/core/services/rewarded_ad_service.dart"
+    },
+    {
+      "id": "file:lib/core/services/rewarded_ad_service.g.dart",
+      "type": "file",
+      "name": "rewarded_ad_service.g.dart",
+      "summary": "Application source file rewarded_ad_service.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/core/services/rewarded_ad_service.g.dart"
+    },
+    {
+      "id": "file:lib/core/services/storage_url_service.dart",
+      "type": "file",
+      "name": "storage_url_service.dart",
+      "summary": "Application source file storage_url_service.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/core/services/storage_url_service.dart"
+    },
+    {
+      "id": "file:lib/core/services/storage_url_service.g.dart",
+      "type": "file",
+      "name": "storage_url_service.g.dart",
+      "summary": "Application source file storage_url_service.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/core/services/storage_url_service.g.dart"
+    },
+    {
+      "id": "file:lib/core/state/auth_view_model_provider.dart",
+      "type": "file",
+      "name": "auth_view_model_provider.dart",
+      "summary": "Application source file auth_view_model_provider.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/core/state/auth_view_model_provider.dart"
+    },
+    {
+      "id": "file:lib/core/state/credit_balance_state_provider.dart",
+      "type": "file",
+      "name": "credit_balance_state_provider.dart",
+      "summary": "Application source file credit_balance_state_provider.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/core/state/credit_balance_state_provider.dart"
+    },
+    {
+      "id": "file:lib/core/state/subscription_state_provider.dart",
+      "type": "file",
+      "name": "subscription_state_provider.dart",
+      "summary": "Application source file subscription_state_provider.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/core/state/subscription_state_provider.dart"
+    },
+    {
+      "id": "file:lib/core/state/user_scoped_providers.dart",
+      "type": "file",
+      "name": "user_scoped_providers.dart",
+      "summary": "Application source file user_scoped_providers.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/core/state/user_scoped_providers.dart"
+    },
+    {
+      "id": "file:lib/core/utils/app_exception_mapper.dart",
+      "type": "file",
+      "name": "app_exception_mapper.dart",
+      "summary": "Application source file app_exception_mapper.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/core/utils/app_exception_mapper.dart"
+    },
+    {
+      "id": "file:lib/core/utils/date_time_utils.dart",
+      "type": "file",
+      "name": "date_time_utils.dart",
+      "summary": "Application source file date_time_utils.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/core/utils/date_time_utils.dart"
+    },
+    {
+      "id": "file:lib/core/utils/email_validator.dart",
+      "type": "file",
+      "name": "email_validator.dart",
+      "summary": "Application source file email_validator.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/core/utils/email_validator.dart"
+    },
+    {
+      "id": "file:lib/core/utils/prompt_validator.dart",
+      "type": "file",
+      "name": "prompt_validator.dart",
+      "summary": "Application source file prompt_validator.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/core/utils/prompt_validator.dart"
+    },
+    {
+      "id": "file:lib/core/utils/retry.dart",
+      "type": "file",
+      "name": "retry.dart",
+      "summary": "Application source file retry.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/core/utils/retry.dart"
+    },
+    {
+      "id": "file:lib/core/utils/subagent_smoke_codegen.dart",
+      "type": "file",
+      "name": "subagent_smoke_codegen.dart",
+      "summary": "Application source file subagent_smoke_codegen.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/core/utils/subagent_smoke_codegen.dart"
+    },
+    {
+      "id": "file:lib/core/utils/url_launcher_utils.dart",
+      "type": "file",
+      "name": "url_launcher_utils.dart",
+      "summary": "Application source file url_launcher_utils.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/core/utils/url_launcher_utils.dart"
+    },
+    {
+      "id": "file:lib/core/utils/watermark_util.dart",
+      "type": "file",
+      "name": "watermark_util.dart",
+      "summary": "Application source file watermark_util.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/core/utils/watermark_util.dart"
+    },
+    {
+      "id": "file:lib/core/widgets/bottom_sheet_body.dart",
+      "type": "file",
+      "name": "bottom_sheet_body.dart",
+      "summary": "Application source file bottom_sheet_body.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/core/widgets/bottom_sheet_body.dart"
+    },
+    {
+      "id": "document:lib/features/AGENTS.md",
+      "type": "document",
+      "name": "AGENTS.md",
+      "summary": "Documentation file AGENTS.md that explains project workflow, architecture, or operational guidance for the Artio codebase.",
+      "tags": [
+        "documentation",
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/AGENTS.md"
+    },
+    {
+      "id": "file:lib/features/auth/data/repositories/auth_repository.dart",
+      "type": "file",
+      "name": "auth_repository.dart",
+      "summary": "Application source file auth_repository.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "data-layer"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/auth/data/repositories/auth_repository.dart"
+    },
+    {
+      "id": "file:lib/features/auth/data/repositories/auth_repository.g.dart",
+      "type": "file",
+      "name": "auth_repository.g.dart",
+      "summary": "Application source file auth_repository.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "data-layer"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/auth/data/repositories/auth_repository.g.dart"
+    },
+    {
+      "id": "file:lib/features/auth/domain/entities/user_model.dart",
+      "type": "file",
+      "name": "user_model.dart",
+      "summary": "Application source file user_model.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/auth/domain/entities/user_model.dart"
+    },
+    {
+      "id": "file:lib/features/auth/domain/entities/user_model.freezed.dart",
+      "type": "file",
+      "name": "user_model.freezed.dart",
+      "summary": "Application source file user_model.freezed.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/auth/domain/entities/user_model.freezed.dart"
+    },
+    {
+      "id": "file:lib/features/auth/domain/entities/user_model.g.dart",
+      "type": "file",
+      "name": "user_model.g.dart",
+      "summary": "Application source file user_model.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/auth/domain/entities/user_model.g.dart"
+    },
+    {
+      "id": "file:lib/features/auth/domain/providers/auth_repository_provider.dart",
+      "type": "file",
+      "name": "auth_repository_provider.dart",
+      "summary": "Application source file auth_repository_provider.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/auth/domain/providers/auth_repository_provider.dart"
+    }
+  ],
+  "edges": []
+}

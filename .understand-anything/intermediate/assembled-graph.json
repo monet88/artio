@@ -1,0 +1,4338 @@
+{
+  "version": "1.0.0",
+  "project": {
+    "name": "artio",
+    "languages": [
+      "config",
+      "dart",
+      "json",
+      "makefile",
+      "markdown",
+      "shell",
+      "sql",
+      "toml",
+      "txt",
+      "typescript",
+      "unknown",
+      "yaml"
+    ],
+    "frameworks": [
+      "Flutter",
+      "GitHub Actions",
+      "GoRouter",
+      "Riverpod",
+      "Supabase"
+    ],
+    "description": "AI Art Generation App. Note: this project has over 100 source files; consider scoping analysis to a subdirectory for faster results.",
+    "analyzedAt": "2026-06-01T05:02:12.284245+00:00",
+    "gitCommitHash": "1a15dfbe434dcb782707ac47e5217ee5399e2baf"
+  },
+  "nodes": [
+    {
+      "id": "file:supabase/functions/_shared/cors.ts",
+      "type": "file",
+      "name": "cors.ts",
+      "summary": "Backend source file cors.ts used by Supabase functions or shared server utilities in the Artio generation platform.",
+      "tags": [
+        "backend"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/_shared/cors.ts"
+    },
+    {
+      "id": "function:supabase/functions/_shared/cors.ts:corsHeaders",
+      "type": "function",
+      "name": "corsHeaders",
+      "summary": "Function corsHeaders defined in cors.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/_shared/cors.ts"
+    },
+    {
+      "id": "function:supabase/functions/_shared/cors.ts:handleCorsIfPreflight",
+      "type": "function",
+      "name": "handleCorsIfPreflight",
+      "summary": "Function handleCorsIfPreflight defined in cors.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/_shared/cors.ts"
+    },
+    {
+      "id": "file:supabase/functions/sync-subscription/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "summary": "Backend source file index.ts used by Supabase functions or shared server utilities in the Artio generation platform.",
+      "tags": [
+        "backend"
+      ],
+      "complexity": "complex",
+      "filePath": "supabase/functions/sync-subscription/index.ts"
+    },
+    {
+      "id": "file:supabase/functions/verify-google-purchase/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "summary": "Backend source file index.ts used by Supabase functions or shared server utilities in the Artio generation platform.",
+      "tags": [
+        "backend"
+      ],
+      "complexity": "complex",
+      "filePath": "supabase/functions/verify-google-purchase/index.ts"
+    },
+    {
+      "id": "file:supabase/functions/_shared/model_config.ts",
+      "type": "file",
+      "name": "model_config.ts",
+      "summary": "Backend source file model_config.ts used by Supabase functions or shared server utilities in the Artio generation platform.",
+      "tags": [
+        "backend"
+      ],
+      "complexity": "moderate",
+      "filePath": "supabase/functions/_shared/model_config.ts"
+    },
+    {
+      "id": "function:supabase/functions/_shared/model_config.ts:isPremiumModel",
+      "type": "function",
+      "name": "isPremiumModel",
+      "summary": "Function isPremiumModel defined in model_config.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/_shared/model_config.ts"
+    },
+    {
+      "id": "function:supabase/functions/_shared/model_config.ts:getModelCreditCost",
+      "type": "function",
+      "name": "getModelCreditCost",
+      "summary": "Function getModelCreditCost defined in model_config.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/_shared/model_config.ts"
+    },
+    {
+      "id": "file:supabase/functions/_shared/model_config_test.ts",
+      "type": "file",
+      "name": "model_config_test.ts",
+      "summary": "Backend source file model_config_test.ts used by Supabase functions or shared server utilities in the Artio generation platform.",
+      "tags": [
+        "test",
+        "backend"
+      ],
+      "complexity": "moderate",
+      "filePath": "supabase/functions/_shared/model_config_test.ts"
+    },
+    {
+      "id": "file:supabase/functions/generate-image/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "summary": "Backend source file index.ts used by Supabase functions or shared server utilities in the Artio generation platform.",
+      "tags": [
+        "backend"
+      ],
+      "complexity": "complex",
+      "filePath": "supabase/functions/generate-image/index.ts"
+    },
+    {
+      "id": "function:supabase/functions/generate-image/index.ts:resolveImageUrls",
+      "type": "function",
+      "name": "resolveImageUrls",
+      "summary": "Function resolveImageUrls defined in index.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/generate-image/index.ts"
+    },
+    {
+      "id": "function:supabase/functions/generate-image/index.ts:buildKieInput",
+      "type": "function",
+      "name": "buildKieInput",
+      "summary": "Function buildKieInput defined in index.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "moderate",
+      "filePath": "supabase/functions/generate-image/index.ts"
+    },
+    {
+      "id": "function:supabase/functions/generate-image/index.ts:createKieTask",
+      "type": "function",
+      "name": "createKieTask",
+      "summary": "Function createKieTask defined in index.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/generate-image/index.ts"
+    },
+    {
+      "id": "function:supabase/functions/generate-image/index.ts:pollKieTask",
+      "type": "function",
+      "name": "pollKieTask",
+      "summary": "Function pollKieTask defined in index.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "moderate",
+      "filePath": "supabase/functions/generate-image/index.ts"
+    },
+    {
+      "id": "function:supabase/functions/generate-image/index.ts:downloadImageAsBase64",
+      "type": "function",
+      "name": "downloadImageAsBase64",
+      "summary": "Function downloadImageAsBase64 defined in index.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/generate-image/index.ts"
+    },
+    {
+      "id": "function:supabase/functions/generate-image/index.ts:generateViaGemini",
+      "type": "function",
+      "name": "generateViaGemini",
+      "summary": "Function generateViaGemini defined in index.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "moderate",
+      "filePath": "supabase/functions/generate-image/index.ts"
+    },
+    {
+      "id": "function:supabase/functions/generate-image/index.ts:generateViaImagen",
+      "type": "function",
+      "name": "generateViaImagen",
+      "summary": "Function generateViaImagen defined in index.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/generate-image/index.ts"
+    },
+    {
+      "id": "function:supabase/functions/generate-image/index.ts:uploadToStorage",
+      "type": "function",
+      "name": "uploadToStorage",
+      "summary": "Function uploadToStorage defined in index.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/generate-image/index.ts"
+    },
+    {
+      "id": "function:supabase/functions/generate-image/index.ts:cleanupStorageFiles",
+      "type": "function",
+      "name": "cleanupStorageFiles",
+      "summary": "Function cleanupStorageFiles defined in index.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/generate-image/index.ts"
+    },
+    {
+      "id": "function:supabase/functions/generate-image/index.ts:mirrorUrlsToStorage",
+      "type": "function",
+      "name": "mirrorUrlsToStorage",
+      "summary": "Function mirrorUrlsToStorage defined in index.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/generate-image/index.ts"
+    },
+    {
+      "id": "function:supabase/functions/generate-image/index.ts:mirrorBase64ToStorage",
+      "type": "function",
+      "name": "mirrorBase64ToStorage",
+      "summary": "Function mirrorBase64ToStorage defined in index.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/generate-image/index.ts"
+    },
+    {
+      "id": "function:supabase/functions/generate-image/index.ts:updateJobStatus",
+      "type": "function",
+      "name": "updateJobStatus",
+      "summary": "Function updateJobStatus defined in index.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/generate-image/index.ts"
+    },
+    {
+      "id": "function:supabase/functions/generate-image/index.ts:refundAndBuildErrorMsg",
+      "type": "function",
+      "name": "refundAndBuildErrorMsg",
+      "summary": "Function refundAndBuildErrorMsg defined in index.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/generate-image/index.ts"
+    },
+    {
+      "id": "pipeline:.github/workflows/supabase-keepalive.yml",
+      "type": "pipeline",
+      "name": "supabase-keepalive.yml",
+      "summary": "CI/CD workflow supabase-keepalive.yml that automates repository maintenance, validation, or deployment-related tasks.",
+      "tags": [
+        "ci-cd",
+        "automation"
+      ],
+      "complexity": "simple",
+      "filePath": ".github/workflows/supabase-keepalive.yml"
+    },
+    {
+      "id": "table:supabase/migrations/20260127000000_create_templates_table.sql",
+      "type": "table",
+      "name": "20260127000000_create_templates_table.sql",
+      "summary": "Database schema or migration file 20260127000000_create_templates_table.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/migrations/20260127000000_create_templates_table.sql"
+    },
+    {
+      "id": "table:supabase/migrations/20260128000000_create_profiles_table.sql",
+      "type": "table",
+      "name": "20260128000000_create_profiles_table.sql",
+      "summary": "Database schema or migration file 20260128000000_create_profiles_table.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/migrations/20260128000000_create_profiles_table.sql"
+    },
+    {
+      "id": "table:supabase/migrations/20260128094706_create_admin_user.sql",
+      "type": "table",
+      "name": "20260128094706_create_admin_user.sql",
+      "summary": "Database schema or migration file 20260128094706_create_admin_user.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "moderate",
+      "filePath": "supabase/migrations/20260128094706_create_admin_user.sql"
+    },
+    {
+      "id": "table:supabase/migrations/20260128115551_add_deleted_at_and_storage_bucket.sql",
+      "type": "table",
+      "name": "20260128115551_add_deleted_at_and_storage_bucket.sql",
+      "summary": "Database schema or migration file 20260128115551_add_deleted_at_and_storage_bucket.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "moderate",
+      "filePath": "supabase/migrations/20260128115551_add_deleted_at_and_storage_bucket.sql"
+    },
+    {
+      "id": "table:supabase/migrations/20260128130000_add_25_templates.sql",
+      "type": "table",
+      "name": "20260128130000_add_25_templates.sql",
+      "summary": "Database schema or migration file 20260128130000_add_25_templates.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "complex",
+      "filePath": "supabase/migrations/20260128130000_add_25_templates.sql"
+    },
+    {
+      "id": "table:supabase/migrations/20260218000000_create_credit_system.sql",
+      "type": "table",
+      "name": "20260218000000_create_credit_system.sql",
+      "summary": "Database schema or migration file 20260218000000_create_credit_system.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "moderate",
+      "filePath": "supabase/migrations/20260218000000_create_credit_system.sql"
+    },
+    {
+      "id": "table:supabase/migrations/20260218100000_create_reward_ad_function.sql",
+      "type": "table",
+      "name": "20260218100000_create_reward_ad_function.sql",
+      "summary": "Database schema or migration file 20260218100000_create_reward_ad_function.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "moderate",
+      "filePath": "supabase/migrations/20260218100000_create_reward_ad_function.sql"
+    },
+    {
+      "id": "table:supabase/migrations/20260219000000_add_subscription_support.sql",
+      "type": "table",
+      "name": "20260219000000_add_subscription_support.sql",
+      "summary": "Database schema or migration file 20260219000000_add_subscription_support.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "moderate",
+      "filePath": "supabase/migrations/20260219000000_add_subscription_support.sql"
+    },
+    {
+      "id": "table:supabase/migrations/20260219000001_restrict_profiles_update_rls.sql",
+      "type": "table",
+      "name": "20260219000001_restrict_profiles_update_rls.sql",
+      "summary": "Database schema or migration file 20260219000001_restrict_profiles_update_rls.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/migrations/20260219000001_restrict_profiles_update_rls.sql"
+    },
+    {
+      "id": "table:supabase/migrations/20260220160000_create_pending_ad_rewards.sql",
+      "type": "table",
+      "name": "20260220160000_create_pending_ad_rewards.sql",
+      "summary": "Database schema or migration file 20260220160000_create_pending_ad_rewards.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "moderate",
+      "filePath": "supabase/migrations/20260220160000_create_pending_ad_rewards.sql"
+    },
+    {
+      "id": "table:supabase/migrations/20260220170000_create_rate_limit.sql",
+      "type": "table",
+      "name": "20260220170000_create_rate_limit.sql",
+      "summary": "Database schema or migration file 20260220170000_create_rate_limit.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "moderate",
+      "filePath": "supabase/migrations/20260220170000_create_rate_limit.sql"
+    },
+    {
+      "id": "table:supabase/migrations/20260220180000_concurrency_locks.sql",
+      "type": "table",
+      "name": "20260220180000_concurrency_locks.sql",
+      "summary": "Database schema or migration file 20260220180000_concurrency_locks.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/migrations/20260220180000_concurrency_locks.sql"
+    },
+    {
+      "id": "table:supabase/migrations/20260221000000_fix_subscription_trigger.sql",
+      "type": "table",
+      "name": "20260221000000_fix_subscription_trigger.sql",
+      "summary": "Database schema or migration file 20260221000000_fix_subscription_trigger.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/migrations/20260221000000_fix_subscription_trigger.sql"
+    },
+    {
+      "id": "table:supabase/migrations/20260221200000_sync_remote_schema.sql",
+      "type": "table",
+      "name": "20260221200000_sync_remote_schema.sql",
+      "summary": "Database schema or migration file 20260221200000_sync_remote_schema.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "moderate",
+      "filePath": "supabase/migrations/20260221200000_sync_remote_schema.sql"
+    },
+    {
+      "id": "table:supabase/migrations/20260222130000_add_input_image_paths.sql",
+      "type": "table",
+      "name": "20260222130000_add_input_image_paths.sql",
+      "summary": "Database schema or migration file 20260222130000_add_input_image_paths.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/migrations/20260222130000_add_input_image_paths.sql"
+    },
+    {
+      "id": "table:supabase/migrations/20260222140000_add_model_id_to_generation_jobs.sql",
+      "type": "table",
+      "name": "20260222140000_add_model_id_to_generation_jobs.sql",
+      "summary": "Database schema or migration file 20260222140000_add_model_id_to_generation_jobs.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/migrations/20260222140000_add_model_id_to_generation_jobs.sql"
+    },
+    {
+      "id": "table:supabase/migrations/20260222_add_model_id_to_generation_jobs.sql",
+      "type": "table",
+      "name": "20260222_add_model_id_to_generation_jobs.sql",
+      "summary": "Database schema or migration file 20260222_add_model_id_to_generation_jobs.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/migrations/20260222_add_model_id_to_generation_jobs.sql"
+    },
+    {
+      "id": "table:supabase/migrations/20260223000000_add_nanobananaprompt_templates.sql",
+      "type": "table",
+      "name": "20260223000000_add_nanobananaprompt_templates.sql",
+      "summary": "Database schema or migration file 20260223000000_add_nanobananaprompt_templates.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "complex",
+      "filePath": "supabase/migrations/20260223000000_add_nanobananaprompt_templates.sql"
+    },
+    {
+      "id": "table:supabase/migrations/20260304000001_fix_critical_security.sql",
+      "type": "table",
+      "name": "20260304000001_fix_critical_security.sql",
+      "summary": "Database schema or migration file 20260304000001_fix_critical_security.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "moderate",
+      "filePath": "supabase/migrations/20260304000001_fix_critical_security.sql"
+    },
+    {
+      "id": "table:supabase/migrations/20260304000002_fix_function_signatures.sql",
+      "type": "table",
+      "name": "20260304000002_fix_function_signatures.sql",
+      "summary": "Database schema or migration file 20260304000002_fix_function_signatures.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "complex",
+      "filePath": "supabase/migrations/20260304000002_fix_function_signatures.sql"
+    },
+    {
+      "id": "table:supabase/migrations/20260304000003_fix_medium_issues.sql",
+      "type": "table",
+      "name": "20260304000003_fix_medium_issues.sql",
+      "summary": "Database schema or migration file 20260304000003_fix_medium_issues.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/migrations/20260304000003_fix_medium_issues.sql"
+    },
+    {
+      "id": "table:supabase/migrations/20260304000004_fix_revoke_public_and_index.sql",
+      "type": "table",
+      "name": "20260304000004_fix_revoke_public_and_index.sql",
+      "summary": "Database schema or migration file 20260304000004_fix_revoke_public_and_index.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/migrations/20260304000004_fix_revoke_public_and_index.sql"
+    },
+    {
+      "id": "table:supabase/migrations/20260304100000_fix_credit_idempotency_and_rc_index.sql",
+      "type": "table",
+      "name": "20260304100000_fix_credit_idempotency_and_rc_index.sql",
+      "summary": "Database schema or migration file 20260304100000_fix_credit_idempotency_and_rc_index.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "moderate",
+      "filePath": "supabase/migrations/20260304100000_fix_credit_idempotency_and_rc_index.sql"
+    },
+    {
+      "id": "table:supabase/migrations/20260315120000_fix_grant_credits_advisory_lock_and_recent_guard.sql",
+      "type": "table",
+      "name": "20260315120000_fix_grant_credits_advisory_lock_and_recent_guard.sql",
+      "summary": "Database schema or migration file 20260315120000_fix_grant_credits_advisory_lock_and_recent_guard.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "moderate",
+      "filePath": "supabase/migrations/20260315120000_fix_grant_credits_advisory_lock_and_recent_guard.sql"
+    },
+    {
+      "id": "table:supabase/migrations/20260315130000_fix_update_subscription_status_security.sql",
+      "type": "table",
+      "name": "20260315130000_fix_update_subscription_status_security.sql",
+      "summary": "Database schema or migration file 20260315130000_fix_update_subscription_status_security.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/migrations/20260315130000_fix_update_subscription_status_security.sql"
+    },
+    {
+      "id": "table:supabase/migrations/20260403175956_revoke_public_from_security_definer.sql",
+      "type": "table",
+      "name": "20260403175956_revoke_public_from_security_definer.sql",
+      "summary": "Database schema or migration file 20260403175956_revoke_public_from_security_definer.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/migrations/20260403175956_revoke_public_from_security_definer.sql"
+    },
+    {
+      "id": "table:supabase/migrations/20260404174417_revoke_public_from_security_definer.sql",
+      "type": "table",
+      "name": "20260404174417_revoke_public_from_security_definer.sql",
+      "summary": "Database schema or migration file 20260404174417_revoke_public_from_security_definer.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/migrations/20260404174417_revoke_public_from_security_definer.sql"
+    },
+    {
+      "id": "config:.env.example",
+      "type": "config",
+      "name": ".env.example",
+      "summary": "Configuration file .env.example that defines tooling, analysis, environment, or build behavior for the project.",
+      "tags": [
+        "configuration"
+      ],
+      "complexity": "moderate",
+      "filePath": ".env.example"
+    },
+    {
+      "id": "document:AGENTS.md",
+      "type": "document",
+      "name": "AGENTS.md",
+      "summary": "Documentation file AGENTS.md that explains project workflow, architecture, or operational guidance for the Artio codebase.",
+      "tags": [
+        "documentation"
+      ],
+      "complexity": "simple",
+      "filePath": "AGENTS.md"
+    },
+    {
+      "id": "document:CHANGELOG.md",
+      "type": "document",
+      "name": "CHANGELOG.md",
+      "summary": "Documentation file CHANGELOG.md that explains project workflow, architecture, or operational guidance for the Artio codebase.",
+      "tags": [
+        "documentation"
+      ],
+      "complexity": "simple",
+      "filePath": "CHANGELOG.md"
+    },
+    {
+      "id": "document:CLAUDE.md",
+      "type": "document",
+      "name": "CLAUDE.md",
+      "summary": "Repository-specific operating instructions describing architecture, coding standards, and workflow constraints for Artio contributors and agents.",
+      "tags": [
+        "documentation"
+      ],
+      "complexity": "moderate",
+      "filePath": "CLAUDE.md"
+    },
+    {
+      "id": "service:Makefile",
+      "type": "service",
+      "name": "Makefile",
+      "summary": "Infrastructure or service definition Makefile that supports building, running, or operating the Artio project.",
+      "tags": [
+        "infrastructure"
+      ],
+      "complexity": "moderate",
+      "filePath": "Makefile"
+    },
+    {
+      "id": "document:README.md",
+      "type": "document",
+      "name": "README.md",
+      "summary": "Project overview and contributor entry point for the Artio Flutter monorepo, covering product surfaces, setup, and architecture references.",
+      "tags": [
+        "documentation",
+        "entry-point"
+      ],
+      "complexity": "moderate",
+      "filePath": "README.md"
+    },
+    {
+      "id": "document:TODOS.md",
+      "type": "document",
+      "name": "TODOS.md",
+      "summary": "Documentation file TODOS.md that explains project workflow, architecture, or operational guidance for the Artio codebase.",
+      "tags": [
+        "documentation"
+      ],
+      "complexity": "simple",
+      "filePath": "TODOS.md"
+    },
+    {
+      "id": "config:analysis_options.yaml",
+      "type": "config",
+      "name": "analysis_options.yaml",
+      "summary": "Configuration file analysis_options.yaml that defines tooling, analysis, environment, or build behavior for the project.",
+      "tags": [
+        "configuration"
+      ],
+      "complexity": "simple",
+      "filePath": "analysis_options.yaml"
+    },
+    {
+      "id": "config:build.yaml",
+      "type": "config",
+      "name": "build.yaml",
+      "summary": "Configuration file build.yaml that defines tooling, analysis, environment, or build behavior for the project.",
+      "tags": [
+        "configuration"
+      ],
+      "complexity": "simple",
+      "filePath": "build.yaml"
+    },
+    {
+      "id": "config:dart_test.yaml",
+      "type": "config",
+      "name": "dart_test.yaml",
+      "summary": "Configuration file dart_test.yaml that defines tooling, analysis, environment, or build behavior for the project.",
+      "tags": [
+        "test",
+        "configuration"
+      ],
+      "complexity": "simple",
+      "filePath": "dart_test.yaml"
+    },
+    {
+      "id": "config:devtools_options.yaml",
+      "type": "config",
+      "name": "devtools_options.yaml",
+      "summary": "Configuration file devtools_options.yaml that defines tooling, analysis, environment, or build behavior for the project.",
+      "tags": [
+        "configuration"
+      ],
+      "complexity": "simple",
+      "filePath": "devtools_options.yaml"
+    },
+    {
+      "id": "document:lint_baseline.txt",
+      "type": "document",
+      "name": "lint_baseline.txt",
+      "summary": "Documentation file lint_baseline.txt that explains project workflow, architecture, or operational guidance for the Artio codebase.",
+      "tags": [
+        "documentation"
+      ],
+      "complexity": "simple",
+      "filePath": "lint_baseline.txt"
+    },
+    {
+      "id": "config:model_capabilities.yaml",
+      "type": "config",
+      "name": "model_capabilities.yaml",
+      "summary": "Configuration file model_capabilities.yaml that defines tooling, analysis, environment, or build behavior for the project.",
+      "tags": [
+        "configuration"
+      ],
+      "complexity": "moderate",
+      "filePath": "model_capabilities.yaml"
+    },
+    {
+      "id": "config:pubspec.yaml",
+      "type": "config",
+      "name": "pubspec.yaml",
+      "summary": "Configuration file pubspec.yaml that defines tooling, analysis, environment, or build behavior for the project.",
+      "tags": [
+        "configuration"
+      ],
+      "complexity": "moderate",
+      "filePath": "pubspec.yaml"
+    },
+    {
+      "id": "file:security_check.sh",
+      "type": "file",
+      "name": "security_check.sh",
+      "summary": "Source file security_check.sh containing project logic with 0 extracted functions and 0 extracted classes.",
+      "tags": [
+        "source"
+      ],
+      "complexity": "simple",
+      "filePath": "security_check.sh"
+    },
+    {
+      "id": "file:.ckignore",
+      "type": "file",
+      "name": ".ckignore",
+      "summary": "Source file .ckignore containing project logic with 0 extracted functions and 0 extracted classes.",
+      "tags": [
+        "source"
+      ],
+      "complexity": "moderate",
+      "filePath": ".ckignore"
+    },
+    {
+      "id": "file:.gitattributes",
+      "type": "file",
+      "name": ".gitattributes",
+      "summary": "Source file .gitattributes containing project logic with 0 extracted functions and 0 extracted classes.",
+      "tags": [
+        "source"
+      ],
+      "complexity": "simple",
+      "filePath": ".gitattributes"
+    },
+    {
+      "id": "file:.metadata",
+      "type": "file",
+      "name": ".metadata",
+      "summary": "Source file .metadata containing project logic with 0 extracted functions and 0 extracted classes.",
+      "tags": [
+        "source"
+      ],
+      "complexity": "simple",
+      "filePath": ".metadata"
+    },
+    {
+      "id": "document:lib/core/AGENTS.md",
+      "type": "document",
+      "name": "AGENTS.md",
+      "summary": "Documentation file AGENTS.md that explains project workflow, architecture, or operational guidance for the Artio codebase.",
+      "tags": [
+        "documentation",
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/core/AGENTS.md"
+    },
+    {
+      "id": "file:lib/core/config/env_config.dart",
+      "type": "file",
+      "name": "env_config.dart",
+      "summary": "Application source file env_config.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/core/config/env_config.dart"
+    },
+    {
+      "id": "file:lib/core/config/sentry_config.dart",
+      "type": "file",
+      "name": "sentry_config.dart",
+      "summary": "Application source file sentry_config.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/core/config/sentry_config.dart"
+    },
+    {
+      "id": "file:lib/core/constants/ai_models.dart",
+      "type": "file",
+      "name": "ai_models.dart",
+      "summary": "Application source file ai_models.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/core/constants/ai_models.dart"
+    },
+    {
+      "id": "file:lib/core/constants/app_constants.dart",
+      "type": "file",
+      "name": "app_constants.dart",
+      "summary": "Application source file app_constants.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/core/constants/app_constants.dart"
+    },
+    {
+      "id": "file:lib/core/constants/generation_constants.dart",
+      "type": "file",
+      "name": "generation_constants.dart",
+      "summary": "Application source file generation_constants.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/core/constants/generation_constants.dart"
+    },
+    {
+      "id": "file:lib/core/design_system/app_animations.dart",
+      "type": "file",
+      "name": "app_animations.dart",
+      "summary": "Application source file app_animations.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/core/design_system/app_animations.dart"
+    },
+    {
+      "id": "file:lib/core/design_system/app_dimensions.dart",
+      "type": "file",
+      "name": "app_dimensions.dart",
+      "summary": "Application source file app_dimensions.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/core/design_system/app_dimensions.dart"
+    },
+    {
+      "id": "file:lib/core/design_system/app_gradients.dart",
+      "type": "file",
+      "name": "app_gradients.dart",
+      "summary": "Application source file app_gradients.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/core/design_system/app_gradients.dart"
+    },
+    {
+      "id": "file:lib/core/design_system/app_shadows.dart",
+      "type": "file",
+      "name": "app_shadows.dart",
+      "summary": "Application source file app_shadows.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/core/design_system/app_shadows.dart"
+    },
+    {
+      "id": "file:lib/core/design_system/app_spacing.dart",
+      "type": "file",
+      "name": "app_spacing.dart",
+      "summary": "Application source file app_spacing.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/core/design_system/app_spacing.dart"
+    },
+    {
+      "id": "file:lib/core/design_system/app_typography.dart",
+      "type": "file",
+      "name": "app_typography.dart",
+      "summary": "Application source file app_typography.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/core/design_system/app_typography.dart"
+    },
+    {
+      "id": "file:lib/core/exceptions/app_exception.dart",
+      "type": "file",
+      "name": "app_exception.dart",
+      "summary": "Application source file app_exception.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/core/exceptions/app_exception.dart"
+    },
+    {
+      "id": "file:lib/core/exceptions/app_exception.freezed.dart",
+      "type": "file",
+      "name": "app_exception.freezed.dart",
+      "summary": "Application source file app_exception.freezed.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/core/exceptions/app_exception.freezed.dart"
+    },
+    {
+      "id": "file:lib/core/providers/connectivity_provider.dart",
+      "type": "file",
+      "name": "connectivity_provider.dart",
+      "summary": "Application source file connectivity_provider.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/core/providers/connectivity_provider.dart"
+    },
+    {
+      "id": "file:lib/core/providers/connectivity_provider.g.dart",
+      "type": "file",
+      "name": "connectivity_provider.g.dart",
+      "summary": "Application source file connectivity_provider.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/core/providers/connectivity_provider.g.dart"
+    },
+    {
+      "id": "file:lib/core/providers/supabase_provider.dart",
+      "type": "file",
+      "name": "supabase_provider.dart",
+      "summary": "Application source file supabase_provider.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/core/providers/supabase_provider.dart"
+    },
+    {
+      "id": "file:lib/core/providers/supabase_provider.g.dart",
+      "type": "file",
+      "name": "supabase_provider.g.dart",
+      "summary": "Application source file supabase_provider.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/core/providers/supabase_provider.g.dart"
+    },
+    {
+      "id": "file:lib/core/services/att_service.dart",
+      "type": "file",
+      "name": "att_service.dart",
+      "summary": "Application source file att_service.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/core/services/att_service.dart"
+    },
+    {
+      "id": "file:lib/core/services/content_moderation_service.dart",
+      "type": "file",
+      "name": "content_moderation_service.dart",
+      "summary": "Application source file content_moderation_service.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/core/services/content_moderation_service.dart"
+    },
+    {
+      "id": "file:lib/core/services/haptic_service.dart",
+      "type": "file",
+      "name": "haptic_service.dart",
+      "summary": "Application source file haptic_service.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/core/services/haptic_service.dart"
+    },
+    {
+      "id": "file:lib/core/services/image_upload_service.dart",
+      "type": "file",
+      "name": "image_upload_service.dart",
+      "summary": "Application source file image_upload_service.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/core/services/image_upload_service.dart"
+    },
+    {
+      "id": "file:lib/core/services/image_upload_service.g.dart",
+      "type": "file",
+      "name": "image_upload_service.g.dart",
+      "summary": "Application source file image_upload_service.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/core/services/image_upload_service.g.dart"
+    },
+    {
+      "id": "file:lib/core/services/rewarded_ad_service.dart",
+      "type": "file",
+      "name": "rewarded_ad_service.dart",
+      "summary": "Application source file rewarded_ad_service.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/core/services/rewarded_ad_service.dart"
+    },
+    {
+      "id": "file:lib/core/services/rewarded_ad_service.g.dart",
+      "type": "file",
+      "name": "rewarded_ad_service.g.dart",
+      "summary": "Application source file rewarded_ad_service.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/core/services/rewarded_ad_service.g.dart"
+    },
+    {
+      "id": "file:lib/core/services/storage_url_service.dart",
+      "type": "file",
+      "name": "storage_url_service.dart",
+      "summary": "Application source file storage_url_service.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/core/services/storage_url_service.dart"
+    },
+    {
+      "id": "file:lib/core/services/storage_url_service.g.dart",
+      "type": "file",
+      "name": "storage_url_service.g.dart",
+      "summary": "Application source file storage_url_service.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/core/services/storage_url_service.g.dart"
+    },
+    {
+      "id": "file:lib/core/state/auth_view_model_provider.dart",
+      "type": "file",
+      "name": "auth_view_model_provider.dart",
+      "summary": "Application source file auth_view_model_provider.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/core/state/auth_view_model_provider.dart"
+    },
+    {
+      "id": "file:lib/core/state/credit_balance_state_provider.dart",
+      "type": "file",
+      "name": "credit_balance_state_provider.dart",
+      "summary": "Application source file credit_balance_state_provider.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/core/state/credit_balance_state_provider.dart"
+    },
+    {
+      "id": "file:lib/core/state/subscription_state_provider.dart",
+      "type": "file",
+      "name": "subscription_state_provider.dart",
+      "summary": "Application source file subscription_state_provider.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/core/state/subscription_state_provider.dart"
+    },
+    {
+      "id": "file:lib/core/state/user_scoped_providers.dart",
+      "type": "file",
+      "name": "user_scoped_providers.dart",
+      "summary": "Application source file user_scoped_providers.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/core/state/user_scoped_providers.dart"
+    },
+    {
+      "id": "file:lib/core/utils/app_exception_mapper.dart",
+      "type": "file",
+      "name": "app_exception_mapper.dart",
+      "summary": "Application source file app_exception_mapper.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/core/utils/app_exception_mapper.dart"
+    },
+    {
+      "id": "file:lib/core/utils/date_time_utils.dart",
+      "type": "file",
+      "name": "date_time_utils.dart",
+      "summary": "Application source file date_time_utils.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/core/utils/date_time_utils.dart"
+    },
+    {
+      "id": "file:lib/core/utils/email_validator.dart",
+      "type": "file",
+      "name": "email_validator.dart",
+      "summary": "Application source file email_validator.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/core/utils/email_validator.dart"
+    },
+    {
+      "id": "file:lib/core/utils/prompt_validator.dart",
+      "type": "file",
+      "name": "prompt_validator.dart",
+      "summary": "Application source file prompt_validator.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/core/utils/prompt_validator.dart"
+    },
+    {
+      "id": "file:lib/core/utils/retry.dart",
+      "type": "file",
+      "name": "retry.dart",
+      "summary": "Application source file retry.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/core/utils/retry.dart"
+    },
+    {
+      "id": "file:lib/core/utils/subagent_smoke_codegen.dart",
+      "type": "file",
+      "name": "subagent_smoke_codegen.dart",
+      "summary": "Application source file subagent_smoke_codegen.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/core/utils/subagent_smoke_codegen.dart"
+    },
+    {
+      "id": "file:lib/core/utils/url_launcher_utils.dart",
+      "type": "file",
+      "name": "url_launcher_utils.dart",
+      "summary": "Application source file url_launcher_utils.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/core/utils/url_launcher_utils.dart"
+    },
+    {
+      "id": "file:lib/core/utils/watermark_util.dart",
+      "type": "file",
+      "name": "watermark_util.dart",
+      "summary": "Application source file watermark_util.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/core/utils/watermark_util.dart"
+    },
+    {
+      "id": "file:lib/core/widgets/bottom_sheet_body.dart",
+      "type": "file",
+      "name": "bottom_sheet_body.dart",
+      "summary": "Application source file bottom_sheet_body.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/core/widgets/bottom_sheet_body.dart"
+    },
+    {
+      "id": "document:lib/features/AGENTS.md",
+      "type": "document",
+      "name": "AGENTS.md",
+      "summary": "Documentation file AGENTS.md that explains project workflow, architecture, or operational guidance for the Artio codebase.",
+      "tags": [
+        "documentation",
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/AGENTS.md"
+    },
+    {
+      "id": "file:lib/features/auth/data/repositories/auth_repository.dart",
+      "type": "file",
+      "name": "auth_repository.dart",
+      "summary": "Application source file auth_repository.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "data-layer"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/auth/data/repositories/auth_repository.dart"
+    },
+    {
+      "id": "file:lib/features/auth/data/repositories/auth_repository.g.dart",
+      "type": "file",
+      "name": "auth_repository.g.dart",
+      "summary": "Application source file auth_repository.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "data-layer"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/auth/data/repositories/auth_repository.g.dart"
+    },
+    {
+      "id": "file:lib/features/auth/domain/entities/user_model.dart",
+      "type": "file",
+      "name": "user_model.dart",
+      "summary": "Application source file user_model.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/auth/domain/entities/user_model.dart"
+    },
+    {
+      "id": "file:lib/features/auth/domain/entities/user_model.freezed.dart",
+      "type": "file",
+      "name": "user_model.freezed.dart",
+      "summary": "Application source file user_model.freezed.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/auth/domain/entities/user_model.freezed.dart"
+    },
+    {
+      "id": "file:lib/features/auth/domain/entities/user_model.g.dart",
+      "type": "file",
+      "name": "user_model.g.dart",
+      "summary": "Application source file user_model.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/auth/domain/entities/user_model.g.dart"
+    },
+    {
+      "id": "file:lib/features/auth/domain/providers/auth_repository_provider.dart",
+      "type": "file",
+      "name": "auth_repository_provider.dart",
+      "summary": "Application source file auth_repository_provider.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/auth/domain/providers/auth_repository_provider.dart"
+    },
+    {
+      "id": "file:lib/features/auth/domain/providers/onboarding_provider.dart",
+      "type": "file",
+      "name": "onboarding_provider.dart",
+      "summary": "Application source file onboarding_provider.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/auth/domain/providers/onboarding_provider.dart"
+    },
+    {
+      "id": "file:lib/features/auth/domain/providers/onboarding_provider.g.dart",
+      "type": "file",
+      "name": "onboarding_provider.g.dart",
+      "summary": "Application source file onboarding_provider.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/auth/domain/providers/onboarding_provider.g.dart"
+    },
+    {
+      "id": "file:lib/features/auth/domain/repositories/i_auth_repository.dart",
+      "type": "file",
+      "name": "i_auth_repository.dart",
+      "summary": "Application source file i_auth_repository.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/auth/domain/repositories/i_auth_repository.dart"
+    },
+    {
+      "id": "file:lib/features/auth/presentation/screens/forgot_password_screen.dart",
+      "type": "file",
+      "name": "forgot_password_screen.dart",
+      "summary": "Application source file forgot_password_screen.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/auth/presentation/screens/forgot_password_screen.dart"
+    },
+    {
+      "id": "file:lib/features/auth/presentation/screens/login_screen.dart",
+      "type": "file",
+      "name": "login_screen.dart",
+      "summary": "Application source file login_screen.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/auth/presentation/screens/login_screen.dart"
+    },
+    {
+      "id": "file:lib/features/auth/presentation/screens/onboarding_screen.dart",
+      "type": "file",
+      "name": "onboarding_screen.dart",
+      "summary": "Application source file onboarding_screen.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/auth/presentation/screens/onboarding_screen.dart"
+    },
+    {
+      "id": "file:lib/features/auth/presentation/screens/register_screen.dart",
+      "type": "file",
+      "name": "register_screen.dart",
+      "summary": "Application source file register_screen.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/auth/presentation/screens/register_screen.dart"
+    },
+    {
+      "id": "file:lib/features/auth/presentation/screens/splash_screen.dart",
+      "type": "file",
+      "name": "splash_screen.dart",
+      "summary": "Application source file splash_screen.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/auth/presentation/screens/splash_screen.dart"
+    },
+    {
+      "id": "file:lib/features/auth/presentation/state/auth_state.dart",
+      "type": "file",
+      "name": "auth_state.dart",
+      "summary": "Application source file auth_state.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/auth/presentation/state/auth_state.dart"
+    },
+    {
+      "id": "file:lib/features/auth/presentation/state/auth_state.freezed.dart",
+      "type": "file",
+      "name": "auth_state.freezed.dart",
+      "summary": "Application source file auth_state.freezed.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/auth/presentation/state/auth_state.freezed.dart"
+    },
+    {
+      "id": "file:lib/features/auth/presentation/view_models/auth_view_model.dart",
+      "type": "file",
+      "name": "auth_view_model.dart",
+      "summary": "Application source file auth_view_model.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/auth/presentation/view_models/auth_view_model.dart"
+    },
+    {
+      "id": "file:lib/features/auth/presentation/view_models/auth_view_model.g.dart",
+      "type": "file",
+      "name": "auth_view_model.g.dart",
+      "summary": "Application source file auth_view_model.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/auth/presentation/view_models/auth_view_model.g.dart"
+    },
+    {
+      "id": "file:lib/features/auth/presentation/widgets/social_login_buttons.dart",
+      "type": "file",
+      "name": "social_login_buttons.dart",
+      "summary": "Application source file social_login_buttons.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/auth/presentation/widgets/social_login_buttons.dart"
+    },
+    {
+      "id": "file:lib/features/create/domain/entities/create_form_state.dart",
+      "type": "file",
+      "name": "create_form_state.dart",
+      "summary": "Application source file create_form_state.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/create/domain/entities/create_form_state.dart"
+    },
+    {
+      "id": "file:lib/features/create/domain/entities/create_form_state.freezed.dart",
+      "type": "file",
+      "name": "create_form_state.freezed.dart",
+      "summary": "Application source file create_form_state.freezed.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/create/domain/entities/create_form_state.freezed.dart"
+    },
+    {
+      "id": "file:lib/features/create/presentation/create_screen.dart",
+      "type": "file",
+      "name": "create_screen.dart",
+      "summary": "Application source file create_screen.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/create/presentation/create_screen.dart"
+    },
+    {
+      "id": "file:lib/features/create/presentation/providers/create_form_provider.dart",
+      "type": "file",
+      "name": "create_form_provider.dart",
+      "summary": "Application source file create_form_provider.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/create/presentation/providers/create_form_provider.dart"
+    },
+    {
+      "id": "file:lib/features/create/presentation/providers/create_form_provider.g.dart",
+      "type": "file",
+      "name": "create_form_provider.g.dart",
+      "summary": "Application source file create_form_provider.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/create/presentation/providers/create_form_provider.g.dart"
+    },
+    {
+      "id": "file:lib/features/create/presentation/view_models/create_view_model.dart",
+      "type": "file",
+      "name": "create_view_model.dart",
+      "summary": "Application source file create_view_model.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/create/presentation/view_models/create_view_model.dart"
+    },
+    {
+      "id": "file:lib/features/create/presentation/view_models/create_view_model.g.dart",
+      "type": "file",
+      "name": "create_view_model.g.dart",
+      "summary": "Application source file create_view_model.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/create/presentation/view_models/create_view_model.g.dart"
+    },
+    {
+      "id": "file:lib/features/create/presentation/widgets/aspect_ratio_selector.dart",
+      "type": "file",
+      "name": "aspect_ratio_selector.dart",
+      "summary": "Application source file aspect_ratio_selector.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/create/presentation/widgets/aspect_ratio_selector.dart"
+    },
+    {
+      "id": "file:lib/features/create/presentation/widgets/auth_gate_sheet.dart",
+      "type": "file",
+      "name": "auth_gate_sheet.dart",
+      "summary": "Application source file auth_gate_sheet.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/create/presentation/widgets/auth_gate_sheet.dart"
+    },
+    {
+      "id": "file:lib/features/create/presentation/widgets/credit_balance_chip.dart",
+      "type": "file",
+      "name": "credit_balance_chip.dart",
+      "summary": "Application source file credit_balance_chip.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/create/presentation/widgets/credit_balance_chip.dart"
+    },
+    {
+      "id": "file:lib/features/create/presentation/widgets/generation_progress_overlay.dart",
+      "type": "file",
+      "name": "generation_progress_overlay.dart",
+      "summary": "Application source file generation_progress_overlay.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/create/presentation/widgets/generation_progress_overlay.dart"
+    },
+    {
+      "id": "file:lib/features/create/presentation/widgets/generation_starting_overlay.dart",
+      "type": "file",
+      "name": "generation_starting_overlay.dart",
+      "summary": "Application source file generation_starting_overlay.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/create/presentation/widgets/generation_starting_overlay.dart"
+    },
+    {
+      "id": "file:lib/features/create/presentation/widgets/model_selector.dart",
+      "type": "file",
+      "name": "model_selector.dart",
+      "summary": "Application source file model_selector.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/create/presentation/widgets/model_selector.dart"
+    },
+    {
+      "id": "file:lib/features/create/presentation/widgets/prompt_input_field.dart",
+      "type": "file",
+      "name": "prompt_input_field.dart",
+      "summary": "Application source file prompt_input_field.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/create/presentation/widgets/prompt_input_field.dart"
+    },
+    {
+      "id": "file:lib/features/credits/data/repositories/credit_repository.dart",
+      "type": "file",
+      "name": "credit_repository.dart",
+      "summary": "Application source file credit_repository.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "data-layer"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/credits/data/repositories/credit_repository.dart"
+    },
+    {
+      "id": "file:lib/features/credits/data/repositories/credit_repository.g.dart",
+      "type": "file",
+      "name": "credit_repository.g.dart",
+      "summary": "Application source file credit_repository.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "data-layer"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/credits/data/repositories/credit_repository.g.dart"
+    },
+    {
+      "id": "file:lib/features/credits/domain/entities/credit_balance.dart",
+      "type": "file",
+      "name": "credit_balance.dart",
+      "summary": "Application source file credit_balance.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/credits/domain/entities/credit_balance.dart"
+    },
+    {
+      "id": "file:lib/features/credits/domain/entities/credit_balance.freezed.dart",
+      "type": "file",
+      "name": "credit_balance.freezed.dart",
+      "summary": "Application source file credit_balance.freezed.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/credits/domain/entities/credit_balance.freezed.dart"
+    },
+    {
+      "id": "file:lib/features/credits/domain/entities/credit_balance.g.dart",
+      "type": "file",
+      "name": "credit_balance.g.dart",
+      "summary": "Application source file credit_balance.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/credits/domain/entities/credit_balance.g.dart"
+    },
+    {
+      "id": "file:lib/features/credits/domain/entities/credit_transaction.dart",
+      "type": "file",
+      "name": "credit_transaction.dart",
+      "summary": "Application source file credit_transaction.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/credits/domain/entities/credit_transaction.dart"
+    },
+    {
+      "id": "file:lib/features/credits/domain/entities/credit_transaction.freezed.dart",
+      "type": "file",
+      "name": "credit_transaction.freezed.dart",
+      "summary": "Application source file credit_transaction.freezed.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/credits/domain/entities/credit_transaction.freezed.dart"
+    },
+    {
+      "id": "file:lib/features/credits/domain/entities/credit_transaction.g.dart",
+      "type": "file",
+      "name": "credit_transaction.g.dart",
+      "summary": "Application source file credit_transaction.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/credits/domain/entities/credit_transaction.g.dart"
+    },
+    {
+      "id": "file:lib/features/credits/domain/providers/credit_repository_provider.dart",
+      "type": "file",
+      "name": "credit_repository_provider.dart",
+      "summary": "Application source file credit_repository_provider.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/credits/domain/providers/credit_repository_provider.dart"
+    },
+    {
+      "id": "file:lib/features/credits/domain/repositories/i_credit_repository.dart",
+      "type": "file",
+      "name": "i_credit_repository.dart",
+      "summary": "Application source file i_credit_repository.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/credits/domain/repositories/i_credit_repository.dart"
+    },
+    {
+      "id": "file:lib/features/credits/presentation/providers/ad_reward_provider.dart",
+      "type": "file",
+      "name": "ad_reward_provider.dart",
+      "summary": "Application source file ad_reward_provider.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/credits/presentation/providers/ad_reward_provider.dart"
+    },
+    {
+      "id": "file:lib/features/credits/presentation/providers/ad_reward_provider.g.dart",
+      "type": "file",
+      "name": "ad_reward_provider.g.dart",
+      "summary": "Application source file ad_reward_provider.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/credits/presentation/providers/ad_reward_provider.g.dart"
+    },
+    {
+      "id": "file:lib/features/credits/presentation/providers/credit_balance_provider.dart",
+      "type": "file",
+      "name": "credit_balance_provider.dart",
+      "summary": "Application source file credit_balance_provider.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/credits/presentation/providers/credit_balance_provider.dart"
+    },
+    {
+      "id": "file:lib/features/credits/presentation/providers/credit_balance_provider.g.dart",
+      "type": "file",
+      "name": "credit_balance_provider.g.dart",
+      "summary": "Application source file credit_balance_provider.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/credits/presentation/providers/credit_balance_provider.g.dart"
+    },
+    {
+      "id": "file:lib/features/credits/presentation/providers/credit_history_provider.dart",
+      "type": "file",
+      "name": "credit_history_provider.dart",
+      "summary": "Application source file credit_history_provider.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/credits/presentation/providers/credit_history_provider.dart"
+    },
+    {
+      "id": "file:lib/features/credits/presentation/providers/credit_history_provider.g.dart",
+      "type": "file",
+      "name": "credit_history_provider.g.dart",
+      "summary": "Application source file credit_history_provider.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/credits/presentation/providers/credit_history_provider.g.dart"
+    },
+    {
+      "id": "file:lib/features/credits/presentation/screens/credit_history_screen.dart",
+      "type": "file",
+      "name": "credit_history_screen.dart",
+      "summary": "Application source file credit_history_screen.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/credits/presentation/screens/credit_history_screen.dart"
+    },
+    {
+      "id": "file:lib/features/credits/presentation/widgets/insufficient_credits_sheet.dart",
+      "type": "file",
+      "name": "insufficient_credits_sheet.dart",
+      "summary": "Application source file insufficient_credits_sheet.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/credits/presentation/widgets/insufficient_credits_sheet.dart"
+    },
+    {
+      "id": "file:lib/features/credits/presentation/widgets/premium_model_sheet.dart",
+      "type": "file",
+      "name": "premium_model_sheet.dart",
+      "summary": "Application source file premium_model_sheet.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/credits/presentation/widgets/premium_model_sheet.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/data/repositories/gallery_repository_helpers.dart",
+      "type": "file",
+      "name": "gallery_repository_helpers.dart",
+      "summary": "Application source file gallery_repository_helpers.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "data-layer"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/gallery/data/repositories/gallery_repository_helpers.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/data/repositories/gallery_repository.dart",
+      "type": "file",
+      "name": "gallery_repository.dart",
+      "summary": "Application source file gallery_repository.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "data-layer"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/gallery/data/repositories/gallery_repository.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/data/repositories/gallery_repository.g.dart",
+      "type": "file",
+      "name": "gallery_repository.g.dart",
+      "summary": "Application source file gallery_repository.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "data-layer"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/gallery/data/repositories/gallery_repository.g.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/data/services/gallery_cache_service.dart",
+      "type": "file",
+      "name": "gallery_cache_service.dart",
+      "summary": "Application source file gallery_cache_service.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "data-layer"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/gallery/data/services/gallery_cache_service.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/data/services/gallery_cache_service.g.dart",
+      "type": "file",
+      "name": "gallery_cache_service.g.dart",
+      "summary": "Application source file gallery_cache_service.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "data-layer"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/gallery/data/services/gallery_cache_service.g.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/domain/entities/gallery_item.dart",
+      "type": "file",
+      "name": "gallery_item.dart",
+      "summary": "Application source file gallery_item.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/gallery/domain/entities/gallery_item.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/domain/entities/gallery_item.freezed.dart",
+      "type": "file",
+      "name": "gallery_item.freezed.dart",
+      "summary": "Application source file gallery_item.freezed.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/gallery/domain/entities/gallery_item.freezed.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/domain/entities/gallery_item.g.dart",
+      "type": "file",
+      "name": "gallery_item.g.dart",
+      "summary": "Application source file gallery_item.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/gallery/domain/entities/gallery_item.g.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/domain/providers/gallery_repository_provider.dart",
+      "type": "file",
+      "name": "gallery_repository_provider.dart",
+      "summary": "Application source file gallery_repository_provider.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/gallery/domain/providers/gallery_repository_provider.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/domain/repositories/i_gallery_repository.dart",
+      "type": "file",
+      "name": "i_gallery_repository.dart",
+      "summary": "Application source file i_gallery_repository.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/gallery/domain/repositories/i_gallery_repository.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/presentation/constants/gallery_strings.dart",
+      "type": "file",
+      "name": "gallery_strings.dart",
+      "summary": "Application source file gallery_strings.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/gallery/presentation/constants/gallery_strings.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/presentation/pages/gallery_page.dart",
+      "type": "file",
+      "name": "gallery_page.dart",
+      "summary": "Application source file gallery_page.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/gallery/presentation/pages/gallery_page.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/presentation/pages/image_viewer_action_helper.dart",
+      "type": "file",
+      "name": "image_viewer_action_helper.dart",
+      "summary": "Application source file image_viewer_action_helper.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/gallery/presentation/pages/image_viewer_action_helper.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/presentation/pages/image_viewer_page.dart",
+      "type": "file",
+      "name": "image_viewer_page.dart",
+      "summary": "Application source file image_viewer_page.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/gallery/presentation/pages/image_viewer_page.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/presentation/providers/gallery_provider.dart",
+      "type": "file",
+      "name": "gallery_provider.dart",
+      "summary": "Application source file gallery_provider.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/gallery/presentation/providers/gallery_provider.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/presentation/providers/gallery_provider.g.dart",
+      "type": "file",
+      "name": "gallery_provider.g.dart",
+      "summary": "Application source file gallery_provider.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/gallery/presentation/providers/gallery_provider.g.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/presentation/widgets/empty_gallery_illustration.dart",
+      "type": "file",
+      "name": "empty_gallery_illustration.dart",
+      "summary": "Application source file empty_gallery_illustration.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/gallery/presentation/widgets/empty_gallery_illustration.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/presentation/widgets/empty_gallery_state.dart",
+      "type": "file",
+      "name": "empty_gallery_state.dart",
+      "summary": "Application source file empty_gallery_state.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/gallery/presentation/widgets/empty_gallery_state.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/presentation/widgets/failed_image_card.dart",
+      "type": "file",
+      "name": "failed_image_card.dart",
+      "summary": "Application source file failed_image_card.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/gallery/presentation/widgets/failed_image_card.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/presentation/widgets/image_info_bottom_sheet.dart",
+      "type": "file",
+      "name": "image_info_bottom_sheet.dart",
+      "summary": "Application source file image_info_bottom_sheet.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/gallery/presentation/widgets/image_info_bottom_sheet.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/presentation/widgets/image_viewer_app_bar.dart",
+      "type": "file",
+      "name": "image_viewer_app_bar.dart",
+      "summary": "Application source file image_viewer_app_bar.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/gallery/presentation/widgets/image_viewer_app_bar.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/presentation/widgets/image_viewer_image_page.dart",
+      "type": "file",
+      "name": "image_viewer_image_page.dart",
+      "summary": "Application source file image_viewer_image_page.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/gallery/presentation/widgets/image_viewer_image_page.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/presentation/widgets/image_viewer_page_indicator.dart",
+      "type": "file",
+      "name": "image_viewer_page_indicator.dart",
+      "summary": "Application source file image_viewer_page_indicator.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/gallery/presentation/widgets/image_viewer_page_indicator.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/presentation/widgets/image_viewer_swipe_dismiss.dart",
+      "type": "file",
+      "name": "image_viewer_swipe_dismiss.dart",
+      "summary": "Application source file image_viewer_swipe_dismiss.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/gallery/presentation/widgets/image_viewer_swipe_dismiss.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/presentation/widgets/interactive_gallery_item.dart",
+      "type": "file",
+      "name": "interactive_gallery_item.dart",
+      "summary": "Application source file interactive_gallery_item.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/gallery/presentation/widgets/interactive_gallery_item.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/presentation/widgets/masonry_image_grid.dart",
+      "type": "file",
+      "name": "masonry_image_grid.dart",
+      "summary": "Application source file masonry_image_grid.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/gallery/presentation/widgets/masonry_image_grid.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/presentation/widgets/shimmer_grid.dart",
+      "type": "file",
+      "name": "shimmer_grid.dart",
+      "summary": "Application source file shimmer_grid.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/gallery/presentation/widgets/shimmer_grid.dart"
+    },
+    {
+      "id": "file:lib/features/settings/data/notifications_provider.dart",
+      "type": "file",
+      "name": "notifications_provider.dart",
+      "summary": "Application source file notifications_provider.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "data-layer"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/settings/data/notifications_provider.dart"
+    },
+    {
+      "id": "file:lib/features/settings/data/notifications_provider.g.dart",
+      "type": "file",
+      "name": "notifications_provider.g.dart",
+      "summary": "Application source file notifications_provider.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "data-layer"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/settings/data/notifications_provider.g.dart"
+    },
+    {
+      "id": "file:lib/features/settings/domain/providers/notifications_provider.dart",
+      "type": "file",
+      "name": "notifications_provider.dart",
+      "summary": "Application source file notifications_provider.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/settings/domain/providers/notifications_provider.dart"
+    },
+    {
+      "id": "file:lib/features/settings/presentation/settings_screen.dart",
+      "type": "file",
+      "name": "settings_screen.dart",
+      "summary": "Application source file settings_screen.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/settings/presentation/settings_screen.dart"
+    },
+    {
+      "id": "file:lib/features/settings/presentation/widgets/settings_helpers.dart",
+      "type": "file",
+      "name": "settings_helpers.dart",
+      "summary": "Application source file settings_helpers.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/settings/presentation/widgets/settings_helpers.dart"
+    },
+    {
+      "id": "file:lib/features/settings/presentation/widgets/settings_sections.dart",
+      "type": "file",
+      "name": "settings_sections.dart",
+      "summary": "Application source file settings_sections.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/settings/presentation/widgets/settings_sections.dart"
+    },
+    {
+      "id": "file:lib/features/settings/presentation/widgets/subscription_card.dart",
+      "type": "file",
+      "name": "subscription_card.dart",
+      "summary": "Application source file subscription_card.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/settings/presentation/widgets/subscription_card.dart"
+    },
+    {
+      "id": "file:lib/features/settings/presentation/widgets/theme_switcher.dart",
+      "type": "file",
+      "name": "theme_switcher.dart",
+      "summary": "Application source file theme_switcher.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/settings/presentation/widgets/theme_switcher.dart"
+    },
+    {
+      "id": "file:lib/features/settings/presentation/widgets/user_profile_card.dart",
+      "type": "file",
+      "name": "user_profile_card.dart",
+      "summary": "Application source file user_profile_card.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/settings/presentation/widgets/user_profile_card.dart"
+    },
+    {
+      "id": "file:lib/features/subscription/data/repositories/subscription_repository.dart",
+      "type": "file",
+      "name": "subscription_repository.dart",
+      "summary": "Application source file subscription_repository.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "data-layer"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/subscription/data/repositories/subscription_repository.dart"
+    },
+    {
+      "id": "file:lib/features/subscription/data/repositories/subscription_repository.g.dart",
+      "type": "file",
+      "name": "subscription_repository.g.dart",
+      "summary": "Application source file subscription_repository.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "data-layer"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/subscription/data/repositories/subscription_repository.g.dart"
+    },
+    {
+      "id": "file:lib/features/subscription/domain/entities/subscription_package.dart",
+      "type": "file",
+      "name": "subscription_package.dart",
+      "summary": "Application source file subscription_package.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/subscription/domain/entities/subscription_package.dart"
+    },
+    {
+      "id": "file:lib/features/subscription/domain/entities/subscription_package.freezed.dart",
+      "type": "file",
+      "name": "subscription_package.freezed.dart",
+      "summary": "Application source file subscription_package.freezed.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/subscription/domain/entities/subscription_package.freezed.dart"
+    },
+    {
+      "id": "file:lib/features/subscription/domain/entities/subscription_status.dart",
+      "type": "file",
+      "name": "subscription_status.dart",
+      "summary": "Application source file subscription_status.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/subscription/domain/entities/subscription_status.dart"
+    },
+    {
+      "id": "file:lib/features/subscription/domain/entities/subscription_status.freezed.dart",
+      "type": "file",
+      "name": "subscription_status.freezed.dart",
+      "summary": "Application source file subscription_status.freezed.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/subscription/domain/entities/subscription_status.freezed.dart"
+    },
+    {
+      "id": "file:lib/features/subscription/domain/entities/subscription_status.g.dart",
+      "type": "file",
+      "name": "subscription_status.g.dart",
+      "summary": "Application source file subscription_status.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/subscription/domain/entities/subscription_status.g.dart"
+    },
+    {
+      "id": "file:lib/features/subscription/domain/providers/subscription_repository_provider.dart",
+      "type": "file",
+      "name": "subscription_repository_provider.dart",
+      "summary": "Application source file subscription_repository_provider.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/subscription/domain/providers/subscription_repository_provider.dart"
+    },
+    {
+      "id": "file:lib/features/subscription/domain/repositories/i_subscription_repository.dart",
+      "type": "file",
+      "name": "i_subscription_repository.dart",
+      "summary": "Application source file i_subscription_repository.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/subscription/domain/repositories/i_subscription_repository.dart"
+    },
+    {
+      "id": "file:lib/features/subscription/presentation/providers/subscription_provider.dart",
+      "type": "file",
+      "name": "subscription_provider.dart",
+      "summary": "Application source file subscription_provider.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/subscription/presentation/providers/subscription_provider.dart"
+    },
+    {
+      "id": "file:lib/features/subscription/presentation/providers/subscription_provider.g.dart",
+      "type": "file",
+      "name": "subscription_provider.g.dart",
+      "summary": "Application source file subscription_provider.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/subscription/presentation/providers/subscription_provider.g.dart"
+    },
+    {
+      "id": "file:lib/features/subscription/presentation/screens/paywall_screen.dart",
+      "type": "file",
+      "name": "paywall_screen.dart",
+      "summary": "Application source file paywall_screen.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/subscription/presentation/screens/paywall_screen.dart"
+    },
+    {
+      "id": "file:lib/features/subscription/presentation/widgets/tier_comparison_card.dart",
+      "type": "file",
+      "name": "tier_comparison_card.dart",
+      "summary": "Application source file tier_comparison_card.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/subscription/presentation/widgets/tier_comparison_card.dart"
+    },
+    {
+      "id": "document:lib/features/template_engine/AGENTS.md",
+      "type": "document",
+      "name": "AGENTS.md",
+      "summary": "Documentation file AGENTS.md that explains project workflow, architecture, or operational guidance for the Artio codebase.",
+      "tags": [
+        "documentation",
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/template_engine/AGENTS.md"
+    },
+    {
+      "id": "file:lib/features/template_engine/data/policies/credit_check_policy.dart",
+      "type": "file",
+      "name": "credit_check_policy.dart",
+      "summary": "Application source file credit_check_policy.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "data-layer"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/template_engine/data/policies/credit_check_policy.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/data/repositories/generation_repository.dart",
+      "type": "file",
+      "name": "generation_repository.dart",
+      "summary": "Application source file generation_repository.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "data-layer"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/template_engine/data/repositories/generation_repository.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/data/repositories/generation_repository.g.dart",
+      "type": "file",
+      "name": "generation_repository.g.dart",
+      "summary": "Application source file generation_repository.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "data-layer"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/template_engine/data/repositories/generation_repository.g.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/data/repositories/template_repository.dart",
+      "type": "file",
+      "name": "template_repository.dart",
+      "summary": "Application source file template_repository.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "data-layer"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/template_engine/data/repositories/template_repository.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/data/repositories/template_repository.g.dart",
+      "type": "file",
+      "name": "template_repository.g.dart",
+      "summary": "Application source file template_repository.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "data-layer"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/template_engine/data/repositories/template_repository.g.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/data/services/template_cache_service.dart",
+      "type": "file",
+      "name": "template_cache_service.dart",
+      "summary": "Application source file template_cache_service.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "data-layer"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/template_engine/data/services/template_cache_service.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/data/services/template_cache_service.g.dart",
+      "type": "file",
+      "name": "template_cache_service.g.dart",
+      "summary": "Application source file template_cache_service.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "data-layer"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/template_engine/data/services/template_cache_service.g.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/domain/entities/generation_job_model.dart",
+      "type": "file",
+      "name": "generation_job_model.dart",
+      "summary": "Application source file generation_job_model.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/template_engine/domain/entities/generation_job_model.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/domain/entities/generation_job_model.freezed.dart",
+      "type": "file",
+      "name": "generation_job_model.freezed.dart",
+      "summary": "Application source file generation_job_model.freezed.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/template_engine/domain/entities/generation_job_model.freezed.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/domain/entities/generation_job_model.g.dart",
+      "type": "file",
+      "name": "generation_job_model.g.dart",
+      "summary": "Application source file generation_job_model.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/template_engine/domain/entities/generation_job_model.g.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/domain/entities/generation_options_model.dart",
+      "type": "file",
+      "name": "generation_options_model.dart",
+      "summary": "Application source file generation_options_model.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/template_engine/domain/entities/generation_options_model.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/domain/entities/generation_options_model.freezed.dart",
+      "type": "file",
+      "name": "generation_options_model.freezed.dart",
+      "summary": "Application source file generation_options_model.freezed.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/template_engine/domain/entities/generation_options_model.freezed.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/domain/entities/generation_options_model.g.dart",
+      "type": "file",
+      "name": "generation_options_model.g.dart",
+      "summary": "Application source file generation_options_model.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/template_engine/domain/entities/generation_options_model.g.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/domain/entities/input_field_model.dart",
+      "type": "file",
+      "name": "input_field_model.dart",
+      "summary": "Application source file input_field_model.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/template_engine/domain/entities/input_field_model.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/domain/entities/input_field_model.freezed.dart",
+      "type": "file",
+      "name": "input_field_model.freezed.dart",
+      "summary": "Application source file input_field_model.freezed.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/template_engine/domain/entities/input_field_model.freezed.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/domain/entities/input_field_model.g.dart",
+      "type": "file",
+      "name": "input_field_model.g.dart",
+      "summary": "Application source file input_field_model.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/template_engine/domain/entities/input_field_model.g.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/domain/entities/template_model.dart",
+      "type": "file",
+      "name": "template_model.dart",
+      "summary": "Application source file template_model.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/template_engine/domain/entities/template_model.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/domain/entities/template_model.freezed.dart",
+      "type": "file",
+      "name": "template_model.freezed.dart",
+      "summary": "Application source file template_model.freezed.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/template_engine/domain/entities/template_model.freezed.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/domain/entities/template_model.g.dart",
+      "type": "file",
+      "name": "template_model.g.dart",
+      "summary": "Application source file template_model.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/template_engine/domain/entities/template_model.g.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/domain/policies/generation_policy.dart",
+      "type": "file",
+      "name": "generation_policy.dart",
+      "summary": "Application source file generation_policy.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/template_engine/domain/policies/generation_policy.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/domain/policies/generation_policy.freezed.dart",
+      "type": "file",
+      "name": "generation_policy.freezed.dart",
+      "summary": "Application source file generation_policy.freezed.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/template_engine/domain/policies/generation_policy.freezed.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/domain/providers/generation_repository_provider.dart",
+      "type": "file",
+      "name": "generation_repository_provider.dart",
+      "summary": "Application source file generation_repository_provider.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/template_engine/domain/providers/generation_repository_provider.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/domain/providers/template_repository_provider.dart",
+      "type": "file",
+      "name": "template_repository_provider.dart",
+      "summary": "Application source file template_repository_provider.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/template_engine/domain/providers/template_repository_provider.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/domain/repositories/i_generation_repository.dart",
+      "type": "file",
+      "name": "i_generation_repository.dart",
+      "summary": "Application source file i_generation_repository.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/template_engine/domain/repositories/i_generation_repository.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/domain/repositories/i_template_repository.dart",
+      "type": "file",
+      "name": "i_template_repository.dart",
+      "summary": "Application source file i_template_repository.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/template_engine/domain/repositories/i_template_repository.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/presentation/helpers/generation_job_manager.dart",
+      "type": "file",
+      "name": "generation_job_manager.dart",
+      "summary": "Application source file generation_job_manager.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/template_engine/presentation/helpers/generation_job_manager.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/presentation/providers/generation_options_provider.dart",
+      "type": "file",
+      "name": "generation_options_provider.dart",
+      "summary": "Application source file generation_options_provider.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/template_engine/presentation/providers/generation_options_provider.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/presentation/providers/generation_options_provider.g.dart",
+      "type": "file",
+      "name": "generation_options_provider.g.dart",
+      "summary": "Application source file generation_options_provider.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/template_engine/presentation/providers/generation_options_provider.g.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/presentation/providers/generation_policy_provider.dart",
+      "type": "file",
+      "name": "generation_policy_provider.dart",
+      "summary": "Application source file generation_policy_provider.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/template_engine/presentation/providers/generation_policy_provider.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/presentation/providers/generation_policy_provider.g.dart",
+      "type": "file",
+      "name": "generation_policy_provider.g.dart",
+      "summary": "Application source file generation_policy_provider.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/template_engine/presentation/providers/generation_policy_provider.g.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/presentation/providers/template_provider.dart",
+      "type": "file",
+      "name": "template_provider.dart",
+      "summary": "Application source file template_provider.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/template_engine/presentation/providers/template_provider.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/presentation/providers/template_provider.g.dart",
+      "type": "file",
+      "name": "template_provider.g.dart",
+      "summary": "Application source file template_provider.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/template_engine/presentation/providers/template_provider.g.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/presentation/screens/home_screen.dart",
+      "type": "file",
+      "name": "home_screen.dart",
+      "summary": "Application source file home_screen.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/template_engine/presentation/screens/home_screen.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/presentation/screens/template_detail_screen.dart",
+      "type": "file",
+      "name": "template_detail_screen.dart",
+      "summary": "Application source file template_detail_screen.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/template_engine/presentation/screens/template_detail_screen.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/presentation/view_models/generation_view_model.dart",
+      "type": "file",
+      "name": "generation_view_model.dart",
+      "summary": "Application source file generation_view_model.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/template_engine/presentation/view_models/generation_view_model.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/presentation/view_models/generation_view_model.g.dart",
+      "type": "file",
+      "name": "generation_view_model.g.dart",
+      "summary": "Application source file generation_view_model.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/template_engine/presentation/view_models/generation_view_model.g.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/presentation/widgets/generation_progress_sections.dart",
+      "type": "file",
+      "name": "generation_progress_sections.dart",
+      "summary": "Application source file generation_progress_sections.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/template_engine/presentation/widgets/generation_progress_sections.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/presentation/widgets/generation_progress.dart",
+      "type": "file",
+      "name": "generation_progress.dart",
+      "summary": "Application source file generation_progress.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/template_engine/presentation/widgets/generation_progress.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/presentation/widgets/home_screen_widgets.dart",
+      "type": "file",
+      "name": "home_screen_widgets.dart",
+      "summary": "Application source file home_screen_widgets.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/template_engine/presentation/widgets/home_screen_widgets.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/presentation/widgets/input_field_builder.dart",
+      "type": "file",
+      "name": "input_field_builder.dart",
+      "summary": "Application source file input_field_builder.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/template_engine/presentation/widgets/input_field_builder.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/presentation/widgets/template_card.dart",
+      "type": "file",
+      "name": "template_card.dart",
+      "summary": "Application source file template_card.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/template_engine/presentation/widgets/template_card.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/presentation/widgets/template_detail_widgets.dart",
+      "type": "file",
+      "name": "template_detail_widgets.dart",
+      "summary": "Application source file template_detail_widgets.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/template_engine/presentation/widgets/template_detail_widgets.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/presentation/widgets/template_grid.dart",
+      "type": "file",
+      "name": "template_grid.dart",
+      "summary": "Application source file template_grid.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/template_engine/presentation/widgets/template_grid.dart"
+    },
+    {
+      "id": "file:lib/main.dart",
+      "type": "file",
+      "name": "main.dart",
+      "summary": "Application source file main.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/main.dart"
+    },
+    {
+      "id": "file:lib/routing/app_router.dart",
+      "type": "file",
+      "name": "app_router.dart",
+      "summary": "Application source file app_router.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/routing/app_router.dart"
+    },
+    {
+      "id": "file:lib/routing/app_router.g.dart",
+      "type": "file",
+      "name": "app_router.g.dart",
+      "summary": "Application source file app_router.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/routing/app_router.g.dart"
+    },
+    {
+      "id": "file:lib/routing/routes/app_routes.dart",
+      "type": "file",
+      "name": "app_routes.dart",
+      "summary": "Application source file app_routes.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/routing/routes/app_routes.dart"
+    },
+    {
+      "id": "file:lib/routing/routes/app_routes.g.dart",
+      "type": "file",
+      "name": "app_routes.g.dart",
+      "summary": "Application source file app_routes.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/routing/routes/app_routes.g.dart"
+    },
+    {
+      "id": "file:lib/shared/widgets/animated_retry_button.dart",
+      "type": "file",
+      "name": "animated_retry_button.dart",
+      "summary": "Application source file animated_retry_button.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/shared/widgets/animated_retry_button.dart"
+    },
+    {
+      "id": "file:lib/shared/widgets/app_snackbar.dart",
+      "type": "file",
+      "name": "app_snackbar.dart",
+      "summary": "Application source file app_snackbar.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/shared/widgets/app_snackbar.dart"
+    },
+    {
+      "id": "file:lib/shared/widgets/aspect_ratio_selector.dart",
+      "type": "file",
+      "name": "aspect_ratio_selector.dart",
+      "summary": "Application source file aspect_ratio_selector.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/shared/widgets/aspect_ratio_selector.dart"
+    },
+    {
+      "id": "file:lib/shared/widgets/error_illustration.dart",
+      "type": "file",
+      "name": "error_illustration.dart",
+      "summary": "Application source file error_illustration.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/shared/widgets/error_illustration.dart"
+    },
+    {
+      "id": "file:lib/shared/widgets/error_page.dart",
+      "type": "file",
+      "name": "error_page.dart",
+      "summary": "Application source file error_page.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/shared/widgets/error_page.dart"
+    },
+    {
+      "id": "file:lib/shared/widgets/error_state_widget.dart",
+      "type": "file",
+      "name": "error_state_widget.dart",
+      "summary": "Application source file error_state_widget.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/shared/widgets/error_state_widget.dart"
+    },
+    {
+      "id": "file:lib/shared/widgets/gradient_button.dart",
+      "type": "file",
+      "name": "gradient_button.dart",
+      "summary": "Application source file gradient_button.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/shared/widgets/gradient_button.dart"
+    },
+    {
+      "id": "file:lib/shared/widgets/image_count_dropdown.dart",
+      "type": "file",
+      "name": "image_count_dropdown.dart",
+      "summary": "Application source file image_count_dropdown.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/shared/widgets/image_count_dropdown.dart"
+    },
+    {
+      "id": "file:lib/shared/widgets/image_input_widget.dart",
+      "type": "file",
+      "name": "image_input_widget.dart",
+      "summary": "Application source file image_input_widget.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/shared/widgets/image_input_widget.dart"
+    },
+    {
+      "id": "file:lib/shared/widgets/loading_state_widget.dart",
+      "type": "file",
+      "name": "loading_state_widget.dart",
+      "summary": "Application source file loading_state_widget.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/shared/widgets/loading_state_widget.dart"
+    },
+    {
+      "id": "file:lib/shared/widgets/main_shell.dart",
+      "type": "file",
+      "name": "main_shell.dart",
+      "summary": "Application source file main_shell.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/shared/widgets/main_shell.dart"
+    },
+    {
+      "id": "file:lib/shared/widgets/model_selector.dart",
+      "type": "file",
+      "name": "model_selector.dart",
+      "summary": "Application source file model_selector.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/shared/widgets/model_selector.dart"
+    },
+    {
+      "id": "file:lib/shared/widgets/offline_banner.dart",
+      "type": "file",
+      "name": "offline_banner.dart",
+      "summary": "Application source file offline_banner.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/shared/widgets/offline_banner.dart"
+    },
+    {
+      "id": "file:lib/shared/widgets/output_format_toggle.dart",
+      "type": "file",
+      "name": "output_format_toggle.dart",
+      "summary": "Application source file output_format_toggle.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/shared/widgets/output_format_toggle.dart"
+    },
+    {
+      "id": "file:lib/shared/widgets/retry_text_button.dart",
+      "type": "file",
+      "name": "retry_text_button.dart",
+      "summary": "Application source file retry_text_button.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/shared/widgets/retry_text_button.dart"
+    },
+    {
+      "id": "file:lib/shared/widgets/section_header.dart",
+      "type": "file",
+      "name": "section_header.dart",
+      "summary": "Application source file section_header.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/shared/widgets/section_header.dart"
+    },
+    {
+      "id": "file:lib/shared/widgets/watermark_overlay.dart",
+      "type": "file",
+      "name": "watermark_overlay.dart",
+      "summary": "Application source file watermark_overlay.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/shared/widgets/watermark_overlay.dart"
+    },
+    {
+      "id": "file:lib/theme/app_button_themes.dart",
+      "type": "file",
+      "name": "app_button_themes.dart",
+      "summary": "Application source file app_button_themes.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/theme/app_button_themes.dart"
+    },
+    {
+      "id": "file:lib/theme/app_colors.dart",
+      "type": "file",
+      "name": "app_colors.dart",
+      "summary": "Application source file app_colors.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/theme/app_colors.dart"
+    },
+    {
+      "id": "file:lib/theme/app_component_themes.dart",
+      "type": "file",
+      "name": "app_component_themes.dart",
+      "summary": "Application source file app_component_themes.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/theme/app_component_themes.dart"
+    },
+    {
+      "id": "file:lib/theme/app_theme.dart",
+      "type": "file",
+      "name": "app_theme.dart",
+      "summary": "Application source file app_theme.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/theme/app_theme.dart"
+    },
+    {
+      "id": "file:lib/theme/theme_provider.dart",
+      "type": "file",
+      "name": "theme_provider.dart",
+      "summary": "Application source file theme_provider.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/theme/theme_provider.dart"
+    },
+    {
+      "id": "file:lib/theme/theme_provider.g.dart",
+      "type": "file",
+      "name": "theme_provider.g.dart",
+      "summary": "Application source file theme_provider.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/theme/theme_provider.g.dart"
+    },
+    {
+      "id": "file:lib/utils/logger_service.dart",
+      "type": "file",
+      "name": "logger_service.dart",
+      "summary": "Application source file logger_service.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/utils/logger_service.dart"
+    },
+    {
+      "id": "document:supabase/AGENTS.md",
+      "type": "document",
+      "name": "AGENTS.md",
+      "summary": "Documentation file AGENTS.md that explains project workflow, architecture, or operational guidance for the Artio codebase.",
+      "tags": [
+        "documentation"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/AGENTS.md"
+    },
+    {
+      "id": "config:supabase/config.toml",
+      "type": "config",
+      "name": "config.toml",
+      "summary": "Configuration file config.toml that defines tooling, analysis, environment, or build behavior for the project.",
+      "tags": [
+        "configuration"
+      ],
+      "complexity": "complex",
+      "filePath": "supabase/config.toml"
+    },
+    {
+      "id": "file:supabase/functions/_shared/credit_logic_test.ts",
+      "type": "file",
+      "name": "credit_logic_test.ts",
+      "summary": "Backend source file credit_logic_test.ts used by Supabase functions or shared server utilities in the Artio generation platform.",
+      "tags": [
+        "test",
+        "backend"
+      ],
+      "complexity": "moderate",
+      "filePath": "supabase/functions/_shared/credit_logic_test.ts"
+    },
+    {
+      "id": "function:supabase/functions/_shared/credit_logic_test.ts:createMockSupabase",
+      "type": "function",
+      "name": "createMockSupabase",
+      "summary": "Function createMockSupabase defined in credit_logic_test.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic",
+        "test"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/_shared/credit_logic_test.ts"
+    },
+    {
+      "id": "file:supabase/functions/_shared/credit_logic.ts",
+      "type": "file",
+      "name": "credit_logic.ts",
+      "summary": "Backend source file credit_logic.ts used by Supabase functions or shared server utilities in the Artio generation platform.",
+      "tags": [
+        "backend"
+      ],
+      "complexity": "moderate",
+      "filePath": "supabase/functions/_shared/credit_logic.ts"
+    },
+    {
+      "id": "function:supabase/functions/_shared/credit_logic.ts:checkAndDeductCredits",
+      "type": "function",
+      "name": "checkAndDeductCredits",
+      "summary": "Function checkAndDeductCredits defined in credit_logic.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/_shared/credit_logic.ts"
+    },
+    {
+      "id": "function:supabase/functions/_shared/credit_logic.ts:refundCreditsOnFailure",
+      "type": "function",
+      "name": "refundCreditsOnFailure",
+      "summary": "Function refundCreditsOnFailure defined in credit_logic.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/_shared/credit_logic.ts"
+    },
+    {
+      "id": "file:supabase/functions/delete-account/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "summary": "Backend source file index.ts used by Supabase functions or shared server utilities in the Artio generation platform.",
+      "tags": [
+        "backend"
+      ],
+      "complexity": "moderate",
+      "filePath": "supabase/functions/delete-account/index.ts"
+    },
+    {
+      "id": "function:supabase/functions/delete-account/index.ts:corsHeaders",
+      "type": "function",
+      "name": "corsHeaders",
+      "summary": "Function corsHeaders defined in index.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/delete-account/index.ts"
+    },
+    {
+      "id": "config:supabase/functions/deno.json",
+      "type": "config",
+      "name": "deno.json",
+      "summary": "Configuration file deno.json that defines tooling, analysis, environment, or build behavior for the project.",
+      "tags": [
+        "configuration",
+        "backend"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/deno.json"
+    },
+    {
+      "id": "file:supabase/functions/generate-image/.npmrc",
+      "type": "file",
+      "name": ".npmrc",
+      "summary": "Backend source file .npmrc used by Supabase functions or shared server utilities in the Artio generation platform.",
+      "tags": [
+        "backend"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/generate-image/.npmrc"
+    },
+    {
+      "id": "config:supabase/functions/generate-image/deno.json",
+      "type": "config",
+      "name": "deno.json",
+      "summary": "Configuration file deno.json that defines tooling, analysis, environment, or build behavior for the project.",
+      "tags": [
+        "configuration",
+        "backend"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/generate-image/deno.json"
+    },
+    {
+      "id": "file:supabase/functions/revenuecat-webhook/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "summary": "Backend source file index.ts used by Supabase functions or shared server utilities in the Artio generation platform.",
+      "tags": [
+        "backend"
+      ],
+      "complexity": "complex",
+      "filePath": "supabase/functions/revenuecat-webhook/index.ts"
+    },
+    {
+      "id": "function:supabase/functions/revenuecat-webhook/index.ts:getTierInfo",
+      "type": "function",
+      "name": "getTierInfo",
+      "summary": "Function getTierInfo defined in index.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/revenuecat-webhook/index.ts"
+    },
+    {
+      "id": "file:supabase/functions/reward-ad/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "summary": "Backend source file index.ts used by Supabase functions or shared server utilities in the Artio generation platform.",
+      "tags": [
+        "backend"
+      ],
+      "complexity": "complex",
+      "filePath": "supabase/functions/reward-ad/index.ts"
+    },
+    {
+      "id": "function:supabase/functions/reward-ad/index.ts:corsHeaders",
+      "type": "function",
+      "name": "corsHeaders",
+      "summary": "Function corsHeaders defined in index.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/reward-ad/index.ts"
+    },
+    {
+      "id": "function:supabase/functions/reward-ad/index.ts:authenticateUser",
+      "type": "function",
+      "name": "authenticateUser",
+      "summary": "Function authenticateUser defined in index.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/reward-ad/index.ts"
+    },
+    {
+      "id": "function:supabase/functions/reward-ad/index.ts:derToP1363",
+      "type": "function",
+      "name": "derToP1363",
+      "summary": "Function derToP1363 defined in index.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/reward-ad/index.ts"
+    },
+    {
+      "id": "function:supabase/functions/reward-ad/index.ts:verifyGoogleSsvSignature",
+      "type": "function",
+      "name": "verifyGoogleSsvSignature",
+      "summary": "Function verifyGoogleSsvSignature defined in index.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "moderate",
+      "filePath": "supabase/functions/reward-ad/index.ts"
+    },
+    {
+      "id": "function:supabase/functions/reward-ad/index.ts:handleSsvCallback",
+      "type": "function",
+      "name": "handleSsvCallback",
+      "summary": "Function handleSsvCallback defined in index.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "moderate",
+      "filePath": "supabase/functions/reward-ad/index.ts"
+    },
+    {
+      "id": "function:supabase/functions/reward-ad/index.ts:handleRequestNonce",
+      "type": "function",
+      "name": "handleRequestNonce",
+      "summary": "Function handleRequestNonce defined in index.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/reward-ad/index.ts"
+    },
+    {
+      "id": "function:supabase/functions/reward-ad/index.ts:handleClaim",
+      "type": "function",
+      "name": "handleClaim",
+      "summary": "Function handleClaim defined in index.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/reward-ad/index.ts"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:supabase/functions/_shared/cors.ts",
+      "target": "function:supabase/functions/_shared/cors.ts:corsHeaders",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/_shared/cors.ts",
+      "target": "function:supabase/functions/_shared/cors.ts:handleCorsIfPreflight",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "function:supabase/functions/_shared/cors.ts:handleCorsIfPreflight",
+      "target": "function:supabase/functions/_shared/cors.ts:corsHeaders",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/sync-subscription/index.ts",
+      "target": "file:supabase/functions/_shared/cors.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/verify-google-purchase/index.ts",
+      "target": "file:supabase/functions/_shared/cors.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/_shared/model_config.ts",
+      "target": "function:supabase/functions/_shared/model_config.ts:isPremiumModel",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/_shared/model_config.ts",
+      "target": "function:supabase/functions/_shared/model_config.ts:getModelCreditCost",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/generate-image/index.ts",
+      "target": "function:supabase/functions/generate-image/index.ts:resolveImageUrls",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/generate-image/index.ts",
+      "target": "function:supabase/functions/generate-image/index.ts:buildKieInput",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/generate-image/index.ts",
+      "target": "function:supabase/functions/generate-image/index.ts:createKieTask",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/generate-image/index.ts",
+      "target": "function:supabase/functions/generate-image/index.ts:pollKieTask",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/generate-image/index.ts",
+      "target": "function:supabase/functions/generate-image/index.ts:downloadImageAsBase64",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/generate-image/index.ts",
+      "target": "function:supabase/functions/generate-image/index.ts:generateViaGemini",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/generate-image/index.ts",
+      "target": "function:supabase/functions/generate-image/index.ts:generateViaImagen",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/generate-image/index.ts",
+      "target": "function:supabase/functions/generate-image/index.ts:uploadToStorage",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/generate-image/index.ts",
+      "target": "function:supabase/functions/generate-image/index.ts:cleanupStorageFiles",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/generate-image/index.ts",
+      "target": "function:supabase/functions/generate-image/index.ts:mirrorUrlsToStorage",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/generate-image/index.ts",
+      "target": "function:supabase/functions/generate-image/index.ts:mirrorBase64ToStorage",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/generate-image/index.ts",
+      "target": "function:supabase/functions/generate-image/index.ts:updateJobStatus",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/generate-image/index.ts",
+      "target": "function:supabase/functions/generate-image/index.ts:refundAndBuildErrorMsg",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/_shared/model_config_test.ts",
+      "target": "file:supabase/functions/_shared/model_config.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/generate-image/index.ts",
+      "target": "file:supabase/functions/_shared/cors.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/generate-image/index.ts",
+      "target": "file:supabase/functions/_shared/credit_logic.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/generate-image/index.ts",
+      "target": "file:supabase/functions/_shared/model_config.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "function:supabase/functions/generate-image/index.ts:createKieTask",
+      "target": "function:supabase/functions/generate-image/index.ts:buildKieInput",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "function:supabase/functions/generate-image/index.ts:generateViaGemini",
+      "target": "function:supabase/functions/generate-image/index.ts:downloadImageAsBase64",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "function:supabase/functions/generate-image/index.ts:mirrorUrlsToStorage",
+      "target": "function:supabase/functions/generate-image/index.ts:uploadToStorage",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "function:supabase/functions/generate-image/index.ts:mirrorUrlsToStorage",
+      "target": "function:supabase/functions/generate-image/index.ts:cleanupStorageFiles",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "function:supabase/functions/generate-image/index.ts:mirrorBase64ToStorage",
+      "target": "function:supabase/functions/generate-image/index.ts:uploadToStorage",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "function:supabase/functions/generate-image/index.ts:mirrorBase64ToStorage",
+      "target": "function:supabase/functions/generate-image/index.ts:cleanupStorageFiles",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/_shared/credit_logic_test.ts",
+      "target": "function:supabase/functions/_shared/credit_logic_test.ts:createMockSupabase",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/_shared/credit_logic.ts",
+      "target": "function:supabase/functions/_shared/credit_logic.ts:checkAndDeductCredits",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/_shared/credit_logic.ts",
+      "target": "function:supabase/functions/_shared/credit_logic.ts:refundCreditsOnFailure",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/delete-account/index.ts",
+      "target": "function:supabase/functions/delete-account/index.ts:corsHeaders",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/_shared/credit_logic_test.ts",
+      "target": "file:supabase/functions/_shared/credit_logic.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/revenuecat-webhook/index.ts",
+      "target": "function:supabase/functions/revenuecat-webhook/index.ts:getTierInfo",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/reward-ad/index.ts",
+      "target": "function:supabase/functions/reward-ad/index.ts:corsHeaders",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/reward-ad/index.ts",
+      "target": "function:supabase/functions/reward-ad/index.ts:authenticateUser",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/reward-ad/index.ts",
+      "target": "function:supabase/functions/reward-ad/index.ts:derToP1363",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/reward-ad/index.ts",
+      "target": "function:supabase/functions/reward-ad/index.ts:verifyGoogleSsvSignature",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/reward-ad/index.ts",
+      "target": "function:supabase/functions/reward-ad/index.ts:handleSsvCallback",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/reward-ad/index.ts",
+      "target": "function:supabase/functions/reward-ad/index.ts:handleRequestNonce",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/reward-ad/index.ts",
+      "target": "function:supabase/functions/reward-ad/index.ts:handleClaim",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "function:supabase/functions/reward-ad/index.ts:authenticateUser",
+      "target": "function:supabase/functions/reward-ad/index.ts:corsHeaders",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "function:supabase/functions/reward-ad/index.ts:verifyGoogleSsvSignature",
+      "target": "function:supabase/functions/reward-ad/index.ts:derToP1363",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "function:supabase/functions/reward-ad/index.ts:handleSsvCallback",
+      "target": "function:supabase/functions/reward-ad/index.ts:verifyGoogleSsvSignature",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    }
+  ],
+  "layers": [
+    {
+      "id": "layer:documentation-and-governance",
+      "name": "Documentation & Governance",
+      "description": "Repository guides, plans, changelogs, and contributor-facing operating documents that explain how Artio is organized and maintained.",
+      "nodeIds": [
+        "document:AGENTS.md",
+        "document:CHANGELOG.md",
+        "document:CLAUDE.md",
+        "document:README.md",
+        "document:TODOS.md",
+        "document:lib/core/AGENTS.md",
+        "document:lib/features/AGENTS.md",
+        "document:lib/features/template_engine/AGENTS.md",
+        "document:lint_baseline.txt",
+        "document:supabase/AGENTS.md"
+      ]
+    },
+    {
+      "id": "layer:project-and-tooling-config",
+      "name": "Project & Tooling Config",
+      "description": "Top-level configuration, environment templates, analyzer settings, and build metadata that shape local development and automation.",
+      "nodeIds": [
+        "config:.env.example",
+        "config:analysis_options.yaml",
+        "config:build.yaml",
+        "config:dart_test.yaml",
+        "config:devtools_options.yaml",
+        "config:model_capabilities.yaml",
+        "config:pubspec.yaml"
+      ]
+    },
+    {
+      "id": "layer:main-flutter-app",
+      "name": "Main Flutter App",
+      "description": "Primary Artio client application code under lib/, including presentation, domain, data, shared core services, and app routing.",
+      "nodeIds": [
+        "file:lib/core/config/env_config.dart",
+        "file:lib/core/config/sentry_config.dart",
+        "file:lib/core/constants/ai_models.dart",
+        "file:lib/core/constants/app_constants.dart",
+        "file:lib/core/constants/generation_constants.dart",
+        "file:lib/core/design_system/app_animations.dart",
+        "file:lib/core/design_system/app_dimensions.dart",
+        "file:lib/core/design_system/app_gradients.dart",
+        "file:lib/core/design_system/app_shadows.dart",
+        "file:lib/core/design_system/app_spacing.dart",
+        "file:lib/core/design_system/app_typography.dart",
+        "file:lib/core/exceptions/app_exception.dart",
+        "file:lib/core/exceptions/app_exception.freezed.dart",
+        "file:lib/core/providers/connectivity_provider.dart",
+        "file:lib/core/providers/connectivity_provider.g.dart",
+        "file:lib/core/providers/supabase_provider.dart",
+        "file:lib/core/providers/supabase_provider.g.dart",
+        "file:lib/core/services/att_service.dart",
+        "file:lib/core/services/content_moderation_service.dart",
+        "file:lib/core/services/haptic_service.dart",
+        "file:lib/core/services/image_upload_service.dart",
+        "file:lib/core/services/image_upload_service.g.dart",
+        "file:lib/core/services/rewarded_ad_service.dart",
+        "file:lib/core/services/rewarded_ad_service.g.dart",
+        "file:lib/core/services/storage_url_service.dart",
+        "file:lib/core/services/storage_url_service.g.dart",
+        "file:lib/core/state/auth_view_model_provider.dart",
+        "file:lib/core/state/credit_balance_state_provider.dart",
+        "file:lib/core/state/subscription_state_provider.dart",
+        "file:lib/core/state/user_scoped_providers.dart",
+        "file:lib/core/utils/app_exception_mapper.dart",
+        "file:lib/core/utils/date_time_utils.dart",
+        "file:lib/core/utils/email_validator.dart",
+        "file:lib/core/utils/prompt_validator.dart",
+        "file:lib/core/utils/retry.dart",
+        "file:lib/core/utils/subagent_smoke_codegen.dart",
+        "file:lib/core/utils/url_launcher_utils.dart",
+        "file:lib/core/utils/watermark_util.dart",
+        "file:lib/core/widgets/bottom_sheet_body.dart",
+        "file:lib/features/auth/data/repositories/auth_repository.dart",
+        "file:lib/features/auth/data/repositories/auth_repository.g.dart",
+        "file:lib/features/auth/domain/entities/user_model.dart",
+        "file:lib/features/auth/domain/entities/user_model.freezed.dart",
+        "file:lib/features/auth/domain/entities/user_model.g.dart",
+        "file:lib/features/auth/domain/providers/auth_repository_provider.dart",
+        "file:lib/features/auth/domain/providers/onboarding_provider.dart",
+        "file:lib/features/auth/domain/providers/onboarding_provider.g.dart",
+        "file:lib/features/auth/domain/repositories/i_auth_repository.dart",
+        "file:lib/features/auth/presentation/screens/forgot_password_screen.dart",
+        "file:lib/features/auth/presentation/screens/login_screen.dart",
+        "file:lib/features/auth/presentation/screens/onboarding_screen.dart",
+        "file:lib/features/auth/presentation/screens/register_screen.dart",
+        "file:lib/features/auth/presentation/screens/splash_screen.dart",
+        "file:lib/features/auth/presentation/state/auth_state.dart",
+        "file:lib/features/auth/presentation/state/auth_state.freezed.dart",
+        "file:lib/features/auth/presentation/view_models/auth_view_model.dart",
+        "file:lib/features/auth/presentation/view_models/auth_view_model.g.dart",
+        "file:lib/features/auth/presentation/widgets/social_login_buttons.dart",
+        "file:lib/features/create/domain/entities/create_form_state.dart",
+        "file:lib/features/create/domain/entities/create_form_state.freezed.dart",
+        "file:lib/features/create/presentation/create_screen.dart",
+        "file:lib/features/create/presentation/providers/create_form_provider.dart",
+        "file:lib/features/create/presentation/providers/create_form_provider.g.dart",
+        "file:lib/features/create/presentation/view_models/create_view_model.dart",
+        "file:lib/features/create/presentation/view_models/create_view_model.g.dart",
+        "file:lib/features/create/presentation/widgets/aspect_ratio_selector.dart",
+        "file:lib/features/create/presentation/widgets/auth_gate_sheet.dart",
+        "file:lib/features/create/presentation/widgets/credit_balance_chip.dart",
+        "file:lib/features/create/presentation/widgets/generation_progress_overlay.dart",
+        "file:lib/features/create/presentation/widgets/generation_starting_overlay.dart",
+        "file:lib/features/create/presentation/widgets/model_selector.dart",
+        "file:lib/features/create/presentation/widgets/prompt_input_field.dart",
+        "file:lib/features/credits/data/repositories/credit_repository.dart",
+        "file:lib/features/credits/data/repositories/credit_repository.g.dart",
+        "file:lib/features/credits/domain/entities/credit_balance.dart",
+        "file:lib/features/credits/domain/entities/credit_balance.freezed.dart",
+        "file:lib/features/credits/domain/entities/credit_balance.g.dart",
+        "file:lib/features/credits/domain/entities/credit_transaction.dart",
+        "file:lib/features/credits/domain/entities/credit_transaction.freezed.dart",
+        "file:lib/features/credits/domain/entities/credit_transaction.g.dart",
+        "file:lib/features/credits/domain/providers/credit_repository_provider.dart",
+        "file:lib/features/credits/domain/repositories/i_credit_repository.dart",
+        "file:lib/features/credits/presentation/providers/ad_reward_provider.dart",
+        "file:lib/features/credits/presentation/providers/ad_reward_provider.g.dart",
+        "file:lib/features/credits/presentation/providers/credit_balance_provider.dart",
+        "file:lib/features/credits/presentation/providers/credit_balance_provider.g.dart",
+        "file:lib/features/credits/presentation/providers/credit_history_provider.dart",
+        "file:lib/features/credits/presentation/providers/credit_history_provider.g.dart",
+        "file:lib/features/credits/presentation/screens/credit_history_screen.dart",
+        "file:lib/features/credits/presentation/widgets/insufficient_credits_sheet.dart",
+        "file:lib/features/credits/presentation/widgets/premium_model_sheet.dart",
+        "file:lib/features/gallery/data/repositories/gallery_repository.dart",
+        "file:lib/features/gallery/data/repositories/gallery_repository.g.dart",
+        "file:lib/features/gallery/data/repositories/gallery_repository_helpers.dart",
+        "file:lib/features/gallery/data/services/gallery_cache_service.dart",
+        "file:lib/features/gallery/data/services/gallery_cache_service.g.dart",
+        "file:lib/features/gallery/domain/entities/gallery_item.dart",
+        "file:lib/features/gallery/domain/entities/gallery_item.freezed.dart",
+        "file:lib/features/gallery/domain/entities/gallery_item.g.dart",
+        "file:lib/features/gallery/domain/providers/gallery_repository_provider.dart",
+        "file:lib/features/gallery/domain/repositories/i_gallery_repository.dart",
+        "file:lib/features/gallery/presentation/constants/gallery_strings.dart",
+        "file:lib/features/gallery/presentation/pages/gallery_page.dart",
+        "file:lib/features/gallery/presentation/pages/image_viewer_action_helper.dart",
+        "file:lib/features/gallery/presentation/pages/image_viewer_page.dart",
+        "file:lib/features/gallery/presentation/providers/gallery_provider.dart",
+        "file:lib/features/gallery/presentation/providers/gallery_provider.g.dart",
+        "file:lib/features/gallery/presentation/widgets/empty_gallery_illustration.dart",
+        "file:lib/features/gallery/presentation/widgets/empty_gallery_state.dart",
+        "file:lib/features/gallery/presentation/widgets/failed_image_card.dart",
+        "file:lib/features/gallery/presentation/widgets/image_info_bottom_sheet.dart",
+        "file:lib/features/gallery/presentation/widgets/image_viewer_app_bar.dart",
+        "file:lib/features/gallery/presentation/widgets/image_viewer_image_page.dart",
+        "file:lib/features/gallery/presentation/widgets/image_viewer_page_indicator.dart",
+        "file:lib/features/gallery/presentation/widgets/image_viewer_swipe_dismiss.dart",
+        "file:lib/features/gallery/presentation/widgets/interactive_gallery_item.dart",
+        "file:lib/features/gallery/presentation/widgets/masonry_image_grid.dart",
+        "file:lib/features/gallery/presentation/widgets/shimmer_grid.dart",
+        "file:lib/features/settings/data/notifications_provider.dart",
+        "file:lib/features/settings/data/notifications_provider.g.dart",
+        "file:lib/features/settings/domain/providers/notifications_provider.dart",
+        "file:lib/features/settings/presentation/settings_screen.dart",
+        "file:lib/features/settings/presentation/widgets/settings_helpers.dart",
+        "file:lib/features/settings/presentation/widgets/settings_sections.dart",
+        "file:lib/features/settings/presentation/widgets/subscription_card.dart",
+        "file:lib/features/settings/presentation/widgets/theme_switcher.dart",
+        "file:lib/features/settings/presentation/widgets/user_profile_card.dart",
+        "file:lib/features/subscription/data/repositories/subscription_repository.dart",
+        "file:lib/features/subscription/data/repositories/subscription_repository.g.dart",
+        "file:lib/features/subscription/domain/entities/subscription_package.dart",
+        "file:lib/features/subscription/domain/entities/subscription_package.freezed.dart",
+        "file:lib/features/subscription/domain/entities/subscription_status.dart",
+        "file:lib/features/subscription/domain/entities/subscription_status.freezed.dart",
+        "file:lib/features/subscription/domain/entities/subscription_status.g.dart",
+        "file:lib/features/subscription/domain/providers/subscription_repository_provider.dart",
+        "file:lib/features/subscription/domain/repositories/i_subscription_repository.dart",
+        "file:lib/features/subscription/presentation/providers/subscription_provider.dart",
+        "file:lib/features/subscription/presentation/providers/subscription_provider.g.dart",
+        "file:lib/features/subscription/presentation/screens/paywall_screen.dart",
+        "file:lib/features/subscription/presentation/widgets/tier_comparison_card.dart",
+        "file:lib/features/template_engine/data/policies/credit_check_policy.dart",
+        "file:lib/features/template_engine/data/repositories/generation_repository.dart",
+        "file:lib/features/template_engine/data/repositories/generation_repository.g.dart",
+        "file:lib/features/template_engine/data/repositories/template_repository.dart",
+        "file:lib/features/template_engine/data/repositories/template_repository.g.dart",
+        "file:lib/features/template_engine/data/services/template_cache_service.dart",
+        "file:lib/features/template_engine/data/services/template_cache_service.g.dart",
+        "file:lib/features/template_engine/domain/entities/generation_job_model.dart",
+        "file:lib/features/template_engine/domain/entities/generation_job_model.freezed.dart",
+        "file:lib/features/template_engine/domain/entities/generation_job_model.g.dart",
+        "file:lib/features/template_engine/domain/entities/generation_options_model.dart",
+        "file:lib/features/template_engine/domain/entities/generation_options_model.freezed.dart",
+        "file:lib/features/template_engine/domain/entities/generation_options_model.g.dart",
+        "file:lib/features/template_engine/domain/entities/input_field_model.dart",
+        "file:lib/features/template_engine/domain/entities/input_field_model.freezed.dart",
+        "file:lib/features/template_engine/domain/entities/input_field_model.g.dart",
+        "file:lib/features/template_engine/domain/entities/template_model.dart",
+        "file:lib/features/template_engine/domain/entities/template_model.freezed.dart",
+        "file:lib/features/template_engine/domain/entities/template_model.g.dart",
+        "file:lib/features/template_engine/domain/policies/generation_policy.dart",
+        "file:lib/features/template_engine/domain/policies/generation_policy.freezed.dart",
+        "file:lib/features/template_engine/domain/providers/generation_repository_provider.dart",
+        "file:lib/features/template_engine/domain/providers/template_repository_provider.dart",
+        "file:lib/features/template_engine/domain/repositories/i_generation_repository.dart",
+        "file:lib/features/template_engine/domain/repositories/i_template_repository.dart",
+        "file:lib/features/template_engine/presentation/helpers/generation_job_manager.dart",
+        "file:lib/features/template_engine/presentation/providers/generation_options_provider.dart",
+        "file:lib/features/template_engine/presentation/providers/generation_options_provider.g.dart",
+        "file:lib/features/template_engine/presentation/providers/generation_policy_provider.dart",
+        "file:lib/features/template_engine/presentation/providers/generation_policy_provider.g.dart",
+        "file:lib/features/template_engine/presentation/providers/template_provider.dart",
+        "file:lib/features/template_engine/presentation/providers/template_provider.g.dart",
+        "file:lib/features/template_engine/presentation/screens/home_screen.dart",
+        "file:lib/features/template_engine/presentation/screens/template_detail_screen.dart",
+        "file:lib/features/template_engine/presentation/view_models/generation_view_model.dart",
+        "file:lib/features/template_engine/presentation/view_models/generation_view_model.g.dart",
+        "file:lib/features/template_engine/presentation/widgets/generation_progress.dart",
+        "file:lib/features/template_engine/presentation/widgets/generation_progress_sections.dart",
+        "file:lib/features/template_engine/presentation/widgets/home_screen_widgets.dart",
+        "file:lib/features/template_engine/presentation/widgets/input_field_builder.dart",
+        "file:lib/features/template_engine/presentation/widgets/template_card.dart",
+        "file:lib/features/template_engine/presentation/widgets/template_detail_widgets.dart",
+        "file:lib/features/template_engine/presentation/widgets/template_grid.dart",
+        "file:lib/main.dart",
+        "file:lib/routing/app_router.dart",
+        "file:lib/routing/app_router.g.dart",
+        "file:lib/routing/routes/app_routes.dart",
+        "file:lib/routing/routes/app_routes.g.dart",
+        "file:lib/shared/widgets/animated_retry_button.dart",
+        "file:lib/shared/widgets/app_snackbar.dart",
+        "file:lib/shared/widgets/aspect_ratio_selector.dart",
+        "file:lib/shared/widgets/error_illustration.dart",
+        "file:lib/shared/widgets/error_page.dart",
+        "file:lib/shared/widgets/error_state_widget.dart",
+        "file:lib/shared/widgets/gradient_button.dart",
+        "file:lib/shared/widgets/image_count_dropdown.dart",
+        "file:lib/shared/widgets/image_input_widget.dart",
+        "file:lib/shared/widgets/loading_state_widget.dart",
+        "file:lib/shared/widgets/main_shell.dart",
+        "file:lib/shared/widgets/model_selector.dart",
+        "file:lib/shared/widgets/offline_banner.dart",
+        "file:lib/shared/widgets/output_format_toggle.dart",
+        "file:lib/shared/widgets/retry_text_button.dart",
+        "file:lib/shared/widgets/section_header.dart",
+        "file:lib/shared/widgets/watermark_overlay.dart",
+        "file:lib/theme/app_button_themes.dart",
+        "file:lib/theme/app_colors.dart",
+        "file:lib/theme/app_component_themes.dart",
+        "file:lib/theme/app_theme.dart",
+        "file:lib/theme/theme_provider.dart",
+        "file:lib/theme/theme_provider.g.dart",
+        "file:lib/utils/logger_service.dart"
+      ]
+    },
+    {
+      "id": "layer:backend-edge-functions",
+      "name": "Backend Edge Functions",
+      "description": "Supabase Edge Functions and shared server-side TypeScript modules that power generation, billing, rewards, and backend coordination.",
+      "nodeIds": [
+        "config:supabase/functions/deno.json",
+        "config:supabase/functions/generate-image/deno.json",
+        "file:supabase/functions/_shared/cors.ts",
+        "file:supabase/functions/_shared/credit_logic.ts",
+        "file:supabase/functions/_shared/credit_logic_test.ts",
+        "file:supabase/functions/_shared/model_config.ts",
+        "file:supabase/functions/_shared/model_config_test.ts",
+        "file:supabase/functions/delete-account/index.ts",
+        "file:supabase/functions/generate-image/.npmrc",
+        "file:supabase/functions/generate-image/index.ts",
+        "file:supabase/functions/revenuecat-webhook/index.ts",
+        "file:supabase/functions/reward-ad/index.ts",
+        "file:supabase/functions/sync-subscription/index.ts",
+        "file:supabase/functions/verify-google-purchase/index.ts"
+      ]
+    },
+    {
+      "id": "layer:data-and-database",
+      "name": "Data & Database",
+      "description": "Database migrations, SQL routines, and persisted schema artifacts that define Artio storage, policies, and server-side data behavior.",
+      "nodeIds": [
+        "table:supabase/migrations/20260127000000_create_templates_table.sql",
+        "table:supabase/migrations/20260128000000_create_profiles_table.sql",
+        "table:supabase/migrations/20260128094706_create_admin_user.sql",
+        "table:supabase/migrations/20260128115551_add_deleted_at_and_storage_bucket.sql",
+        "table:supabase/migrations/20260128130000_add_25_templates.sql",
+        "table:supabase/migrations/20260218000000_create_credit_system.sql",
+        "table:supabase/migrations/20260218100000_create_reward_ad_function.sql",
+        "table:supabase/migrations/20260219000000_add_subscription_support.sql",
+        "table:supabase/migrations/20260219000001_restrict_profiles_update_rls.sql",
+        "table:supabase/migrations/20260220160000_create_pending_ad_rewards.sql",
+        "table:supabase/migrations/20260220170000_create_rate_limit.sql",
+        "table:supabase/migrations/20260220180000_concurrency_locks.sql",
+        "table:supabase/migrations/20260221000000_fix_subscription_trigger.sql",
+        "table:supabase/migrations/20260221200000_sync_remote_schema.sql",
+        "table:supabase/migrations/20260222130000_add_input_image_paths.sql",
+        "table:supabase/migrations/20260222140000_add_model_id_to_generation_jobs.sql",
+        "table:supabase/migrations/20260222_add_model_id_to_generation_jobs.sql",
+        "table:supabase/migrations/20260223000000_add_nanobananaprompt_templates.sql",
+        "table:supabase/migrations/20260304000001_fix_critical_security.sql",
+        "table:supabase/migrations/20260304000002_fix_function_signatures.sql",
+        "table:supabase/migrations/20260304000003_fix_medium_issues.sql",
+        "table:supabase/migrations/20260304000004_fix_revoke_public_and_index.sql",
+        "table:supabase/migrations/20260304100000_fix_credit_idempotency_and_rc_index.sql",
+        "table:supabase/migrations/20260315120000_fix_grant_credits_advisory_lock_and_recent_guard.sql",
+        "table:supabase/migrations/20260315130000_fix_update_subscription_status_security.sql",
+        "table:supabase/migrations/20260403175956_revoke_public_from_security_definer.sql",
+        "table:supabase/migrations/20260404174417_revoke_public_from_security_definer.sql"
+      ]
+    },
+    {
+      "id": "layer:delivery-and-automation",
+      "name": "Delivery & Automation",
+      "description": "CI workflows, scripts, and runtime infrastructure artifacts used to validate, package, or operate the repository outside the app runtime.",
+      "nodeIds": [
+        "pipeline:.github/workflows/supabase-keepalive.yml",
+        "service:Makefile"
+      ]
+    },
+    {
+      "id": "layer:miscellaneous-root-artifacts",
+      "name": "Miscellaneous Root Artifacts",
+      "description": "Remaining repository-level files that do not fit a narrower application, backend, or infrastructure layer but still contribute to project operation.",
+      "nodeIds": [
+        "config:supabase/config.toml",
+        "file:.ckignore",
+        "file:.gitattributes",
+        "file:.metadata",
+        "file:security_check.sh"
+      ]
+    }
+  ],
+  "tour": [
+    {
+      "order": 1,
+      "title": "Project Overview",
+      "description": "Start with the repository overview and contributor operating guide to understand Artio\u2019s three surfaces, workflow rules, and architecture references.",
+      "nodeIds": [
+        "document:README.md",
+        "document:CLAUDE.md"
+      ]
+    },
+    {
+      "order": 2,
+      "title": "Main App Entry and Shell",
+      "description": "Inspect the main Flutter application entrypoint and top-level app shell to see how the primary client boots, configures providers, and connects routing.",
+      "nodeIds": [
+        "file:lib/main.dart"
+      ]
+    },
+    {
+      "order": 3,
+      "title": "Design System and Shared Core",
+      "description": "Review shared core modules that provide design tokens, cross-cutting services, exceptions, and reusable state utilities used throughout the client surface.",
+      "nodeIds": [
+        "document:lib/core/AGENTS.md",
+        "file:lib/theme/app_button_themes.dart",
+        "file:lib/shared/widgets/animated_retry_button.dart"
+      ]
+    },
+    {
+      "order": 4,
+      "title": "Backend Edge Functions",
+      "description": "Explore Supabase edge functions and shared helpers that implement generation orchestration, purchases, subscriptions, and reward flows on the server side.",
+      "nodeIds": [
+        "file:supabase/functions/generate-image/index.ts",
+        "file:supabase/functions/_shared/cors.ts",
+        "file:supabase/functions/verify-google-purchase/index.ts"
+      ]
+    },
+    {
+      "order": 5,
+      "title": "Database and Policies",
+      "description": "Study the SQL migration layer to understand how Artio models templates, profiles, credits, subscriptions, and access policies in Postgres.",
+      "nodeIds": [
+        "table:supabase/migrations/20260127000000_create_templates_table.sql",
+        "table:supabase/migrations/20260128000000_create_profiles_table.sql",
+        "table:supabase/migrations/20260127000000_create_templates_table.sql"
+      ]
+    },
+    {
+      "order": 6,
+      "title": "Automation and Operations",
+      "description": "Finish with repository automation, environment templates, and workflow artifacts that keep the project reproducible across local work, CI, and deployment.",
+      "nodeIds": [
+        "pipeline:.github/workflows/supabase-keepalive.yml",
+        "config:.env.example",
+        "service:Makefile"
+      ]
+    }
+  ]
+}

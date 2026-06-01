@@ -1,0 +1,305 @@
+{
+  "nodes": [
+    {
+      "id": "file:lib/features/template_engine/data/repositories/template_repository.g.dart",
+      "type": "file",
+      "name": "template_repository.g.dart",
+      "summary": "Application source file template_repository.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "data-layer"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/template_engine/data/repositories/template_repository.g.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/data/services/template_cache_service.dart",
+      "type": "file",
+      "name": "template_cache_service.dart",
+      "summary": "Application source file template_cache_service.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "data-layer"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/template_engine/data/services/template_cache_service.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/data/services/template_cache_service.g.dart",
+      "type": "file",
+      "name": "template_cache_service.g.dart",
+      "summary": "Application source file template_cache_service.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "data-layer"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/template_engine/data/services/template_cache_service.g.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/domain/entities/generation_job_model.dart",
+      "type": "file",
+      "name": "generation_job_model.dart",
+      "summary": "Application source file generation_job_model.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/template_engine/domain/entities/generation_job_model.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/domain/entities/generation_job_model.freezed.dart",
+      "type": "file",
+      "name": "generation_job_model.freezed.dart",
+      "summary": "Application source file generation_job_model.freezed.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/template_engine/domain/entities/generation_job_model.freezed.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/domain/entities/generation_job_model.g.dart",
+      "type": "file",
+      "name": "generation_job_model.g.dart",
+      "summary": "Application source file generation_job_model.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/template_engine/domain/entities/generation_job_model.g.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/domain/entities/generation_options_model.dart",
+      "type": "file",
+      "name": "generation_options_model.dart",
+      "summary": "Application source file generation_options_model.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/template_engine/domain/entities/generation_options_model.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/domain/entities/generation_options_model.freezed.dart",
+      "type": "file",
+      "name": "generation_options_model.freezed.dart",
+      "summary": "Application source file generation_options_model.freezed.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/template_engine/domain/entities/generation_options_model.freezed.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/domain/entities/generation_options_model.g.dart",
+      "type": "file",
+      "name": "generation_options_model.g.dart",
+      "summary": "Application source file generation_options_model.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/template_engine/domain/entities/generation_options_model.g.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/domain/entities/input_field_model.dart",
+      "type": "file",
+      "name": "input_field_model.dart",
+      "summary": "Application source file input_field_model.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/template_engine/domain/entities/input_field_model.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/domain/entities/input_field_model.freezed.dart",
+      "type": "file",
+      "name": "input_field_model.freezed.dart",
+      "summary": "Application source file input_field_model.freezed.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/template_engine/domain/entities/input_field_model.freezed.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/domain/entities/input_field_model.g.dart",
+      "type": "file",
+      "name": "input_field_model.g.dart",
+      "summary": "Application source file input_field_model.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/template_engine/domain/entities/input_field_model.g.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/domain/entities/template_model.dart",
+      "type": "file",
+      "name": "template_model.dart",
+      "summary": "Application source file template_model.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/template_engine/domain/entities/template_model.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/domain/entities/template_model.freezed.dart",
+      "type": "file",
+      "name": "template_model.freezed.dart",
+      "summary": "Application source file template_model.freezed.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/template_engine/domain/entities/template_model.freezed.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/domain/entities/template_model.g.dart",
+      "type": "file",
+      "name": "template_model.g.dart",
+      "summary": "Application source file template_model.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/template_engine/domain/entities/template_model.g.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/domain/policies/generation_policy.dart",
+      "type": "file",
+      "name": "generation_policy.dart",
+      "summary": "Application source file generation_policy.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/template_engine/domain/policies/generation_policy.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/domain/policies/generation_policy.freezed.dart",
+      "type": "file",
+      "name": "generation_policy.freezed.dart",
+      "summary": "Application source file generation_policy.freezed.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/template_engine/domain/policies/generation_policy.freezed.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/domain/providers/generation_repository_provider.dart",
+      "type": "file",
+      "name": "generation_repository_provider.dart",
+      "summary": "Application source file generation_repository_provider.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/template_engine/domain/providers/generation_repository_provider.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/domain/providers/template_repository_provider.dart",
+      "type": "file",
+      "name": "template_repository_provider.dart",
+      "summary": "Application source file template_repository_provider.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/template_engine/domain/providers/template_repository_provider.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/domain/repositories/i_generation_repository.dart",
+      "type": "file",
+      "name": "i_generation_repository.dart",
+      "summary": "Application source file i_generation_repository.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/template_engine/domain/repositories/i_generation_repository.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/domain/repositories/i_template_repository.dart",
+      "type": "file",
+      "name": "i_template_repository.dart",
+      "summary": "Application source file i_template_repository.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/template_engine/domain/repositories/i_template_repository.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/presentation/helpers/generation_job_manager.dart",
+      "type": "file",
+      "name": "generation_job_manager.dart",
+      "summary": "Application source file generation_job_manager.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/template_engine/presentation/helpers/generation_job_manager.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/presentation/providers/generation_options_provider.dart",
+      "type": "file",
+      "name": "generation_options_provider.dart",
+      "summary": "Application source file generation_options_provider.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/template_engine/presentation/providers/generation_options_provider.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/presentation/providers/generation_options_provider.g.dart",
+      "type": "file",
+      "name": "generation_options_provider.g.dart",
+      "summary": "Application source file generation_options_provider.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/template_engine/presentation/providers/generation_options_provider.g.dart"
+    },
+    {
+      "id": "file:lib/features/template_engine/presentation/providers/generation_policy_provider.dart",
+      "type": "file",
+      "name": "generation_policy_provider.dart",
+      "summary": "Application source file generation_policy_provider.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/template_engine/presentation/providers/generation_policy_provider.dart"
+    }
+  ],
+  "edges": []
+}

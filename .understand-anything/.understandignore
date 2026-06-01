@@ -1,43 +1,38 @@
-# .understandignore — patterns for files/dirs to exclude from analysis
+# .understandignore — scope optimized for Artio main app + Supabase backend
 # Syntax: same as .gitignore (globs, # comments, ! negation, trailing / for dirs)
-# Lines below are suggestions — uncomment to activate.
-# Use ! prefix to force-include something excluded by defaults.
-#
-# Built-in defaults (always excluded unless negated):
-#   node_modules/, .git/, dist/, build/, obj/, *.lock, *.min.js, etc.
-#
-# --- From .gitignore (uncomment to exclude) ---
+# Goal: keep lib/, supabase/, and root project config/docs needed for architectural context.
 
-# .env
-# .env.*
-# !.env.example
-# *.iml
-# .dart_tool/
-# .idea/
-# .vscode/
-# pubspec.lock
-# .flutter-plugins
-# .flutter-plugins-dependencies
-# .packages
-# android/key.properties
-# ios/Flutter/Flutter.podspec
-# ios/Pods/
-# ios/.symlinks/
-# ios/Flutter/App.framework
-# ios/Flutter/Flutter.framework
-# macos/Flutter/ephemeral/
-# linux/flutter/ephemeral/
-# windows/flutter/ephemeral/
-# .codegraph/
+# Keep generated Understand Anything outputs out of subsequent scans.
+.understand-anything/
 
-# --- Detected directories (uncomment to exclude) ---
+# Exclude secondary app and non-product documentation for the first graph pass.
+admin/
+docs/
+plans/
+.jules/
 
-# test/
-# docs/
-# scripts/
+# Exclude tests initially; add later if test-coverage graph is needed.
+test/
+integration_test/
 
-# --- Test file patterns (uncomment to exclude) ---
+# Exclude platform boilerplate/native project files for a cleaner app/backend graph.
+android/
+ios/
+linux/
+macos/
+windows/
+web/
 
-# *.test.*
-# *.spec.*
-# *.snap
+# Exclude helper artifacts that are not central to app/backend architecture.
+scripts/
+*.log
+
+# Exclude local env and tool caches.
+.env
+.env.*
+!.env.example
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.codegraph/
