@@ -45,3 +45,7 @@
 ## $(date +%Y-%m-%d) - Dynamic Initialization for Static Grouping
 **Learning:** Hardcoding string keys when grouping a static list into a Map (e.g., `_modelsByType`) creates a maintainability trap where adding a new type silently breaks without a compiler warning.
 **Action:** When pre-computing an O(1) grouped lookup table from a static list, always dynamically build the map (e.g., using `.fold()` or collection `for` in Dart) over the list elements to ensure automatic synchronization and support for new values.
+
+## 2024-05-18 - Hoist constant computations out of Deno.serve in Edge Functions
+**Learning:** In Supabase Edge Functions, computations dependent entirely on constant module-level data (like `Object.keys` on a configuration map or priority sorting) that are executed inside the `Deno.serve` request loop will redundantly re-run on every single HTTP request. This causes unnecessary array allocation and processor overhead over high volumes of traffic.
+**Action:** Always hoist static computations derived from constants to the top-level module scope (outside of `Deno.serve`).
