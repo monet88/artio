@@ -1,0 +1,172 @@
+{
+  "nodes": [
+    {
+      "id": "config:.env.example",
+      "type": "config",
+      "name": ".env.example",
+      "summary": "Configuration file .env.example that defines tooling, analysis, environment, or build behavior for the project.",
+      "tags": [
+        "configuration"
+      ],
+      "complexity": "moderate",
+      "filePath": ".env.example"
+    },
+    {
+      "id": "document:AGENTS.md",
+      "type": "document",
+      "name": "AGENTS.md",
+      "summary": "Documentation file AGENTS.md that explains project workflow, architecture, or operational guidance for the Artio codebase.",
+      "tags": [
+        "documentation"
+      ],
+      "complexity": "simple",
+      "filePath": "AGENTS.md"
+    },
+    {
+      "id": "document:CHANGELOG.md",
+      "type": "document",
+      "name": "CHANGELOG.md",
+      "summary": "Documentation file CHANGELOG.md that explains project workflow, architecture, or operational guidance for the Artio codebase.",
+      "tags": [
+        "documentation"
+      ],
+      "complexity": "simple",
+      "filePath": "CHANGELOG.md"
+    },
+    {
+      "id": "document:CLAUDE.md",
+      "type": "document",
+      "name": "CLAUDE.md",
+      "summary": "Repository-specific operating instructions describing architecture, coding standards, and workflow constraints for Artio contributors and agents.",
+      "tags": [
+        "documentation"
+      ],
+      "complexity": "moderate",
+      "filePath": "CLAUDE.md"
+    },
+    {
+      "id": "service:Makefile",
+      "type": "service",
+      "name": "Makefile",
+      "summary": "Infrastructure or service definition Makefile that supports building, running, or operating the Artio project.",
+      "tags": [
+        "infrastructure"
+      ],
+      "complexity": "moderate",
+      "filePath": "Makefile"
+    },
+    {
+      "id": "document:README.md",
+      "type": "document",
+      "name": "README.md",
+      "summary": "Project overview and contributor entry point for the Artio Flutter monorepo, covering product surfaces, setup, and architecture references.",
+      "tags": [
+        "documentation",
+        "entry-point"
+      ],
+      "complexity": "moderate",
+      "filePath": "README.md"
+    },
+    {
+      "id": "document:TODOS.md",
+      "type": "document",
+      "name": "TODOS.md",
+      "summary": "Documentation file TODOS.md that explains project workflow, architecture, or operational guidance for the Artio codebase.",
+      "tags": [
+        "documentation"
+      ],
+      "complexity": "simple",
+      "filePath": "TODOS.md"
+    },
+    {
+      "id": "config:analysis_options.yaml",
+      "type": "config",
+      "name": "analysis_options.yaml",
+      "summary": "Configuration file analysis_options.yaml that defines tooling, analysis, environment, or build behavior for the project.",
+      "tags": [
+        "configuration"
+      ],
+      "complexity": "simple",
+      "filePath": "analysis_options.yaml"
+    },
+    {
+      "id": "config:build.yaml",
+      "type": "config",
+      "name": "build.yaml",
+      "summary": "Configuration file build.yaml that defines tooling, analysis, environment, or build behavior for the project.",
+      "tags": [
+        "configuration"
+      ],
+      "complexity": "simple",
+      "filePath": "build.yaml"
+    },
+    {
+      "id": "config:dart_test.yaml",
+      "type": "config",
+      "name": "dart_test.yaml",
+      "summary": "Configuration file dart_test.yaml that defines tooling, analysis, environment, or build behavior for the project.",
+      "tags": [
+        "test",
+        "configuration"
+      ],
+      "complexity": "simple",
+      "filePath": "dart_test.yaml"
+    },
+    {
+      "id": "config:devtools_options.yaml",
+      "type": "config",
+      "name": "devtools_options.yaml",
+      "summary": "Configuration file devtools_options.yaml that defines tooling, analysis, environment, or build behavior for the project.",
+      "tags": [
+        "configuration"
+      ],
+      "complexity": "simple",
+      "filePath": "devtools_options.yaml"
+    },
+    {
+      "id": "document:lint_baseline.txt",
+      "type": "document",
+      "name": "lint_baseline.txt",
+      "summary": "Documentation file lint_baseline.txt that explains project workflow, architecture, or operational guidance for the Artio codebase.",
+      "tags": [
+        "documentation"
+      ],
+      "complexity": "simple",
+      "filePath": "lint_baseline.txt"
+    },
+    {
+      "id": "config:model_capabilities.yaml",
+      "type": "config",
+      "name": "model_capabilities.yaml",
+      "summary": "Configuration file model_capabilities.yaml that defines tooling, analysis, environment, or build behavior for the project.",
+      "tags": [
+        "configuration"
+      ],
+      "complexity": "moderate",
+      "filePath": "model_capabilities.yaml"
+    },
+    {
+      "id": "config:pubspec.yaml",
+      "type": "config",
+      "name": "pubspec.yaml",
+      "summary": "Configuration file pubspec.yaml that defines tooling, analysis, environment, or build behavior for the project.",
+      "tags": [
+        "configuration"
+      ],
+      "complexity": "moderate",
+      "filePath": "pubspec.yaml"
+    },
+    {
+      "id": "file:security_check.sh",
+      "type": "file",
+      "name": "security_check.sh",
+      "summary": "Source file security_check.sh containing project logic with 0 extracted functions and 0 extracted classes.",
+      "tags": [
+        "source"
+      ],
+      "complexity": "simple",
+      "filePath": "security_check.sh"
+    }
+  ],
+  "edges": []
+}

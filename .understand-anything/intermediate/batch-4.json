@@ -1,0 +1,329 @@
+{
+  "nodes": [
+    {
+      "id": "table:supabase/migrations/20260127000000_create_templates_table.sql",
+      "type": "table",
+      "name": "20260127000000_create_templates_table.sql",
+      "summary": "Database schema or migration file 20260127000000_create_templates_table.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/migrations/20260127000000_create_templates_table.sql"
+    },
+    {
+      "id": "table:supabase/migrations/20260128000000_create_profiles_table.sql",
+      "type": "table",
+      "name": "20260128000000_create_profiles_table.sql",
+      "summary": "Database schema or migration file 20260128000000_create_profiles_table.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/migrations/20260128000000_create_profiles_table.sql"
+    },
+    {
+      "id": "table:supabase/migrations/20260128094706_create_admin_user.sql",
+      "type": "table",
+      "name": "20260128094706_create_admin_user.sql",
+      "summary": "Database schema or migration file 20260128094706_create_admin_user.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "moderate",
+      "filePath": "supabase/migrations/20260128094706_create_admin_user.sql"
+    },
+    {
+      "id": "table:supabase/migrations/20260128115551_add_deleted_at_and_storage_bucket.sql",
+      "type": "table",
+      "name": "20260128115551_add_deleted_at_and_storage_bucket.sql",
+      "summary": "Database schema or migration file 20260128115551_add_deleted_at_and_storage_bucket.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "moderate",
+      "filePath": "supabase/migrations/20260128115551_add_deleted_at_and_storage_bucket.sql"
+    },
+    {
+      "id": "table:supabase/migrations/20260128130000_add_25_templates.sql",
+      "type": "table",
+      "name": "20260128130000_add_25_templates.sql",
+      "summary": "Database schema or migration file 20260128130000_add_25_templates.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "complex",
+      "filePath": "supabase/migrations/20260128130000_add_25_templates.sql"
+    },
+    {
+      "id": "table:supabase/migrations/20260218000000_create_credit_system.sql",
+      "type": "table",
+      "name": "20260218000000_create_credit_system.sql",
+      "summary": "Database schema or migration file 20260218000000_create_credit_system.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "moderate",
+      "filePath": "supabase/migrations/20260218000000_create_credit_system.sql"
+    },
+    {
+      "id": "table:supabase/migrations/20260218100000_create_reward_ad_function.sql",
+      "type": "table",
+      "name": "20260218100000_create_reward_ad_function.sql",
+      "summary": "Database schema or migration file 20260218100000_create_reward_ad_function.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "moderate",
+      "filePath": "supabase/migrations/20260218100000_create_reward_ad_function.sql"
+    },
+    {
+      "id": "table:supabase/migrations/20260219000000_add_subscription_support.sql",
+      "type": "table",
+      "name": "20260219000000_add_subscription_support.sql",
+      "summary": "Database schema or migration file 20260219000000_add_subscription_support.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "moderate",
+      "filePath": "supabase/migrations/20260219000000_add_subscription_support.sql"
+    },
+    {
+      "id": "table:supabase/migrations/20260219000001_restrict_profiles_update_rls.sql",
+      "type": "table",
+      "name": "20260219000001_restrict_profiles_update_rls.sql",
+      "summary": "Database schema or migration file 20260219000001_restrict_profiles_update_rls.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/migrations/20260219000001_restrict_profiles_update_rls.sql"
+    },
+    {
+      "id": "table:supabase/migrations/20260220160000_create_pending_ad_rewards.sql",
+      "type": "table",
+      "name": "20260220160000_create_pending_ad_rewards.sql",
+      "summary": "Database schema or migration file 20260220160000_create_pending_ad_rewards.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "moderate",
+      "filePath": "supabase/migrations/20260220160000_create_pending_ad_rewards.sql"
+    },
+    {
+      "id": "table:supabase/migrations/20260220170000_create_rate_limit.sql",
+      "type": "table",
+      "name": "20260220170000_create_rate_limit.sql",
+      "summary": "Database schema or migration file 20260220170000_create_rate_limit.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "moderate",
+      "filePath": "supabase/migrations/20260220170000_create_rate_limit.sql"
+    },
+    {
+      "id": "table:supabase/migrations/20260220180000_concurrency_locks.sql",
+      "type": "table",
+      "name": "20260220180000_concurrency_locks.sql",
+      "summary": "Database schema or migration file 20260220180000_concurrency_locks.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/migrations/20260220180000_concurrency_locks.sql"
+    },
+    {
+      "id": "table:supabase/migrations/20260221000000_fix_subscription_trigger.sql",
+      "type": "table",
+      "name": "20260221000000_fix_subscription_trigger.sql",
+      "summary": "Database schema or migration file 20260221000000_fix_subscription_trigger.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/migrations/20260221000000_fix_subscription_trigger.sql"
+    },
+    {
+      "id": "table:supabase/migrations/20260221200000_sync_remote_schema.sql",
+      "type": "table",
+      "name": "20260221200000_sync_remote_schema.sql",
+      "summary": "Database schema or migration file 20260221200000_sync_remote_schema.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "moderate",
+      "filePath": "supabase/migrations/20260221200000_sync_remote_schema.sql"
+    },
+    {
+      "id": "table:supabase/migrations/20260222130000_add_input_image_paths.sql",
+      "type": "table",
+      "name": "20260222130000_add_input_image_paths.sql",
+      "summary": "Database schema or migration file 20260222130000_add_input_image_paths.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/migrations/20260222130000_add_input_image_paths.sql"
+    },
+    {
+      "id": "table:supabase/migrations/20260222140000_add_model_id_to_generation_jobs.sql",
+      "type": "table",
+      "name": "20260222140000_add_model_id_to_generation_jobs.sql",
+      "summary": "Database schema or migration file 20260222140000_add_model_id_to_generation_jobs.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/migrations/20260222140000_add_model_id_to_generation_jobs.sql"
+    },
+    {
+      "id": "table:supabase/migrations/20260222_add_model_id_to_generation_jobs.sql",
+      "type": "table",
+      "name": "20260222_add_model_id_to_generation_jobs.sql",
+      "summary": "Database schema or migration file 20260222_add_model_id_to_generation_jobs.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/migrations/20260222_add_model_id_to_generation_jobs.sql"
+    },
+    {
+      "id": "table:supabase/migrations/20260223000000_add_nanobananaprompt_templates.sql",
+      "type": "table",
+      "name": "20260223000000_add_nanobananaprompt_templates.sql",
+      "summary": "Database schema or migration file 20260223000000_add_nanobananaprompt_templates.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "complex",
+      "filePath": "supabase/migrations/20260223000000_add_nanobananaprompt_templates.sql"
+    },
+    {
+      "id": "table:supabase/migrations/20260304000001_fix_critical_security.sql",
+      "type": "table",
+      "name": "20260304000001_fix_critical_security.sql",
+      "summary": "Database schema or migration file 20260304000001_fix_critical_security.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "moderate",
+      "filePath": "supabase/migrations/20260304000001_fix_critical_security.sql"
+    },
+    {
+      "id": "table:supabase/migrations/20260304000002_fix_function_signatures.sql",
+      "type": "table",
+      "name": "20260304000002_fix_function_signatures.sql",
+      "summary": "Database schema or migration file 20260304000002_fix_function_signatures.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "complex",
+      "filePath": "supabase/migrations/20260304000002_fix_function_signatures.sql"
+    },
+    {
+      "id": "table:supabase/migrations/20260304000003_fix_medium_issues.sql",
+      "type": "table",
+      "name": "20260304000003_fix_medium_issues.sql",
+      "summary": "Database schema or migration file 20260304000003_fix_medium_issues.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/migrations/20260304000003_fix_medium_issues.sql"
+    },
+    {
+      "id": "table:supabase/migrations/20260304000004_fix_revoke_public_and_index.sql",
+      "type": "table",
+      "name": "20260304000004_fix_revoke_public_and_index.sql",
+      "summary": "Database schema or migration file 20260304000004_fix_revoke_public_and_index.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/migrations/20260304000004_fix_revoke_public_and_index.sql"
+    },
+    {
+      "id": "table:supabase/migrations/20260304100000_fix_credit_idempotency_and_rc_index.sql",
+      "type": "table",
+      "name": "20260304100000_fix_credit_idempotency_and_rc_index.sql",
+      "summary": "Database schema or migration file 20260304100000_fix_credit_idempotency_and_rc_index.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "moderate",
+      "filePath": "supabase/migrations/20260304100000_fix_credit_idempotency_and_rc_index.sql"
+    },
+    {
+      "id": "table:supabase/migrations/20260315120000_fix_grant_credits_advisory_lock_and_recent_guard.sql",
+      "type": "table",
+      "name": "20260315120000_fix_grant_credits_advisory_lock_and_recent_guard.sql",
+      "summary": "Database schema or migration file 20260315120000_fix_grant_credits_advisory_lock_and_recent_guard.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "moderate",
+      "filePath": "supabase/migrations/20260315120000_fix_grant_credits_advisory_lock_and_recent_guard.sql"
+    },
+    {
+      "id": "table:supabase/migrations/20260315130000_fix_update_subscription_status_security.sql",
+      "type": "table",
+      "name": "20260315130000_fix_update_subscription_status_security.sql",
+      "summary": "Database schema or migration file 20260315130000_fix_update_subscription_status_security.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/migrations/20260315130000_fix_update_subscription_status_security.sql"
+    },
+    {
+      "id": "table:supabase/migrations/20260403175956_revoke_public_from_security_definer.sql",
+      "type": "table",
+      "name": "20260403175956_revoke_public_from_security_definer.sql",
+      "summary": "Database schema or migration file 20260403175956_revoke_public_from_security_definer.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/migrations/20260403175956_revoke_public_from_security_definer.sql"
+    },
+    {
+      "id": "table:supabase/migrations/20260404174417_revoke_public_from_security_definer.sql",
+      "type": "table",
+      "name": "20260404174417_revoke_public_from_security_definer.sql",
+      "summary": "Database schema or migration file 20260404174417_revoke_public_from_security_definer.sql defining persisted tables, policies, or SQL routines for Artio.",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/migrations/20260404174417_revoke_public_from_security_definer.sql"
+    }
+  ],
+  "edges": []
+}

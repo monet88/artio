@@ -1,0 +1,17 @@
+{
+  "nodes": [
+    {
+      "id": "pipeline:.github/workflows/supabase-keepalive.yml",
+      "type": "pipeline",
+      "name": "supabase-keepalive.yml",
+      "summary": "CI/CD workflow supabase-keepalive.yml that automates repository maintenance, validation, or deployment-related tasks.",
+      "tags": [
+        "ci-cd",
+        "automation"
+      ],
+      "complexity": "simple",
+      "filePath": ".github/workflows/supabase-keepalive.yml"
+    }
+  ],
+  "edges": []
+}

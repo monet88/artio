@@ -1,0 +1,213 @@
+{
+  "nodes": [
+    {
+      "id": "config:supabase/functions/generate-image/deno.json",
+      "type": "config",
+      "name": "deno.json",
+      "summary": "Configuration file deno.json that defines tooling, analysis, environment, or build behavior for the project.",
+      "tags": [
+        "configuration",
+        "backend"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/generate-image/deno.json"
+    },
+    {
+      "id": "file:supabase/functions/revenuecat-webhook/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "summary": "Backend source file index.ts used by Supabase functions or shared server utilities in the Artio generation platform.",
+      "tags": [
+        "backend"
+      ],
+      "complexity": "complex",
+      "filePath": "supabase/functions/revenuecat-webhook/index.ts"
+    },
+    {
+      "id": "function:supabase/functions/revenuecat-webhook/index.ts:getTierInfo",
+      "type": "function",
+      "name": "getTierInfo",
+      "summary": "Function getTierInfo defined in index.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/revenuecat-webhook/index.ts"
+    },
+    {
+      "id": "file:supabase/functions/reward-ad/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "summary": "Backend source file index.ts used by Supabase functions or shared server utilities in the Artio generation platform.",
+      "tags": [
+        "backend"
+      ],
+      "complexity": "complex",
+      "filePath": "supabase/functions/reward-ad/index.ts"
+    },
+    {
+      "id": "function:supabase/functions/reward-ad/index.ts:corsHeaders",
+      "type": "function",
+      "name": "corsHeaders",
+      "summary": "Function corsHeaders defined in index.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/reward-ad/index.ts"
+    },
+    {
+      "id": "function:supabase/functions/reward-ad/index.ts:authenticateUser",
+      "type": "function",
+      "name": "authenticateUser",
+      "summary": "Function authenticateUser defined in index.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/reward-ad/index.ts"
+    },
+    {
+      "id": "function:supabase/functions/reward-ad/index.ts:derToP1363",
+      "type": "function",
+      "name": "derToP1363",
+      "summary": "Function derToP1363 defined in index.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/reward-ad/index.ts"
+    },
+    {
+      "id": "function:supabase/functions/reward-ad/index.ts:verifyGoogleSsvSignature",
+      "type": "function",
+      "name": "verifyGoogleSsvSignature",
+      "summary": "Function verifyGoogleSsvSignature defined in index.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "moderate",
+      "filePath": "supabase/functions/reward-ad/index.ts"
+    },
+    {
+      "id": "function:supabase/functions/reward-ad/index.ts:handleSsvCallback",
+      "type": "function",
+      "name": "handleSsvCallback",
+      "summary": "Function handleSsvCallback defined in index.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "moderate",
+      "filePath": "supabase/functions/reward-ad/index.ts"
+    },
+    {
+      "id": "function:supabase/functions/reward-ad/index.ts:handleRequestNonce",
+      "type": "function",
+      "name": "handleRequestNonce",
+      "summary": "Function handleRequestNonce defined in index.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/reward-ad/index.ts"
+    },
+    {
+      "id": "function:supabase/functions/reward-ad/index.ts:handleClaim",
+      "type": "function",
+      "name": "handleClaim",
+      "summary": "Function handleClaim defined in index.ts as a meaningful unit of application behavior.",
+      "tags": [
+        "function",
+        "logic"
+      ],
+      "complexity": "simple",
+      "filePath": "supabase/functions/reward-ad/index.ts"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:supabase/functions/revenuecat-webhook/index.ts",
+      "target": "function:supabase/functions/revenuecat-webhook/index.ts:getTierInfo",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/reward-ad/index.ts",
+      "target": "function:supabase/functions/reward-ad/index.ts:corsHeaders",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/reward-ad/index.ts",
+      "target": "function:supabase/functions/reward-ad/index.ts:authenticateUser",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/reward-ad/index.ts",
+      "target": "function:supabase/functions/reward-ad/index.ts:derToP1363",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/reward-ad/index.ts",
+      "target": "function:supabase/functions/reward-ad/index.ts:verifyGoogleSsvSignature",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/reward-ad/index.ts",
+      "target": "function:supabase/functions/reward-ad/index.ts:handleSsvCallback",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/reward-ad/index.ts",
+      "target": "function:supabase/functions/reward-ad/index.ts:handleRequestNonce",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "file:supabase/functions/reward-ad/index.ts",
+      "target": "function:supabase/functions/reward-ad/index.ts:handleClaim",
+      "type": "contains",
+      "weight": 1.0,
+      "direction": "forward"
+    },
+    {
+      "source": "function:supabase/functions/reward-ad/index.ts:authenticateUser",
+      "target": "function:supabase/functions/reward-ad/index.ts:corsHeaders",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "function:supabase/functions/reward-ad/index.ts:verifyGoogleSsvSignature",
+      "target": "function:supabase/functions/reward-ad/index.ts:derToP1363",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "function:supabase/functions/reward-ad/index.ts:handleSsvCallback",
+      "target": "function:supabase/functions/reward-ad/index.ts:verifyGoogleSsvSignature",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    }
+  ]
+}

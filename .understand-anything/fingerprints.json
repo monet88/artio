@@ -1,0 +1,3375 @@
+{
+  "version": "1.0.0",
+  "gitCommitHash": "1a15dfbe434dcb782707ac47e5217ee5399e2baf",
+  "generatedAt": "2026-06-01T05:02:37.976Z",
+  "files": {
+    ".ckignore": {
+      "filePath": ".ckignore",
+      "contentHash": "f1e6e0238ebbb8dddc50ff5b02c51bff4bc8cf58d840a3e7cb3bfa1049af9e5a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 137,
+      "hasStructuralAnalysis": false
+    },
+    ".env.example": {
+      "filePath": ".env.example",
+      "contentHash": "7e458867edea20eae5daf10f8818b4b1bba4e9501f81fe795234f4ddbd4aac6b",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 64,
+      "hasStructuralAnalysis": true
+    },
+    ".gitattributes": {
+      "filePath": ".gitattributes",
+      "contentHash": "69fcf852e779fe1a3b4372eb897b3beb656b1d7ac890757e66d7a929858f3ffd",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 32,
+      "hasStructuralAnalysis": false
+    },
+    ".github/workflows/supabase-keepalive.yml": {
+      "filePath": ".github/workflows/supabase-keepalive.yml",
+      "contentHash": "703f0b6a5b41eb44b4e8417aa267f02bb01f5b62c51e0e6089394a7344ce5e68",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 25,
+      "hasStructuralAnalysis": true
+    },
+    ".metadata": {
+      "filePath": ".metadata",
+      "contentHash": "466577495486c38136089490a8898c93b96e6e3893deb98473382517419cd759",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 40,
+      "hasStructuralAnalysis": false
+    },
+    "AGENTS.md": {
+      "filePath": "AGENTS.md",
+      "contentHash": "d8c37e377c12e359be8f2adb7f47eb02d15be8990c63b77d1c101d08d0487ca9",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 19,
+      "hasStructuralAnalysis": true
+    },
+    "analysis_options.yaml": {
+      "filePath": "analysis_options.yaml",
+      "contentHash": "b80d63d234cf8d3a69118387e58774f060ac6190a131d49da78bdc2878de6cf0",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 15,
+      "hasStructuralAnalysis": true
+    },
+    "build.yaml": {
+      "filePath": "build.yaml",
+      "contentHash": "f0edf5f80879527139e10763f05b53bbb647beb41d9c758d7a19c0b5685ea024",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 8,
+      "hasStructuralAnalysis": true
+    },
+    "CHANGELOG.md": {
+      "filePath": "CHANGELOG.md",
+      "contentHash": "b2e38c7cc86e6cfe87b7aa6fca299beb391e891a308d20e4ed2fac6676973146",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 26,
+      "hasStructuralAnalysis": true
+    },
+    "CLAUDE.md": {
+      "filePath": "CLAUDE.md",
+      "contentHash": "802a5a86ccd1bed590986a1282e6e39c1bc57da92ce1bb7f5de5a719fa6e0265",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 195,
+      "hasStructuralAnalysis": true
+    },
+    "dart_test.yaml": {
+      "filePath": "dart_test.yaml",
+      "contentHash": "6b94a601093acd64f5510f7d04849dfc71814872f445233ed632dec4f1796f62",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 8,
+      "hasStructuralAnalysis": true
+    },
+    "devtools_options.yaml": {
+      "filePath": "devtools_options.yaml",
+      "contentHash": "e8ba6877169885107d577db47d3e9eb10b32b7aded5959dfc52cae8022a5de84",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 4,
+      "hasStructuralAnalysis": true
+    },
+    "lib/core/AGENTS.md": {
+      "filePath": "lib/core/AGENTS.md",
+      "contentHash": "f9f58978edb2467353b51536220049633b993ed05efa26cb5b5a11e65fa4a37e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 46,
+      "hasStructuralAnalysis": true
+    },
+    "lib/core/config/env_config.dart": {
+      "filePath": "lib/core/config/env_config.dart",
+      "contentHash": "651109c005a1933d7f062c4bcad3d18f331282859ad8fd5fb0b0de15b765b052",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 57,
+      "hasStructuralAnalysis": false
+    },
+    "lib/core/config/sentry_config.dart": {
+      "filePath": "lib/core/config/sentry_config.dart",
+      "contentHash": "5f4e121d935f34c3ec18c36612c1cee20809a74029cb233d37a822969fbbceb2",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 27,
+      "hasStructuralAnalysis": false
+    },
+    "lib/core/constants/ai_models.dart": {
+      "filePath": "lib/core/constants/ai_models.dart",
+      "contentHash": "9540d49db6e2c96bb11201ac3cebb48364914583c290012a58bf0779f5517039",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 246,
+      "hasStructuralAnalysis": false
+    },
+    "lib/core/constants/app_constants.dart": {
+      "filePath": "lib/core/constants/app_constants.dart",
+      "contentHash": "e8febffe34e341caacac933104049e3f31826b9b16338367798c659fc670639a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 38,
+      "hasStructuralAnalysis": false
+    },
+    "lib/core/constants/generation_constants.dart": {
+      "filePath": "lib/core/constants/generation_constants.dart",
+      "contentHash": "efedf971a0e237679220b08d5f7bf5d9be4eba9c4e4e895340763ac4e92f21df",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 13,
+      "hasStructuralAnalysis": false
+    },
+    "lib/core/design_system/app_animations.dart": {
+      "filePath": "lib/core/design_system/app_animations.dart",
+      "contentHash": "87c68d8e56d1ecf00391d92790b848a41cd8f474c128bc36ea1337e7ee154d9d",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 127,
+      "hasStructuralAnalysis": false
+    },
+    "lib/core/design_system/app_dimensions.dart": {
+      "filePath": "lib/core/design_system/app_dimensions.dart",
+      "contentHash": "905ae37dae2e6e6cc5ca8e0bbc59676e2efd1fa9215b2b3e2f74ffa80b841ade",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 25,
+      "hasStructuralAnalysis": false
+    },
+    "lib/core/design_system/app_gradients.dart": {
+      "filePath": "lib/core/design_system/app_gradients.dart",
+      "contentHash": "e405d2bbd35b148a5310ce104648bc4646a573f0410523ff0a9f6761a8501bda",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 92,
+      "hasStructuralAnalysis": false
+    },
+    "lib/core/design_system/app_shadows.dart": {
+      "filePath": "lib/core/design_system/app_shadows.dart",
+      "contentHash": "5778efbabcb69b1d86ef55c523bafd4da3e0b8ef6b472095cc700fca52642e03",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 96,
+      "hasStructuralAnalysis": false
+    },
+    "lib/core/design_system/app_spacing.dart": {
+      "filePath": "lib/core/design_system/app_spacing.dart",
+      "contentHash": "1583d71b171edf8f54e526b3c589d332f0285d27f8951a4ce76f04227c9e4df2",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 20,
+      "hasStructuralAnalysis": false
+    },
+    "lib/core/design_system/app_typography.dart": {
+      "filePath": "lib/core/design_system/app_typography.dart",
+      "contentHash": "962512d76cc1436206ffcae9a1145b0cc038b8d75deff83e6a73c1490cb0bd34",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 173,
+      "hasStructuralAnalysis": false
+    },
+    "lib/core/exceptions/app_exception.dart": {
+      "filePath": "lib/core/exceptions/app_exception.dart",
+      "contentHash": "85eb810c60d0ccb642486fc158d86c9e44f710a30527e0dd637a50fe58223a9c",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 31,
+      "hasStructuralAnalysis": false
+    },
+    "lib/core/exceptions/app_exception.freezed.dart": {
+      "filePath": "lib/core/exceptions/app_exception.freezed.dart",
+      "contentHash": "0f46f5a7284ae705833b6132fcfaa48fff2b7ac54c255911ceb79d81439e7a50",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1219,
+      "hasStructuralAnalysis": false
+    },
+    "lib/core/providers/connectivity_provider.dart": {
+      "filePath": "lib/core/providers/connectivity_provider.dart",
+      "contentHash": "84ea63f204881513c7b9bb99e1fcf52d29acf5e3fc82e171c7a81582ca68d77b",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 16,
+      "hasStructuralAnalysis": false
+    },
+    "lib/core/providers/connectivity_provider.g.dart": {
+      "filePath": "lib/core/providers/connectivity_provider.g.dart",
+      "contentHash": "aed3f22eeca55e007bf4f51204ff5502d1b78bf73fe64e2bb8ec2ad8afb05b0e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 28,
+      "hasStructuralAnalysis": false
+    },
+    "lib/core/providers/supabase_provider.dart": {
+      "filePath": "lib/core/providers/supabase_provider.dart",
+      "contentHash": "badfb347ea7bea3fb52a0d11788594b1019e5c79406e4bf51fd69af4a6f90ead",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 9,
+      "hasStructuralAnalysis": false
+    },
+    "lib/core/providers/supabase_provider.g.dart": {
+      "filePath": "lib/core/providers/supabase_provider.g.dart",
+      "contentHash": "2ac85f0cbfef560de0a638bda0f1a48ee23766839596e4ffdc8a97631d7578df",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 28,
+      "hasStructuralAnalysis": false
+    },
+    "lib/core/services/att_service.dart": {
+      "filePath": "lib/core/services/att_service.dart",
+      "contentHash": "1088d1fe78a2091129af8dd4c7d4fff14a52b7cc528847cc9017e93b692c0c3a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 55,
+      "hasStructuralAnalysis": false
+    },
+    "lib/core/services/content_moderation_service.dart": {
+      "filePath": "lib/core/services/content_moderation_service.dart",
+      "contentHash": "0c347f74070f28f44ecff2459604b0ca7367ed1f168fe2c78e1040400bc10308",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 72,
+      "hasStructuralAnalysis": false
+    },
+    "lib/core/services/haptic_service.dart": {
+      "filePath": "lib/core/services/haptic_service.dart",
+      "contentHash": "c777c9382571eef0e131d4fb740fbe42f557088aca834f0f61b9b7663b845878",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 70,
+      "hasStructuralAnalysis": false
+    },
+    "lib/core/services/image_upload_service.dart": {
+      "filePath": "lib/core/services/image_upload_service.dart",
+      "contentHash": "70939177dd319c60279a8c6b6c2571b299b09e70154669352a65715801e2a229",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 78,
+      "hasStructuralAnalysis": false
+    },
+    "lib/core/services/image_upload_service.g.dart": {
+      "filePath": "lib/core/services/image_upload_service.g.dart",
+      "contentHash": "9069bc191bdcda3e2c2fb3223953eebcf7eb7382d88f876ded1c3bd43db0ba39",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 30,
+      "hasStructuralAnalysis": false
+    },
+    "lib/core/services/rewarded_ad_service.dart": {
+      "filePath": "lib/core/services/rewarded_ad_service.dart",
+      "contentHash": "3cf6bcd0f0b986f42809bd574643630ecb3a6364d607426edde11a3f129ce7bf",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 138,
+      "hasStructuralAnalysis": false
+    },
+    "lib/core/services/rewarded_ad_service.g.dart": {
+      "filePath": "lib/core/services/rewarded_ad_service.g.dart",
+      "contentHash": "141f1d29c4361ee595ac008809e2f3086ffdb723a9ed1e50b21cf2da30fe3c56",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 29,
+      "hasStructuralAnalysis": false
+    },
+    "lib/core/services/storage_url_service.dart": {
+      "filePath": "lib/core/services/storage_url_service.dart",
+      "contentHash": "6e81e40b2e06e998da3423b28a51234f3259b5509021ef01990527c8845124d2",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 120,
+      "hasStructuralAnalysis": false
+    },
+    "lib/core/services/storage_url_service.g.dart": {
+      "filePath": "lib/core/services/storage_url_service.g.dart",
+      "contentHash": "02a536229f8d8237200b524505d5a4c1153d42e590bba3e92cf41608a7b0848a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 335,
+      "hasStructuralAnalysis": false
+    },
+    "lib/core/state/auth_view_model_provider.dart": {
+      "filePath": "lib/core/state/auth_view_model_provider.dart",
+      "contentHash": "2f2e1f1d52ffe613b0ef7d293185bf2f76e49465838fda476eb804fa9e9b4609",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 3,
+      "hasStructuralAnalysis": false
+    },
+    "lib/core/state/credit_balance_state_provider.dart": {
+      "filePath": "lib/core/state/credit_balance_state_provider.dart",
+      "contentHash": "e9b34c64daf4ddd8449e943c5c136c507977f6450633b672ca22792dfe6bcabf",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 3,
+      "hasStructuralAnalysis": false
+    },
+    "lib/core/state/subscription_state_provider.dart": {
+      "filePath": "lib/core/state/subscription_state_provider.dart",
+      "contentHash": "f8fd30d64c8adbc151ab50e92e1bcf6d63ffff06d5040581ab1443f5cb6e4a21",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 3,
+      "hasStructuralAnalysis": false
+    },
+    "lib/core/state/user_scoped_providers.dart": {
+      "filePath": "lib/core/state/user_scoped_providers.dart",
+      "contentHash": "59a7e64c882e40084db2a7585c46bcd37c17cff5720916a3a9f8bd292cbee46a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 25,
+      "hasStructuralAnalysis": false
+    },
+    "lib/core/utils/app_exception_mapper.dart": {
+      "filePath": "lib/core/utils/app_exception_mapper.dart",
+      "contentHash": "cd3aab0c00ad16ad70a8cca3b090ff4aab1142ea3759e1f05c0ef99016a8f2e3",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 98,
+      "hasStructuralAnalysis": false
+    },
+    "lib/core/utils/date_time_utils.dart": {
+      "filePath": "lib/core/utils/date_time_utils.dart",
+      "contentHash": "bb6c28c9644cf0d6177ae02349cd40086d25c1e82adac471d3596c269dd653d4",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 12,
+      "hasStructuralAnalysis": false
+    },
+    "lib/core/utils/email_validator.dart": {
+      "filePath": "lib/core/utils/email_validator.dart",
+      "contentHash": "314177fc7b9544383ed6faaee36f1ab0defda298fdcdc194422499e611f41bb5",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 24,
+      "hasStructuralAnalysis": false
+    },
+    "lib/core/utils/prompt_validator.dart": {
+      "filePath": "lib/core/utils/prompt_validator.dart",
+      "contentHash": "3c0881eb225847ba206a5f0485577d377a462be841e364dacc2177a7ebfde916",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 27,
+      "hasStructuralAnalysis": false
+    },
+    "lib/core/utils/retry.dart": {
+      "filePath": "lib/core/utils/retry.dart",
+      "contentHash": "f5994e38025aa8be15d668076dc9c359467fc96ed1e6ed37ac5f8d5986031d65",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 46,
+      "hasStructuralAnalysis": false
+    },
+    "lib/core/utils/subagent_smoke_codegen.dart": {
+      "filePath": "lib/core/utils/subagent_smoke_codegen.dart",
+      "contentHash": "20c0dcfa7491ab40ee0ba0951794f15c8911e46a234f989183f9dd7fe8a34d1a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 2,
+      "hasStructuralAnalysis": false
+    },
+    "lib/core/utils/url_launcher_utils.dart": {
+      "filePath": "lib/core/utils/url_launcher_utils.dart",
+      "contentHash": "a4f0647f86dd3166c05db0321b9af9535d6cf949874856eb5f837645ff7dee7a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 89,
+      "hasStructuralAnalysis": false
+    },
+    "lib/core/utils/watermark_util.dart": {
+      "filePath": "lib/core/utils/watermark_util.dart",
+      "contentHash": "c25f12fb3043bde23e9686703825fdb09ba65f9e7b2d2f8a20a2db39526bad2e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 85,
+      "hasStructuralAnalysis": false
+    },
+    "lib/core/widgets/bottom_sheet_body.dart": {
+      "filePath": "lib/core/widgets/bottom_sheet_body.dart",
+      "contentHash": "a91b9bc3f926a473d689913c166c4df291696540cb79a3901d44ac6c12d23951",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 30,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/AGENTS.md": {
+      "filePath": "lib/features/AGENTS.md",
+      "contentHash": "65316d5de330efa67a43a11da71f3407346e10648f2f2d494a13699f982642d2",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 50,
+      "hasStructuralAnalysis": true
+    },
+    "lib/features/auth/data/repositories/auth_repository.dart": {
+      "filePath": "lib/features/auth/data/repositories/auth_repository.dart",
+      "contentHash": "1e81462e85e49bd46632df5cf681012ea662913f4c511034f76667b57dbaaed2",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 265,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/auth/data/repositories/auth_repository.g.dart": {
+      "filePath": "lib/features/auth/data/repositories/auth_repository.g.dart",
+      "contentHash": "e4f3a8790b7f17aa25ed1012d3d8ae83e7ac5ac824733fec017c0358480a9150",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 28,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/auth/domain/entities/user_model.dart": {
+      "filePath": "lib/features/auth/domain/entities/user_model.dart",
+      "contentHash": "2c69ffc5a153493af737121c7f6efe4fe59e20efa26d29617493b82c1a06fb53",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 61,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/auth/domain/entities/user_model.freezed.dart": {
+      "filePath": "lib/features/auth/domain/entities/user_model.freezed.dart",
+      "contentHash": "157693359b2b911bf7b3e618271a6f39fa748d3a83ff831b234e5df55d87915a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 335,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/auth/domain/entities/user_model.g.dart": {
+      "filePath": "lib/features/auth/domain/entities/user_model.g.dart",
+      "contentHash": "ab51bf08a0cbd6515ba6c0fa9e13cbe08a88b091d70b4d96e686c84c0cf23ede",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 36,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/auth/domain/providers/auth_repository_provider.dart": {
+      "filePath": "lib/features/auth/domain/providers/auth_repository_provider.dart",
+      "contentHash": "669d5375be4960296c410acbc133a70325cb082de84e01dbe34a41c9ec21cb83",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 3,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/auth/domain/providers/onboarding_provider.dart": {
+      "filePath": "lib/features/auth/domain/providers/onboarding_provider.dart",
+      "contentHash": "8fb1b4ae6916e1451ed3bd4347cf368110254922770019a23585971eec3a4713",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 22,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/auth/domain/providers/onboarding_provider.g.dart": {
+      "filePath": "lib/features/auth/domain/providers/onboarding_provider.g.dart",
+      "contentHash": "d4aa258b400091b54ebcb2364c07fb5ffc722b3527d43b6c6d5ec4dc7aacb1fd",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 31,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/auth/domain/repositories/i_auth_repository.dart": {
+      "filePath": "lib/features/auth/domain/repositories/i_auth_repository.dart",
+      "contentHash": "bbff06c62886f8c91e45486ac43b02316209311b50e6085ec21db973df124bff",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 29,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/auth/presentation/screens/forgot_password_screen.dart": {
+      "filePath": "lib/features/auth/presentation/screens/forgot_password_screen.dart",
+      "contentHash": "9fee920d4c0dfbeede9bff42a0f32efec20ef6f41ce4d4c630eb6dc523009198",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 153,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/auth/presentation/screens/login_screen.dart": {
+      "filePath": "lib/features/auth/presentation/screens/login_screen.dart",
+      "contentHash": "7c7508bf1aab4d161bf5193cd76e65bb3b62db99f64395f76c7e3bb92adcbcc6",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 235,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/auth/presentation/screens/onboarding_screen.dart": {
+      "filePath": "lib/features/auth/presentation/screens/onboarding_screen.dart",
+      "contentHash": "ce09eaa78bd8b11f99df3e1817dccbc1ea4b795476b5023248d35d707295f6bc",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 291,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/auth/presentation/screens/register_screen.dart": {
+      "filePath": "lib/features/auth/presentation/screens/register_screen.dart",
+      "contentHash": "390e1672ac6a26e920fdfc90a55bd867459e96dd31b2820024423d75f2b89bbc",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 255,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/auth/presentation/screens/splash_screen.dart": {
+      "filePath": "lib/features/auth/presentation/screens/splash_screen.dart",
+      "contentHash": "6e65eceadc3f8b95949f87d3ca3f1d3683c0d3280f22d89fa785acf5c0354416",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 212,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/auth/presentation/state/auth_state.dart": {
+      "filePath": "lib/features/auth/presentation/state/auth_state.dart",
+      "contentHash": "a31c57a2a0b5e25bec8a4319707aedcbc1f81803ff04d359558c43bab70b37cb",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 15,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/auth/presentation/state/auth_state.freezed.dart": {
+      "filePath": "lib/features/auth/presentation/state/auth_state.freezed.dart",
+      "contentHash": "dd18282c20897ad3c9edd79ea2526c5fdc0b387d39a0bba70ff5c1ee3ef19011",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 808,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/auth/presentation/view_models/auth_view_model.dart": {
+      "filePath": "lib/features/auth/presentation/view_models/auth_view_model.dart",
+      "contentHash": "6a2f544b871a80e01912507dd0de362913096ed6d7928001967ef591853da1f6",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 311,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/auth/presentation/view_models/auth_view_model.g.dart": {
+      "filePath": "lib/features/auth/presentation/view_models/auth_view_model.g.dart",
+      "contentHash": "c9cec3a65b9157e1431024b20d7858a4aed5e02f125017fba1be656e86ffbd46",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 27,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/auth/presentation/widgets/social_login_buttons.dart": {
+      "filePath": "lib/features/auth/presentation/widgets/social_login_buttons.dart",
+      "contentHash": "0371fb72cb9b5e775d31b5135f7769d27d607be78020165489f8d6bbc648be4c",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 91,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/create/domain/entities/create_form_state.dart": {
+      "filePath": "lib/features/create/domain/entities/create_form_state.dart",
+      "contentHash": "9753a49d8982a0cb30c4e915d699b668af03096b81b9349744545484a2aeacb1",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 57,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/create/domain/entities/create_form_state.freezed.dart": {
+      "filePath": "lib/features/create/domain/entities/create_form_state.freezed.dart",
+      "contentHash": "6dfc0233870e839b76cc61ab638e5211ef7b4ad5811fb9f0f4fc266dc1eb008c",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 283,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/create/presentation/create_screen.dart": {
+      "filePath": "lib/features/create/presentation/create_screen.dart",
+      "contentHash": "be5bda70f57c6c1622f1d99485b0e2bd32c14508ee3803cfc4d1cc46b51e313d",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 274,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/create/presentation/providers/create_form_provider.dart": {
+      "filePath": "lib/features/create/presentation/providers/create_form_provider.dart",
+      "contentHash": "ed173e3a1331d6db0c61c8f221d6e1a03a337ede3163ea61eab37d1b6f65045f",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 66,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/create/presentation/providers/create_form_provider.g.dart": {
+      "filePath": "lib/features/create/presentation/providers/create_form_provider.g.dart",
+      "contentHash": "4fa17d71e41e09a643dd8fa1f5efc9757e9b419a127fe8cf4b4fa3b5e6623faf",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 28,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/create/presentation/view_models/create_view_model.dart": {
+      "filePath": "lib/features/create/presentation/view_models/create_view_model.dart",
+      "contentHash": "a2af033a089ad82a1f2e9d071f3f2a2ceb7fd28c472a51fc09806bf9411cf77f",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 191,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/create/presentation/view_models/create_view_model.g.dart": {
+      "filePath": "lib/features/create/presentation/view_models/create_view_model.g.dart",
+      "contentHash": "5385a4e1e0e2565484a91731f5616c897eb4d16dd3cbfd803453624b352eed6b",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 31,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/create/presentation/widgets/aspect_ratio_selector.dart": {
+      "filePath": "lib/features/create/presentation/widgets/aspect_ratio_selector.dart",
+      "contentHash": "8ee74715271accb03ecac58a6a89506123b079eae5200054f312bdc6175ec2ec",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 47,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/create/presentation/widgets/auth_gate_sheet.dart": {
+      "filePath": "lib/features/create/presentation/widgets/auth_gate_sheet.dart",
+      "contentHash": "33dad4c07de3f726b4cdb3c39832feca8eb253dcda2ec7fb3f0fe3caf1b343cd",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 59,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/create/presentation/widgets/credit_balance_chip.dart": {
+      "filePath": "lib/features/create/presentation/widgets/credit_balance_chip.dart",
+      "contentHash": "37cc20f93c499eab513585914b0942af96d3a8850cf0a96026214020d83671b8",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 50,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/create/presentation/widgets/generation_progress_overlay.dart": {
+      "filePath": "lib/features/create/presentation/widgets/generation_progress_overlay.dart",
+      "contentHash": "e7f243dec7c65497df679be59200e7751260b4733edc20bfed7630e76e384292",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 68,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/create/presentation/widgets/generation_starting_overlay.dart": {
+      "filePath": "lib/features/create/presentation/widgets/generation_starting_overlay.dart",
+      "contentHash": "24482d16925f15be758a2b357d01c761a4f291ef53f737afb2a08e11f1d73219",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 35,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/create/presentation/widgets/model_selector.dart": {
+      "filePath": "lib/features/create/presentation/widgets/model_selector.dart",
+      "contentHash": "66e78058224f36392b2e1e39d630bf363bb867435ad94502c66b5fbf581078b0",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 26,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/create/presentation/widgets/prompt_input_field.dart": {
+      "filePath": "lib/features/create/presentation/widgets/prompt_input_field.dart",
+      "contentHash": "947692390b1aa08a27ccdc2bbf4938eadcb1af0e4defd32dcee9e0e3341435fa",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 73,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/credits/data/repositories/credit_repository.dart": {
+      "filePath": "lib/features/credits/data/repositories/credit_repository.dart",
+      "contentHash": "b1a67fa5e0e14889a96d2b04a9ff099359a83fd1274cc45f5f130b5327c93d8f",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 200,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/credits/data/repositories/credit_repository.g.dart": {
+      "filePath": "lib/features/credits/data/repositories/credit_repository.g.dart",
+      "contentHash": "6714d3812d6b3127c005374208474c169bfdc50233b80e7bf64e44b724a43c7f",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 28,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/credits/domain/entities/credit_balance.dart": {
+      "filePath": "lib/features/credits/domain/entities/credit_balance.dart",
+      "contentHash": "671cd4574f0cbd3df9127350877f1ca49f4bd98b987101596ab929a7ffc1eeb6",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 18,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/credits/domain/entities/credit_balance.freezed.dart": {
+      "filePath": "lib/features/credits/domain/entities/credit_balance.freezed.dart",
+      "contentHash": "c2764dbc3a2085ef22bcc77e092e34e14f70db3a1e7aa860284e461aab3a0a83",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 227,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/credits/domain/entities/credit_balance.g.dart": {
+      "filePath": "lib/features/credits/domain/entities/credit_balance.g.dart",
+      "contentHash": "517b6f1ca158bafdf7ba6038d04d820b26245f62632c9ed1e58fc45c0f8fde5e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 22,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/credits/domain/entities/credit_transaction.dart": {
+      "filePath": "lib/features/credits/domain/entities/credit_transaction.dart",
+      "contentHash": "c801324eede5963a9eddcc3206c8ab4b54dc19a944c35e132f360fce6f2c1fcc",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 35,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/credits/domain/entities/credit_transaction.freezed.dart": {
+      "filePath": "lib/features/credits/domain/entities/credit_transaction.freezed.dart",
+      "contentHash": "2f1726a64c474f6f724ba090e2d3129e29ebe9e88ed53f28384838a0090ecb93",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 333,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/credits/domain/entities/credit_transaction.g.dart": {
+      "filePath": "lib/features/credits/domain/entities/credit_transaction.g.dart",
+      "contentHash": "5e8998adee8573207c0ad9c09590310569bf1c228822876c9d898988e01a9cfe",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 32,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/credits/domain/providers/credit_repository_provider.dart": {
+      "filePath": "lib/features/credits/domain/providers/credit_repository_provider.dart",
+      "contentHash": "f6452be852b3558da74b6e7b97edfe580317dce6f38ac717e0838c31953f891e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 3,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/credits/domain/repositories/i_credit_repository.dart": {
+      "filePath": "lib/features/credits/domain/repositories/i_credit_repository.dart",
+      "contentHash": "1e46aae9420d04e45a02dc6fc00b41b3064c1d184334ef41c237f2ac0c250921",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 31,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/credits/presentation/providers/ad_reward_provider.dart": {
+      "filePath": "lib/features/credits/presentation/providers/ad_reward_provider.dart",
+      "contentHash": "df96e8b0c6b52a7449d090643a64cdc1d13cbdfeb86958bbc1eb21ce9d9721c3",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 73,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/credits/presentation/providers/ad_reward_provider.g.dart": {
+      "filePath": "lib/features/credits/presentation/providers/ad_reward_provider.g.dart",
+      "contentHash": "4dc69cb2ccbddcdef01c4a2f1301581ae23e7cf8f6ca3448c1b4034190284c35",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 37,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/credits/presentation/providers/credit_balance_provider.dart": {
+      "filePath": "lib/features/credits/presentation/providers/credit_balance_provider.dart",
+      "contentHash": "fb523bdd91b6e89a6b2acfd79b0a687fe231d726d442631818e09f5717d7c271",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 18,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/credits/presentation/providers/credit_balance_provider.g.dart": {
+      "filePath": "lib/features/credits/presentation/providers/credit_balance_provider.g.dart",
+      "contentHash": "d7174b9356a053bd70154f0b88b66c4c3035c1dd6984e432d5f47946608a032c",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 31,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/credits/presentation/providers/credit_history_provider.dart": {
+      "filePath": "lib/features/credits/presentation/providers/credit_history_provider.dart",
+      "contentHash": "6dc8e95fd4f44d7dc29a3e0ca0c2b5ccde42f8b06df8797fa5dd337d670a40e5",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 17,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/credits/presentation/providers/credit_history_provider.g.dart": {
+      "filePath": "lib/features/credits/presentation/providers/credit_history_provider.g.dart",
+      "contentHash": "876ce4907253c850d7efef7abf279b0171ebabce187caa4d9f631e5c4da10e94",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 173,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/credits/presentation/screens/credit_history_screen.dart": {
+      "filePath": "lib/features/credits/presentation/screens/credit_history_screen.dart",
+      "contentHash": "579edd57b4a6b8de24caf80a346807f7283886ca93de912ec8ab3626144cfa69",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 260,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/credits/presentation/widgets/insufficient_credits_sheet.dart": {
+      "filePath": "lib/features/credits/presentation/widgets/insufficient_credits_sheet.dart",
+      "contentHash": "172ba6d4fdf26a3f04bbc61d2c5ffd8d3bb4a33d6de76fe6d664baaec6a7cc46",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 229,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/credits/presentation/widgets/premium_model_sheet.dart": {
+      "filePath": "lib/features/credits/presentation/widgets/premium_model_sheet.dart",
+      "contentHash": "3f3fc16f9f5b0d6c63ec5f1e1628b2fd95dd94e5c972070224246a46c6a539a3",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 55,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/gallery/data/repositories/gallery_repository_helpers.dart": {
+      "filePath": "lib/features/gallery/data/repositories/gallery_repository_helpers.dart",
+      "contentHash": "14a02e0db52799a56108cf6408f527d4224734b6642c53b900053f69883902b0",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 84,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/gallery/data/repositories/gallery_repository.dart": {
+      "filePath": "lib/features/gallery/data/repositories/gallery_repository.dart",
+      "contentHash": "b56ea0142f4beca2d8fb6d70bbfd2354ab087c46dc338ec05539d533737ec292",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 364,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/gallery/data/repositories/gallery_repository.g.dart": {
+      "filePath": "lib/features/gallery/data/repositories/gallery_repository.g.dart",
+      "contentHash": "9891eecdb141d359f384be65bad608046c23c39b52d7941693e3c5082f6ed365",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 29,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/gallery/data/services/gallery_cache_service.dart": {
+      "filePath": "lib/features/gallery/data/services/gallery_cache_service.dart",
+      "contentHash": "49339663aeb421463d32d92dcedb47c2fa1db286206c14ce764ad8840dd4305f",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 95,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/gallery/data/services/gallery_cache_service.g.dart": {
+      "filePath": "lib/features/gallery/data/services/gallery_cache_service.g.dart",
+      "contentHash": "87af27d3a5a79cd8545ae51fdcfaaa2c511dcc3c67fe8ccfbe10601d55685551",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 30,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/gallery/domain/entities/gallery_item.dart": {
+      "filePath": "lib/features/gallery/domain/entities/gallery_item.dart",
+      "contentHash": "795fa10d8a7c92a02ef63501f3b76b374d5e8b6977c2fa3e83847ad080a9c65a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 40,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/gallery/domain/entities/gallery_item.freezed.dart": {
+      "filePath": "lib/features/gallery/domain/entities/gallery_item.freezed.dart",
+      "contentHash": "fe5b51eae60ebdd237b1f5346ea3640553ff631e003cd23af8b9830d1199b1f0",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 432,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/gallery/domain/entities/gallery_item.g.dart": {
+      "filePath": "lib/features/gallery/domain/entities/gallery_item.g.dart",
+      "contentHash": "39b2203bb2902647c3881053931cb9998c8b708f2a3bbc12e60de934788739dc",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 52,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/gallery/domain/providers/gallery_repository_provider.dart": {
+      "filePath": "lib/features/gallery/domain/providers/gallery_repository_provider.dart",
+      "contentHash": "137b11564dd47cdba41a4ea97ea2f0bb6b3205ed36f3e8067bd975bbb8371776",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 3,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/gallery/domain/repositories/i_gallery_repository.dart": {
+      "filePath": "lib/features/gallery/domain/repositories/i_gallery_repository.dart",
+      "contentHash": "aff31d8ef105e19192998c7ece8064b04c53956ae0825059b09358982d7e40e7",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 44,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/gallery/presentation/constants/gallery_strings.dart": {
+      "filePath": "lib/features/gallery/presentation/constants/gallery_strings.dart",
+      "contentHash": "2b8364e13e755516f6ded2ed347fb372fffb5439993883943b3bd1d728556770",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 9,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/gallery/presentation/pages/gallery_page.dart": {
+      "filePath": "lib/features/gallery/presentation/pages/gallery_page.dart",
+      "contentHash": "5efc8d9c26132c9343f248493238a824f9a4301d79982486def3c7d3f497ddf7",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 73,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/gallery/presentation/pages/image_viewer_action_helper.dart": {
+      "filePath": "lib/features/gallery/presentation/pages/image_viewer_action_helper.dart",
+      "contentHash": "5fa51144f34269beb9c7bbd3090f122cbbbd6e92ea5a39eb245c180751e81502",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 72,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/gallery/presentation/pages/image_viewer_page.dart": {
+      "filePath": "lib/features/gallery/presentation/pages/image_viewer_page.dart",
+      "contentHash": "74dd5b5e89d752f3eb8f449c43e65d2f0d2a3ac8ed2874e027ac1a3ab408c117",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 321,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/gallery/presentation/providers/gallery_provider.dart": {
+      "filePath": "lib/features/gallery/presentation/providers/gallery_provider.dart",
+      "contentHash": "ff2b2ea939c3757eb6678c020792035efd9fa0b45752bcbee16da810bfacb82e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 87,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/gallery/presentation/providers/gallery_provider.g.dart": {
+      "filePath": "lib/features/gallery/presentation/providers/gallery_provider.g.dart",
+      "contentHash": "67b2fbf895e6bd6c55f8f5142a7a33598f09637460a9a6053fd187225a72ac7a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 50,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/gallery/presentation/widgets/empty_gallery_illustration.dart": {
+      "filePath": "lib/features/gallery/presentation/widgets/empty_gallery_illustration.dart",
+      "contentHash": "f030900d3ab04ea7bb162844fc62aa82344c6890c1482e5859c72ba5ce5f70de",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 156,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/gallery/presentation/widgets/empty_gallery_state.dart": {
+      "filePath": "lib/features/gallery/presentation/widgets/empty_gallery_state.dart",
+      "contentHash": "055a185a2ed5590f950af6ca4294e0b8df126bda7aa52ce97d5c040264385c2f",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 140,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/gallery/presentation/widgets/failed_image_card.dart": {
+      "filePath": "lib/features/gallery/presentation/widgets/failed_image_card.dart",
+      "contentHash": "5669fe5dd8f977ee5ebbdbb0c6ff2a099d77fe9e69e223492982d05166426aae",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 70,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/gallery/presentation/widgets/image_info_bottom_sheet.dart": {
+      "filePath": "lib/features/gallery/presentation/widgets/image_info_bottom_sheet.dart",
+      "contentHash": "33a9503f37bd4a96467eca544af714456f02883083aa1a5ed1dd61031c852d2d",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 234,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/gallery/presentation/widgets/image_viewer_app_bar.dart": {
+      "filePath": "lib/features/gallery/presentation/widgets/image_viewer_app_bar.dart",
+      "contentHash": "23acc5d932ae7ac6d0d9e57b9e876f53c7935a45268a4bebabb1c7daf87fa9cb",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 99,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/gallery/presentation/widgets/image_viewer_image_page.dart": {
+      "filePath": "lib/features/gallery/presentation/widgets/image_viewer_image_page.dart",
+      "contentHash": "d73cd72086627d9b3aa9663207e9059b03cd3c46c509659d2237ea682ed0f5b0",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 193,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/gallery/presentation/widgets/image_viewer_page_indicator.dart": {
+      "filePath": "lib/features/gallery/presentation/widgets/image_viewer_page_indicator.dart",
+      "contentHash": "dfc2882e25f6404cca1a53fe8eccacb1da6ad963f16223e9239d34dad7a103c8",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 42,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/gallery/presentation/widgets/image_viewer_swipe_dismiss.dart": {
+      "filePath": "lib/features/gallery/presentation/widgets/image_viewer_swipe_dismiss.dart",
+      "contentHash": "ac8efc7e748352f8555914e6506ffada23b2a94ff71d4dd0b860f1ad1d41202f",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 82,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/gallery/presentation/widgets/interactive_gallery_item.dart": {
+      "filePath": "lib/features/gallery/presentation/widgets/interactive_gallery_item.dart",
+      "contentHash": "73b6accc1ff97401420a823392668c5702128cc721e2b420e6165774870acaf7",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 313,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/gallery/presentation/widgets/masonry_image_grid.dart": {
+      "filePath": "lib/features/gallery/presentation/widgets/masonry_image_grid.dart",
+      "contentHash": "7574701af425820d6342bb7acf556e99a27c16161d55ccd0f5d777555c6fa326",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 184,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/gallery/presentation/widgets/shimmer_grid.dart": {
+      "filePath": "lib/features/gallery/presentation/widgets/shimmer_grid.dart",
+      "contentHash": "f1b234b087ab8681a96a1b9d79c151947592bd43ff92f34a14bbca41d0207bc9",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 54,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/settings/data/notifications_provider.dart": {
+      "filePath": "lib/features/settings/data/notifications_provider.dart",
+      "contentHash": "37e06bb06f9eb39be474e17f405f9d793bbff32d8acbeae3e502023bae8366fa",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 40,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/settings/data/notifications_provider.g.dart": {
+      "filePath": "lib/features/settings/data/notifications_provider.g.dart",
+      "contentHash": "5b283c8164b6c0750a267d34d0b413439ee7a5cb19d23b5874e84789a88cfcc3",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 28,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/settings/domain/providers/notifications_provider.dart": {
+      "filePath": "lib/features/settings/domain/providers/notifications_provider.dart",
+      "contentHash": "dc65eca3d073a6d9550f83dfb5f68492967d8e9c20996079fe4caf41af78225e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 3,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/settings/presentation/settings_screen.dart": {
+      "filePath": "lib/features/settings/presentation/settings_screen.dart",
+      "contentHash": "b0b44c9ed6e55c1efa5191f11d6fae732e82898665cbe5498aaa5dc1684b827c",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 251,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/settings/presentation/widgets/settings_helpers.dart": {
+      "filePath": "lib/features/settings/presentation/widgets/settings_helpers.dart",
+      "contentHash": "f90e31d2b10bf27063fa78f84362a269ea4980084d75b6fb31433c24e8c5ac18",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 138,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/settings/presentation/widgets/settings_sections.dart": {
+      "filePath": "lib/features/settings/presentation/widgets/settings_sections.dart",
+      "contentHash": "57e3f1a68d5acbc0c03c2c545f34ad771e8941257385d14b7e25813938adc748",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 295,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/settings/presentation/widgets/subscription_card.dart": {
+      "filePath": "lib/features/settings/presentation/widgets/subscription_card.dart",
+      "contentHash": "105d94c2b43be364118048b38d6ca9fed7f89715fe0e9b166f998fee5d49fe42",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 210,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/settings/presentation/widgets/theme_switcher.dart": {
+      "filePath": "lib/features/settings/presentation/widgets/theme_switcher.dart",
+      "contentHash": "1312eb8542368618a691181baef4fc6973a8beb23e0fa015a154d21eb0773c36",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 45,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/settings/presentation/widgets/user_profile_card.dart": {
+      "filePath": "lib/features/settings/presentation/widgets/user_profile_card.dart",
+      "contentHash": "570803f5a4def65aaf8ac92a78474d9bd1e223a974dd1abfb738b36baa5d162c",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 107,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/subscription/data/repositories/subscription_repository.dart": {
+      "filePath": "lib/features/subscription/data/repositories/subscription_repository.dart",
+      "contentHash": "7849278bbacee7d0e2f544a1a4c24fef639f056c97f43b25bbf9c85f1f3864af",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 202,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/subscription/data/repositories/subscription_repository.g.dart": {
+      "filePath": "lib/features/subscription/data/repositories/subscription_repository.g.dart",
+      "contentHash": "f11f81a9183c905cdaa7d45566491d4fab4cc340bca9c40247664f56277a3f73",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 31,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/subscription/domain/entities/subscription_package.dart": {
+      "filePath": "lib/features/subscription/domain/entities/subscription_package.dart",
+      "contentHash": "f701dbc2081ad6417c01ef9b5ddff34a2f418b03af8d77b97350f1876e2b953d",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 27,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/subscription/domain/entities/subscription_package.freezed.dart": {
+      "filePath": "lib/features/subscription/domain/entities/subscription_package.freezed.dart",
+      "contentHash": "3394ddb07b907223a98e68064513cbf3bede69973c60044308afb9be4f018399",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 291,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/subscription/domain/entities/subscription_status.dart": {
+      "filePath": "lib/features/subscription/domain/entities/subscription_status.dart",
+      "contentHash": "46f14c434e0891edd44a7604dbbec82c866296827c65c88fe36993a0288894aa",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 43,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/subscription/domain/entities/subscription_status.freezed.dart": {
+      "filePath": "lib/features/subscription/domain/entities/subscription_status.freezed.dart",
+      "contentHash": "23c7598ccd3eae645e0f53dca1c4991cfddedc1282fb333559dce9c20934bbbe",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 243,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/subscription/domain/entities/subscription_status.g.dart": {
+      "filePath": "lib/features/subscription/domain/entities/subscription_status.g.dart",
+      "contentHash": "01114a20b399f7c8809e603ffe1c1ea83683c5b64b412c2df41a1aa2e7fff9cc",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 28,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/subscription/domain/providers/subscription_repository_provider.dart": {
+      "filePath": "lib/features/subscription/domain/providers/subscription_repository_provider.dart",
+      "contentHash": "c9e2dbb3aa538768fc87bc6ba72d72397c2647937885aa9ab1e9ebd7fed6505c",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 3,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/subscription/domain/repositories/i_subscription_repository.dart": {
+      "filePath": "lib/features/subscription/domain/repositories/i_subscription_repository.dart",
+      "contentHash": "d2d4189c301afca55da77991ba2ecfa844359dcf0f49f5016290f74dcede715c",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 17,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/subscription/presentation/providers/subscription_provider.dart": {
+      "filePath": "lib/features/subscription/presentation/providers/subscription_provider.dart",
+      "contentHash": "45f56dac2190b113006ef8a6558935f28c5793cf2ddfb66fa859bcd42505d373",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 104,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/subscription/presentation/providers/subscription_provider.g.dart": {
+      "filePath": "lib/features/subscription/presentation/providers/subscription_provider.g.dart",
+      "contentHash": "ba7956f98694ab2fede46006797aec102c6854e9193e828158216ca6c780dc8c",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 51,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/subscription/presentation/screens/paywall_screen.dart": {
+      "filePath": "lib/features/subscription/presentation/screens/paywall_screen.dart",
+      "contentHash": "f92e45d513687b46024ad231aa0a2cc0ecb6cfbeef209710d364064e0408a136",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 761,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/subscription/presentation/widgets/tier_comparison_card.dart": {
+      "filePath": "lib/features/subscription/presentation/widgets/tier_comparison_card.dart",
+      "contentHash": "59df9c985d8ede4d530575fac9b2cc3ac8b4cae4ba0dfc60525cd159de3017d6",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 155,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/template_engine/AGENTS.md": {
+      "filePath": "lib/features/template_engine/AGENTS.md",
+      "contentHash": "abf873c7475ee94755ef02eae8142f480c18d55a63a3b504335fa5f9b3d0cfea",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 54,
+      "hasStructuralAnalysis": true
+    },
+    "lib/features/template_engine/data/policies/credit_check_policy.dart": {
+      "filePath": "lib/features/template_engine/data/policies/credit_check_policy.dart",
+      "contentHash": "9f9f36cded25b017c8e5831b7eeb71ec0ba308ba39d91ecaa28568ee73b80dd9",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 33,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/template_engine/data/repositories/generation_repository.dart": {
+      "filePath": "lib/features/template_engine/data/repositories/generation_repository.dart",
+      "contentHash": "426567bdb7fe35006c46eba1c0458a4842d22726bd7ea345fd90ca420d997e53",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 213,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/template_engine/data/repositories/generation_repository.g.dart": {
+      "filePath": "lib/features/template_engine/data/repositories/generation_repository.g.dart",
+      "contentHash": "dfa724c84f3501e71375af9b9f557b5d442e4ba912b8d956bce7c646f10c3dcf",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 30,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/template_engine/data/repositories/template_repository.dart": {
+      "filePath": "lib/features/template_engine/data/repositories/template_repository.dart",
+      "contentHash": "c80a27e7965b183f2e7f555f438b86cab4407e1c164f80dca8731488b5924598",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 154,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/template_engine/data/repositories/template_repository.g.dart": {
+      "filePath": "lib/features/template_engine/data/repositories/template_repository.g.dart",
+      "contentHash": "b54280d2299b8c985b320eff2c238f1e59e79cba95c4e600e10e53de2cdf1516",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 30,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/template_engine/data/services/template_cache_service.dart": {
+      "filePath": "lib/features/template_engine/data/services/template_cache_service.dart",
+      "contentHash": "eea8b2690c80c6279102e3fd86f02bd13dc8433331cbf56ee4e901825e832f79",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 98,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/template_engine/data/services/template_cache_service.g.dart": {
+      "filePath": "lib/features/template_engine/data/services/template_cache_service.g.dart",
+      "contentHash": "d60ed839f61929bee3da63c278102ed60b87a5aea8664b28de23e9ede97de1cc",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 30,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/template_engine/domain/entities/generation_job_model.dart": {
+      "filePath": "lib/features/template_engine/domain/entities/generation_job_model.dart",
+      "contentHash": "a18510278721f320710a963827bb623ef8af7522859e3127ddfc84ab7b1a640a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 46,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/template_engine/domain/entities/generation_job_model.freezed.dart": {
+      "filePath": "lib/features/template_engine/domain/entities/generation_job_model.freezed.dart",
+      "contentHash": "b546eeb395287047753dc2115001be1b99b2f0797832bd06b2421d67b8737b15",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 462,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/template_engine/domain/entities/generation_job_model.g.dart": {
+      "filePath": "lib/features/template_engine/domain/entities/generation_job_model.g.dart",
+      "contentHash": "810d029cc99b5bc0da92d15baab1c2a112109478e8a8598fd911028c3c3ae112",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 58,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/template_engine/domain/entities/generation_options_model.dart": {
+      "filePath": "lib/features/template_engine/domain/entities/generation_options_model.dart",
+      "contentHash": "dc7fa04f3cc68bb034f760d4698c9445c4956236bdbe836bd07462d72f1c7f75",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 23,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/template_engine/domain/entities/generation_options_model.freezed.dart": {
+      "filePath": "lib/features/template_engine/domain/entities/generation_options_model.freezed.dart",
+      "contentHash": "63ac42d7c6ea498731e009a6495b6371302a05525811eb93b4c6c55729af68ca",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 289,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/template_engine/domain/entities/generation_options_model.g.dart": {
+      "filePath": "lib/features/template_engine/domain/entities/generation_options_model.g.dart",
+      "contentHash": "884123bf7768cab92de49d3648907878bb7584a3576ccf8ddb2696cd8704d7f3",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 28,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/template_engine/domain/entities/input_field_model.dart": {
+      "filePath": "lib/features/template_engine/domain/entities/input_field_model.dart",
+      "contentHash": "12750fb1ed0bfb3c23f49f30dae0cec640aecc41f0462cb0311f5536a1e92a09",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 24,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/template_engine/domain/entities/input_field_model.freezed.dart": {
+      "filePath": "lib/features/template_engine/domain/entities/input_field_model.freezed.dart",
+      "contentHash": "516d0b02158f4c30d4798e9f830b313723033c51a741c5333540642d2f1ed9e3",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 371,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/template_engine/domain/entities/input_field_model.g.dart": {
+      "filePath": "lib/features/template_engine/domain/entities/input_field_model.g.dart",
+      "contentHash": "51c6f32ca4ab9f98cacd6db76d0c836c8d9db1018199f868a6154145d0ee8315",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 38,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/template_engine/domain/entities/template_model.dart": {
+      "filePath": "lib/features/template_engine/domain/entities/template_model.dart",
+      "contentHash": "b6f52cdb6a92aa73bc47c6e2b323dccd959fec54a56e81a8a4110f900a852997",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 28,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/template_engine/domain/entities/template_model.freezed.dart": {
+      "filePath": "lib/features/template_engine/domain/entities/template_model.freezed.dart",
+      "contentHash": "5e746658b4e2b164004daacefc4de8e5df8695ab73495d472f492a8d8e295585",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 407,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/template_engine/domain/entities/template_model.g.dart": {
+      "filePath": "lib/features/template_engine/domain/entities/template_model.g.dart",
+      "contentHash": "b909d94e731e7f9cc873ee0e7c57435ba23b6e439a0f02371758569f4034db58",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 38,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/template_engine/domain/policies/generation_policy.dart": {
+      "filePath": "lib/features/template_engine/domain/policies/generation_policy.dart",
+      "contentHash": "47f18d040ecac33f1e09a24b614d1bb50e60a477ee1f619618a85e04b696d3ac",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 29,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/template_engine/domain/policies/generation_policy.freezed.dart": {
+      "filePath": "lib/features/template_engine/domain/policies/generation_policy.freezed.dart",
+      "contentHash": "721157effee5cf9330ed1d83c6c81a02aeca225ab589fce391fad521b7f37520",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 365,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/template_engine/domain/providers/generation_repository_provider.dart": {
+      "filePath": "lib/features/template_engine/domain/providers/generation_repository_provider.dart",
+      "contentHash": "34ee6ba4f2f55730e37b18893af0efc53b694169738ddb60fe9e76670fd47818",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 3,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/template_engine/domain/providers/template_repository_provider.dart": {
+      "filePath": "lib/features/template_engine/domain/providers/template_repository_provider.dart",
+      "contentHash": "3cbcff736a3b9e319e907f6e2896760d9f2588e0e302f4a9a81a726182a95d94",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 3,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/template_engine/domain/repositories/i_generation_repository.dart": {
+      "filePath": "lib/features/template_engine/domain/repositories/i_generation_repository.dart",
+      "contentHash": "bc6175f25430d082c935214a41a1e58e3447c8bb1204ee16d6683f193640de99",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 22,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/template_engine/domain/repositories/i_template_repository.dart": {
+      "filePath": "lib/features/template_engine/domain/repositories/i_template_repository.dart",
+      "contentHash": "2f765262b42e3f29d6f33129d5078583d2ddf26c5bd2bd25f1c74bc28d9122f9",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 10,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/template_engine/presentation/helpers/generation_job_manager.dart": {
+      "filePath": "lib/features/template_engine/presentation/helpers/generation_job_manager.dart",
+      "contentHash": "1370a565f94bb05d190ec1bed494fe30c3ba2eb7ace4d25da7e2467a818af55a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 134,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/template_engine/presentation/providers/generation_options_provider.dart": {
+      "filePath": "lib/features/template_engine/presentation/providers/generation_options_provider.dart",
+      "contentHash": "4b948c596535f7b41f403a8d3f8b87c9fcc0314aecd33516ba57c8161e5a67c0",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 37,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/template_engine/presentation/providers/generation_options_provider.g.dart": {
+      "filePath": "lib/features/template_engine/presentation/providers/generation_options_provider.g.dart",
+      "contentHash": "bf794604bab7d74e81731f0a6f42f3c5b879bd8f4f363bf95389c90df8bb3ee4",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 30,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/template_engine/presentation/providers/generation_policy_provider.dart": {
+      "filePath": "lib/features/template_engine/presentation/providers/generation_policy_provider.dart",
+      "contentHash": "e5337eb75cd74e9a2489cab43228251734fccbad82ad3ebc8125eb42bfed0b0e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 12,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/template_engine/presentation/providers/generation_policy_provider.g.dart": {
+      "filePath": "lib/features/template_engine/presentation/providers/generation_policy_provider.g.dart",
+      "contentHash": "a0ce6b1bb6910b07d2dd70f70ef29af5873b91a42f248be022cee3b6fad647a6",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 29,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/template_engine/presentation/providers/template_provider.dart": {
+      "filePath": "lib/features/template_engine/presentation/providers/template_provider.dart",
+      "contentHash": "03cee766c165f9097efb29a93090fa393b051d286821dcd8ec02eb7e9b0cd139",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 19,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/template_engine/presentation/providers/template_provider.g.dart": {
+      "filePath": "lib/features/template_engine/presentation/providers/template_provider.g.dart",
+      "contentHash": "6d1fa8a53283c607931a55f4f6e643e33df7657709a658c91c68347537acbfde",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 295,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/template_engine/presentation/screens/home_screen.dart": {
+      "filePath": "lib/features/template_engine/presentation/screens/home_screen.dart",
+      "contentHash": "96a7d2c20045c7d3ab7913eee483195294bdc221d000d9d4a289c732c267f175",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 260,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/template_engine/presentation/screens/template_detail_screen.dart": {
+      "filePath": "lib/features/template_engine/presentation/screens/template_detail_screen.dart",
+      "contentHash": "dcec9f9700a5a2b06c179146b1024910eab24cb57516c3bdb85a0882fab96c83",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 408,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/template_engine/presentation/view_models/generation_view_model.dart": {
+      "filePath": "lib/features/template_engine/presentation/view_models/generation_view_model.dart",
+      "contentHash": "6150d0269041d26cdf226a0554cc00a02fd376dec353bf48eed233faf1d64a89",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 111,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/template_engine/presentation/view_models/generation_view_model.g.dart": {
+      "filePath": "lib/features/template_engine/presentation/view_models/generation_view_model.g.dart",
+      "contentHash": "baf6152ff01609a4e3160e20b39880fb82bdcbd5dec7005a766758972a80f1b8",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 32,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/template_engine/presentation/widgets/generation_progress_sections.dart": {
+      "filePath": "lib/features/template_engine/presentation/widgets/generation_progress_sections.dart",
+      "contentHash": "3c0ba7e1a66f7855c6f5af39091da6f1d0d218c00abf08dc355956f0baa93462",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 256,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/template_engine/presentation/widgets/generation_progress.dart": {
+      "filePath": "lib/features/template_engine/presentation/widgets/generation_progress.dart",
+      "contentHash": "d2b2b4a10f9685acc939c98e2ee66702f5c5666d4a973e9cd01d1355998256d0",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 162,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/template_engine/presentation/widgets/home_screen_widgets.dart": {
+      "filePath": "lib/features/template_engine/presentation/widgets/home_screen_widgets.dart",
+      "contentHash": "0dafb288087eb924351d276419c5035d8640c94e39e89eaa2c9f1808df3603d7",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 124,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/template_engine/presentation/widgets/input_field_builder.dart": {
+      "filePath": "lib/features/template_engine/presentation/widgets/input_field_builder.dart",
+      "contentHash": "a74fabc688ae59e671a1d9cb243555495805f7ef065ef20a5c6678b05bd82236",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 151,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/template_engine/presentation/widgets/template_card.dart": {
+      "filePath": "lib/features/template_engine/presentation/widgets/template_card.dart",
+      "contentHash": "584ce928354735dc5676e6ae84f2a9d55b8433d0c0dcb8654e81d8e2c2a4411f",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 208,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/template_engine/presentation/widgets/template_detail_widgets.dart": {
+      "filePath": "lib/features/template_engine/presentation/widgets/template_detail_widgets.dart",
+      "contentHash": "615860e3d6e9542ffcd255ef14d5c680e34339e32c51d31e0b98abf36b2d5c52",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 132,
+      "hasStructuralAnalysis": false
+    },
+    "lib/features/template_engine/presentation/widgets/template_grid.dart": {
+      "filePath": "lib/features/template_engine/presentation/widgets/template_grid.dart",
+      "contentHash": "a0f2abd12a4c912c55503f4a1ea5742e536ed8205f0fae6899d5e9a8218c925a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 263,
+      "hasStructuralAnalysis": false
+    },
+    "lib/main.dart": {
+      "filePath": "lib/main.dart",
+      "contentHash": "f925fdc87c60ec3b28f1e03e932f0a7b40166c11beeabe7803d1974ee0fd884b",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 150,
+      "hasStructuralAnalysis": false
+    },
+    "lib/routing/app_router.dart": {
+      "filePath": "lib/routing/app_router.dart",
+      "contentHash": "04ccd206191737db2a4d570624f52cc9d19be0cfbf87cbf8cb948aff67b43ce2",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 68,
+      "hasStructuralAnalysis": false
+    },
+    "lib/routing/app_router.g.dart": {
+      "filePath": "lib/routing/app_router.g.dart",
+      "contentHash": "327caac82c79c6fc793d669492da346b8257c9670e171dd193a92fa1fae6dcb0",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 28,
+      "hasStructuralAnalysis": false
+    },
+    "lib/routing/routes/app_routes.dart": {
+      "filePath": "lib/routing/routes/app_routes.dart",
+      "contentHash": "29e832b9ea617c9019012356c296d2441f1eb936df90b74be7e3f3d826355e1f",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 200,
+      "hasStructuralAnalysis": false
+    },
+    "lib/routing/routes/app_routes.g.dart": {
+      "filePath": "lib/routing/routes/app_routes.g.dart",
+      "contentHash": "d1f60865d23e5c8b817721bd8c1c26b3324969e9fdbf3c744ba73be361848ab5",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 302,
+      "hasStructuralAnalysis": false
+    },
+    "lib/shared/widgets/animated_retry_button.dart": {
+      "filePath": "lib/shared/widgets/animated_retry_button.dart",
+      "contentHash": "0c797d51a7c3d302a3ba98b99bd3c03f0a7d6301dba6df646a2ff31efad59d0e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 72,
+      "hasStructuralAnalysis": false
+    },
+    "lib/shared/widgets/app_snackbar.dart": {
+      "filePath": "lib/shared/widgets/app_snackbar.dart",
+      "contentHash": "a87d6148eb1130db4540d96d86abd0c431776716a75e23dfb1241e89a7a2db76",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 232,
+      "hasStructuralAnalysis": false
+    },
+    "lib/shared/widgets/aspect_ratio_selector.dart": {
+      "filePath": "lib/shared/widgets/aspect_ratio_selector.dart",
+      "contentHash": "f1f5845bfae5d6597514a9799d71d0707e812f76bd99322fc7eede1c40af80f1",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 85,
+      "hasStructuralAnalysis": false
+    },
+    "lib/shared/widgets/error_illustration.dart": {
+      "filePath": "lib/shared/widgets/error_illustration.dart",
+      "contentHash": "fd6e06200cedf6b6e00c47c00f9af5d28c2e8212b0dea8f892ed8e1a5a803efa",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 71,
+      "hasStructuralAnalysis": false
+    },
+    "lib/shared/widgets/error_page.dart": {
+      "filePath": "lib/shared/widgets/error_page.dart",
+      "contentHash": "6a59833862ff08762feb753b43274e26020282eeff10f91f49bf5b00fd7ead6f",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 36,
+      "hasStructuralAnalysis": false
+    },
+    "lib/shared/widgets/error_state_widget.dart": {
+      "filePath": "lib/shared/widgets/error_state_widget.dart",
+      "contentHash": "2968591757cb5919a026f7ff19b265e94718a913c78328106a7bbf00d675a0fa",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 222,
+      "hasStructuralAnalysis": false
+    },
+    "lib/shared/widgets/gradient_button.dart": {
+      "filePath": "lib/shared/widgets/gradient_button.dart",
+      "contentHash": "3d1a478163761b1572e6aee9a66c1f7df8d65f1a1ddd6c2bd48d23bfeaf12af2",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 71,
+      "hasStructuralAnalysis": false
+    },
+    "lib/shared/widgets/image_count_dropdown.dart": {
+      "filePath": "lib/shared/widgets/image_count_dropdown.dart",
+      "contentHash": "8610f8d2c92133c1a1fe476cc25ee8f6b5e0663e31b5a2038c3bdbf637e7998b",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 43,
+      "hasStructuralAnalysis": false
+    },
+    "lib/shared/widgets/image_input_widget.dart": {
+      "filePath": "lib/shared/widgets/image_input_widget.dart",
+      "contentHash": "443c14c1f26fcd1848840ee95d653264913b30ad1c4db871f93a052bbc181a5a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 215,
+      "hasStructuralAnalysis": false
+    },
+    "lib/shared/widgets/loading_state_widget.dart": {
+      "filePath": "lib/shared/widgets/loading_state_widget.dart",
+      "contentHash": "419a5be93f43b397a0e692a3c49d1ea9b97704c7d3631ba14edb61cf9d91c30e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 273,
+      "hasStructuralAnalysis": false
+    },
+    "lib/shared/widgets/main_shell.dart": {
+      "filePath": "lib/shared/widgets/main_shell.dart",
+      "contentHash": "47512185f7cdca4bf7ffa0438d65abf42d0b1840c7d515a624407309f648b89e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 90,
+      "hasStructuralAnalysis": false
+    },
+    "lib/shared/widgets/model_selector.dart": {
+      "filePath": "lib/shared/widgets/model_selector.dart",
+      "contentHash": "925ac4e1e78a9bcb2d255cc57fe6c90bf6f5d0490e40baca52de184a8286f8c3",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 186,
+      "hasStructuralAnalysis": false
+    },
+    "lib/shared/widgets/offline_banner.dart": {
+      "filePath": "lib/shared/widgets/offline_banner.dart",
+      "contentHash": "08930d3f0222aea24dc9fd29848863565116c2c26601368a7a9847d04e122a3b",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 195,
+      "hasStructuralAnalysis": false
+    },
+    "lib/shared/widgets/output_format_toggle.dart": {
+      "filePath": "lib/shared/widgets/output_format_toggle.dart",
+      "contentHash": "afd3b82ebe43666b0025df4cb127109ca6811db1c39292b44e2962d54ebe361d",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 67,
+      "hasStructuralAnalysis": false
+    },
+    "lib/shared/widgets/retry_text_button.dart": {
+      "filePath": "lib/shared/widgets/retry_text_button.dart",
+      "contentHash": "de6305066df41c825ce23d0c6e8af47ba40a08f0398dd4859bda7a5b5f53fbbd",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 43,
+      "hasStructuralAnalysis": false
+    },
+    "lib/shared/widgets/section_header.dart": {
+      "filePath": "lib/shared/widgets/section_header.dart",
+      "contentHash": "0d90b9bf12a4dda5c9ff69d7328d66913e44a6630510e679e4570dfb510ba33a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 35,
+      "hasStructuralAnalysis": false
+    },
+    "lib/shared/widgets/watermark_overlay.dart": {
+      "filePath": "lib/shared/widgets/watermark_overlay.dart",
+      "contentHash": "403e6b61f7097179e6f678f826844301fce9cf802e13828814344c96638e8a62",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 42,
+      "hasStructuralAnalysis": false
+    },
+    "lib/theme/app_button_themes.dart": {
+      "filePath": "lib/theme/app_button_themes.dart",
+      "contentHash": "23831e7f8313b7205aa39a9407b5b574ce9e03372071212ea4f522aaa1ee63f5",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 82,
+      "hasStructuralAnalysis": false
+    },
+    "lib/theme/app_colors.dart": {
+      "filePath": "lib/theme/app_colors.dart",
+      "contentHash": "a58c07507a767d5d9cd903b616b4186fd408d82285b8127aaafcb2c034fa0c00",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 131,
+      "hasStructuralAnalysis": false
+    },
+    "lib/theme/app_component_themes.dart": {
+      "filePath": "lib/theme/app_component_themes.dart",
+      "contentHash": "bb011d1ed572d4f1205ed6e90a954d9ab2aa34e4417655e3b0d22017d3bb76e2",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 212,
+      "hasStructuralAnalysis": false
+    },
+    "lib/theme/app_theme.dart": {
+      "filePath": "lib/theme/app_theme.dart",
+      "contentHash": "b0daa36eb9cdceac2b46b240c9ca88cd252fd07c6dc0357d4b289bd50cd0354f",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 194,
+      "hasStructuralAnalysis": false
+    },
+    "lib/theme/theme_provider.dart": {
+      "filePath": "lib/theme/theme_provider.dart",
+      "contentHash": "c1ee04cb57279b9a8de123962f3cfcc6a220ec17cd34c636655ead2776867942",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 30,
+      "hasStructuralAnalysis": false
+    },
+    "lib/theme/theme_provider.g.dart": {
+      "filePath": "lib/theme/theme_provider.g.dart",
+      "contentHash": "dca7a36d418466eaf93c29adad9befaac299a5944637635f9a08b71c42f1e6af",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 27,
+      "hasStructuralAnalysis": false
+    },
+    "lib/utils/logger_service.dart": {
+      "filePath": "lib/utils/logger_service.dart",
+      "contentHash": "d7756a9a929bb04214d0406bda74a84503dd5b38d6ddd7c5fc2708c7d7e84dc8",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 27,
+      "hasStructuralAnalysis": false
+    },
+    "lint_baseline.txt": {
+      "filePath": "lint_baseline.txt",
+      "contentHash": "7ea1d79bd7c1f826ff1cd12c6244d5052fc4aafa1c7e3f20ae79a5deee0fc2e6",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 42,
+      "hasStructuralAnalysis": false
+    },
+    "Makefile": {
+      "filePath": "Makefile",
+      "contentHash": "0b4749565948004f124dc5b38f6f65a0d51c7855b6ab70ea5120e747573e1b98",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 89,
+      "hasStructuralAnalysis": true
+    },
+    "model_capabilities.yaml": {
+      "filePath": "model_capabilities.yaml",
+      "contentHash": "1c517d63e11ab1945f9a68675c1a53e2227ab94bbd4aaf1bb8c0005ccec7ec0e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 109,
+      "hasStructuralAnalysis": true
+    },
+    "pubspec.yaml": {
+      "filePath": "pubspec.yaml",
+      "contentHash": "254c201013f7d3dc26b7e944de12abea9f100df165a6e3a2b571b203de2dbd20",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 83,
+      "hasStructuralAnalysis": true
+    },
+    "README.md": {
+      "filePath": "README.md",
+      "contentHash": "b7aa9f0577cbf65293197c129ebb60934a8b50e7f55628f469589a5d9a5f13a8",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 239,
+      "hasStructuralAnalysis": true
+    },
+    "security_check.sh": {
+      "filePath": "security_check.sh",
+      "contentHash": "21f6df6c919d02ed8b98f1ca0a5911f9a051dbc5ca26afd8b33f2e5bf2a50ea9",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 25,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/AGENTS.md": {
+      "filePath": "supabase/AGENTS.md",
+      "contentHash": "c629a43ac7129ed3a41e1c0efccc3ae725abadd0c99612c8fc4f3db455f0a565",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 58,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/config.toml": {
+      "filePath": "supabase/config.toml",
+      "contentHash": "791f24ca1feff6b63a97b93da88b2be60d7bf73ffdb4184527ef8bab415fbde6",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 405,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/functions/_shared/cors.ts": {
+      "filePath": "supabase/functions/_shared/cors.ts",
+      "contentHash": "5affe2c8685b8e8b6a62ef9777f3154fc21b6171ac95dbf5d70f5aea65b11171",
+      "functions": [
+        {
+          "name": "corsHeaders",
+          "params": [],
+          "returnType": "Record<string, string>",
+          "exported": true,
+          "lineCount": 10
+        },
+        {
+          "name": "handleCorsIfPreflight",
+          "params": [
+            "req"
+          ],
+          "returnType": "Response | null",
+          "exported": true,
+          "lineCount": 6
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "corsHeaders",
+        "handleCorsIfPreflight"
+      ],
+      "totalLines": 30,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/functions/_shared/credit_logic_test.ts": {
+      "filePath": "supabase/functions/_shared/credit_logic_test.ts",
+      "contentHash": "6614da645eb1adbc99f73f619ca3c890b0b13828575f53550fa69f80a5598488",
+      "functions": [
+        {
+          "name": "createMockSupabase",
+          "params": [
+            "rpcResults"
+          ],
+          "exported": false,
+          "lineCount": 10
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "jsr:@std/assert",
+          "specifiers": [
+            "assertEquals"
+          ]
+        },
+        {
+          "source": "jsr:@supabase/supabase-js@2",
+          "specifiers": [
+            "SupabaseClient"
+          ]
+        },
+        {
+          "source": "./credit_logic.ts",
+          "specifiers": [
+            "checkAndDeductCredits",
+            "refundCreditsOnFailure"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 106,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/functions/_shared/credit_logic.ts": {
+      "filePath": "supabase/functions/_shared/credit_logic.ts",
+      "contentHash": "4f553f4fb0a79c00ea4099aec5a96687002348e0855f55eead16886a4668dd3b",
+      "functions": [
+        {
+          "name": "checkAndDeductCredits",
+          "params": [
+            "supabase",
+            "userId",
+            "amount",
+            "jobId"
+          ],
+          "returnType": "Promise<{ success: boolean; error?: string }>",
+          "exported": true,
+          "lineCount": 25
+        },
+        {
+          "name": "refundCreditsOnFailure",
+          "params": [
+            "supabase",
+            "userId",
+            "amount",
+            "jobId",
+            "maxRetries"
+          ],
+          "returnType": "Promise<{ success: boolean; attempts: number }>",
+          "exported": true,
+          "lineCount": 46
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "jsr:@supabase/supabase-js@2",
+          "specifiers": [
+            "SupabaseClient"
+          ]
+        }
+      ],
+      "exports": [
+        "checkAndDeductCredits",
+        "refundCreditsOnFailure"
+      ],
+      "totalLines": 84,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/functions/_shared/model_config_test.ts": {
+      "filePath": "supabase/functions/_shared/model_config_test.ts",
+      "contentHash": "3f2050579adfc913ac491244f3d47e807d33c4538bb04b055c9559abf308aa65",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "jsr:@std/assert",
+          "specifiers": [
+            "assertEquals"
+          ]
+        },
+        {
+          "source": "./model_config.ts",
+          "specifiers": [
+            "MODEL_CREDIT_COSTS",
+            "PREMIUM_MODELS",
+            "isPremiumModel",
+            "getModelCreditCost"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 135,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/functions/_shared/model_config.ts": {
+      "filePath": "supabase/functions/_shared/model_config.ts",
+      "contentHash": "919fbc1f198363dc257fcafda451fc2246c5ac31ecf92d7c59b92fd14598b2d8",
+      "functions": [
+        {
+          "name": "isPremiumModel",
+          "params": [
+            "modelId"
+          ],
+          "returnType": "boolean",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "getModelCreditCost",
+          "params": [
+            "modelId"
+          ],
+          "returnType": "number | undefined",
+          "exported": true,
+          "lineCount": 3
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "MODEL_CREDIT_COSTS",
+        "PREMIUM_MODELS",
+        "isPremiumModel",
+        "getModelCreditCost"
+      ],
+      "totalLines": 60,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/functions/delete-account/index.ts": {
+      "filePath": "supabase/functions/delete-account/index.ts",
+      "contentHash": "f6ba9ee8ea47bf0f9b997e438cb74bcca69f3d7397abb30c73583ba1b02ffd9d",
+      "functions": [
+        {
+          "name": "getSupabaseClient",
+          "params": [],
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "corsHeaders",
+          "params": [],
+          "returnType": "Record<string, string>",
+          "exported": false,
+          "lineCount": 10
+        },
+        {
+          "name": "handleCorsIfPreflight",
+          "params": [
+            "req"
+          ],
+          "returnType": "Response | null",
+          "exported": false,
+          "lineCount": 6
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "jsr:@supabase/functions-js/edge-runtime.d.ts",
+          "specifiers": []
+        },
+        {
+          "source": "jsr:@supabase/supabase-js@2",
+          "specifiers": [
+            "createClient"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 140,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/functions/deno.json": {
+      "filePath": "supabase/functions/deno.json",
+      "contentHash": "541dffaa99bf60703d1b6a52b9077dd5026e3ff2a76e9d96e054e385bb39da9c",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 7,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/functions/generate-image/.npmrc": {
+      "filePath": "supabase/functions/generate-image/.npmrc",
+      "contentHash": "2cc495d5b8918533470e2666eccfcc0532a2a75699e8ad7c887163c83322ab55",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 4,
+      "hasStructuralAnalysis": false
+    },
+    "supabase/functions/generate-image/deno.json": {
+      "filePath": "supabase/functions/generate-image/deno.json",
+      "contentHash": "5f1c69e365acfb48147f4f9c2806b4228ba91f920fc7723b25185e275bd29537",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 4,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/functions/generate-image/index.ts": {
+      "filePath": "supabase/functions/generate-image/index.ts",
+      "contentHash": "a6cd3bd39c38073398208f28bcddf88d86facfb6e157d9b6997cc9560faf32d8",
+      "functions": [
+        {
+          "name": "getSupabaseClient",
+          "params": [],
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "getProvider",
+          "params": [
+            "model"
+          ],
+          "returnType": "\"kie\" | \"gemini\" | \"imagen\"",
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "resolveImageUrls",
+          "params": [
+            "supabase",
+            "imageInputs",
+            "userId"
+          ],
+          "returnType": "Promise<string[]>",
+          "exported": false,
+          "lineCount": 44
+        },
+        {
+          "name": "buildKieInput",
+          "params": [
+            "prompt",
+            "model",
+            "aspectRatio",
+            "imageInputs"
+          ],
+          "returnType": "Record<string, unknown>",
+          "exported": false,
+          "lineCount": 85
+        },
+        {
+          "name": "createKieTask",
+          "params": [
+            "prompt",
+            "model",
+            "aspectRatio",
+            "_imageCount",
+            "imageInputs"
+          ],
+          "returnType": "Promise<{ taskId: string } | { error: string }>",
+          "exported": false,
+          "lineCount": 29
+        },
+        {
+          "name": "pollKieTask",
+          "params": [
+            "taskId",
+            "maxAttempts",
+            "intervalMs"
+          ],
+          "returnType": "Promise<{ images: string[] } | { error: string }>",
+          "exported": false,
+          "lineCount": 68
+        },
+        {
+          "name": "downloadImageAsBase64",
+          "params": [
+            "url"
+          ],
+          "returnType": "Promise<{ mimeType: string; data: string }>",
+          "exported": false,
+          "lineCount": 10
+        },
+        {
+          "name": "generateViaGemini",
+          "params": [
+            "prompt",
+            "model",
+            "aspectRatio",
+            "imageUrls"
+          ],
+          "returnType": "Promise<{ base64Images: string[] } | { error: string }>",
+          "exported": false,
+          "lineCount": 60
+        },
+        {
+          "name": "generateViaImagen",
+          "params": [
+            "prompt",
+            "model",
+            "aspectRatio",
+            "imageCount"
+          ],
+          "returnType": "Promise<{ base64Images: string[] } | { error: string }>",
+          "exported": false,
+          "lineCount": 44
+        },
+        {
+          "name": "downloadImage",
+          "params": [
+            "url"
+          ],
+          "returnType": "Promise<Uint8Array>",
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "uploadToStorage",
+          "params": [
+            "supabase",
+            "userId",
+            "jobId",
+            "imageData",
+            "index",
+            "outputFormat"
+          ],
+          "returnType": "Promise<string>",
+          "exported": false,
+          "lineCount": 26
+        },
+        {
+          "name": "cleanupStorageFiles",
+          "params": [
+            "supabase",
+            "paths"
+          ],
+          "returnType": "Promise<void>",
+          "exported": false,
+          "lineCount": 13
+        },
+        {
+          "name": "mirrorUrlsToStorage",
+          "params": [
+            "supabase",
+            "userId",
+            "jobId",
+            "imageUrls",
+            "outputFormat"
+          ],
+          "returnType": "Promise<string[]>",
+          "exported": false,
+          "lineCount": 35
+        },
+        {
+          "name": "mirrorBase64ToStorage",
+          "params": [
+            "supabase",
+            "userId",
+            "jobId",
+            "base64Images",
+            "outputFormat"
+          ],
+          "returnType": "Promise<string[]>",
+          "exported": false,
+          "lineCount": 39
+        },
+        {
+          "name": "updateJobStatus",
+          "params": [
+            "supabase",
+            "jobId",
+            "updates"
+          ],
+          "exported": false,
+          "lineCount": 20
+        },
+        {
+          "name": "refundAndBuildErrorMsg",
+          "params": [
+            "supabase",
+            "userId",
+            "creditCost",
+            "jobId",
+            "originalError"
+          ],
+          "returnType": "Promise<string>",
+          "exported": false,
+          "lineCount": 12
+        },
+        {
+          "name": "buildInternalServerErrorResponse",
+          "params": [
+            "headers"
+          ],
+          "returnType": "Response",
+          "exported": false,
+          "lineCount": 6
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "jsr:@supabase/functions-js/edge-runtime.d.ts",
+          "specifiers": []
+        },
+        {
+          "source": "jsr:@supabase/supabase-js@2",
+          "specifiers": [
+            "createClient"
+          ]
+        },
+        {
+          "source": "https://deno.land/std/encoding/base64.ts",
+          "specifiers": [
+            "encodeBase64"
+          ]
+        },
+        {
+          "source": "../_shared/cors.ts",
+          "specifiers": [
+            "corsHeaders",
+            "handleCorsIfPreflight"
+          ]
+        },
+        {
+          "source": "../_shared/model_config.ts",
+          "specifiers": [
+            "isPremiumModel",
+            "getModelCreditCost"
+          ]
+        },
+        {
+          "source": "../_shared/credit_logic.ts",
+          "specifiers": [
+            "checkAndDeductCredits",
+            "refundCreditsOnFailure"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 876,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/functions/revenuecat-webhook/index.ts": {
+      "filePath": "supabase/functions/revenuecat-webhook/index.ts",
+      "contentHash": "6f3b0dda2c1c1e37cdef0201a9c80f27d3d82fed7c3550650ed000208ca3c0e2",
+      "functions": [
+        {
+          "name": "getSupabaseClient",
+          "params": [],
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "getTierInfo",
+          "params": [
+            "productId"
+          ],
+          "returnType": "{ tier: string; credits: number } | null",
+          "exported": false,
+          "lineCount": 11
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "jsr:@supabase/functions-js/edge-runtime.d.ts",
+          "specifiers": []
+        },
+        {
+          "source": "jsr:@supabase/supabase-js@2",
+          "specifiers": [
+            "createClient"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 412,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/functions/reward-ad/index.ts": {
+      "filePath": "supabase/functions/reward-ad/index.ts",
+      "contentHash": "e8307a5a29140e4564d42cd0a769dafeef18ece070e8f4d5684d8b8cdc98a07c",
+      "functions": [
+        {
+          "name": "getSupabaseClient",
+          "params": [],
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "corsHeaders",
+          "params": [],
+          "returnType": "Record<string, string>",
+          "exported": false,
+          "lineCount": 10
+        },
+        {
+          "name": "handleCorsIfPreflight",
+          "params": [
+            "req"
+          ],
+          "returnType": "Response | null",
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "authenticateUser",
+          "params": [
+            "req",
+            "supabase"
+          ],
+          "returnType": "Promise<{ user: { id: string } } | { error: Response }>",
+          "exported": false,
+          "lineCount": 38
+        },
+        {
+          "name": "derToP1363",
+          "params": [
+            "der"
+          ],
+          "returnType": "Uint8Array",
+          "exported": false,
+          "lineCount": 45
+        },
+        {
+          "name": "pemToBytes",
+          "params": [
+            "pem"
+          ],
+          "returnType": "Uint8Array",
+          "exported": false,
+          "lineCount": 8
+        },
+        {
+          "name": "base64UrlDecode",
+          "params": [
+            "b64url"
+          ],
+          "returnType": "Uint8Array",
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "verifyGoogleSsvSignature",
+          "params": [
+            "message",
+            "signatureB64url",
+            "keyId"
+          ],
+          "returnType": "Promise<boolean>",
+          "exported": false,
+          "lineCount": 52
+        },
+        {
+          "name": "handleSsvCallback",
+          "params": [
+            "req",
+            "supabase"
+          ],
+          "returnType": "Promise<Response>",
+          "exported": false,
+          "lineCount": 122
+        },
+        {
+          "name": "handleRequestNonce",
+          "params": [
+            "userId",
+            "supabase",
+            "headers"
+          ],
+          "returnType": "Promise<Response>",
+          "exported": false,
+          "lineCount": 32
+        },
+        {
+          "name": "handleClaim",
+          "params": [
+            "userId",
+            "nonce",
+            "supabase",
+            "headers"
+          ],
+          "returnType": "Promise<Response>",
+          "exported": false,
+          "lineCount": 45
+        }
+      ],
+      "classes": [
+        {
+          "name": "KeyNotFoundError",
+          "methods": [
+            "constructor"
+          ],
+          "properties": [],
+          "exported": false,
+          "lineCount": 6
+        }
+      ],
+      "imports": [
+        {
+          "source": "jsr:@supabase/functions-js/edge-runtime.d.ts",
+          "specifiers": []
+        },
+        {
+          "source": "jsr:@supabase/supabase-js@2",
+          "specifiers": [
+            "createClient"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 520,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/functions/sync-subscription/index.ts": {
+      "filePath": "supabase/functions/sync-subscription/index.ts",
+      "contentHash": "216164cc258251eddc0fab1a91d1ed0388d6e1c7e4c04f30d11e181b45ebe257",
+      "functions": [
+        {
+          "name": "getSupabaseClient",
+          "params": [],
+          "exported": false,
+          "lineCount": 5
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "jsr:@supabase/functions-js/edge-runtime.d.ts",
+          "specifiers": []
+        },
+        {
+          "source": "jsr:@supabase/supabase-js@2",
+          "specifiers": [
+            "createClient"
+          ]
+        },
+        {
+          "source": "../_shared/cors.ts",
+          "specifiers": [
+            "corsHeaders",
+            "handleCorsIfPreflight"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 259,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/functions/verify-google-purchase/index.ts": {
+      "filePath": "supabase/functions/verify-google-purchase/index.ts",
+      "contentHash": "9439be8f3799e8776a2afaaea111d1b0411f8a6f7537b6fb1312861e3d4f21c4",
+      "functions": [
+        {
+          "name": "getTierInfo",
+          "params": [
+            "productId"
+          ],
+          "returnType": "{ tier: string; credits: number } | null",
+          "exported": false,
+          "lineCount": 8
+        },
+        {
+          "name": "isValidPurchaseToken",
+          "params": [
+            "token"
+          ],
+          "returnType": "boolean",
+          "exported": false,
+          "lineCount": 4
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "jsr:@supabase/functions-js/edge-runtime.d.ts",
+          "specifiers": []
+        },
+        {
+          "source": "jsr:@supabase/supabase-js@2",
+          "specifiers": [
+            "createClient"
+          ]
+        },
+        {
+          "source": "../_shared/cors.ts",
+          "specifiers": [
+            "corsHeaders",
+            "handleCorsIfPreflight"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 242,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/migrations/20260127000000_create_templates_table.sql": {
+      "filePath": "supabase/migrations/20260127000000_create_templates_table.sql",
+      "contentHash": "230167839dcfb195ee61eb5b6501233e1e625481cd2cecc3730c678ba203d5bb",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 48,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/migrations/20260128000000_create_profiles_table.sql": {
+      "filePath": "supabase/migrations/20260128000000_create_profiles_table.sql",
+      "contentHash": "a69fee65e4d6e584fd8d2394df4cb93045f2f7503bfdc74f69f7601289bb2877",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 50,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/migrations/20260128094706_create_admin_user.sql": {
+      "filePath": "supabase/migrations/20260128094706_create_admin_user.sql",
+      "contentHash": "4a86b31824e0f12925ab057e4af7dae9c2a06c7ef0949a1708f935fa76c36961",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 58,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/migrations/20260128115551_add_deleted_at_and_storage_bucket.sql": {
+      "filePath": "supabase/migrations/20260128115551_add_deleted_at_and_storage_bucket.sql",
+      "contentHash": "62d5ede73140eab0cdafcf6a8f42ac8dc2dfae1b7bfb51bd6960900702876826",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 83,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/migrations/20260128130000_add_25_templates.sql": {
+      "filePath": "supabase/migrations/20260128130000_add_25_templates.sql",
+      "contentHash": "49924746b75c290d6fdce7770e80fc3aed75735bdf75fafcdd3552de5be5605c",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 352,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/migrations/20260218000000_create_credit_system.sql": {
+      "filePath": "supabase/migrations/20260218000000_create_credit_system.sql",
+      "contentHash": "a7ddf8bd68dddb5e0d13b2ddf271432bfc570875ba356bdf9851358d8aafbd2c",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 177,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/migrations/20260218100000_create_reward_ad_function.sql": {
+      "filePath": "supabase/migrations/20260218100000_create_reward_ad_function.sql",
+      "contentHash": "6088e4c6696dcfb5f2ba20a044472db1d9b276231909dbd764eef460f9c9d918",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 62,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/migrations/20260219000000_add_subscription_support.sql": {
+      "filePath": "supabase/migrations/20260219000000_add_subscription_support.sql",
+      "contentHash": "a6754b988d2d53e22ce733cb7a2ed75327a985c60313398104eaafcf017725ec",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 71,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/migrations/20260219000001_restrict_profiles_update_rls.sql": {
+      "filePath": "supabase/migrations/20260219000001_restrict_profiles_update_rls.sql",
+      "contentHash": "1bf618ef16e43c32f5ebc527be51e9e2389cc3251eab822adadbe9ca58fb3eb3",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 29,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/migrations/20260220160000_create_pending_ad_rewards.sql": {
+      "filePath": "supabase/migrations/20260220160000_create_pending_ad_rewards.sql",
+      "contentHash": "161c5d5ffe7388a9c6a93a7b8a121fc03ceebc75a96dfe21886e9cb30e563487",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 142,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/migrations/20260220170000_create_rate_limit.sql": {
+      "filePath": "supabase/migrations/20260220170000_create_rate_limit.sql",
+      "contentHash": "f2d4705c05150ae79a168b64655d4c9ed2fbd1668545be1388e889de22c9cf45",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 86,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/migrations/20260220180000_concurrency_locks.sql": {
+      "filePath": "supabase/migrations/20260220180000_concurrency_locks.sql",
+      "contentHash": "73b0b1fc4154cce1d2da7146f62ffdd20176eb3de958a460757aa5bb28bb83a0",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 10,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/migrations/20260221000000_fix_subscription_trigger.sql": {
+      "filePath": "supabase/migrations/20260221000000_fix_subscription_trigger.sql",
+      "contentHash": "465e57f0cf2a4a2befad0baafacdfa8fa970e3c431f3ebb8ddb72f5cb5445e4b",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 30,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/migrations/20260221200000_sync_remote_schema.sql": {
+      "filePath": "supabase/migrations/20260221200000_sync_remote_schema.sql",
+      "contentHash": "37c9af68f923827de0c1779dd496216122be43ae35d9bc49f91f4ef830d1587c",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 162,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/migrations/20260222_add_model_id_to_generation_jobs.sql": {
+      "filePath": "supabase/migrations/20260222_add_model_id_to_generation_jobs.sql",
+      "contentHash": "0258f8ac570d9eda233a2fc8c7ac074359ff1cf498dedc8c409e7a9bfb55cfdc",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 7,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/migrations/20260222130000_add_input_image_paths.sql": {
+      "filePath": "supabase/migrations/20260222130000_add_input_image_paths.sql",
+      "contentHash": "44ee9c6386935fc30340b3c1b0c61c6982c82de4e960d7ee17ee30d1e3335540",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 10,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/migrations/20260222140000_add_model_id_to_generation_jobs.sql": {
+      "filePath": "supabase/migrations/20260222140000_add_model_id_to_generation_jobs.sql",
+      "contentHash": "c451cfe0bf74f953d8b7e7d0aff97ff788c485f889d8728d49fee0a6899e3646",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 7,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/migrations/20260223000000_add_nanobananaprompt_templates.sql": {
+      "filePath": "supabase/migrations/20260223000000_add_nanobananaprompt_templates.sql",
+      "contentHash": "9e07ed131655a516651673ac87ae128dc7685b85477e93bea861d45e7963fa2f",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 261,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/migrations/20260304000001_fix_critical_security.sql": {
+      "filePath": "supabase/migrations/20260304000001_fix_critical_security.sql",
+      "contentHash": "a3e41656b2ddc276f41c012cbeb8ec7ce869c8dd84147ce9cadb47b8764719ea",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 120,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/migrations/20260304000002_fix_function_signatures.sql": {
+      "filePath": "supabase/migrations/20260304000002_fix_function_signatures.sql",
+      "contentHash": "b52a548c252399da383d5662f84caeed5e901bb7c980bde6e833f6f16fbcf135",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 306,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/migrations/20260304000003_fix_medium_issues.sql": {
+      "filePath": "supabase/migrations/20260304000003_fix_medium_issues.sql",
+      "contentHash": "d4288775aac6b4ceaf56366b216543336fc675336d9024d61727453896c77cfa",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 46,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/migrations/20260304000004_fix_revoke_public_and_index.sql": {
+      "filePath": "supabase/migrations/20260304000004_fix_revoke_public_and_index.sql",
+      "contentHash": "93058a36bb84141b230e11f61c52ec2a8e1c1e92db7ceacb58ca866efa09d2d7",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 21,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/migrations/20260304100000_fix_credit_idempotency_and_rc_index.sql": {
+      "filePath": "supabase/migrations/20260304100000_fix_credit_idempotency_and_rc_index.sql",
+      "contentHash": "de67a1a42c66d5e9aee1c81e9d752841671ce19e3fd5141afd48b90d0339ffae",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 57,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/migrations/20260315120000_fix_grant_credits_advisory_lock_and_recent_guard.sql": {
+      "filePath": "supabase/migrations/20260315120000_fix_grant_credits_advisory_lock_and_recent_guard.sql",
+      "contentHash": "bcf684163fa0644625ed624acfc0f29adad8bb24fcb5338b5df60fbff0729a33",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 85,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/migrations/20260315130000_fix_update_subscription_status_security.sql": {
+      "filePath": "supabase/migrations/20260315130000_fix_update_subscription_status_security.sql",
+      "contentHash": "24b3ad40c58437059d3a09f2fd246b87d31fcd4d439891b643aef62a7a0612c8",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 23,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/migrations/20260403175956_revoke_public_from_security_definer.sql": {
+      "filePath": "supabase/migrations/20260403175956_revoke_public_from_security_definer.sql",
+      "contentHash": "ca60ccd339fb4bf9496380dcbb2c48e00ab96b71b7b10f1105b53dfacaeabf37",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 18,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/migrations/20260404174417_revoke_public_from_security_definer.sql": {
+      "filePath": "supabase/migrations/20260404174417_revoke_public_from_security_definer.sql",
+      "contentHash": "f2dd0b847b018fe1a9d61a5bd8d47bd9fd3f0e80cca10aa8b7cbb57350926fc9",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 6,
+      "hasStructuralAnalysis": true
+    },
+    "TODOS.md": {
+      "filePath": "TODOS.md",
+      "contentHash": "d56d8a2f7d47c67ed0f1ad8c8751e0114bba6f8e182e94f61acfd4e164b6b741",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 39,
+      "hasStructuralAnalysis": true
+    }
+  }
+}

@@ -1,0 +1,305 @@
+{
+  "nodes": [
+    {
+      "id": "file:lib/features/create/presentation/widgets/model_selector.dart",
+      "type": "file",
+      "name": "model_selector.dart",
+      "summary": "Application source file model_selector.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/create/presentation/widgets/model_selector.dart"
+    },
+    {
+      "id": "file:lib/features/create/presentation/widgets/prompt_input_field.dart",
+      "type": "file",
+      "name": "prompt_input_field.dart",
+      "summary": "Application source file prompt_input_field.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/create/presentation/widgets/prompt_input_field.dart"
+    },
+    {
+      "id": "file:lib/features/credits/data/repositories/credit_repository.dart",
+      "type": "file",
+      "name": "credit_repository.dart",
+      "summary": "Application source file credit_repository.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "data-layer"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/credits/data/repositories/credit_repository.dart"
+    },
+    {
+      "id": "file:lib/features/credits/data/repositories/credit_repository.g.dart",
+      "type": "file",
+      "name": "credit_repository.g.dart",
+      "summary": "Application source file credit_repository.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "data-layer"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/credits/data/repositories/credit_repository.g.dart"
+    },
+    {
+      "id": "file:lib/features/credits/domain/entities/credit_balance.dart",
+      "type": "file",
+      "name": "credit_balance.dart",
+      "summary": "Application source file credit_balance.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/credits/domain/entities/credit_balance.dart"
+    },
+    {
+      "id": "file:lib/features/credits/domain/entities/credit_balance.freezed.dart",
+      "type": "file",
+      "name": "credit_balance.freezed.dart",
+      "summary": "Application source file credit_balance.freezed.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/credits/domain/entities/credit_balance.freezed.dart"
+    },
+    {
+      "id": "file:lib/features/credits/domain/entities/credit_balance.g.dart",
+      "type": "file",
+      "name": "credit_balance.g.dart",
+      "summary": "Application source file credit_balance.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/credits/domain/entities/credit_balance.g.dart"
+    },
+    {
+      "id": "file:lib/features/credits/domain/entities/credit_transaction.dart",
+      "type": "file",
+      "name": "credit_transaction.dart",
+      "summary": "Application source file credit_transaction.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/credits/domain/entities/credit_transaction.dart"
+    },
+    {
+      "id": "file:lib/features/credits/domain/entities/credit_transaction.freezed.dart",
+      "type": "file",
+      "name": "credit_transaction.freezed.dart",
+      "summary": "Application source file credit_transaction.freezed.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/credits/domain/entities/credit_transaction.freezed.dart"
+    },
+    {
+      "id": "file:lib/features/credits/domain/entities/credit_transaction.g.dart",
+      "type": "file",
+      "name": "credit_transaction.g.dart",
+      "summary": "Application source file credit_transaction.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/credits/domain/entities/credit_transaction.g.dart"
+    },
+    {
+      "id": "file:lib/features/credits/domain/providers/credit_repository_provider.dart",
+      "type": "file",
+      "name": "credit_repository_provider.dart",
+      "summary": "Application source file credit_repository_provider.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/credits/domain/providers/credit_repository_provider.dart"
+    },
+    {
+      "id": "file:lib/features/credits/domain/repositories/i_credit_repository.dart",
+      "type": "file",
+      "name": "i_credit_repository.dart",
+      "summary": "Application source file i_credit_repository.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "domain"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/credits/domain/repositories/i_credit_repository.dart"
+    },
+    {
+      "id": "file:lib/features/credits/presentation/providers/ad_reward_provider.dart",
+      "type": "file",
+      "name": "ad_reward_provider.dart",
+      "summary": "Application source file ad_reward_provider.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/credits/presentation/providers/ad_reward_provider.dart"
+    },
+    {
+      "id": "file:lib/features/credits/presentation/providers/ad_reward_provider.g.dart",
+      "type": "file",
+      "name": "ad_reward_provider.g.dart",
+      "summary": "Application source file ad_reward_provider.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/credits/presentation/providers/ad_reward_provider.g.dart"
+    },
+    {
+      "id": "file:lib/features/credits/presentation/providers/credit_balance_provider.dart",
+      "type": "file",
+      "name": "credit_balance_provider.dart",
+      "summary": "Application source file credit_balance_provider.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/credits/presentation/providers/credit_balance_provider.dart"
+    },
+    {
+      "id": "file:lib/features/credits/presentation/providers/credit_balance_provider.g.dart",
+      "type": "file",
+      "name": "credit_balance_provider.g.dart",
+      "summary": "Application source file credit_balance_provider.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/credits/presentation/providers/credit_balance_provider.g.dart"
+    },
+    {
+      "id": "file:lib/features/credits/presentation/providers/credit_history_provider.dart",
+      "type": "file",
+      "name": "credit_history_provider.dart",
+      "summary": "Application source file credit_history_provider.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/credits/presentation/providers/credit_history_provider.dart"
+    },
+    {
+      "id": "file:lib/features/credits/presentation/providers/credit_history_provider.g.dart",
+      "type": "file",
+      "name": "credit_history_provider.g.dart",
+      "summary": "Application source file credit_history_provider.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/credits/presentation/providers/credit_history_provider.g.dart"
+    },
+    {
+      "id": "file:lib/features/credits/presentation/screens/credit_history_screen.dart",
+      "type": "file",
+      "name": "credit_history_screen.dart",
+      "summary": "Application source file credit_history_screen.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/credits/presentation/screens/credit_history_screen.dart"
+    },
+    {
+      "id": "file:lib/features/credits/presentation/widgets/insufficient_credits_sheet.dart",
+      "type": "file",
+      "name": "insufficient_credits_sheet.dart",
+      "summary": "Application source file insufficient_credits_sheet.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/credits/presentation/widgets/insufficient_credits_sheet.dart"
+    },
+    {
+      "id": "file:lib/features/credits/presentation/widgets/premium_model_sheet.dart",
+      "type": "file",
+      "name": "premium_model_sheet.dart",
+      "summary": "Application source file premium_model_sheet.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "ui"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/credits/presentation/widgets/premium_model_sheet.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/data/repositories/gallery_repository_helpers.dart",
+      "type": "file",
+      "name": "gallery_repository_helpers.dart",
+      "summary": "Application source file gallery_repository_helpers.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "data-layer"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/gallery/data/repositories/gallery_repository_helpers.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/data/repositories/gallery_repository.dart",
+      "type": "file",
+      "name": "gallery_repository.dart",
+      "summary": "Application source file gallery_repository.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "data-layer"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/features/gallery/data/repositories/gallery_repository.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/data/repositories/gallery_repository.g.dart",
+      "type": "file",
+      "name": "gallery_repository.g.dart",
+      "summary": "Application source file gallery_repository.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "data-layer"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/features/gallery/data/repositories/gallery_repository.g.dart"
+    },
+    {
+      "id": "file:lib/features/gallery/data/services/gallery_cache_service.dart",
+      "type": "file",
+      "name": "gallery_cache_service.dart",
+      "summary": "Application source file gallery_cache_service.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app",
+        "data-layer"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/features/gallery/data/services/gallery_cache_service.dart"
+    }
+  ],
+  "edges": []
+}

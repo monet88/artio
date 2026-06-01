@@ -1,0 +1,59 @@
+[
+  {
+    "order": 1,
+    "title": "Project Overview",
+    "description": "Start with the repository overview and contributor operating guide to understand Artio\u2019s three surfaces, workflow rules, and architecture references.",
+    "nodeIds": [
+      "document:README.md",
+      "document:CLAUDE.md"
+    ]
+  },
+  {
+    "order": 2,
+    "title": "Main App Entry and Shell",
+    "description": "Inspect the main Flutter application entrypoint and top-level app shell to see how the primary client boots, configures providers, and connects routing.",
+    "nodeIds": [
+      "file:lib/main.dart"
+    ]
+  },
+  {
+    "order": 3,
+    "title": "Design System and Shared Core",
+    "description": "Review shared core modules that provide design tokens, cross-cutting services, exceptions, and reusable state utilities used throughout the client surface.",
+    "nodeIds": [
+      "document:lib/core/AGENTS.md",
+      "file:lib/theme/app_button_themes.dart",
+      "file:lib/shared/widgets/animated_retry_button.dart"
+    ]
+  },
+  {
+    "order": 4,
+    "title": "Backend Edge Functions",
+    "description": "Explore Supabase edge functions and shared helpers that implement generation orchestration, purchases, subscriptions, and reward flows on the server side.",
+    "nodeIds": [
+      "file:supabase/functions/generate-image/index.ts",
+      "file:supabase/functions/_shared/cors.ts",
+      "file:supabase/functions/verify-google-purchase/index.ts"
+    ]
+  },
+  {
+    "order": 5,
+    "title": "Database and Policies",
+    "description": "Study the SQL migration layer to understand how Artio models templates, profiles, credits, subscriptions, and access policies in Postgres.",
+    "nodeIds": [
+      "table:supabase/migrations/20260127000000_create_templates_table.sql",
+      "table:supabase/migrations/20260128000000_create_profiles_table.sql",
+      "table:supabase/migrations/20260127000000_create_templates_table.sql"
+    ]
+  },
+  {
+    "order": 6,
+    "title": "Automation and Operations",
+    "description": "Finish with repository automation, environment templates, and workflow artifacts that keep the project reproducible across local work, CI, and deployment.",
+    "nodeIds": [
+      "pipeline:.github/workflows/supabase-keepalive.yml",
+      "config:.env.example",
+      "service:Makefile"
+    ]
+  }
+]

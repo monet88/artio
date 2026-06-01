@@ -1,0 +1,281 @@
+{
+  "nodes": [
+    {
+      "id": "file:.ckignore",
+      "type": "file",
+      "name": ".ckignore",
+      "summary": "Source file .ckignore containing project logic with 0 extracted functions and 0 extracted classes.",
+      "tags": [
+        "source"
+      ],
+      "complexity": "moderate",
+      "filePath": ".ckignore"
+    },
+    {
+      "id": "file:.gitattributes",
+      "type": "file",
+      "name": ".gitattributes",
+      "summary": "Source file .gitattributes containing project logic with 0 extracted functions and 0 extracted classes.",
+      "tags": [
+        "source"
+      ],
+      "complexity": "simple",
+      "filePath": ".gitattributes"
+    },
+    {
+      "id": "file:.metadata",
+      "type": "file",
+      "name": ".metadata",
+      "summary": "Source file .metadata containing project logic with 0 extracted functions and 0 extracted classes.",
+      "tags": [
+        "source"
+      ],
+      "complexity": "simple",
+      "filePath": ".metadata"
+    },
+    {
+      "id": "document:lib/core/AGENTS.md",
+      "type": "document",
+      "name": "AGENTS.md",
+      "summary": "Documentation file AGENTS.md that explains project workflow, architecture, or operational guidance for the Artio codebase.",
+      "tags": [
+        "documentation",
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/core/AGENTS.md"
+    },
+    {
+      "id": "file:lib/core/config/env_config.dart",
+      "type": "file",
+      "name": "env_config.dart",
+      "summary": "Application source file env_config.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/core/config/env_config.dart"
+    },
+    {
+      "id": "file:lib/core/config/sentry_config.dart",
+      "type": "file",
+      "name": "sentry_config.dart",
+      "summary": "Application source file sentry_config.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/core/config/sentry_config.dart"
+    },
+    {
+      "id": "file:lib/core/constants/ai_models.dart",
+      "type": "file",
+      "name": "ai_models.dart",
+      "summary": "Application source file ai_models.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/core/constants/ai_models.dart"
+    },
+    {
+      "id": "file:lib/core/constants/app_constants.dart",
+      "type": "file",
+      "name": "app_constants.dart",
+      "summary": "Application source file app_constants.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/core/constants/app_constants.dart"
+    },
+    {
+      "id": "file:lib/core/constants/generation_constants.dart",
+      "type": "file",
+      "name": "generation_constants.dart",
+      "summary": "Application source file generation_constants.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/core/constants/generation_constants.dart"
+    },
+    {
+      "id": "file:lib/core/design_system/app_animations.dart",
+      "type": "file",
+      "name": "app_animations.dart",
+      "summary": "Application source file app_animations.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/core/design_system/app_animations.dart"
+    },
+    {
+      "id": "file:lib/core/design_system/app_dimensions.dart",
+      "type": "file",
+      "name": "app_dimensions.dart",
+      "summary": "Application source file app_dimensions.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/core/design_system/app_dimensions.dart"
+    },
+    {
+      "id": "file:lib/core/design_system/app_gradients.dart",
+      "type": "file",
+      "name": "app_gradients.dart",
+      "summary": "Application source file app_gradients.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/core/design_system/app_gradients.dart"
+    },
+    {
+      "id": "file:lib/core/design_system/app_shadows.dart",
+      "type": "file",
+      "name": "app_shadows.dart",
+      "summary": "Application source file app_shadows.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/core/design_system/app_shadows.dart"
+    },
+    {
+      "id": "file:lib/core/design_system/app_spacing.dart",
+      "type": "file",
+      "name": "app_spacing.dart",
+      "summary": "Application source file app_spacing.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/core/design_system/app_spacing.dart"
+    },
+    {
+      "id": "file:lib/core/design_system/app_typography.dart",
+      "type": "file",
+      "name": "app_typography.dart",
+      "summary": "Application source file app_typography.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/core/design_system/app_typography.dart"
+    },
+    {
+      "id": "file:lib/core/exceptions/app_exception.dart",
+      "type": "file",
+      "name": "app_exception.dart",
+      "summary": "Application source file app_exception.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/core/exceptions/app_exception.dart"
+    },
+    {
+      "id": "file:lib/core/exceptions/app_exception.freezed.dart",
+      "type": "file",
+      "name": "app_exception.freezed.dart",
+      "summary": "Application source file app_exception.freezed.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "complex",
+      "filePath": "lib/core/exceptions/app_exception.freezed.dart"
+    },
+    {
+      "id": "file:lib/core/providers/connectivity_provider.dart",
+      "type": "file",
+      "name": "connectivity_provider.dart",
+      "summary": "Application source file connectivity_provider.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/core/providers/connectivity_provider.dart"
+    },
+    {
+      "id": "file:lib/core/providers/connectivity_provider.g.dart",
+      "type": "file",
+      "name": "connectivity_provider.g.dart",
+      "summary": "Application source file connectivity_provider.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/core/providers/connectivity_provider.g.dart"
+    },
+    {
+      "id": "file:lib/core/providers/supabase_provider.dart",
+      "type": "file",
+      "name": "supabase_provider.dart",
+      "summary": "Application source file supabase_provider.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/core/providers/supabase_provider.dart"
+    },
+    {
+      "id": "file:lib/core/providers/supabase_provider.g.dart",
+      "type": "file",
+      "name": "supabase_provider.g.dart",
+      "summary": "Application source file supabase_provider.g.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/core/providers/supabase_provider.g.dart"
+    },
+    {
+      "id": "file:lib/core/services/att_service.dart",
+      "type": "file",
+      "name": "att_service.dart",
+      "summary": "Application source file att_service.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "simple",
+      "filePath": "lib/core/services/att_service.dart"
+    },
+    {
+      "id": "file:lib/core/services/content_moderation_service.dart",
+      "type": "file",
+      "name": "content_moderation_service.dart",
+      "summary": "Application source file content_moderation_service.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/core/services/content_moderation_service.dart"
+    },
+    {
+      "id": "file:lib/core/services/haptic_service.dart",
+      "type": "file",
+      "name": "haptic_service.dart",
+      "summary": "Application source file haptic_service.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/core/services/haptic_service.dart"
+    },
+    {
+      "id": "file:lib/core/services/image_upload_service.dart",
+      "type": "file",
+      "name": "image_upload_service.dart",
+      "summary": "Application source file image_upload_service.dart in the main Flutter app, contributing UI, state, domain, or data behavior for Artio.",
+      "tags": [
+        "app"
+      ],
+      "complexity": "moderate",
+      "filePath": "lib/core/services/image_upload_service.dart"
+    }
+  ],
+  "edges": []
+}
